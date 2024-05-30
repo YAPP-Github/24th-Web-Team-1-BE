@@ -1,0 +1,11 @@
+# 담당자를 지정할 때는 github ID 혹은 github email을 넣습니다.
+
+/src @hun-ca @belljun3395
+
+/config @hun-ca @belljun3395
+
+/docs @hun-ca @belljun3395
+
+/scripts @hun-ca @belljun3395
+
+/resources @hun-ca @belljun3395

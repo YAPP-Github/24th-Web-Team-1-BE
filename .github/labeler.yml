@@ -19,3 +19,6 @@ refactor:
 
 fix:
   - head-branch: ['^fix', 'fix']
+
+test:
+  - head-branch: [ '^test', 'test' ]

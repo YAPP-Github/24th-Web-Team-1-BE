@@ -14,6 +14,11 @@ script:
   - changed-files:
       - any-glob-to-any-file: '**/scripts/**'
 
+# infra 폴더 하위에 있는 파일이 변경되면 infra 라벨을 붙인다.
+infra:
+  - changed-files:
+      - any-glob-to-any-file: '**/infra/**'
+
 # 브랜치 이름이 feat 또는 feature로 시작하면 feature 라벨을 붙인다.
 feature:
   - head-branch: ['^feat', 'feat', '^feature', 'feature']

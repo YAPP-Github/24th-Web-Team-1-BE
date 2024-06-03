@@ -1,0 +1,31 @@
+# docs 폴더 하위에 있는 파일이 변경되면 documentation 라벨을 붙인다.
+documentation:
+  - changed-files:
+      - any-glob-to-any-file: '**/docs/**'
+
+# config 폴더 하위에 있는 파일이 변경되거나, 브랜치 이름이 config로 시작하면 config 라벨을 붙인다.
+config:
+  - changed-files:
+      - any-glob-to-any-file: '**/config/**'
+  - head-branch: ['^config', 'config']
+
+# scripts 폴더 하위에 있는 파일이 변경되면 script 라벨을 붙인다.
+script:
+  - changed-files:
+      - any-glob-to-any-file: '**/scripts/**'
+
+# 브랜치 이름이 feat 또는 feature로 시작하면 feature 라벨을 붙인다.
+feature:
+  - head-branch: ['^feat', 'feat', '^feature', 'feature']
+
+# 브랜치 이름이 refactor로 시작하면 refactor 라벨을 붙인다.
+refactor:
+  - head-branch: ['^refactor', 'refactor']
+
+# 브랜치 이름이 fix로 시작하면 fix 라벨을 붙인다.
+fix:
+  - head-branch: ['^fix', 'fix']
+
+# 브랜치 이름이 test로 시작하면 test 라벨을 붙인다.
+test:
+  - head-branch: [ '^test', 'test' ]

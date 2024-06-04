@@ -9,14 +9,12 @@ variable "access_key" {
   type        = string
   sensitive   = true
   description = "The access key for the IAM root user"
-  default     = "gNxpQfP4DJcHHVgGJt4H"
 }
 
 variable "secret_key" {
   type        = string
   sensitive   = true
   description = "The secret key for the IAM root user"
-  default     = "FOAgCOw4iiopl5ox30GcaOZyEMVKvMDaVMQYaXQO"
 }
 
 variable "region" {

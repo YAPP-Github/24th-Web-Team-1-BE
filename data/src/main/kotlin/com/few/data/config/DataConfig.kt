@@ -27,4 +27,9 @@ class DataConfig {
     fun dataSource(): DataSource {
         return DataSourceBuilder.create().build()
     }
+
+    @Bean(name = [DataConfig.BEAN_NAME_PREFIX + "TransactionManager"])
+    fun transactionManager(dataSource: DataSource): PlatformTransactionManager {
+        return DataSourceTransactionManager(dataSource)
+    }
 }

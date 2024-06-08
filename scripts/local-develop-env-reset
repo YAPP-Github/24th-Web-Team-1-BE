@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cd ../resources/local-develop-environment
+docker-compose down
+docker-compose up -d
+sleep 10

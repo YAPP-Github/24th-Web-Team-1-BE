@@ -1,0 +1,25 @@
+version: '3.1'
+services:
+  few-mysql:
+    container_name: few-mysql8
+    image: mysql/mysql-server:8.0.27
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_HOST=%
+      - TZ=Asia/Seoul
+    command: [ "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci", "--lower_case_table_names=1", "--max_connections=2048", "--wait_timeout=3600" ]
+    ports:
+      - "13306:3306"
+    volumes:
+      - ./mysql-init.d:/docker-entrypoint-initdb.d
+
+  few-adminer: # mysql web admin
+    container_name: few-adminer
+    image: adminer:4
+    ports:
+      - "18080:8080"
+    environment:
+      - ADMINER_DEFAULT_SERVER=few-mysql8
+      - ADMINER_DESIGN=nette
+      - ADMINER_PLUGINS=tables-filter tinymce
+

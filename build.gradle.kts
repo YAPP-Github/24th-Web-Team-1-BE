@@ -79,7 +79,7 @@ subprojects {
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
         implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-
+        
         /** test **/
         testImplementation("org.springframework.boot:spring-boot-starter-test")
         testImplementation("io.mockk:mockk:${DependencyVersion.MOCKK}")

@@ -11,6 +11,9 @@ object DependencyVersion {
     /** springDependencyManagementVersion */
     const val SPRING_DEPENDENCY_MANAGEMENT = "1.1.5"
 
+    /** flyway */
+    const val FLYWAY = "9.16.0"
+
     /** test */
     const val MOCKK = "1.13.9"
     const val KOTEST = "5.8.0"

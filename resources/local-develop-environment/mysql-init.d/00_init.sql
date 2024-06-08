@@ -9,5 +9,5 @@ GRANT ALL PRIVILEGES ON *.* TO
     'few-local'@'%';
 
 CREATE
-    DATABASE few DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+    DATABASE api DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE

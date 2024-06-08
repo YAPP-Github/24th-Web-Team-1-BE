@@ -15,3 +15,25 @@ dependencies {
     implementation("org.flywaydb:flyway-core:${DependencyVersion.FLYWAY}")
     implementation("org.flywaydb:flyway-mysql")
 }
+
+/** copy data migration */
+tasks.create("copyDataMigration") {
+    doLast {
+        val root = rootDir
+        val flyWayResourceDir = "/db/migration/entity"
+        val dataMigrationDir = "$root/data/$flyWayResourceDir"
+        File(dataMigrationDir).walkTopDown().forEach {
+            if (it.isFile) {
+                it.copyTo(
+                    File("${project.projectDir}/src/main/resources$flyWayResourceDir/${it.name}"),
+                    true
+                )
+            }
+        }
+    }
+}
+
+/** copy data migration before compile kotlin */
+tasks.getByName("compileKotlin") {
+    dependsOn("copyDataMigration")
+}

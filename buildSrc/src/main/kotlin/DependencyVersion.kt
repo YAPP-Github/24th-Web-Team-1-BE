@@ -11,9 +11,6 @@ object DependencyVersion {
     /** springDependencyManagementVersion */
     const val SPRING_DEPENDENCY_MANAGEMENT = "1.1.5"
 
-    /** log */
-    const val LOGBACK_ENCODER = "7.4"
-
     /** test */
     const val MOCKK = "1.13.9"
     const val KOTEST = "5.8.0"

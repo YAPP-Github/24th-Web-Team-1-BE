@@ -14,9 +14,6 @@ object DependencyVersion {
     /** flyway */
     const val FLYWAY = "9.16.0"
 
-    /** log */
-    const val LOGBACK_ENCODER = "7.4"
-
     /** test */
     const val MOCKK = "1.13.9"
     const val KOTEST = "5.8.0"

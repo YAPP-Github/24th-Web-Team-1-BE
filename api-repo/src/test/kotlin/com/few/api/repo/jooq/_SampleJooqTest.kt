@@ -1,0 +1,190 @@
+package com.few.api.repo.jooq
+
+import jooq.jooq_dsl.tables.Users
+import org.jooq.DSLContext
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.dao.DuplicateKeyException
+import org.springframework.test.annotation.Rollback
+import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
+
+class _SampleJooqTest : JooqTestSpec() {
+
+    private val log: org.slf4j.Logger = LoggerFactory.getLogger(_SampleJooqTest::class.java)
+
+    @Autowired
+    private lateinit var dslContext: DSLContext
+
+    companion object {
+        const val EMAIL = "test1@gmail.com"
+        const val TYPECD: Byte = 1
+    }
+
+    @BeforeEach
+    fun setUp() {
+        log.debug("===== start setUp =====")
+        dslContext.deleteFrom(Users.USERS).execute()
+        dslContext.insertInto(Users.USERS)
+            .set(Users.USERS.EMAIL, EMAIL)
+            .set(Users.USERS.TYPE_CD, TYPECD)
+            .execute()
+        log.debug("===== finish setUp =====")
+    }
+
+    @Test
+    @Transactional
+    fun `새로운 정보를 저장합니다`() {
+        // given
+        val email = "test2@gmail.com"
+        val typeCd: Byte = 1
+
+        // when
+        val result = dslContext.insertInto(Users.USERS)
+            .set(Users.USERS.EMAIL, email)
+            .set(Users.USERS.TYPE_CD, typeCd)
+            .execute()
+
+        // then
+        assert(result > 0)
+    }
+
+    @Test
+    @Transactional
+    fun `이메일이 중복되는 경우 저장에 실패합니다`() {
+        // when & then
+        assertThrows<DuplicateKeyException> {
+            dslContext.insertInto(Users.USERS)
+                .set(Users.USERS.EMAIL, EMAIL)
+                .set(Users.USERS.TYPE_CD, TYPECD)
+                .execute()
+        }
+    }
+
+    @Test
+    @Transactional
+    fun `이메일 값을 입력하지 않은면 저장에 실패합니다`() {
+        // when & then
+        assertThrows<DataIntegrityViolationException> {
+            dslContext.insertInto(Users.USERS)
+                .set(Users.USERS.TYPE_CD, TYPECD)
+                .execute()
+        }
+    }
+
+    @Test
+    @Transactional
+    fun `타입 코드 값을 입력하지 않은면 저장에 실패합니다`() {
+        // when & then
+        assertThrows<DataIntegrityViolationException> {
+            dslContext.insertInto(Users.USERS)
+                .set(Users.USERS.EMAIL, EMAIL)
+                .execute()
+        }
+    }
+
+    @Test
+    fun `이메일 일치 조건을 통해 정보를 조회합니다`() {
+        // when
+        val result = dslContext.selectFrom(Users.USERS)
+            .where(Users.USERS.EMAIL.eq(EMAIL))
+            .and(Users.USERS.DELETED_AT.isNull())
+            .fetchOne()
+
+        // then
+        assert(result != null)
+        assert(result!!.email == EMAIL)
+        assert(result.typeCd == TYPECD)
+    }
+
+    @Test
+    fun `이메일 불일치 조건을 통해 유저를 조회합니다`() {
+        // when
+        val result = dslContext.selectFrom(Users.USERS)
+            .where(Users.USERS.EMAIL.ne("test2@gmail.com"))
+            .and(Users.USERS.DELETED_AT.isNull())
+            .fetch()
+
+        // then
+        assert(result.isNotEmpty())
+    }
+
+    @Test
+    @Transactional
+    fun `이메일을 수정합니다`() {
+        // given
+        val newEmail = "test2@gmail.com"
+
+        // when
+        val update = dslContext.update(Users.USERS)
+            .set(Users.USERS.EMAIL, newEmail)
+            .where(Users.USERS.EMAIL.eq(EMAIL))
+            .and(Users.USERS.DELETED_AT.isNull())
+            .execute()
+
+        val result = dslContext.selectFrom(Users.USERS)
+            .where(Users.USERS.EMAIL.eq(newEmail))
+            .and(Users.USERS.DELETED_AT.isNull())
+            .fetchOne()
+
+        // then
+        assert(update > 0)
+        assert(result != null)
+        assert(result!!.email == newEmail)
+    }
+
+    @Test
+    @Transactional
+    fun `타입 코드를 수정합니다`() {
+        // given
+        val newTypeCd: Byte = 2
+
+        // when
+        val update = dslContext.update(Users.USERS)
+            .set(Users.USERS.TYPE_CD, newTypeCd)
+            .where(Users.USERS.EMAIL.eq(EMAIL))
+            .and(Users.USERS.DELETED_AT.isNull())
+            .execute()
+
+        val result = dslContext.selectFrom(Users.USERS)
+            .where(Users.USERS.EMAIL.eq(EMAIL))
+            .and(Users.USERS.DELETED_AT.isNull())
+            .fetchOne()
+
+        // then
+        assert(update > 0)
+        assert(result != null)
+        assert(result!!.typeCd == newTypeCd)
+    }
+
+    @Test
+    @Rollback(false)
+    @Transactional
+    fun `소프트 삭제를 수행합니다`() {
+        // given
+        val deleteTarget = dslContext.selectFrom(Users.USERS)
+            .where(Users.USERS.EMAIL.eq(EMAIL))
+            .and(Users.USERS.DELETED_AT.isNull())
+            .fetchOne()
+
+        // when
+        val softDelete = dslContext.update(Users.USERS)
+            .set(Users.USERS.DELETED_AT, LocalDateTime.now())
+            .where(Users.USERS.EMAIL.eq(EMAIL))
+            .and(Users.USERS.DELETED_AT.isNull())
+            .execute()
+
+        val result = dslContext.selectFrom(Users.USERS)
+            .where(Users.USERS.EMAIL.eq(EMAIL))
+            .fetchOne()
+
+        // then
+        assert(deleteTarget != null)
+        assert(softDelete > 0)
+        assert(result != null)
+    }
+}

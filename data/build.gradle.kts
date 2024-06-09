@@ -15,4 +15,3 @@ dependencies {
     implementation("org.flywaydb:flyway-core:${DependencyVersion.FLYWAY}")
     implementation("org.flywaydb:flyway-mysql")
 }
-

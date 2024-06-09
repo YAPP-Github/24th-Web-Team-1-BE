@@ -119,3 +119,24 @@ tasks.create("buildDockerImage") {
         }
     }
 }
+
+/** git hooks */
+tasks.register("gitExecutableHooks") {
+    doLast {
+        Runtime.getRuntime().exec("chmod -R +x .git/hooks/").waitFor()
+    }
+}
+
+tasks.register<Copy>("installGitHooks") {
+    val scriptDir = "${rootProject.rootDir}/scripts"
+    from("$scriptDir/pre-commit")
+    into("${rootProject.rootDir}/.git/hooks")
+}
+
+tasks.named("gitExecutableHooks").configure {
+    dependsOn("installGitHooks")
+}
+
+tasks.named("clean").configure {
+    dependsOn("gitExecutableHooks")
+}

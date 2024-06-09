@@ -1,5 +1,5 @@
 -- 작가 및 유저
-CREATE TABLE user
+CREATE TABLE users
 (
     id         BIGINT       NOT NULL AUTO_INCREMENT,
     email      VARCHAR(255) NOT NULL,

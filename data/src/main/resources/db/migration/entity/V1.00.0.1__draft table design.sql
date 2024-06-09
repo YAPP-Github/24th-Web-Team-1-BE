@@ -3,7 +3,7 @@ CREATE TABLE user
 (
     id         BIGINT       NOT NULL AUTO_INCREMENT,
     email      VARCHAR(255) NOT NULL,
-    type       TINYINT      NOT NULL,
+    type_cd    TINYINT      NOT NULL,
     created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL DEFAULT NULL,
     PRIMARY KEY (id),
@@ -35,12 +35,12 @@ CREATE TABLE article_ifo
 -- 학습지
 CREATE TABLE workbook
 (
-    id         BIGINT       NOT NULL AUTO_INCREMENT,
-    name       VARCHAR(255) NOT NULL,
-    title      VARCHAR(255) NOT NULL,
-    category   TINYINT      NOT NULL,
-    created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP NULL DEFAULT NULL,
+    id          BIGINT       NOT NULL AUTO_INCREMENT,
+    name        VARCHAR(255) NOT NULL,
+    title       VARCHAR(255) NOT NULL,
+    category_cd TINYINT      NOT NULL,
+    created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at  TIMESTAMP NULL DEFAULT NULL,
     PRIMARY KEY (id)
 );
 
@@ -75,6 +75,7 @@ CREATE TABLE problem
     content     JSON         NOT NULL,
     answer      TINYINT      NOT NULL,
     explanation VARCHAR(255) NOT NULL,
+    creator_id  BIGINT       NOT NULL,
     created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at  TIMESTAMP NULL DEFAULT NULL,
     PRIMARY KEY (id),
@@ -84,12 +85,13 @@ CREATE TABLE problem
 -- 풀이 히스토리
 CREATE TABLE solve_history
 (
-    id              BIGINT    NOT NULL AUTO_INCREMENT,
-    problem_id      BIGINT    NOT NULL,
-    user_id         BIGINT    NOT NULL,
-    selected_answer TINYINT   NOT NULL,
-    created_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at      TIMESTAMP NULL DEFAULT NULL,
+    id         BIGINT    NOT NULL AUTO_INCREMENT,
+    problem_id BIGINT    NOT NULL,
+    user_id    BIGINT    NOT NULL,
+    choice_ans TINYINT   NOT NULL,
+    is_solved  bit(1)    NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL DEFAULT NULL,
     PRIMARY KEY (id),
     UNIQUE (problem_id, user_id)
 );

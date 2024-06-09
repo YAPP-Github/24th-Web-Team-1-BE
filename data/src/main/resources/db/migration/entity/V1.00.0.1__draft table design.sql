@@ -19,16 +19,17 @@ CREATE TABLE article_mst
     content    TEXT         NOT NULL,
     created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL DEFAULT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    UNIQUE (user_id)
 );
 
 -- 아티클 인포
 CREATE TABLE article_ifo
 (
-    article_id BIGINT NOT NULL,
-    content    TEXT   NOT NULL,
-    deleted_at TIMESTAMP NULL DEFAULT NULL,
-    PRIMARY KEY (article_id)
+    article_mst_id BIGINT NOT NULL,
+    content        TEXT   NOT NULL,
+    deleted_at     TIMESTAMP NULL DEFAULT NULL,
+    PRIMARY KEY (article_mst_id)
 );
 
 -- 학습지
@@ -50,7 +51,8 @@ CREATE TABLE mapping_user_workbook
     user_id     BIGINT NOT NULL,
     workbook_id BIGINT NOT NULL,
     deleted_at  TIMESTAMP NULL DEFAULT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    UNIQUE (workbook_id, user_id)
 );
 
 -- 학습지-아티클 매핑테이블(다대다)
@@ -60,7 +62,8 @@ CREATE TABLE mapping_workbook_article
     workbook_id BIGINT NOT NULL,
     article_id  BIGINT NOT NULL,
     deleted_at  TIMESTAMP NULL DEFAULT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    UNIQUE (article_id, workbook_id)
 );
 
 -- 문제, 정답, 해설(메타데이터)
@@ -74,7 +77,8 @@ CREATE TABLE problem
     explanation VARCHAR(255) NOT NULL,
     created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at  TIMESTAMP NULL DEFAULT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    UNIQUE (article_id)
 );
 
 -- 풀이 히스토리
@@ -86,7 +90,8 @@ CREATE TABLE solve_history
     selected_answer TINYINT   NOT NULL,
     created_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at      TIMESTAMP NULL DEFAULT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    UNIQUE (problem_id, user_id)
 );
 
 -- 구독
@@ -98,5 +103,7 @@ CREATE TABLE subscription
     target_workbook_id BIGINT    NOT NULL,
     created_at         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at         TIMESTAMP NULL DEFAULT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    UNIQUE (user_id, target_user_id),
+    UNIQUE (user_id, target_workbook_id)
 );

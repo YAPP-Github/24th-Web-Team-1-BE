@@ -13,12 +13,13 @@ CREATE TABLE users
 -- 아티클 마스터
 CREATE TABLE article_mst
 (
-    id          BIGINT       NOT NULL AUTO_INCREMENT,
-    user_id     BIGINT       NOT NULL,
-    title       VARCHAR(255) NOT NULL,
-    category_cd TINYINT      NOT NULL,
-    created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at  TIMESTAMP NULL DEFAULT NULL,
+    id             BIGINT       NOT NULL AUTO_INCREMENT,
+    user_id        BIGINT       NOT NULL,
+    main_image_url VARCHAR(255) NOT NULL,
+    title          VARCHAR(255) NOT NULL,
+    category_cd    TINYINT      NOT NULL,
+    created_at     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at     TIMESTAMP NULL DEFAULT NULL,
     PRIMARY KEY (id)
 );
 

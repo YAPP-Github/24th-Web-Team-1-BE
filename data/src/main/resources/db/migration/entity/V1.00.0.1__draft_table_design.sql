@@ -36,7 +36,6 @@ CREATE TABLE article_ifo
 CREATE TABLE workbook
 (
     id          BIGINT       NOT NULL AUTO_INCREMENT,
-    name        VARCHAR(255) NOT NULL,
     title       VARCHAR(255) NOT NULL,
     category_cd TINYINT      NOT NULL,
     description VARCHAR(255) NOT NULL,

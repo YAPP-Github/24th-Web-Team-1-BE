@@ -93,8 +93,7 @@ CREATE TABLE solve_history
     is_solved  bit(1)    NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL DEFAULT NULL,
-    PRIMARY KEY (id),
-    UNIQUE (problem_id, user_id)
+    PRIMARY KEY (id)
 );
 
 -- 구독

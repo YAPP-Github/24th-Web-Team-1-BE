@@ -16,7 +16,6 @@ CREATE TABLE article_mst
     id          BIGINT       NOT NULL AUTO_INCREMENT,
     user_id     BIGINT       NOT NULL,
     title       VARCHAR(255) NOT NULL,
-    content     TEXT         NOT NULL,
     category_cd TINYINT      NOT NULL,
     created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at  TIMESTAMP NULL DEFAULT NULL,

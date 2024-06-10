@@ -36,6 +36,10 @@ dependencies {
     implementation("org.jooq:jooq-meta:${DependencyVersion.JOOQ}")
     implementation("org.jooq:jooq-codegen:${DependencyVersion.JOOQ}")
     jooqCodegen("org.jooq:jooq-meta-extensions:${DependencyVersion.JOOQ}")
+
+    /** test container */
+    implementation(platform("org.testcontainers:testcontainers-bom:${DependencyVersion.TEST_CONTAINER}"))
+    testImplementation("org.testcontainers:mysql")
 }
 
 /** copy data migration */

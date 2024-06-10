@@ -7,7 +7,7 @@ CREATE TABLE users
     created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL DEFAULT NULL,
     PRIMARY KEY (id),
-    UNIQUE (deleted_at, email)
+    UNIQUE (email)
 );
 
 -- 아티클 마스터
@@ -21,7 +21,7 @@ CREATE TABLE article_mst
     created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at  TIMESTAMP NULL DEFAULT NULL,
     PRIMARY KEY (id),
-    UNIQUE (deleted_at, user_id)
+    UNIQUE (user_id)
 );
 
 -- 아티클 인포
@@ -30,8 +30,7 @@ CREATE TABLE article_ifo
     article_mst_id BIGINT NOT NULL,
     content        TEXT   NOT NULL,
     deleted_at     TIMESTAMP NULL DEFAULT NULL,
-    PRIMARY KEY (article_mst_id),
-    UNIQUE (deleted_at)
+    PRIMARY KEY (article_mst_id)
 );
 
 -- 학습지
@@ -44,8 +43,7 @@ CREATE TABLE workbook
     description VARCHAR(255) NOT NULL,
     created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at  TIMESTAMP NULL DEFAULT NULL,
-    PRIMARY KEY (id),
-    UNIQUE (deleted_at)
+    PRIMARY KEY (id)
 );
 
 -- 작가-학습지 매핑테이블(다대다)
@@ -56,7 +54,7 @@ CREATE TABLE mapping_user_workbook
     workbook_id BIGINT NOT NULL,
     deleted_at  TIMESTAMP NULL DEFAULT NULL,
     PRIMARY KEY (id),
-    UNIQUE (deleted_at, workbook_id, user_id)
+    UNIQUE (workbook_id, user_id)
 );
 
 -- 학습지-아티클 매핑테이블(다대다)
@@ -67,7 +65,7 @@ CREATE TABLE mapping_workbook_article
     article_id  BIGINT NOT NULL,
     deleted_at  TIMESTAMP NULL DEFAULT NULL,
     PRIMARY KEY (id),
-    UNIQUE (deleted_at, article_id, workbook_id)
+    UNIQUE (article_id, workbook_id)
 );
 
 -- 문제, 정답, 해설(메타데이터)
@@ -83,7 +81,7 @@ CREATE TABLE problem
     created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at  TIMESTAMP NULL DEFAULT NULL,
     PRIMARY KEY (id),
-    UNIQUE (deleted_at, article_id)
+    UNIQUE (article_id)
 );
 
 -- 풀이 히스토리
@@ -97,7 +95,7 @@ CREATE TABLE solve_history
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL DEFAULT NULL,
     PRIMARY KEY (id),
-    UNIQUE (deleted_at, problem_id, user_id)
+    UNIQUE (problem_id, user_id)
 );
 
 -- 구독
@@ -110,6 +108,17 @@ CREATE TABLE subscription
     created_at         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at         TIMESTAMP NULL DEFAULT NULL,
     PRIMARY KEY (id),
-    UNIQUE (deleted_at, user_id, target_user_id),
-    UNIQUE (deleted_at, user_id, target_workbook_id)
+    UNIQUE (user_id, target_user_id),
+    UNIQUE (user_id, target_workbook_id)
 );
+
+-- 인덱스 추가
+CREATE INDEX users_idx0 ON users(deleted_at)
+CREATE INDEX article_mst_idx0 ON article_mst(deleted_at)
+CREATE INDEX article_ifo_idx0 ON article_ifo(deleted_at)
+CREATE INDEX workbook_idx0 ON workbook(deleted_at)
+CREATE INDEX mapping_user_workbook_idx0 ON mapping_user_workbook(deleted_at)
+CREATE INDEX mapping_workbook_article_idx0 ON mapping_workbook_article(deleted_at)
+CREATE INDEX problem_idx0 ON problem(deleted_at)
+CREATE INDEX solve_history_idx0 ON solve_history(deleted_at)
+CREATE INDEX subscription_idx0 ON subscription(deleted_at)

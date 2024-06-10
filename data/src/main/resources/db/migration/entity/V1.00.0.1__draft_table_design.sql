@@ -35,12 +35,13 @@ CREATE TABLE article_ifo
 -- 학습지
 CREATE TABLE workbook
 (
-    id          BIGINT       NOT NULL AUTO_INCREMENT,
-    title       VARCHAR(255) NOT NULL,
-    category_cd TINYINT      NOT NULL,
-    description VARCHAR(255) NOT NULL,
-    created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at  TIMESTAMP NULL DEFAULT NULL,
+    id             BIGINT       NOT NULL AUTO_INCREMENT,
+    title          VARCHAR(255) NOT NULL,
+    main_image_url VARCHAR(255) NOT NULL,
+    category_cd    TINYINT      NOT NULL,
+    description    VARCHAR(255) NOT NULL,
+    created_at     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at     TIMESTAMP NULL DEFAULT NULL,
     PRIMARY KEY (id)
 );
 
@@ -111,12 +112,12 @@ CREATE TABLE subscription
 );
 
 -- 인덱스 추가
-CREATE INDEX users_idx0 ON users(deleted_at)
-CREATE INDEX article_mst_idx0 ON article_mst(deleted_at)
-CREATE INDEX article_ifo_idx0 ON article_ifo(deleted_at)
-CREATE INDEX workbook_idx0 ON workbook(deleted_at)
-CREATE INDEX mapping_user_workbook_idx0 ON mapping_user_workbook(deleted_at)
-CREATE INDEX mapping_workbook_article_idx0 ON mapping_workbook_article(deleted_at)
-CREATE INDEX problem_idx0 ON problem(deleted_at)
-CREATE INDEX solve_history_idx0 ON solve_history(deleted_at)
-CREATE INDEX subscription_idx0 ON subscription(deleted_at)
+CREATE INDEX users_idx0 ON users (deleted_at)
+CREATE INDEX article_mst_idx0 ON article_mst (deleted_at)
+CREATE INDEX article_ifo_idx0 ON article_ifo (deleted_at)
+CREATE INDEX workbook_idx0 ON workbook (deleted_at)
+CREATE INDEX mapping_user_workbook_idx0 ON mapping_user_workbook (deleted_at)
+CREATE INDEX mapping_workbook_article_idx0 ON mapping_workbook_article (deleted_at)
+CREATE INDEX problem_idx0 ON problem (deleted_at)
+CREATE INDEX solve_history_idx0 ON solve_history (deleted_at)
+CREATE INDEX subscription_idx0 ON subscription (deleted_at)

@@ -19,8 +19,7 @@ CREATE TABLE article_mst
     category_cd TINYINT      NOT NULL,
     created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at  TIMESTAMP NULL DEFAULT NULL,
-    PRIMARY KEY (id),
-    UNIQUE (user_id)
+    PRIMARY KEY (id)
 );
 
 -- 아티클 인포
@@ -80,8 +79,7 @@ CREATE TABLE problem
     creator_id  BIGINT       NOT NULL,
     created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at  TIMESTAMP NULL DEFAULT NULL,
-    PRIMARY KEY (id),
-    UNIQUE (article_id)
+    PRIMARY KEY (id)
 );
 
 -- 풀이 히스토리
@@ -111,7 +109,8 @@ CREATE TABLE subscription
     UNIQUE (user_id, target_workbook_id)
 );
 
--- 인덱스 추가
+-- [인덱스 추가] --
+-- 공통 인덱스: deleted_at 인덱스
 CREATE INDEX users_idx0 ON users (deleted_at)
 CREATE INDEX article_mst_idx0 ON article_mst (deleted_at)
 CREATE INDEX article_ifo_idx0 ON article_ifo (deleted_at)
@@ -121,3 +120,9 @@ CREATE INDEX mapping_workbook_article_idx0 ON mapping_workbook_article (deleted_
 CREATE INDEX problem_idx0 ON problem (deleted_at)
 CREATE INDEX solve_history_idx0 ON solve_history (deleted_at)
 CREATE INDEX subscription_idx0 ON subscription (deleted_at)
+
+-- problem_idx1: problem 테이블에서 article_id 기반으로 문제 조회시 사용
+CREATE INDEX problem_idx1 ON problem (article_id)
+
+-- article_mst_idx1: 작가가 작성한 아티클 조회시 사용
+CREATE INDEX article_mst_idx1 ON article_mst (user_id)

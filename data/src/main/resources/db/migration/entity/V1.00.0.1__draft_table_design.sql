@@ -62,6 +62,7 @@ CREATE TABLE mapping_workbook_article
     id          BIGINT NOT NULL AUTO_INCREMENT,
     workbook_id BIGINT NOT NULL,
     article_id  BIGINT NOT NULL,
+    day_col     int    NOT NULL,
     deleted_at  TIMESTAMP NULL DEFAULT NULL,
     PRIMARY KEY (id),
     UNIQUE (article_id, workbook_id)

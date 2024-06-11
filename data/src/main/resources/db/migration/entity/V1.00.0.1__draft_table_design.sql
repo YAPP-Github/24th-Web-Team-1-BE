@@ -75,7 +75,7 @@ CREATE TABLE problem
     article_id  BIGINT       NOT NULL,
     title       VARCHAR(255) NOT NULL,
     content     JSON         NOT NULL,
-    answer      TINYINT      NOT NULL,
+    answer      VARCHAR(255) NOT NULL,
     explanation VARCHAR(255) NOT NULL,
     creator_id  BIGINT       NOT NULL,
     created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,

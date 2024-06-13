@@ -1,3 +1,6 @@
+
+import org.hidetake.gradle.swagger.generator.GenerateSwaggerUI
+
 dependencies {
     /** spring starter */
     implementation("org.springframework.boot:spring-boot-starter-webflux")
@@ -33,4 +36,21 @@ postman {
     baseUrl = "http://localhost:8080"
     outputDirectory = "src/main/resources/static/"
     outputFileNamePrefix = "postman"
+}
+
+swaggerSources {
+    register("api") {
+        setInputFile(file("$projectDir/src/main/resources/static/openapi3.yaml"))
+    }
+}
+
+tasks.withType(GenerateSwaggerUI::class) {
+    dependsOn("openapi3")
+}
+
+tasks.register("generateApiSwaggerUI", Copy::class) {
+    dependsOn("generateSwaggerUI")
+    val generateSwaggerUISampleTask = tasks.named("generateSwaggerUIApi", GenerateSwaggerUI::class).get()
+    from(generateSwaggerUISampleTask.outputDir)
+    into("$projectDir/src/main/resources/static/docs/swagger-ui")
 }

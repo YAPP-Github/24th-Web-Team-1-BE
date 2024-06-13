@@ -1,7 +1,8 @@
 package com.few.api.repo.jooq
 
-import jooq.jooq_dsl.tables.Users
+import jooq.jooq_dsl.tables.Member
 import org.jooq.DSLContext
+import org.jooq.JSON
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -28,10 +29,10 @@ class _SampleJooqTest : JooqTestSpec() {
     @BeforeEach
     fun setUp() {
         log.debug("===== start setUp =====")
-        dslContext.deleteFrom(Users.USERS).execute()
-        dslContext.insertInto(Users.USERS)
-            .set(Users.USERS.EMAIL, EMAIL)
-            .set(Users.USERS.TYPE_CD, TYPECD)
+        dslContext.deleteFrom(Member.MEMBER).execute()
+        dslContext.insertInto(Member.MEMBER)
+            .set(Member.MEMBER.EMAIL, EMAIL)
+            .set(Member.MEMBER.TYPE_CD, TYPECD)
             .execute()
         log.debug("===== finish setUp =====")
     }
@@ -44,9 +45,9 @@ class _SampleJooqTest : JooqTestSpec() {
         val typeCd: Byte = 1
 
         // when
-        val result = dslContext.insertInto(Users.USERS)
-            .set(Users.USERS.EMAIL, email)
-            .set(Users.USERS.TYPE_CD, typeCd)
+        val result = dslContext.insertInto(Member.MEMBER)
+            .set(Member.MEMBER.EMAIL, email)
+            .set(Member.MEMBER.TYPE_CD, typeCd)
             .execute()
 
         // then
@@ -58,9 +59,9 @@ class _SampleJooqTest : JooqTestSpec() {
     fun `이메일이 중복되는 경우 저장에 실패합니다`() {
         // when & then
         assertThrows<DuplicateKeyException> {
-            dslContext.insertInto(Users.USERS)
-                .set(Users.USERS.EMAIL, EMAIL)
-                .set(Users.USERS.TYPE_CD, TYPECD)
+            dslContext.insertInto(Member.MEMBER)
+                .set(Member.MEMBER.EMAIL, EMAIL)
+                .set(Member.MEMBER.TYPE_CD, TYPECD)
                 .execute()
         }
     }
@@ -70,8 +71,8 @@ class _SampleJooqTest : JooqTestSpec() {
     fun `이메일 값을 입력하지 않은면 저장에 실패합니다`() {
         // when & then
         assertThrows<DataIntegrityViolationException> {
-            dslContext.insertInto(Users.USERS)
-                .set(Users.USERS.TYPE_CD, TYPECD)
+            dslContext.insertInto(Member.MEMBER)
+                .set(Member.MEMBER.TYPE_CD, TYPECD)
                 .execute()
         }
     }
@@ -81,8 +82,8 @@ class _SampleJooqTest : JooqTestSpec() {
     fun `타입 코드 값을 입력하지 않은면 저장에 실패합니다`() {
         // when & then
         assertThrows<DataIntegrityViolationException> {
-            dslContext.insertInto(Users.USERS)
-                .set(Users.USERS.EMAIL, EMAIL)
+            dslContext.insertInto(Member.MEMBER)
+                .set(Member.MEMBER.EMAIL, EMAIL)
                 .execute()
         }
     }
@@ -90,23 +91,26 @@ class _SampleJooqTest : JooqTestSpec() {
     @Test
     fun `이메일 일치 조건을 통해 정보를 조회합니다`() {
         // when
-        val result = dslContext.selectFrom(Users.USERS)
-            .where(Users.USERS.EMAIL.eq(EMAIL))
-            .and(Users.USERS.DELETED_AT.isNull())
+        val result = dslContext.selectFrom(Member.MEMBER)
+            .where(Member.MEMBER.EMAIL.eq(EMAIL))
+            .and(Member.MEMBER.DELETED_AT.isNull())
             .fetchOne()
 
         // then
         assert(result != null)
         assert(result!!.email == EMAIL)
         assert(result.typeCd == TYPECD)
+        assert(result.description.equals(JSON.json("{}")))
+        assert(result.createdAt != null)
+        assert(result.deletedAt == null)
     }
 
     @Test
     fun `이메일 불일치 조건을 통해 유저를 조회합니다`() {
         // when
-        val result = dslContext.selectFrom(Users.USERS)
-            .where(Users.USERS.EMAIL.ne("test2@gmail.com"))
-            .and(Users.USERS.DELETED_AT.isNull())
+        val result = dslContext.selectFrom(Member.MEMBER)
+            .where(Member.MEMBER.EMAIL.ne("test2@gmail.com"))
+            .and(Member.MEMBER.DELETED_AT.isNull())
             .fetch()
 
         // then
@@ -120,15 +124,15 @@ class _SampleJooqTest : JooqTestSpec() {
         val newEmail = "test2@gmail.com"
 
         // when
-        val update = dslContext.update(Users.USERS)
-            .set(Users.USERS.EMAIL, newEmail)
-            .where(Users.USERS.EMAIL.eq(EMAIL))
-            .and(Users.USERS.DELETED_AT.isNull())
+        val update = dslContext.update(Member.MEMBER)
+            .set(Member.MEMBER.EMAIL, newEmail)
+            .where(Member.MEMBER.EMAIL.eq(EMAIL))
+            .and(Member.MEMBER.DELETED_AT.isNull())
             .execute()
 
-        val result = dslContext.selectFrom(Users.USERS)
-            .where(Users.USERS.EMAIL.eq(newEmail))
-            .and(Users.USERS.DELETED_AT.isNull())
+        val result = dslContext.selectFrom(Member.MEMBER)
+            .where(Member.MEMBER.EMAIL.eq(newEmail))
+            .and(Member.MEMBER.DELETED_AT.isNull())
             .fetchOne()
 
         // then
@@ -144,15 +148,15 @@ class _SampleJooqTest : JooqTestSpec() {
         val newTypeCd: Byte = 2
 
         // when
-        val update = dslContext.update(Users.USERS)
-            .set(Users.USERS.TYPE_CD, newTypeCd)
-            .where(Users.USERS.EMAIL.eq(EMAIL))
-            .and(Users.USERS.DELETED_AT.isNull())
+        val update = dslContext.update(Member.MEMBER)
+            .set(Member.MEMBER.TYPE_CD, newTypeCd)
+            .where(Member.MEMBER.EMAIL.eq(EMAIL))
+            .and(Member.MEMBER.DELETED_AT.isNull())
             .execute()
 
-        val result = dslContext.selectFrom(Users.USERS)
-            .where(Users.USERS.EMAIL.eq(EMAIL))
-            .and(Users.USERS.DELETED_AT.isNull())
+        val result = dslContext.selectFrom(Member.MEMBER)
+            .where(Member.MEMBER.EMAIL.eq(EMAIL))
+            .and(Member.MEMBER.DELETED_AT.isNull())
             .fetchOne()
 
         // then
@@ -166,20 +170,20 @@ class _SampleJooqTest : JooqTestSpec() {
     @Transactional
     fun `소프트 삭제를 수행합니다`() {
         // given
-        val deleteTarget = dslContext.selectFrom(Users.USERS)
-            .where(Users.USERS.EMAIL.eq(EMAIL))
-            .and(Users.USERS.DELETED_AT.isNull())
+        val deleteTarget = dslContext.selectFrom(Member.MEMBER)
+            .where(Member.MEMBER.EMAIL.eq(EMAIL))
+            .and(Member.MEMBER.DELETED_AT.isNull())
             .fetchOne()
 
         // when
-        val softDelete = dslContext.update(Users.USERS)
-            .set(Users.USERS.DELETED_AT, LocalDateTime.now())
-            .where(Users.USERS.EMAIL.eq(EMAIL))
-            .and(Users.USERS.DELETED_AT.isNull())
+        val softDelete = dslContext.update(Member.MEMBER)
+            .set(Member.MEMBER.DELETED_AT, LocalDateTime.now())
+            .where(Member.MEMBER.EMAIL.eq(EMAIL))
+            .and(Member.MEMBER.DELETED_AT.isNull())
             .execute()
 
-        val result = dslContext.selectFrom(Users.USERS)
-            .where(Users.USERS.EMAIL.eq(EMAIL))
+        val result = dslContext.selectFrom(Member.MEMBER)
+            .where(Member.MEMBER.EMAIL.eq(EMAIL))
             .fetchOne()
 
         // then

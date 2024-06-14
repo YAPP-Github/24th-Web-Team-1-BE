@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
+import com.few.api.web.controller.workbook.request.CancelSubWorkBookBody
 import com.few.api.web.controller.workbook.request.SubWorkBookBody
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -71,8 +72,8 @@ class WorkBookControllerTest : ControllerTestSpec() {
                     api.toIdentifier(),
                     ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
-                            .description(api.toApiDescription())
-                            .summary(api.toSummary())
+                            .description("학습지 Id를 입력하여 학습지 정보를 조회합니다.")
+                            .summary(api.toIdentifier())
                             .privateResource(false)
                             .deprecated(false)
                             .tag(TAG)
@@ -85,27 +86,31 @@ class WorkBookControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data")
                                             .fieldWithObject("data"),
                                         PayloadDocumentation.fieldWithPath("data.id")
-                                            .fieldWithNumber("id"),
-                                        PayloadDocumentation.fieldWithPath("data.name")
-                                            .fieldWithNumber("name"),
+                                            .fieldWithNumber("학습지 Id"),
                                         PayloadDocumentation.fieldWithPath("data.mainImageUrl")
-                                            .fieldWithString("mainImageUrl"),
+                                            .fieldWithString("학습지 대표 이미지 Url"),
                                         PayloadDocumentation.fieldWithPath("data.title")
-                                            .fieldWithString("title"),
+                                            .fieldWithString("학습지 제목"),
                                         PayloadDocumentation.fieldWithPath("data.description")
-                                            .fieldWithString("description"),
+                                            .fieldWithString("학습지 개요"),
                                         PayloadDocumentation.fieldWithPath("data.category")
-                                            .fieldWithString("category"),
+                                            .fieldWithString("학습지 카테고리"),
                                         PayloadDocumentation.fieldWithPath("data.createdAt")
-                                            .fieldWithString("createdAt"),
-                                        PayloadDocumentation.fieldWithPath("data.writerIds")
-                                            .fieldWithArray("writerIds"),
+                                            .fieldWithString("학습지 생성일시"),
+                                        PayloadDocumentation.fieldWithPath("data.writers[]")
+                                            .fieldWithArray("학습지 작가 목록"),
+                                        PayloadDocumentation.fieldWithPath("data.writers[].id")
+                                            .fieldWithNumber("학습지 작가 Id"),
+                                        PayloadDocumentation.fieldWithPath("data.writers[].name")
+                                            .fieldWithString("학습지 작가 이름"),
+                                        PayloadDocumentation.fieldWithPath("data.writers[].url")
+                                            .fieldWithString("학습지 작가 링크"),
                                         PayloadDocumentation.fieldWithPath("data.articles[]")
-                                            .fieldWithArray("articles"),
+                                            .fieldWithArray("학습지에 포함된 아티클 목록"),
                                         PayloadDocumentation.fieldWithPath("data.articles[].id")
-                                            .fieldWithNumber("articleId"),
+                                            .fieldWithNumber("학습지에 포함된 아티클 Id"),
                                         PayloadDocumentation.fieldWithPath("data.articles[].title")
-                                            .fieldWithString("articleTitle")
+                                            .fieldWithString("학습지에 포함된 아티클 제목")
                                     )
                                 )
                             )
@@ -138,8 +143,8 @@ class WorkBookControllerTest : ControllerTestSpec() {
                     api.toIdentifier(),
                     ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
-                            .description(api.toApiDescription())
-                            .summary(api.toSummary())
+                            .description("이메일을 입력하여 학습지를 구독합니다.")
+                            .summary(api.toIdentifier())
                             .privateResource(false)
                             .deprecated(false)
                             .tag(TAG)
@@ -156,7 +161,7 @@ class WorkBookControllerTest : ControllerTestSpec() {
     }
 
     @Test
-    @DisplayName("[DELETE] /api/v1/workbooks/{workbookId}/subs")
+    @DisplayName("[DELETE] /api/v1/workbooks/{workbookId}/csubs")
     fun cancelSubWorkBook() {
         // given
         val api = "CancelSubWorkBook"
@@ -164,19 +169,22 @@ class WorkBookControllerTest : ControllerTestSpec() {
             .path(BASE_URL)
             .toUriString()
         // set usecase mock
+        val body = objectMapper.writeValueAsString(CancelSubWorkBookBody(email = "test@gmail.com", opinion = "취소합니다."))
 
         // when
-        this.webTestClient.delete()
-            .uri("$uri/{workbookId}/subs", 1)
+        this.webTestClient.post()
+            .uri("$uri/{workbookId}/csubs", 1)
             .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
             .exchange().expectStatus().is2xxSuccessful()
             .expectBody().consumeWith(
                 WebTestClientRestDocumentation.document(
                     api.toIdentifier(),
                     ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
-                            .description(api.toApiDescription())
-                            .summary(api.toSummary())
+                            .description("학습지 구독을 취소합니다.")
+                            .summary(api.toIdentifier())
                             .privateResource(false)
                             .deprecated(false)
                             .tag(TAG)

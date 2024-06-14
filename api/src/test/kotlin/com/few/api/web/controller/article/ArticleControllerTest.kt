@@ -63,8 +63,8 @@ class ArticleControllerTest : ControllerTestSpec() {
                 WebTestClientRestDocumentation.document(
                     api.toIdentifier(),
                     ResourceDocumentation.resource(
-                        ResourceSnippetParameters.builder().description(api.toApiDescription())
-                            .summary(api.toSummary()).privateResource(false).deprecated(false)
+                        ResourceSnippetParameters.builder().description("아티클 Id로 아티클 조회")
+                            .summary(api.toIdentifier()).privateResource(false).deprecated(false)
                             .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))
                             .pathParameters(parameterWithName("articleId").description("학습지 Id"))
                             .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
@@ -73,21 +73,19 @@ class ArticleControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data")
                                             .fieldWithObject("data"),
                                         PayloadDocumentation.fieldWithPath("data.id")
-                                            .fieldWithNumber("id"),
+                                            .fieldWithNumber("아티클 Id"),
                                         PayloadDocumentation.fieldWithPath("data.userId")
-                                            .fieldWithNumber("userId"),
-                                        PayloadDocumentation.fieldWithPath("data.mainImageUrl")
-                                            .fieldWithString("mainImageUrl"),
+                                            .fieldWithNumber("작가 Id"),
                                         PayloadDocumentation.fieldWithPath("data.title")
-                                            .fieldWithString("title"),
+                                            .fieldWithString("아티클 제목"),
                                         PayloadDocumentation.fieldWithPath("data.content")
-                                            .fieldWithString("content"),
+                                            .fieldWithString("아티클 내용"),
                                         PayloadDocumentation.fieldWithPath("data.problemIds")
-                                            .fieldWithArray("problemIds"),
+                                            .fieldWithArray("아티클 문제 목록"),
                                         PayloadDocumentation.fieldWithPath("data.category")
-                                            .fieldWithString("category"),
+                                            .fieldWithString("아티클 카테고리"),
                                         PayloadDocumentation.fieldWithPath("data.createdAt")
-                                            .fieldWithString("createdAt")
+                                            .fieldWithString("아티클 생성일")
                                     )
                                 )
                             ).build()

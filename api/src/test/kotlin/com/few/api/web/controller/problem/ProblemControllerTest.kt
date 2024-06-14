@@ -65,8 +65,8 @@ class ProblemControllerTest : ControllerTestSpec() {
                     api.toIdentifier(),
                     ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
-                            .description(api.toApiDescription())
-                            .summary(api.toSummary())
+                            .description("문제 Id로 문제 조회")
+                            .summary(api.toIdentifier())
                             .privateResource(false)
                             .deprecated(false)
                             .tag(TAG)
@@ -79,15 +79,15 @@ class ProblemControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data")
                                             .fieldWithObject("data"),
                                         PayloadDocumentation.fieldWithPath("data.id")
-                                            .fieldWithNumber("id"),
+                                            .fieldWithNumber("문제 Id"),
                                         PayloadDocumentation.fieldWithPath("data.title")
-                                            .fieldWithString("title"),
+                                            .fieldWithString("문제"),
                                         PayloadDocumentation.fieldWithPath("data.contents[]")
-                                            .fieldWithArray("contents"),
+                                            .fieldWithArray("문제 선지 목록"),
                                         PayloadDocumentation.fieldWithPath("data.contents[].number")
-                                            .fieldWithNumber("contentNumber"),
+                                            .fieldWithNumber("문제 선지 번호"),
                                         PayloadDocumentation.fieldWithPath("data.contents[].content")
-                                            .fieldWithString("content")
+                                            .fieldWithString("문제 선지 내용")
                                     )
                                 )
                             )
@@ -120,8 +120,8 @@ class ProblemControllerTest : ControllerTestSpec() {
                     api.toIdentifier(),
                     ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
-                            .description(api.toApiDescription())
-                            .summary(api.toSummary())
+                            .description("문제 Id로 문제 정답 확인")
+                            .summary(api.toIdentifier())
                             .privateResource(false)
                             .deprecated(false)
                             .tag(TAG)
@@ -134,11 +134,11 @@ class ProblemControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data")
                                             .fieldWithObject("data"),
                                         PayloadDocumentation.fieldWithPath("data.explanation")
-                                            .fieldWithString("explanation"),
+                                            .fieldWithString("문제 해설"),
                                         PayloadDocumentation.fieldWithPath("data.answer")
-                                            .fieldWithString("answer"),
+                                            .fieldWithString("문제 정답"),
                                         PayloadDocumentation.fieldWithPath("data.isSolved")
-                                            .fieldWithBoolean("isSolved")
+                                            .fieldWithBoolean("문제 정답 여부")
                                     )
                                 )
                             )

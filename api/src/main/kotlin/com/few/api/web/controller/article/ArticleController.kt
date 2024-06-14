@@ -23,7 +23,6 @@ class ArticleController {
         val data = ReadArticleResponse(
             id = 1L,
             userId = 1L,
-            mainImageUrl = "mainImageUrl",
             title = "title",
             content = "content",
             problemIds = listOf(1L, 2L, 3L),

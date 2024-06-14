@@ -74,8 +74,14 @@ class ArticleControllerTest : ControllerTestSpec() {
                                             .fieldWithObject("data"),
                                         PayloadDocumentation.fieldWithPath("data.id")
                                             .fieldWithNumber("아티클 Id"),
-                                        PayloadDocumentation.fieldWithPath("data.userId")
-                                            .fieldWithNumber("작가 Id"),
+                                        PayloadDocumentation.fieldWithPath("data.writer")
+                                            .fieldWithObject("아티클 작가"),
+                                        PayloadDocumentation.fieldWithPath("data.writer.id")
+                                            .fieldWithNumber("아티클 작가 Id"),
+                                        PayloadDocumentation.fieldWithPath("data.writer.name")
+                                            .fieldWithString("아티클 작가 이름"),
+                                        PayloadDocumentation.fieldWithPath("data.writer.url")
+                                            .fieldWithString("아티클 작가 링크"),
                                         PayloadDocumentation.fieldWithPath("data.title")
                                             .fieldWithString("아티클 제목"),
                                         PayloadDocumentation.fieldWithPath("data.content")

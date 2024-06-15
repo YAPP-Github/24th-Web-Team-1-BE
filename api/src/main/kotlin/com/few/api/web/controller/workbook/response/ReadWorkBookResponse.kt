@@ -19,6 +19,9 @@ data class ArticleInfo(
     val title: String
 )
 
+/**
+ * WorkBook 컨트롤러 패키지 내부에서 사용하는 작가 정보
+ */
 data class WriterInfo(
     val id: Long,
     val name: String,

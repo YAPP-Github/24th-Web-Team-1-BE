@@ -1,7 +1,7 @@
-package com.few.api.web.controller.article
+package com.few.api.web.controller.workbook.article
 
-import com.few.api.web.controller.article.response.ReadArticleResponse
-import com.few.api.web.controller.article.response.WriterInfo
+import com.few.api.web.controller.workbook.article.response.ReadWorkBookArticleResponse
+import com.few.api.web.controller.workbook.response.WriterInfo
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
 import org.springframework.http.HttpStatus
@@ -15,14 +15,15 @@ import java.time.LocalDateTime
 
 @Validated
 @RestController
-@RequestMapping("/api/v1/articles")
-class ArticleController {
+@RequestMapping("/api/v1/workbooks/{workbookId}/articles")
+class WorkBookArticleController {
 
     @GetMapping("/{articleId}")
-    fun readArticle(
+    fun readWorkBookArticle(
+        @PathVariable(value = "workbookId") workbookId: Long,
         @PathVariable(value = "articleId") articleId: Long
-    ): ApiResponse<ApiResponse.SuccessBody<ReadArticleResponse>> {
-        val data = ReadArticleResponse(
+    ): ApiResponse<ApiResponse.SuccessBody<ReadWorkBookArticleResponse>> {
+        val data = ReadWorkBookArticleResponse(
             id = 1L,
             writer = WriterInfo(
                 id = 1L,
@@ -33,7 +34,8 @@ class ArticleController {
             content = "content",
             problemIds = listOf(1L, 2L, 3L),
             category = "경제",
-            createdAt = LocalDateTime.now()
+            createdAt = LocalDateTime.now(),
+            day = 1L
         )
         return ApiResponseGenerator.success(data, HttpStatus.OK)
     }

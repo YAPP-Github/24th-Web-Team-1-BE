@@ -30,17 +30,17 @@ class WorkBookController {
     ): ApiResponse<ApiResponse.SuccessBody<ReadWorkBookResponse>> {
         val data = ReadWorkBookResponse(
             id = 1L,
-            mainImageUrl = "imageUrl",
-            title = "title",
-            description = "description",
-            category = "category",
+            mainImageUrl = "/main_img.png",
+            title = "재태크, 투자 필수 용어 모음집",
+            description = "사회 초년생부터, 직장인, 은퇴자까지 모두가 알아야 할 기본적인 재태크, 투자 필수 용어 모음집 입니다.",
+            category = "경제",
             createdAt = LocalDateTime.now(),
             writers = listOf(
-                WriterInfo(1L, "name1", URL("http://localhost:8080/api/v1/users/1")),
-                WriterInfo(2L, "name2", URL("http://localhost:8080/api/v1/users/2")),
-                WriterInfo(3L, "name3", URL("http://localhost:8080/api/v1/users/3"))
+                WriterInfo(1L, "안나포", URL("http://localhost:8080/api/v1/users/1")),
+                WriterInfo(2L, "퓨퓨", URL("http://localhost:8080/api/v1/users/2")),
+                WriterInfo(3L, "프레소", URL("http://localhost:8080/api/v1/users/3"))
             ),
-            articles = listOf(ArticleInfo(1L, "title1"), ArticleInfo(2L, "title2"))
+            articles = listOf(ArticleInfo(1L, "ISA(개인종합자산관리계좌)란?"), ArticleInfo(2L, "ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란?"))
         )
         return ApiResponseGenerator.success(data, HttpStatus.OK)
     }

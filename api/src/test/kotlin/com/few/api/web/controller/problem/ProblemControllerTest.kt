@@ -71,7 +71,7 @@ class ProblemControllerTest : ControllerTestSpec() {
                             .deprecated(false)
                             .tag(TAG)
                             .requestSchema(Schema.schema(api.toRequestSchema()))
-                            .pathParameters(parameterWithName("problemId").description("문 Id"))
+                            .pathParameters(parameterWithName("problemId").description("문제 Id"))
                             .responseSchema(Schema.schema(api.toResponseSchema()))
                             .responseFields(
                                 *Description.describe(

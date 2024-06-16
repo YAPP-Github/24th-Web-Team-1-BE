@@ -32,8 +32,8 @@ class WorkBookArticleControllerTest : ControllerTestSpec() {
     private lateinit var workBookArticleController: WorkBookArticleController
 
     companion object {
-        private val BASE_URL = "/api/v1/workbooks"
-        private val TAG = "WorkBookArticleControllerTest"
+        private val BASE_URL = "/api/v1/workbooks/{workbookId}/articles"
+        private val TAG = "WorkBookArticleController"
     }
 
     @BeforeEach
@@ -55,13 +55,14 @@ class WorkBookArticleControllerTest : ControllerTestSpec() {
         // given
         val api = "ReadWorkBookArticle"
         val uri = UriComponentsBuilder.newInstance()
-            .path(BASE_URL)
+            .path("$BASE_URL/{articleId}")
+            .build()
             .toUriString()
         // set usecase mock
 
         // when
         this.webTestClient.get()
-            .uri("$uri/{workbookId}/articles/{articleId}", 1, 1)
+            .uri(uri, 1, 1)
             .accept(MediaType.APPLICATION_JSON)
             .exchange().expectStatus().isOk()
             .expectBody().consumeWith(

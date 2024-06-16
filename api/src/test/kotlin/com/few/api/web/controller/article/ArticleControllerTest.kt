@@ -33,7 +33,7 @@ class ArticleControllerTest : ControllerTestSpec() {
 
     companion object {
         private val BASE_URL = "/api/v1/articles"
-        private val TAG = "ArticleControllerTest"
+        private val TAG = "ArticleController"
     }
 
     @BeforeEach
@@ -54,11 +54,11 @@ class ArticleControllerTest : ControllerTestSpec() {
     fun readArticle() {
         // given
         val api = "ReadArticle"
-        val uri = UriComponentsBuilder.newInstance().path(BASE_URL).toUriString()
+        val uri = UriComponentsBuilder.newInstance().path("$BASE_URL/{articleId}").build().toUriString()
         // set usecase mock
 
         // when
-        this.webTestClient.get().uri("$uri/{articleId}", 1).accept(MediaType.APPLICATION_JSON)
+        this.webTestClient.get().uri(uri, 1).accept(MediaType.APPLICATION_JSON)
             .exchange().expectStatus().isOk().expectBody().consumeWith(
                 WebTestClientRestDocumentation.document(
                     api.toIdentifier(),

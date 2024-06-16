@@ -32,7 +32,7 @@ class ProblemControllerTest : ControllerTestSpec() {
 
     companion object {
         private val BASE_URL = "/api/v1/problems"
-        private val TAG = "ProblemControllerTest"
+        private val TAG = "ProblemController"
     }
 
     @BeforeEach
@@ -51,13 +51,14 @@ class ProblemControllerTest : ControllerTestSpec() {
         // given
         val api = "ReadProblem"
         val uri = UriComponentsBuilder.newInstance()
-            .path(BASE_URL)
+            .path("$BASE_URL/{problemId}")
+            .build()
             .toUriString()
         // set usecase mock
 
         // when
         this.webTestClient.get()
-            .uri("$uri/{problemId}", 1)
+            .uri(uri, 1)
             .accept(MediaType.APPLICATION_JSON)
             .exchange().expectStatus().isOk()
             .expectBody().consumeWith(
@@ -103,14 +104,14 @@ class ProblemControllerTest : ControllerTestSpec() {
         // given
         val api = "CheckProblem"
         val uri = UriComponentsBuilder.newInstance()
-            .path(BASE_URL).toUriString()
+            .path("$BASE_URL/{problemId}").build().toUriString()
 
         val body = objectMapper.writeValueAsString(CheckProblemBody(sub = "sub"))
         // set usecase mock
 
         // when
         this.webTestClient.post()
-            .uri("$uri/{problemId}", 1)
+            .uri(uri, 1)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(body)

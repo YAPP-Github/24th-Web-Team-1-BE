@@ -36,7 +36,7 @@ class WorkBookControllerTest : ControllerTestSpec() {
 
     companion object {
         private val BASE_URL = "/api/v1/workbooks"
-        private val TAG = "WorkBookControllerTest"
+        private val TAG = "WorkBookController"
     }
 
     @BeforeEach
@@ -58,13 +58,14 @@ class WorkBookControllerTest : ControllerTestSpec() {
         // given
         val api = "ReadWorkBook"
         val uri = UriComponentsBuilder.newInstance()
-            .path(BASE_URL)
+            .path("$BASE_URL/{workbookId}")
+            .build()
             .toUriString()
         // set usecase mock
 
         // when
         this.webTestClient.get()
-            .uri("$uri/{workbookId}", 1)
+            .uri(uri, 1)
             .accept(MediaType.APPLICATION_JSON)
             .exchange().expectStatus().isOk()
             .expectBody().consumeWith(
@@ -126,14 +127,14 @@ class WorkBookControllerTest : ControllerTestSpec() {
         // given
         val api = "SubWorkBook"
         val uri = UriComponentsBuilder.newInstance()
-            .path(BASE_URL).toUriString()
+            .path("$BASE_URL/{workbookId}/subs").build().toUriString()
 
         val body = objectMapper.writeValueAsString(SubWorkBookBody(email = "test@gmail.com"))
         // set usecase mock
 
         // when
         this.webTestClient.post()
-            .uri("$uri/{workbookId}/subs", 1)
+            .uri(uri, 1)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(body)
@@ -166,14 +167,15 @@ class WorkBookControllerTest : ControllerTestSpec() {
         // given
         val api = "CancelSubWorkBook"
         val uri = UriComponentsBuilder.newInstance()
-            .path(BASE_URL)
+            .path("$BASE_URL/{workbookId}/csubs")
+            .build()
             .toUriString()
         // set usecase mock
         val body = objectMapper.writeValueAsString(CancelSubWorkBookBody(email = "test@gmail.com", opinion = "취소합니다."))
 
         // when
         this.webTestClient.post()
-            .uri("$uri/{workbookId}/csubs", 1)
+            .uri(uri, 1)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(body)

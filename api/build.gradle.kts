@@ -1,4 +1,3 @@
-
 import org.hidetake.gradle.swagger.generator.GenerateSwaggerUI
 
 dependencies {

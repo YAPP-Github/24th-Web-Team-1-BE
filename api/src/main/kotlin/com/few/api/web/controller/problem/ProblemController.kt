@@ -6,30 +6,35 @@ import com.few.api.web.controller.problem.response.ProblemContents
 import com.few.api.web.controller.problem.response.ReadProblemResponse
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
+import com.few.api.web.usecase.problem.ReadProblemUseCase
+import com.few.api.web.usecase.problem.`in`.ReadProblemUseCaseIn
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import java.util.*
 
 @Validated
 @RestController
 @RequestMapping("/api/v1/problems")
-class ProblemController {
+class ProblemController(
+    private val readProblemUseCase: ReadProblemUseCase
+) {
 
     @GetMapping("/{problemId}")
     fun readProblem(
         @PathVariable(value = "problemId") problemId: Long
     ): ApiResponse<ApiResponse.SuccessBody<ReadProblemResponse>> {
-        val data = ReadProblemResponse(
-            id = 1L,
-            title = "ETF(상장지수펀드)의 특징이 아닌것은?",
-            contents = listOf(
-                ProblemContents(1L, "분산투자"),
-                ProblemContents(2L, "높은 운용 비용"),
-                ProblemContents(3L, "유동성"),
-                ProblemContents(4L, "투명성")
-            )
+        val useCaseOut = readProblemUseCase.execute(ReadProblemUseCaseIn(problemId))
+
+        val response = ReadProblemResponse(
+            id = useCaseOut.id,
+            title = useCaseOut.title,
+            contents = useCaseOut.contents
+                .map { c -> ProblemContents(c.number, c.content) }
+                .toCollection(LinkedList())
         )
-        return ApiResponseGenerator.success(data, HttpStatus.OK)
+
+        return ApiResponseGenerator.success(response, HttpStatus.OK)
     }
 
     @PostMapping("/{problemId}")

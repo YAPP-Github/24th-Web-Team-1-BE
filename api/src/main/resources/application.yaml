@@ -1,0 +1,6 @@
+spring:
+    config:
+        use-legacy-processing: true
+    profiles:
+        include:
+            - api-repo-local

@@ -89,3 +89,8 @@ Footer
 *.zip
 *.tar.gz
 *.rar
+
+# Jooq
+**/generated/
+*.log
+*.tmp

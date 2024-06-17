@@ -26,7 +26,8 @@ object DependencyVersion {
 
     /** docs */
     const val ASCIIDOCTOR = "3.3.2"
-    const val EPAGES_REST_DOCS_API_SPEC = "0.16.0"
+    const val EPAGES_REST_DOCS_API_SPEC = "0.17.1"
+    const val SPRINGDOC = "1.6.3"
 
     /** swagger */
     const val SWAGGER_GENERATOR = "2.18.2"

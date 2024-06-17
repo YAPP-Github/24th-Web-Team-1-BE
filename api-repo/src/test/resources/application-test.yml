@@ -1,0 +1,6 @@
+logging:
+  level:
+    org.jooq: DEBUG
+    org.springframework.jdbc: DEBUG
+    com.few.api.repo: DEBUG
+    org.testcontainers: INFO

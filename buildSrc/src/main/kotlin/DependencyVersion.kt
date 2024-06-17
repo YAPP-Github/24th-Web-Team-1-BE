@@ -14,6 +14,9 @@ object DependencyVersion {
     /** flyway */
     const val FLYWAY = "9.16.0"
 
+    /** jooq */
+    const val JOOQ = "3.19.9"
+
     /** test */
     const val MOCKK = "1.13.9"
     const val KOTEST = "5.8.0"

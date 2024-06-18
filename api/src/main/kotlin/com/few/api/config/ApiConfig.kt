@@ -1,10 +1,13 @@
 package com.few.api.config
 
+import com.few.api.repo.config.ApiRepoConfig
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
 
 @Configuration
 @ComponentScan(basePackages = [ApiConfig.BASE_PACKAGE])
+@Import(ApiRepoConfig::class)
 class ApiConfig {
     companion object {
         const val BASE_PACKAGE = "com.few.api"

@@ -23,7 +23,7 @@ sourceSets {
 
 dependencies {
     /** spring starter */
-    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
+    api("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("com.mysql:mysql-connector-j")
 
     /** flyway */

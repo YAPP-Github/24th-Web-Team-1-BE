@@ -1,0 +1,10 @@
+spring:
+    profiles:
+        group:
+            local:
+                - api-repo-local
+            prd:
+                - api-repo-prd
+            test:
+                - new
+                - api-repo-local

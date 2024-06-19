@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Component
 class ReadProblemUseCase(
-    private val prblemDao: ProblemDao,
+    private val problemDao: ProblemDao,
     private val objectMapper: ObjectMapper
 ) {
 
@@ -20,7 +20,7 @@ class ReadProblemUseCase(
     fun execute(useCaseIn: ReadProblemUseCaseIn): ReadProblemUseCaseOut {
         val problemId = useCaseIn.problemId
 
-        val record = prblemDao.selectProblem(SelectProblemQuery(problemId))
+        val record = problemDao.selectProblemContents(SelectProblemQuery(problemId))
 
         val contents: List<ReadProblemContentsUseCaseOut> = objectMapper.readValue(record.contents)
 

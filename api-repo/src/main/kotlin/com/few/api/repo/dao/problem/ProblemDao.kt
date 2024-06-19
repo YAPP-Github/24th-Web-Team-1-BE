@@ -18,9 +18,7 @@ class ProblemDao(
             .where(Problem.PROBLEM.ID.eq(query.problemId))
             .fetchOne()
 
-        if (result == null) {
-            throw RuntimeException("Problem with ID ${query.problemId} not found") // TODO: 에러 표준화
-        }
+        result ?: throw RuntimeException("Problem with ID ${query.problemId} not found") // TODO: 에러 표준화
 
         return SelectProblemRecord(
             result.get(Problem.PROBLEM.ID),
@@ -35,7 +33,7 @@ class ProblemDao(
             .where(Problem.PROBLEM.ID.eq(query.problemId))
             .fetchOne()
 
-        result ?: throw RuntimeException("Problem with ID ${query.problemId} not found") // TODO: 에러 표준화
+        result ?: throw RuntimeException("Problem Answer with ID ${query.problemId} not found") // TODO: 에러 표준화
 
         return SelectProblemAnswerRecord(
             result.get(Problem.PROBLEM.ID),

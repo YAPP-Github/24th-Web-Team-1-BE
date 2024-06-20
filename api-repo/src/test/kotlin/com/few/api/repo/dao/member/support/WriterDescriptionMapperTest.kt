@@ -1,7 +1,6 @@
 package com.few.api.repo.dao.member.support
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.few.api.repo.config.ApiRepoObjectMapperConfig
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -10,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest
 
 import java.net.URL
 
-@SpringBootTest(classes = [ApiRepoObjectMapperConfig::class])
+@SpringBootTest(classes = [ObjectMapper::class])
 class WriterDescriptionMapperTest {
 
     @Autowired

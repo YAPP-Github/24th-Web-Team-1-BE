@@ -1,14 +1,13 @@
 package com.few.api.repo.dao.problem.support
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.few.api.repo.config.ApiRepoObjectMapperConfig
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
-@SpringBootTest(classes = [ApiRepoObjectMapperConfig::class])
+@SpringBootTest(classes = [ObjectMapper::class])
 class ContentsMapperTest {
 
     @Autowired

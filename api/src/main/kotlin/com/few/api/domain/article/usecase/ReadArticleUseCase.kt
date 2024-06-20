@@ -4,7 +4,7 @@ import com.few.api.domain.article.dto.ReadArticleUseCaseIn
 import com.few.api.domain.article.dto.ReadArticleUseCaseOut
 import com.few.api.domain.article.dto.WriterDetail
 import com.few.api.domain.article.service.BrowseArticleProblemsService
-import com.few.api.domain.article.service.ReadWriterRecordService
+import com.few.api.domain.article.service.ReadArticleWriterRecordService
 import com.few.api.domain.article.service.dto.BrowseArticleProblemIdsQuery
 import com.few.api.domain.article.service.dto.ReadWriterRecordQuery
 import com.few.api.repo.dao.article.ArticleDao
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class ReadArticleUseCase(
     private val articleDao: ArticleDao,
-    private val readWriterRecordService: ReadWriterRecordService,
+    private val readArticleWriterRecordService: ReadArticleWriterRecordService,
     private val browseArticleProblemsService: BrowseArticleProblemsService
 ) {
 
@@ -26,7 +26,7 @@ class ReadArticleUseCase(
         }
 
         val writerRecord = ReadWriterRecordQuery(articleRecord.writerId).let { query: ReadWriterRecordQuery ->
-            readWriterRecordService.execute(query)
+            readArticleWriterRecordService.execute(query)
         }
 
         val problemIds = BrowseArticleProblemIdsQuery(articleRecord.articleId).let { query: BrowseArticleProblemIdsQuery ->

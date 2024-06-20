@@ -5,7 +5,7 @@ import com.few.api.domain.article.dto.ReadArticleUseCaseOut
 import com.few.api.domain.article.dto.WriterDetail
 import com.few.api.domain.article.service.BrowseArticleProblemsService
 import com.few.api.domain.article.service.ReadWriterRecordService
-import com.few.api.domain.article.service.dto.BrowseArticleProblemsQuery
+import com.few.api.domain.article.service.dto.BrowseArticleProblemIdsQuery
 import com.few.api.domain.article.service.dto.ReadWriterRecordQuery
 import com.few.api.repo.dao.article.ArticleDao
 import com.few.api.repo.dao.article.query.SelectArticleRecordQuery
@@ -29,7 +29,7 @@ class ReadArticleUseCase(
             readWriterRecordService.execute(query)
         }
 
-        val problemIds = BrowseArticleProblemsQuery(articleRecord.articleId).let { query: BrowseArticleProblemsQuery ->
+        val problemIds = BrowseArticleProblemIdsQuery(articleRecord.articleId).let { query: BrowseArticleProblemIdsQuery ->
             browseArticleProblemsService.execute(query)
         }
 

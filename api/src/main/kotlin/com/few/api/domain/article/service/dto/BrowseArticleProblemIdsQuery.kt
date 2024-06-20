@@ -1,5 +1,5 @@
 package com.few.api.domain.article.service.dto
 
-data class BrowseArticleProblemsQuery(
+data class BrowseArticleProblemIdsQuery(
     val articleId: Long
 )

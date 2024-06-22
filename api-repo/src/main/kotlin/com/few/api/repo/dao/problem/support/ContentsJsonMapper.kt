@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Component
 
 @Component
-class ContentsMapper(
+class ContentsJsonMapper(
     private val objectMapper: ObjectMapper
 ) {
 

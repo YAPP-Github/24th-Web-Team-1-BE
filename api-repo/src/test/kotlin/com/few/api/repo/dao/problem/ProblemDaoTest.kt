@@ -3,7 +3,7 @@ package com.few.api.repo.dao.problem
 import com.few.api.repo.dao.problem.query.SelectProblemsByArticleIdQuery
 import com.few.api.repo.dao.problem.support.Content
 import com.few.api.repo.dao.problem.support.Contents
-import com.few.api.repo.dao.problem.support.ContentsMapper
+import com.few.api.repo.dao.problem.support.ContentsJsonMapper
 import com.few.api.repo.jooq.JooqTestSpec
 import jooq.jooq_dsl.tables.Problem
 import org.jooq.DSLContext
@@ -24,7 +24,7 @@ class ProblemDaoTest : JooqTestSpec() {
     private lateinit var problemDao: ProblemDao
 
     @Autowired
-    private lateinit var contentsMapper: ContentsMapper
+    private lateinit var contentsJsonMapper: ContentsJsonMapper
 
     @BeforeEach
     fun setUp() {
@@ -36,7 +36,7 @@ class ProblemDaoTest : JooqTestSpec() {
                 Content(2, "content2")
             )
         ).let {
-            contentsMapper.toJson(it)
+            contentsJsonMapper.toJson(it)
         }
         dslContext.insertInto(Problem.PROBLEM)
             .set(Problem.PROBLEM.ID, 1)

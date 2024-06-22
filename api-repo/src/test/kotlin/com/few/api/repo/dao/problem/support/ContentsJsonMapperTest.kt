@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
-class ContentsMapperTest {
+class ContentsJsonMapperTest {
 
-    private var contentsMapper: ContentsMapper = ContentsMapper(ObjectMapper())
+    private var contentsJsonMapper: ContentsJsonMapper = ContentsJsonMapper(ObjectMapper())
 
     @Test
     fun `Contents를 Json 형식으로 변환합니다`() {
@@ -19,7 +19,7 @@ class ContentsMapperTest {
         )
 
         // When
-        val json = contentsMapper.toJson(contents)
+        val json = contentsJsonMapper.toJson(contents)
 
         // Then
         assertNotNull(json)
@@ -47,7 +47,7 @@ class ContentsMapperTest {
         """.trimIndent()
 
         // When
-        val contents = contentsMapper.toObject(json)
+        val contents = contentsJsonMapper.toObject(json)
 
         // Then
         assertNotNull(contents)

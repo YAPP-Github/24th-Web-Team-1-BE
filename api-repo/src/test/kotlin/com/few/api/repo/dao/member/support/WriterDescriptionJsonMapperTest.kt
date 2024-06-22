@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test
 
 import java.net.URL
 
-class WriterDescriptionMapperTest {
+class WriterDescriptionJsonMapperTest {
 
-    private var writerDescriptionMapper: WriterDescriptionMapper = WriterDescriptionMapper(ObjectMapper())
+    private var writerDescriptionJsonMapper: WriterDescriptionJsonMapper = WriterDescriptionJsonMapper(ObjectMapper())
 
     @Test
     fun `WriterDescription을 Json 형식으로 변환합니다`() {
@@ -19,7 +19,7 @@ class WriterDescriptionMapperTest {
         )
 
         // When
-        val json = writerDescriptionMapper.toJson(writerDescription)
+        val json = writerDescriptionJsonMapper.toJson(writerDescription)
 
         // Then
         assertNotNull(json)
@@ -39,7 +39,7 @@ class WriterDescriptionMapperTest {
         """.trimIndent()
 
         // When
-        val writerDescription = writerDescriptionMapper.toObject(json)
+        val writerDescription = writerDescriptionJsonMapper.toObject(json)
 
         // Then
         assertNotNull(writerDescription)

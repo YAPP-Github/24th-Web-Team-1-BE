@@ -5,7 +5,7 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.springframework.stereotype.Component
 
 @Component
-class WriterDescriptionMapper(
+class WriterDescriptionJsonMapper(
     private val objectMapper: ObjectMapper
 ) {
     init {

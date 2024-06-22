@@ -2,7 +2,7 @@ package com.few.api.repo.dao.member
 
 import com.few.api.repo.dao.member.query.SelectWriterQuery
 import com.few.api.repo.dao.member.support.WriterDescription
-import com.few.api.repo.dao.member.support.WriterDescriptionMapper
+import com.few.api.repo.dao.member.support.WriterDescriptionJsonMapper
 import com.few.api.repo.jooq.JooqTestSpec
 import jooq.jooq_dsl.tables.Member
 import junit.framework.TestCase.assertEquals
@@ -27,7 +27,7 @@ class MemberDaoTest : JooqTestSpec() {
     private lateinit var memberDao: MemberDao
 
     @Autowired
-    private lateinit var writerDescriptionMapper: WriterDescriptionMapper
+    private lateinit var writerDescriptionJsonMapper: WriterDescriptionJsonMapper
 
     @BeforeEach
     fun setUp() {
@@ -39,7 +39,7 @@ class MemberDaoTest : JooqTestSpec() {
             .set(Member.MEMBER.TYPE_CD, 0) // todo fix
             .execute()
 
-        val writerDescription = writerDescriptionMapper.toJson(
+        val writerDescription = writerDescriptionJsonMapper.toJson(
             WriterDescription("few", URL("http://localhost:8080/writers/url"))
         )
 

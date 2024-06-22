@@ -16,6 +16,7 @@ class ProblemDao(
         return dslContext.select()
             .from(Problem.PROBLEM)
             .where(Problem.PROBLEM.ARTICLE_ID.eq(articleId))
+            .and(Problem.PROBLEM.DELETED_AT.isNull)
             .fetch()
             .map { it[Problem.PROBLEM.ID] }
             .let { ProblemIdsRecord(it) }

@@ -8,8 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
-import com.few.api.web.controller.workbook.request.CancelSubWorkBookBody
-import com.few.api.web.controller.workbook.request.SubWorkBookBody
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -114,89 +112,6 @@ class WorkBookControllerTest : ControllerTestSpec() {
                                             .fieldWithString("학습지에 포함된 아티클 제목")
                                     )
                                 )
-                            )
-                            .build()
-                    )
-                )
-            )
-    }
-
-    @Test
-    @DisplayName("[POST] /api/v1/workbooks/{workbookId}/subs")
-    fun subWorkBook() {
-        // given
-        val api = "SubWorkBook"
-        val uri = UriComponentsBuilder.newInstance()
-            .path("$BASE_URL/{workbookId}/subs").build().toUriString()
-
-        val body = objectMapper.writeValueAsString(SubWorkBookBody(email = "test@gmail.com"))
-        // set usecase mock
-
-        // when
-        this.webTestClient.post()
-            .uri(uri, 1)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(body)
-            .exchange().expectStatus().is2xxSuccessful()
-            .expectBody().consumeWith(
-                WebTestClientRestDocumentation.document(
-                    api.toIdentifier(),
-                    ResourceDocumentation.resource(
-                        ResourceSnippetParameters.builder()
-                            .description("이메일을 입력하여 학습지를 구독합니다.")
-                            .summary(api.toIdentifier())
-                            .privateResource(false)
-                            .deprecated(false)
-                            .tag(TAG)
-                            .requestSchema(Schema.schema(api.toRequestSchema()))
-                            .pathParameters(parameterWithName("workbookId").description("학습지 Id"))
-                            .responseSchema(Schema.schema(api.toResponseSchema()))
-                            .responseFields(
-                                *Description.describe()
-                            )
-                            .build()
-                    )
-                )
-            )
-    }
-
-    @Test
-    @DisplayName("[POST] /api/v1/workbooks/{workbookId}/unsubs")
-    fun cancelSubWorkBook() {
-        // given
-        val api = "CancelSubWorkBook"
-        val uri = UriComponentsBuilder.newInstance()
-            .path("$BASE_URL/{workbookId}/unsubs")
-            .build()
-            .toUriString()
-        // set usecase mock
-        val body = objectMapper.writeValueAsString(
-            CancelSubWorkBookBody(email = "test@gmail.com", opinion = "취소합니다.", reason = "이유없음")
-        )
-
-        // when
-        this.webTestClient.post()
-            .uri(uri, 1)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(body)
-            .exchange().expectStatus().is2xxSuccessful()
-            .expectBody().consumeWith(
-                WebTestClientRestDocumentation.document(
-                    api.toIdentifier(),
-                    ResourceDocumentation.resource(
-                        ResourceSnippetParameters.builder()
-                            .description("학습지 구독을 취소합니다.")
-                            .summary(api.toIdentifier())
-                            .privateResource(false)
-                            .deprecated(false)
-                            .tag(TAG)
-                            .requestSchema(Schema.schema(api.toRequestSchema()))
-                            .pathParameters(parameterWithName("workbookId").description("학습지 Id"))
-                            .responseSchema(Schema.schema(api.toResponseSchema()))
-                            .responseFields(
-                                *Description.describe()
                             )
                             .build()
                     )

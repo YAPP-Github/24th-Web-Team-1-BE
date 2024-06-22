@@ -61,7 +61,7 @@ class ProblemControllerTest : ControllerTestSpec() {
 
     @Test
     @DisplayName("[GET] /api/v1/problems/{problemId}")
-    fun readArticle() {
+    fun readProblem() {
         // given
         val api = "ReadProblem"
         val uri = UriComponentsBuilder.newInstance()

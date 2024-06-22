@@ -9,7 +9,7 @@ data class ReadWorkBookResponse(
     val title: String,
     val description: String,
     val category: String,
-    val createdAt: LocalDateTime, // todo fix serialize
+    val createdAt: LocalDateTime,
     val writers: List<WriterInfo>,
     val articles: List<ArticleInfo>
 )

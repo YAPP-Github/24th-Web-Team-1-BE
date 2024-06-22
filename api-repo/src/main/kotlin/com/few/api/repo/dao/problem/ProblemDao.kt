@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component
 class ProblemDao(
     private val dslContext: DSLContext
 ) {
-    fun selectProblemContents(query: SelectProblemQuery): SelectProblemRecord {
+    fun selectProblemContentsByProblemId(query: SelectProblemQuery): SelectProblemRecord {
         return dslContext.select(
             Problem.PROBLEM.ID.`as`(SelectProblemRecord::id.name),
             Problem.PROBLEM.TITLE.`as`(SelectProblemRecord::title.name),
@@ -26,7 +26,7 @@ class ProblemDao(
             ?: throw RuntimeException("Problem with ID ${query.problemId} not found") // TODO: 에러 표준화
     }
 
-    fun selectProblemAnswer(query: SelectProblemAnswerQuery): SelectProblemAnswerRecord {
+    fun selectProblemAnswerByProblemId(query: SelectProblemAnswerQuery): SelectProblemAnswerRecord {
         return dslContext.select(
             Problem.PROBLEM.ID.`as`(SelectProblemAnswerRecord::id.name),
             Problem.PROBLEM.ANSWER.`as`(SelectProblemAnswerRecord::answer.name),

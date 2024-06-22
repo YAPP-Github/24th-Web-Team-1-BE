@@ -162,16 +162,18 @@ class WorkBookControllerTest : ControllerTestSpec() {
     }
 
     @Test
-    @DisplayName("[DELETE] /api/v1/workbooks/{workbookId}/csubs")
+    @DisplayName("[POST] /api/v1/workbooks/{workbookId}/unsubs")
     fun cancelSubWorkBook() {
         // given
         val api = "CancelSubWorkBook"
         val uri = UriComponentsBuilder.newInstance()
-            .path("$BASE_URL/{workbookId}/csubs")
+            .path("$BASE_URL/{workbookId}/unsubs")
             .build()
             .toUriString()
         // set usecase mock
-        val body = objectMapper.writeValueAsString(CancelSubWorkBookBody(email = "test@gmail.com", opinion = "취소합니다."))
+        val body = objectMapper.writeValueAsString(
+            CancelSubWorkBookBody(email = "test@gmail.com", opinion = "취소합니다.", reason = "이유없음")
+        )
 
         // when
         this.webTestClient.post()

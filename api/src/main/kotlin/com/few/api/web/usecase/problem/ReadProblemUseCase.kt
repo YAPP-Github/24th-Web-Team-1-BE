@@ -5,7 +5,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.few.api.repo.dao.problem.ProblemDao
 import com.few.api.repo.dao.problem.query.SelectProblemQuery
 import com.few.api.web.usecase.problem.`in`.ReadProblemUseCaseIn
-import com.few.api.web.usecase.problem.out.ReadProblemContentsUseCaseOut
+import com.few.api.web.usecase.problem.out.ReadProblemContentsUseCaseOutDetail
 import com.few.api.web.usecase.problem.out.ReadProblemUseCaseOut
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -22,7 +22,7 @@ class ReadProblemUseCase(
 
         val record = problemDao.selectProblemContents(SelectProblemQuery(problemId))
 
-        val contents: List<ReadProblemContentsUseCaseOut> = objectMapper.readValue(record.contents)
+        val contents: List<ReadProblemContentsUseCaseOutDetail> = objectMapper.readValue(record.contents)
 
         return ReadProblemUseCaseOut(
             id = record.id,

@@ -2,23 +2,11 @@ package com.few.api.repo.dao.problem.support
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 
-@SpringBootTest(classes = [ObjectMapper::class])
 class ContentsMapperTest {
 
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
-
-    private lateinit var contentsMapper: ContentsMapper
-
-    @BeforeEach
-    fun setUp() {
-        contentsMapper = ContentsMapper(objectMapper)
-    }
+    private var contentsMapper: ContentsMapper = ContentsMapper(ObjectMapper())
 
     @Test
     fun `Contents를 Json 형식으로 변환합니다`() {

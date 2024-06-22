@@ -2,24 +2,13 @@ package com.few.api.repo.dao.member.support
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 
 import java.net.URL
 
-@SpringBootTest(classes = [ObjectMapper::class])
 class WriterDescriptionMapperTest {
 
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
-    private lateinit var writerDescriptionMapper: WriterDescriptionMapper
-
-    @BeforeEach
-    fun setUp() {
-        writerDescriptionMapper = WriterDescriptionMapper(objectMapper)
-    }
+    private var writerDescriptionMapper: WriterDescriptionMapper = WriterDescriptionMapper(ObjectMapper())
 
     @Test
     fun `WriterDescription을 Json 형식으로 변환합니다`() {

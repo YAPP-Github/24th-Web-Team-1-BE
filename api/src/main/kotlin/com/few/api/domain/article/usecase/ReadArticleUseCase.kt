@@ -9,10 +9,10 @@ import com.few.api.domain.article.service.dto.BrowseArticleProblemIdsQuery
 import com.few.api.domain.article.service.dto.ReadWriterRecordQuery
 import com.few.api.repo.dao.article.ArticleDao
 import com.few.api.repo.dao.article.query.SelectArticleRecordQuery
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
-@Service
+@Component
 class ReadArticleUseCase(
     private val articleDao: ArticleDao,
     private val readArticleWriterRecordService: ReadArticleWriterRecordService,

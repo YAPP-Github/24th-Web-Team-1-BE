@@ -26,7 +26,11 @@ class UnsubscribeWorkbookUseCase(
         }
 
         subscriptionDao.updateDeletedAtInWorkbookSubscription(
-            UpdateDeletedAtInWorkbookSubscriptionCommand(memberId = useCaseIn.memberId, workbookId = useCaseIn.workbookId)
+            UpdateDeletedAtInWorkbookSubscriptionCommand(
+                memberId = useCaseIn.memberId,
+                workbookId = useCaseIn.workbookId,
+                opinion = useCaseIn.opinion
+            )
         )
     }
 }

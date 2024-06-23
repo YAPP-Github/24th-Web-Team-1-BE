@@ -17,14 +17,14 @@ import org.springframework.web.bind.annotation.*
 
 @Validated
 @RestController
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1")
 class SubscriptionController(
     private val subscribeWorkbookUseCase: SubscribeWorkbookUseCase,
     private val unsubscribeWorkbookUseCase: UnsubscribeWorkbookUseCase,
     private val unsubscribeAllUseCase: UnsubscribeAllUseCase
 ) {
 
-    @PostMapping("workbooks/{workbookId}/subs")
+    @PostMapping("/workbooks/{workbookId}/subs")
     fun subscribeWorkbook(
         @PathVariable(value = "workbookId") workbookId: Long,
         @RequestBody body: SubscribeWorkbookRequest
@@ -36,7 +36,7 @@ class SubscriptionController(
         return ApiResponseGenerator.success(HttpStatus.OK)
     }
 
-    @PostMapping("workbooks/{workbookId}/unsubs")
+    @PostMapping("/workbooks/{workbookId}/unsubs")
     fun unsubscribeWorkbook(
         @PathVariable(value = "workbookId") workbookId: Long,
         @RequestBody body: UnsubscribeWorkbookRequest
@@ -48,7 +48,7 @@ class SubscriptionController(
         return ApiResponseGenerator.success(HttpStatus.OK)
     }
 
-    @PostMapping("subscriptions/unsubs")
+    @PostMapping("/subscriptions/unsubs")
     fun deactivateAllSubscriptions(
         @RequestBody body: UnsubscribeAllRequest
     ): ApiResponse<ApiResponse.Success> {

@@ -2,6 +2,8 @@ package com.few.api.repo.dao.problem
 
 import com.few.api.repo.dao.problem.query.SelectProblemAnswerQuery
 import com.few.api.repo.dao.problem.query.SelectProblemQuery
+import com.few.api.repo.dao.problem.query.SelectProblemsByArticleIdQuery
+import com.few.api.repo.dao.problem.record.ProblemIdsRecord
 import com.few.api.repo.dao.problem.record.SelectProblemAnswerRecord
 import com.few.api.repo.dao.problem.record.SelectProblemRecord
 import jooq.jooq_dsl.tables.Problem
@@ -38,5 +40,16 @@ class ProblemDao(
             .and(Problem.PROBLEM.DELETED_AT.isNull)
             .fetchOneInto(SelectProblemAnswerRecord::class.java)
             ?: throw RuntimeException("Problem Answer with ID ${query.problemId} not found") // TODO: 에러 표준화
+    }
+
+    fun selectProblemsByArticleId(query: SelectProblemsByArticleIdQuery): ProblemIdsRecord {
+        val articleId = query.articleId
+
+        return dslContext.select()
+            .from(Problem.PROBLEM)
+            .where(Problem.PROBLEM.ARTICLE_ID.eq(articleId))
+            .fetch()
+            .map { it[Problem.PROBLEM.ID] }
+            .let { ProblemIdsRecord(it) }
     }
 }

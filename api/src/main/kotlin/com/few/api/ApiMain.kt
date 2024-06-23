@@ -1,4 +1,4 @@
-package com.few
+package com.few.api
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

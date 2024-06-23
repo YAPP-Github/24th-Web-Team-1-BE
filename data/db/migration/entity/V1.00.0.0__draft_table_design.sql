@@ -110,7 +110,7 @@ CREATE TABLE subscription
 
 -- [인덱스 추가] --
 -- problem_idx1: problem 테이블에서 article_id 기반으로 문제 조회시 사용
-CREATE INDEX problem_idx1 ON problem (article_id)
+CREATE INDEX problem_idx1 ON problem (article_id);
 
 -- article_mst_idx1: 작가가 작성한 아티클 조회시 사용
-CREATE INDEX article_mst_idx1 ON article_mst (member_id)
+CREATE INDEX article_mst_idx1 ON article_mst (member_id);

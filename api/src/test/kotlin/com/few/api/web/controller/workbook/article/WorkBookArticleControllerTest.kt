@@ -5,6 +5,10 @@ import com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.few.api.domain.workbook.article.dto.ReadWorkBookArticleUseCaseIn
+import com.few.api.domain.workbook.article.dto.ReadWorkBookArticleOut
+import com.few.api.domain.workbook.article.dto.WriterDetail
+import com.few.api.domain.workbook.article.usecase.ReadWorkBookArticleUseCase
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
@@ -12,7 +16,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
+import org.mockito.Mockito.`when`
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.restdocs.RestDocumentationContextProvider
@@ -20,6 +26,8 @@ import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.util.UriComponentsBuilder
+import java.net.URL
+import java.time.LocalDateTime
 
 class WorkBookArticleControllerTest : ControllerTestSpec() {
 
@@ -30,6 +38,9 @@ class WorkBookArticleControllerTest : ControllerTestSpec() {
 
     @Autowired
     private lateinit var workBookArticleController: WorkBookArticleController
+
+    @MockBean
+    private lateinit var readWorkBookArticleUseCase: ReadWorkBookArticleUseCase
 
     companion object {
         private val BASE_URL = "/api/v1/workbooks/{workbookId}/articles"
@@ -59,10 +70,28 @@ class WorkBookArticleControllerTest : ControllerTestSpec() {
             .build()
             .toUriString()
         // set usecase mock
+        val workbookId = 1L
+        val articleId = 1L
+        `when`(readWorkBookArticleUseCase.execute(ReadWorkBookArticleUseCaseIn(workbookId, articleId))).thenReturn(
+            ReadWorkBookArticleOut(
+                id = 1L,
+                writer = WriterDetail(
+                    id = 1L,
+                    name = "안나포",
+                    url = URL("http://localhost:8080/api/v1/writers/1")
+                ),
+                title = "ETF(상장 지수 펀드)란? 모르면 손해라고?",
+                content = "content",
+                problemIds = listOf(1L, 2L, 3L),
+                category = "경제",
+                createdAt = LocalDateTime.now(),
+                day = 1L
+            )
+        )
 
         // when
         this.webTestClient.get()
-            .uri(uri, 1, 1)
+            .uri(uri, workbookId, articleId)
             .accept(MediaType.APPLICATION_JSON)
             .exchange().expectStatus().isOk()
             .expectBody().consumeWith(

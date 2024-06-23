@@ -22,6 +22,7 @@ class ProblemDao(
         )
             .from(Problem.PROBLEM)
             .where(Problem.PROBLEM.ID.eq(query.problemId))
+            .and(Problem.PROBLEM.DELETED_AT.isNull)
             .fetchOneInto(SelectProblemRecord::class.java)
             ?: throw RuntimeException("Problem with ID ${query.problemId} not found") // TODO: 에러 표준화
     }
@@ -34,6 +35,7 @@ class ProblemDao(
         )
             .from(Problem.PROBLEM)
             .where(Problem.PROBLEM.ID.eq(query.problemId))
+            .and(Problem.PROBLEM.DELETED_AT.isNull)
             .fetchOneInto(SelectProblemAnswerRecord::class.java)
             ?: throw RuntimeException("Problem Answer with ID ${query.problemId} not found") // TODO: 에러 표준화
     }

@@ -3,8 +3,11 @@ spring:
         group:
             local:
                 - api-repo-local
+                - email-local
             prd:
                 - api-repo-prd
+                - email-prd
             test:
                 - new
                 - api-repo-local
+                - email-local

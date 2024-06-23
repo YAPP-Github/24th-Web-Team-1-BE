@@ -5,6 +5,11 @@ import com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.few.api.domain.workbook.dto.ArticleDetail
+import com.few.api.domain.workbook.dto.ReadWorkbookUseCaseIn
+import com.few.api.domain.workbook.dto.ReadWorkbookUseCaseOut
+import com.few.api.domain.workbook.dto.WriterDetail
+import com.few.api.domain.workbook.usecase.ReadWorkbookUseCase
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
@@ -12,7 +17,9 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.http.codec.json.Jackson2JsonEncoder
@@ -21,6 +28,8 @@ import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.util.UriComponentsBuilder
+import java.net.URL
+import java.time.LocalDateTime
 
 class WorkBookControllerTest : ControllerTestSpec() {
 
@@ -31,6 +40,9 @@ class WorkBookControllerTest : ControllerTestSpec() {
 
     @Autowired
     private lateinit var workBookController: WorkBookController
+
+    @MockBean
+    private lateinit var readWorkbookUseCase: ReadWorkbookUseCase
 
     companion object {
         private val BASE_URL = "/api/v1/workbooks"
@@ -60,6 +72,23 @@ class WorkBookControllerTest : ControllerTestSpec() {
             .build()
             .toUriString()
         // set usecase mock
+        val workbookId = 1L
+        `when`(readWorkbookUseCase.execute(ReadWorkbookUseCaseIn(workbookId))).thenReturn(
+            ReadWorkbookUseCaseOut(
+                id = 1L,
+                mainImageUrl = "/main_img.png",
+                title = "재태크, 투자 필수 용어 모음집",
+                description = "사회 초년생부터, 직장인, 은퇴자까지 모두가 알아야 할 기본적인 재태크, 투자 필수 용어 모음집 입니다.",
+                category = "경제",
+                createdAt = LocalDateTime.now(),
+                writers = listOf(
+                    WriterDetail(1L, "안나포", URL("http://localhost:8080/api/v1/users/1")),
+                    WriterDetail(2L, "퓨퓨", URL("http://localhost:8080/api/v1/users/2")),
+                    WriterDetail(3L, "프레소", URL("http://localhost:8080/api/v1/users/3"))
+                ),
+                articles = listOf(ArticleDetail(1L, "ISA(개인종합자산관리계좌)란?"), ArticleDetail(2L, "ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란?"))
+            )
+        )
 
         // when
         this.webTestClient.get()

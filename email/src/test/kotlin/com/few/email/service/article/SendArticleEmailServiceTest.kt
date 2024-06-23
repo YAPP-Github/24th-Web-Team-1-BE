@@ -1,7 +1,7 @@
-package com.few.email.service.problem
+package com.few.email.service.article
 
 import com.few.email.service.SendAEmailTestSpec
-import com.few.email.service.problem.dto.SendArticleEmailArgs
+import com.few.email.service.article.dto.SendArticleEmailArgs
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDateTime

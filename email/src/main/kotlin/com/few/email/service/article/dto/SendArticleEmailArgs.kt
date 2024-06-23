@@ -1,4 +1,4 @@
-package com.few.email.service.problem.dto
+package com.few.email.service.article.dto
 
 import com.few.email.sender.dto.SendMailArgs
 

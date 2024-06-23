@@ -24,6 +24,7 @@ class SubscriptionDao(
     fun updateDeletedAtInWorkbookSubscription(command: UpdateDeletedAtInWorkbookSubscriptionCommand) {
         dslContext.update(SUBSCRIPTION)
             .set(SUBSCRIPTION.DELETED_AT, LocalDateTime.now())
+            .set(SUBSCRIPTION.UNSUBS_OPINION, command.opinion)
             .where(SUBSCRIPTION.MEMBER_ID.eq(command.memberId))
             .and(SUBSCRIPTION.TARGET_WORKBOOK_ID.eq(command.workbookId))
             .execute()
@@ -34,6 +35,7 @@ class SubscriptionDao(
             .from(SUBSCRIPTION)
             .where(SUBSCRIPTION.MEMBER_ID.eq(query.memberId))
             .and(SUBSCRIPTION.TARGET_WORKBOOK_ID.eq(query.workbookId))
+            .and(SUBSCRIPTION.DELETED_AT.isNull)
             .fetchOne(0, Int::class.java) ?: 0
     }
 }

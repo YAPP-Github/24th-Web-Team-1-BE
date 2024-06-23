@@ -4,8 +4,8 @@ import com.few.batch.service.article.dto.WorkBookSubscriberItem
 import com.few.batch.service.article.dto.toMemberIds
 import com.few.batch.service.article.dto.toTargetWorkBookIds
 import com.few.batch.service.article.dto.toTargetWorkBookProgress
-import com.few.email.service.problem.SendArticleEmailService
-import com.few.email.service.problem.dto.SendArticleEmailArgs
+import com.few.email.service.article.SendArticleEmailService
+import com.few.email.service.article.dto.SendArticleEmailArgs
 import jooq.jooq_dsl.tables.ArticleIfo
 import jooq.jooq_dsl.tables.MappingWorkbookArticle
 import jooq.jooq_dsl.tables.Member

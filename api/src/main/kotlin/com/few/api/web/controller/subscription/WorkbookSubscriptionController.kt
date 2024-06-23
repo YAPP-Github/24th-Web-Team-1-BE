@@ -5,22 +5,26 @@ import com.few.api.web.controller.subscription.request.UnsubscribeWorkbookReques
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
 import com.few.api.domain.subscription.SubscribeWorkbookUseCase
+import com.few.api.domain.subscription.UnsubscribeAllUseCase
 import com.few.api.domain.subscription.UnsubscribeWorkbookUseCase
 import com.few.api.domain.subscription.`in`.SubscribeWorkbookUseCaseIn
+import com.few.api.domain.subscription.`in`.UnsubscribeAllUseCaseIn
 import com.few.api.domain.subscription.`in`.UnsubscribeWorkbookUseCaseIn
+import com.few.api.web.controller.subscription.request.UnsubscribeAllRequest
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
 @Validated
 @RestController
-@RequestMapping("/api/v1/workbooks")
+@RequestMapping("/api/v1/")
 class WorkbookSubscriptionController(
     private val subscribeWorkbookUseCase: SubscribeWorkbookUseCase,
-    private val unsubscribeWorkbookUseCase: UnsubscribeWorkbookUseCase
+    private val unsubscribeWorkbookUseCase: UnsubscribeWorkbookUseCase,
+    private val unsubscribeAllUseCase: UnsubscribeAllUseCase
 ) {
 
-    @PostMapping("{workbookId}/subs")
+    @PostMapping("workbooks/{workbookId}/subs")
     fun subscribe(
         @PathVariable(value = "workbookId") workbookId: Long,
         @RequestBody body: SubscribeWorkbookRequest
@@ -32,13 +36,24 @@ class WorkbookSubscriptionController(
         return ApiResponseGenerator.success(HttpStatus.OK)
     }
 
-    @PostMapping("{workbookId}/unsubs")
+    @PostMapping("workbooks/{workbookId}/unsubs")
     fun unsubscribe(
         @PathVariable(value = "workbookId") workbookId: Long,
         @RequestBody body: UnsubscribeWorkbookRequest
     ): ApiResponse<ApiResponse.Success> {
         unsubscribeWorkbookUseCase.execute(
             UnsubscribeWorkbookUseCaseIn(workbookId = workbookId, email = body.email, memberId = 1L, opinion = body.opinion) // TODO: memberId
+        )
+
+        return ApiResponseGenerator.success(HttpStatus.OK)
+    }
+
+    @PostMapping("subscriptions/all")
+    fun unsubscribeAll(
+        @RequestBody body: UnsubscribeAllRequest
+    ): ApiResponse<ApiResponse.Success> {
+        unsubscribeAllUseCase.execute(
+            UnsubscribeAllUseCaseIn(memberId = 1L, opinion = body.opinion) // TODO: memberId
         )
 
         return ApiResponseGenerator.success(HttpStatus.OK)

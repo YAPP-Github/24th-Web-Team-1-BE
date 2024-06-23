@@ -1,6 +1,7 @@
 package com.few.api.repo.dao.subscription
 
 import com.few.api.repo.dao.subscription.command.InsertWorkbookSubscriptionCommand
+import com.few.api.repo.dao.subscription.command.UpdateDeletedAtInAllSubscriptionCommand
 import com.few.api.repo.dao.subscription.command.UpdateDeletedAtInWorkbookSubscriptionCommand
 import com.few.api.repo.dao.subscription.query.CountWorkbookSubscriptionQuery
 import jooq.jooq_dsl.Tables.SUBSCRIPTION
@@ -35,5 +36,13 @@ class SubscriptionDao(
             .where(SUBSCRIPTION.MEMBER_ID.eq(query.memberId))
             .and(SUBSCRIPTION.TARGET_WORKBOOK_ID.eq(query.workbookId))
             .fetchOne(0, Int::class.java) ?: 0
+    }
+
+    fun updateDeletedAtInAllSubscription(command: UpdateDeletedAtInAllSubscriptionCommand) {
+        dslContext.update(SUBSCRIPTION)
+            .set(SUBSCRIPTION.DELETED_AT, LocalDateTime.now())
+            .set(SUBSCRIPTION.UNSUBS_OPINION, command.opinion) // TODO: opinion row 마다 중복 해결
+            .where(SUBSCRIPTION.MEMBER_ID.eq(command.memberId))
+            .execute()
     }
 }

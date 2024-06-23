@@ -9,10 +9,19 @@ import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
 import com.few.api.web.controller.problem.request.CheckProblemBody
+import com.few.api.web.usecase.problem.CheckProblemUseCase
+import com.few.api.web.usecase.problem.ReadProblemUseCase
+import com.few.api.web.usecase.problem.`in`.CheckProblemUseCaseIn
+import com.few.api.web.usecase.problem.`in`.ReadProblemUseCaseIn
+import com.few.api.web.usecase.problem.out.CheckProblemUseCaseOut
+import com.few.api.web.usecase.problem.out.ReadProblemContentsUseCaseOutDetail
+import com.few.api.web.usecase.problem.out.ReadProblemUseCaseOut
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.payload.PayloadDocumentation
@@ -29,6 +38,12 @@ class ProblemControllerTest : ControllerTestSpec() {
 
     @Autowired
     private lateinit var problemController: ProblemController
+
+    @MockBean
+    private lateinit var readProblemUseCase: ReadProblemUseCase
+
+    @MockBean
+    private lateinit var checkProblemUseCase: CheckProblemUseCase
 
     companion object {
         private val BASE_URL = "/api/v1/problems"
@@ -47,14 +62,29 @@ class ProblemControllerTest : ControllerTestSpec() {
 
     @Test
     @DisplayName("[GET] /api/v1/problems/{problemId}")
-    fun readArticle() {
+    fun readProblem() {
         // given
         val api = "ReadProblem"
         val uri = UriComponentsBuilder.newInstance()
             .path("$BASE_URL/{problemId}")
             .build()
             .toUriString()
+
         // set usecase mock
+        val problemId = 1L
+        val useCaseIn = ReadProblemUseCaseIn(problemId)
+        val useCaseOut = ReadProblemUseCaseOut(
+            id = problemId,
+            title = "ETF(상장지수펀드)의 특징이 아닌것은?",
+            contents = listOf(
+                ReadProblemContentsUseCaseOutDetail(1L, "분산투자"),
+                ReadProblemContentsUseCaseOutDetail(2L, "높은 운용 비용"),
+                ReadProblemContentsUseCaseOutDetail(3L, "유동성"),
+                ReadProblemContentsUseCaseOutDetail(4L, "투명성")
+            )
+        )
+        Mockito.`when`(readProblemUseCase.execute(useCaseIn))
+            .thenReturn(useCaseOut)
 
         // when
         this.webTestClient.get()
@@ -107,7 +137,18 @@ class ProblemControllerTest : ControllerTestSpec() {
             .path("$BASE_URL/{problemId}").build().toUriString()
 
         val body = objectMapper.writeValueAsString(CheckProblemBody(sub = "sub"))
+
         // set usecase mock
+        val problemId = 1L
+        val sub = "제출답"
+        val useCaseIn = CheckProblemUseCaseIn(problemId, sub = sub)
+        val useCaseOut = CheckProblemUseCaseOut(
+            explanation = "ETF는 일반적으로 낮은 운용 비용을 특징으로 합니다.이는 ETF가 보통 지수 추종(passive management) 방식으로 운용되기 때문입니다. 지수를 추종하는 전략은 액티브 매니지먼트(active management)에 비해 관리가 덜 복잡하고, 따라서 비용이 낮습니다.",
+            answer = "2",
+            isSolved = true
+        )
+        Mockito.`when`(checkProblemUseCase.execute(useCaseIn))
+            .thenReturn(useCaseOut)
 
         // when
         this.webTestClient.post()

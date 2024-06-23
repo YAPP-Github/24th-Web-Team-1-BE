@@ -1,19 +1,14 @@
 package com.few.api.web.controller.workbook
 
-import com.few.api.web.controller.workbook.request.CancelSubWorkBookBody
-import com.few.api.web.controller.workbook.request.SubWorkBookBody
 import com.few.api.web.controller.workbook.response.ArticleInfo
 import com.few.api.web.controller.workbook.response.ReadWorkBookResponse
 import com.few.api.web.controller.workbook.response.WriterInfo
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
-import com.few.api.web.support.MessageCode
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.net.URL
@@ -43,15 +38,5 @@ class WorkBookController {
             articles = listOf(ArticleInfo(1L, "ISA(개인종합자산관리계좌)란?"), ArticleInfo(2L, "ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란?"))
         )
         return ApiResponseGenerator.success(data, HttpStatus.OK)
-    }
-
-    @PostMapping("/{workbookId}/subs")
-    fun subWorkBook(@RequestBody body: SubWorkBookBody): ApiResponse<ApiResponse.Success> {
-        return ApiResponseGenerator.success(HttpStatus.CREATED)
-    }
-
-    @PostMapping("/{workbookId}/csubs")
-    fun cancelSubWorkBook(@RequestBody body: CancelSubWorkBookBody): ApiResponse<ApiResponse.Success> {
-        return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED)
     }
 }

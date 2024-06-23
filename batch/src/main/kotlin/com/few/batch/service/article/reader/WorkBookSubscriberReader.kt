@@ -4,6 +4,7 @@ import com.few.batch.service.article.dto.WorkBookSubscriberItem
 import jooq.jooq_dsl.tables.Subscription
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
 @Component
 class WorkBookSubscriberReader(
@@ -11,6 +12,7 @@ class WorkBookSubscriberReader(
 ) {
 
     /** 구독 테이블에서 학습지를 구독하고 있는 회원의 정보를 조회한다.*/
+    @Transactional(readOnly = true)
     fun execute(): List<WorkBookSubscriberItem> {
         val subscriptionT = Subscription.SUBSCRIPTION
 

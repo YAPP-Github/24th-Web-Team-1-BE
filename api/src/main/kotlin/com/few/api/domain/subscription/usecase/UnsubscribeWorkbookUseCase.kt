@@ -21,7 +21,11 @@ class UnsubscribeWorkbookUseCase(
         val memberId = memberService.getMemberId(GetMemberIdDto(useCaseIn.email))
 
         subscriptionDao.updateDeletedAtInWorkbookSubscription(
-            UpdateDeletedAtInWorkbookSubscriptionCommand(memberId = memberId, workbookId = useCaseIn.workbookId)
+            UpdateDeletedAtInWorkbookSubscriptionCommand(
+                memberId = memberId,
+                workbookId = useCaseIn.workbookId,
+                opinion = useCaseIn.opinion
+            )
         )
     }
 }

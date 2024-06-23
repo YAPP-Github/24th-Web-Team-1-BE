@@ -1,7 +1,7 @@
-package com.few.email.service.problem
+package com.few.email.service.article
 
 import com.few.email.sender.SendEmailSender
-import com.few.email.service.problem.dto.SendArticleEmailArgs
+import com.few.email.service.article.dto.SendArticleEmailArgs
 import org.springframework.boot.autoconfigure.mail.MailProperties
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.stereotype.Component

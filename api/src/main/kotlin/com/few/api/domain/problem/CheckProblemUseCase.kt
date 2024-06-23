@@ -1,11 +1,11 @@
-package com.few.api.web.usecase.problem
+package com.few.api.domain.problem
 
 import com.few.api.repo.dao.problem.ProblemDao
 import com.few.api.repo.dao.problem.SubmitHistoryDao
 import com.few.api.repo.dao.problem.command.InsertSubmitHistoryCommand
 import com.few.api.repo.dao.problem.query.SelectProblemAnswerQuery
-import com.few.api.web.usecase.problem.`in`.CheckProblemUseCaseIn
-import com.few.api.web.usecase.problem.out.CheckProblemUseCaseOut
+import com.few.api.domain.problem.`in`.CheckProblemUseCaseIn
+import com.few.api.domain.problem.out.CheckProblemUseCaseOut
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 

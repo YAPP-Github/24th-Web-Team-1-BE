@@ -1,6 +1,6 @@
-package com.few.api.domain.member.service
+package com.few.api.domain.subscription.service
 
-import com.few.api.domain.member.service.dto.GetMemberIdDto
+import com.few.api.domain.subscription.service.dto.GetMemberIdDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

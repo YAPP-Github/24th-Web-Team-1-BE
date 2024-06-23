@@ -1,10 +1,10 @@
-package com.few.api.domain.subscription
+package com.few.api.domain.subscription.usecase
 
-import com.few.api.domain.member.service.MemberService
-import com.few.api.domain.member.service.dto.GetMemberIdDto
+import com.few.api.domain.subscription.service.MemberService
+import com.few.api.domain.subscription.service.dto.GetMemberIdDto
 import com.few.api.repo.dao.subscription.SubscriptionDao
 import com.few.api.repo.dao.subscription.command.UpdateDeletedAtInWorkbookSubscriptionCommand
-import com.few.api.domain.subscription.`in`.UnsubscribeWorkbookUseCaseIn
+import com.few.api.domain.subscription.usecase.`in`.UnsubscribeWorkbookUseCaseIn
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 

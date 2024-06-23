@@ -1,9 +1,9 @@
-package com.few.api.domain.subscription
+package com.few.api.domain.subscription.usecase
 
 import com.few.api.repo.dao.subscription.SubscriptionDao
 import com.few.api.repo.dao.subscription.command.InsertWorkbookSubscriptionCommand
 import com.few.api.repo.dao.subscription.query.CountWorkbookSubscriptionQuery
-import com.few.api.domain.subscription.`in`.SubscribeWorkbookUseCaseIn
+import com.few.api.domain.subscription.usecase.`in`.SubscribeWorkbookUseCaseIn
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 

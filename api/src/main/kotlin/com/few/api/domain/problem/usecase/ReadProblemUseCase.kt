@@ -1,12 +1,12 @@
-package com.few.api.domain.problem
+package com.few.api.domain.problem.usecase
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.few.api.repo.dao.problem.ProblemDao
 import com.few.api.repo.dao.problem.query.SelectProblemQuery
-import com.few.api.domain.problem.`in`.ReadProblemUseCaseIn
-import com.few.api.domain.problem.out.ReadProblemContentsUseCaseOutDetail
-import com.few.api.domain.problem.out.ReadProblemUseCaseOut
+import com.few.api.domain.problem.usecase.`in`.ReadProblemUseCaseIn
+import com.few.api.domain.problem.usecase.out.ReadProblemContentsUseCaseOutDetail
+import com.few.api.domain.problem.usecase.out.ReadProblemUseCaseOut
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 

@@ -1,5 +1,6 @@
 package com.few.api.web.controller.workbook.response
 
+import com.few.api.domain.workbook.dto.ReadWorkbookUseCaseOut
 import java.net.URL
 import java.time.LocalDateTime
 
@@ -12,7 +13,19 @@ data class ReadWorkBookResponse(
     val createdAt: LocalDateTime,
     val writers: List<WriterInfo>,
     val articles: List<ArticleInfo>
-)
+) {
+    constructor(useCaseOut: ReadWorkbookUseCaseOut) :
+        this(
+            id = useCaseOut.id,
+            mainImageUrl = useCaseOut.mainImageUrl,
+            title = useCaseOut.title,
+            description = useCaseOut.description,
+            category = useCaseOut.category,
+            createdAt = useCaseOut.createdAt,
+            writers = useCaseOut.writers.map { WriterInfo(it.id, it.name, it.url) },
+            articles = useCaseOut.articles.map { ArticleInfo(it.id, it.title) }
+        )
+}
 
 data class ArticleInfo(
     val id: Long,

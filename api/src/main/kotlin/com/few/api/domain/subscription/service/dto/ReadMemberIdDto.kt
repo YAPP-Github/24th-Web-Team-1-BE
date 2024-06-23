@@ -1,5 +1,5 @@
 package com.few.api.domain.subscription.service.dto
 
-data class readMemberIdDto(
+data class ReadMemberIdDto(
     val email: String
 )

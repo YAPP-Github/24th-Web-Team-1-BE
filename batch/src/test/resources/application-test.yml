@@ -1,0 +1,18 @@
+logging:
+  level:
+    org.jooq: DEBUG
+    org.springframework.jdbc: DEBUG
+    com.few.batch: DEBUG
+    org.testcontainers: INFO
+
+spring:
+    datasource:
+        jdbcUrl:  jdbc:mysql://localhost:13306/api?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+        username: root
+        password: root
+        driver-class-name: com.mysql.cj.jdbc.Driver
+    flyway:
+        locations: classpath:db/migration/entity
+        sql-migration-suffixes: sql
+        baseline-on-migrate: true
+        baseline-version: 0

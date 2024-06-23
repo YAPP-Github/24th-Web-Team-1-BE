@@ -22,7 +22,7 @@ class SubscribeWorkbookUseCase(
         // TODO: request sending email
 
         val memberId = memberService.readMemberId(ReadMemberIdDto(useCaseIn.email)) ?: memberService.insertMember(
-            InsertMemberDto(useCaseIn.email, MemberType.NORMAL_USER)
+            InsertMemberDto(useCaseIn.email, MemberType.NORMAL)
         )
 
         // 이미 구독중인지 확인

@@ -1,6 +1,6 @@
 package com.few.api.web.controller
 
-import com.few.ApiMain
+import com.few.api.ApiMain
 import com.few.api.web.handler.ApiControllerExceptionHandler
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired

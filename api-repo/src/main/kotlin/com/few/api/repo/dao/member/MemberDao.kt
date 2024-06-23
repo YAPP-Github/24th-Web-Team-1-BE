@@ -23,6 +23,7 @@ class MemberDao(
             .from(Member.MEMBER)
             .where(Member.MEMBER.ID.eq(writerId))
             .and(Member.MEMBER.TYPE_CD.eq(1)) // todo fix after considering the type_cd
+            .and(Member.MEMBER.DELETED_AT.isNull)
             .fetchOneInto(WriterRecord::class.java)
             ?: throw IllegalArgumentException("cannot find writer record by writerId: $writerId")
     }

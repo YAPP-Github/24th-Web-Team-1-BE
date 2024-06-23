@@ -1,4 +1,4 @@
-package com.few.api.web.usecase.problem.`in`
+package com.few.api.domain.problem.usecase.`in`
 
 data class ReadProblemUseCaseIn(
     val problemId: Long

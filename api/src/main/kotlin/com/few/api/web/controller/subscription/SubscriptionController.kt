@@ -25,7 +25,7 @@ class SubscriptionController(
 ) {
 
     @PostMapping("workbooks/{workbookId}/subs")
-    fun subscribe(
+    fun subscribeWorkbook(
         @PathVariable(value = "workbookId") workbookId: Long,
         @RequestBody body: SubscribeWorkbookRequest
     ): ApiResponse<ApiResponse.Success> {
@@ -37,7 +37,7 @@ class SubscriptionController(
     }
 
     @PostMapping("workbooks/{workbookId}/unsubs")
-    fun unsubscribe(
+    fun unsubscribeWorkbook(
         @PathVariable(value = "workbookId") workbookId: Long,
         @RequestBody body: UnsubscribeWorkbookRequest
     ): ApiResponse<ApiResponse.Success> {
@@ -49,7 +49,7 @@ class SubscriptionController(
     }
 
     @PostMapping("subscriptions/unsubs")
-    fun unsubscribeAll(
+    fun deactivateAllSubscriptions(
         @RequestBody body: UnsubscribeAllRequest
     ): ApiResponse<ApiResponse.Success> {
         unsubscribeAllUseCase.execute(

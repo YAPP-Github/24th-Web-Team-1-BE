@@ -71,7 +71,7 @@ class SubscriptionControllerTest : ControllerTestSpec() {
 
     @Test
     @DisplayName("[POST] /api/v1/workbooks/{workbookId}/subs")
-    fun subWorkBook() {
+    fun subscribeWorkbook() {
         // given
         val api = "SubscribeWorkBook"
         val uri = UriComponentsBuilder.newInstance()
@@ -118,7 +118,7 @@ class SubscriptionControllerTest : ControllerTestSpec() {
 
     @Test
     @DisplayName("[POST] /api/v1/workbooks/{workbookId}/unsubs")
-    fun cancelSubWorkBook() {
+    fun unsubscribeWorkbook() {
         // given
         val api = "UnsubscribeWorkBook"
         val uri = UriComponentsBuilder.newInstance()
@@ -174,7 +174,7 @@ class SubscriptionControllerTest : ControllerTestSpec() {
 
     @Test
     @DisplayName("[POST] /api/v1/subscriptions/unsubs")
-    fun cancelSubAll() {
+    fun deactivateAllSubscriptions() {
         // given
         val api = "UnsubscribeAll"
         val uri = UriComponentsBuilder.newInstance()

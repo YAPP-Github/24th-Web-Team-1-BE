@@ -29,6 +29,7 @@ class ArticleDao(
             .join(ArticleIfo.ARTICLE_IFO)
             .on(ArticleMst.ARTICLE_MST.ID.eq(ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID))
             .where(ArticleMst.ARTICLE_MST.ID.eq(articleId))
+            .and(ArticleMst.ARTICLE_MST.DELETED_AT.isNull)
             .fetchOneInto(SelectArticleRecord::class.java)
             ?: throw IllegalArgumentException("cannot find article record by articleId: $articleId")
     }
@@ -57,6 +58,7 @@ class ArticleDao(
             .on(mappingWorkbookArticle.WORKBOOK_ID.eq(workbookId))
             .and(mappingWorkbookArticle.ARTICLE_ID.eq(articleMst.ID))
             .where(articleMst.ID.eq(articleId))
+            .and(articleMst.DELETED_AT.isNull)
             .fetchOneInto(SelectWorkBookArticleRecord::class.java)
             ?: throw IllegalArgumentException("cannot find $workbookId article record by articleId: $articleId")
     }

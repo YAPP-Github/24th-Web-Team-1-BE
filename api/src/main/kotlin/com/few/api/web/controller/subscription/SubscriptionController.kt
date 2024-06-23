@@ -30,7 +30,7 @@ class SubscriptionController(
         @RequestBody body: SubscribeWorkbookRequest
     ): ApiResponse<ApiResponse.Success> {
         subscribeWorkbookUseCase.execute(
-            SubscribeWorkbookUseCaseIn(workbookId = workbookId, email = body.email, memberId = 1L) // TODO: memberId
+            SubscribeWorkbookUseCaseIn(workbookId = workbookId, email = body.email) // TODO: memberId
         )
 
         return ApiResponseGenerator.success(HttpStatus.OK)

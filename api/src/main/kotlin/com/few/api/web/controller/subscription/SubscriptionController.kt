@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*
 @Validated
 @RestController
 @RequestMapping("/api/v1/")
-class WorkbookSubscriptionController(
+class SubscriptionController(
     private val subscribeWorkbookUseCase: SubscribeWorkbookUseCase,
     private val unsubscribeWorkbookUseCase: UnsubscribeWorkbookUseCase,
     private val unsubscribeAllUseCase: UnsubscribeAllUseCase

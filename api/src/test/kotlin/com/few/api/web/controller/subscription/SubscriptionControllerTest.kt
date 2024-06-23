@@ -32,7 +32,7 @@ import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.util.UriComponentsBuilder
 
-class WorkbookSubscriptionControllerTest : ControllerTestSpec() {
+class SubscriptionControllerTest : ControllerTestSpec() {
 
     @Autowired
     private lateinit var objectMapper: ObjectMapper
@@ -40,7 +40,7 @@ class WorkbookSubscriptionControllerTest : ControllerTestSpec() {
     private lateinit var webTestClient: WebTestClient
 
     @Autowired
-    private lateinit var workbookSubscriptionController: WorkbookSubscriptionController
+    private lateinit var subscriptionController: SubscriptionController
 
     @MockBean
     private lateinit var subscribeWorkbookUseCase: SubscribeWorkbookUseCase
@@ -59,7 +59,7 @@ class WorkbookSubscriptionControllerTest : ControllerTestSpec() {
     @BeforeEach
     fun setUp(restDocumentation: RestDocumentationContextProvider) {
         webTestClient = WebTestClient
-            .bindToController(workbookSubscriptionController)
+            .bindToController(subscriptionController)
             .controllerAdvice(super.apiControllerExceptionHandler).httpMessageCodecs {
                 it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(objectMapper))
                 it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(objectMapper))
@@ -75,7 +75,7 @@ class WorkbookSubscriptionControllerTest : ControllerTestSpec() {
         // given
         val api = "SubscribeWorkBook"
         val uri = UriComponentsBuilder.newInstance()
-            .path("${WorkbookSubscriptionControllerTest.BASE_URL}/workbooks/{workbookId}/subs").build().toUriString()
+            .path("${SubscriptionControllerTest.BASE_URL}/workbooks/{workbookId}/subs").build().toUriString()
 
         val email = "test@gmail.com"
         val body = objectMapper.writeValueAsString(SubscribeWorkbookRequest(email = email))
@@ -122,7 +122,7 @@ class WorkbookSubscriptionControllerTest : ControllerTestSpec() {
         // given
         val api = "UnsubscribeWorkBook"
         val uri = UriComponentsBuilder.newInstance()
-            .path("${WorkbookSubscriptionControllerTest.BASE_URL}/workbooks/{workbookId}/unsubs")
+            .path("${SubscriptionControllerTest.BASE_URL}/workbooks/{workbookId}/unsubs")
             .build()
             .toUriString()
 
@@ -139,7 +139,6 @@ class WorkbookSubscriptionControllerTest : ControllerTestSpec() {
         val useCaseIn = UnsubscribeWorkbookUseCaseIn(
             workbookId = workbookId,
             email = email,
-            memberId = memberId,
             opinion = "취소합니다."
         )
         doNothing().`when`(unsubscribeWorkbookUseCase.execute(useCaseIn))
@@ -179,7 +178,7 @@ class WorkbookSubscriptionControllerTest : ControllerTestSpec() {
         // given
         val api = "UnsubscribeAll"
         val uri = UriComponentsBuilder.newInstance()
-            .path("${WorkbookSubscriptionControllerTest.BASE_URL}/subscriptions/unsubs")
+            .path("${SubscriptionControllerTest.BASE_URL}/subscriptions/unsubs")
             .build()
             .toUriString()
 
@@ -193,7 +192,6 @@ class WorkbookSubscriptionControllerTest : ControllerTestSpec() {
         val memberId = 1L
         val useCaseIn = UnsubscribeAllUseCaseIn(
             email = email,
-            memberId = memberId,
             opinion = "취소합니다."
         )
         doNothing().`when`(unsubscribeAllUseCase.execute(useCaseIn))

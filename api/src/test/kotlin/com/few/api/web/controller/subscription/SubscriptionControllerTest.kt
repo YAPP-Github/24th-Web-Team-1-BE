@@ -12,10 +12,12 @@ import com.few.api.web.controller.helper.toRequestSchema
 import com.few.api.web.controller.helper.toResponseSchema
 import com.few.api.web.controller.subscription.request.SubscribeWorkbookRequest
 import com.few.api.web.controller.subscription.request.UnsubscribeWorkbookRequest
-import com.few.api.domain.subscription.SubscribeWorkbookUseCase
-import com.few.api.domain.subscription.UnsubscribeWorkbookUseCase
-import com.few.api.domain.subscription.`in`.SubscribeWorkbookUseCaseIn
-import com.few.api.domain.subscription.`in`.UnsubscribeWorkbookUseCaseIn
+import com.few.api.domain.subscription.usecase.SubscribeWorkbookUseCase
+import com.few.api.domain.subscription.usecase.UnsubscribeAllUseCase
+import com.few.api.domain.subscription.usecase.UnsubscribeWorkbookUseCase
+import com.few.api.domain.subscription.usecase.`in`.SubscribeWorkbookUseCaseIn
+import com.few.api.domain.subscription.usecase.`in`.UnsubscribeAllUseCaseIn
+import com.few.api.domain.subscription.usecase.`in`.UnsubscribeWorkbookUseCaseIn
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -30,7 +32,7 @@ import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.util.UriComponentsBuilder
 
-class WorkbookSubscriptionControllerTest : ControllerTestSpec() {
+class SubscriptionControllerTest : ControllerTestSpec() {
 
     @Autowired
     private lateinit var objectMapper: ObjectMapper
@@ -38,7 +40,7 @@ class WorkbookSubscriptionControllerTest : ControllerTestSpec() {
     private lateinit var webTestClient: WebTestClient
 
     @Autowired
-    private lateinit var workbookSubscriptionController: WorkbookSubscriptionController
+    private lateinit var subscriptionController: SubscriptionController
 
     @MockBean
     private lateinit var subscribeWorkbookUseCase: SubscribeWorkbookUseCase
@@ -46,15 +48,18 @@ class WorkbookSubscriptionControllerTest : ControllerTestSpec() {
     @MockBean
     private lateinit var unsubscribeWorkbookUseCase: UnsubscribeWorkbookUseCase
 
+    @MockBean
+    private lateinit var unsubscribeAllUseCase: UnsubscribeAllUseCase
+
     companion object {
-        private val BASE_URL = "/api/v1/workbooks"
+        private val BASE_URL = "/api/v1/"
         private val TAG = "WorkbookSubscriptionController"
     }
 
     @BeforeEach
     fun setUp(restDocumentation: RestDocumentationContextProvider) {
         webTestClient = WebTestClient
-            .bindToController(workbookSubscriptionController)
+            .bindToController(subscriptionController)
             .controllerAdvice(super.apiControllerExceptionHandler).httpMessageCodecs {
                 it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(objectMapper))
                 it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(objectMapper))
@@ -66,11 +71,11 @@ class WorkbookSubscriptionControllerTest : ControllerTestSpec() {
 
     @Test
     @DisplayName("[POST] /api/v1/workbooks/{workbookId}/subs")
-    fun subWorkBook() {
+    fun subscribeWorkbook() {
         // given
         val api = "SubscribeWorkBook"
         val uri = UriComponentsBuilder.newInstance()
-            .path("${WorkbookSubscriptionControllerTest.BASE_URL}/{workbookId}/subs").build().toUriString()
+            .path("${SubscriptionControllerTest.BASE_URL}/workbooks/{workbookId}/subs").build().toUriString()
 
         val email = "test@gmail.com"
         val body = objectMapper.writeValueAsString(SubscribeWorkbookRequest(email = email))
@@ -113,11 +118,11 @@ class WorkbookSubscriptionControllerTest : ControllerTestSpec() {
 
     @Test
     @DisplayName("[POST] /api/v1/workbooks/{workbookId}/unsubs")
-    fun cancelSubWorkBook() {
+    fun unsubscribeWorkbook() {
         // given
         val api = "UnsubscribeWorkBook"
         val uri = UriComponentsBuilder.newInstance()
-            .path("${WorkbookSubscriptionControllerTest.BASE_URL}/{workbookId}/unsubs")
+            .path("${SubscriptionControllerTest.BASE_URL}/workbooks/{workbookId}/unsubs")
             .build()
             .toUriString()
 
@@ -134,7 +139,6 @@ class WorkbookSubscriptionControllerTest : ControllerTestSpec() {
         val useCaseIn = UnsubscribeWorkbookUseCaseIn(
             workbookId = workbookId,
             email = email,
-            memberId = memberId,
             opinion = "취소합니다."
         )
         doNothing().`when`(unsubscribeWorkbookUseCase.execute(useCaseIn))
@@ -158,6 +162,58 @@ class WorkbookSubscriptionControllerTest : ControllerTestSpec() {
                             .tag(TAG)
                             .requestSchema(Schema.schema(api.toRequestSchema()))
                             .pathParameters(parameterWithName("workbookId").description("학습지 Id"))
+                            .responseSchema(Schema.schema(api.toResponseSchema()))
+                            .responseFields(
+                                *Description.describe()
+                            )
+                            .build()
+                    )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("[POST] /api/v1/subscriptions/unsubs")
+    fun deactivateAllSubscriptions() {
+        // given
+        val api = "UnsubscribeAll"
+        val uri = UriComponentsBuilder.newInstance()
+            .path("${SubscriptionControllerTest.BASE_URL}/subscriptions/unsubs")
+            .build()
+            .toUriString()
+
+        // set usecase mock
+        val email = "test@gmail.com"
+        val body = objectMapper.writeValueAsString(
+            UnsubscribeWorkbookRequest(email = email, opinion = "전체 수신거부합니다.")
+        )
+
+        // set usecase mock
+        val memberId = 1L
+        val useCaseIn = UnsubscribeAllUseCaseIn(
+            email = email,
+            opinion = "취소합니다."
+        )
+        doNothing().`when`(unsubscribeAllUseCase.execute(useCaseIn))
+
+        // when
+        this.webTestClient.post()
+            .uri(uri, 1)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange().expectStatus().is2xxSuccessful()
+            .expectBody().consumeWith(
+                WebTestClientRestDocumentation.document(
+                    api.toIdentifier(),
+                    ResourceDocumentation.resource(
+                        ResourceSnippetParameters.builder()
+                            .description("학습지 구독을 취소합니다.")
+                            .summary(api.toIdentifier())
+                            .privateResource(false)
+                            .deprecated(false)
+                            .tag(TAG)
+                            .requestSchema(Schema.schema(api.toRequestSchema()))
                             .responseSchema(Schema.schema(api.toResponseSchema()))
                             .responseFields(
                                 *Description.describe()

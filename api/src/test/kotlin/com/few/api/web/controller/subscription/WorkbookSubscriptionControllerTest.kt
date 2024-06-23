@@ -12,10 +12,10 @@ import com.few.api.web.controller.helper.toRequestSchema
 import com.few.api.web.controller.helper.toResponseSchema
 import com.few.api.web.controller.subscription.request.SubscribeWorkbookRequest
 import com.few.api.web.controller.subscription.request.UnsubscribeWorkbookRequest
-import com.few.api.web.usecase.subscription.SubscribeWorkbookUseCase
-import com.few.api.web.usecase.subscription.UnsubscribeWorkbookUseCase
-import com.few.api.web.usecase.subscription.`in`.SubscribeWorkbookUseCaseIn
-import com.few.api.web.usecase.subscription.`in`.UnsubscribeWorkbookUseCaseIn
+import com.few.api.domain.subscription.SubscribeWorkbookUseCase
+import com.few.api.domain.subscription.UnsubscribeWorkbookUseCase
+import com.few.api.domain.subscription.`in`.SubscribeWorkbookUseCaseIn
+import com.few.api.domain.subscription.`in`.UnsubscribeWorkbookUseCaseIn
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

@@ -1,32 +1,32 @@
-package com.few.api.web.usecase.subscription
+package com.few.api.domain.subscription
 
 import com.few.api.repo.dao.subscription.SubscriptionDao
-import com.few.api.repo.dao.subscription.command.InsertWorkbookSubscriptionCommand
+import com.few.api.repo.dao.subscription.command.UpdateDeletedAtInWorkbookSubscriptionCommand
 import com.few.api.repo.dao.subscription.query.CountWorkbookSubscriptionQuery
-import com.few.api.web.usecase.subscription.`in`.SubscribeWorkbookUseCaseIn
+import com.few.api.domain.subscription.`in`.UnsubscribeWorkbookUseCaseIn
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
 @Component
-class SubscribeWorkbookUseCase(
+class UnsubscribeWorkbookUseCase(
     private val subscriptionDao: SubscriptionDao
 ) {
 
     @Transactional
-    fun execute(useCaseIn: SubscribeWorkbookUseCaseIn) {
+    fun execute(useCaseIn: UnsubscribeWorkbookUseCaseIn) {
         // TODO: request sending email
 
-        // 이미 구독중인지 확인
+        // 구독중이 아닌지 확인
         CountWorkbookSubscriptionQuery(memberId = useCaseIn.memberId, workbookId = useCaseIn.workbookId).let { query ->
             subscriptionDao.selectCountWorkbookSubscription(query).let { cnt ->
-                if (cnt > 0) {
+                if (cnt == 0) {
                     throw RuntimeException("Already subscribed")
                 }
             }
         }
 
-        subscriptionDao.insertWorkbookSubscription(
-            InsertWorkbookSubscriptionCommand(memberId = useCaseIn.memberId, workbookId = useCaseIn.workbookId)
+        subscriptionDao.updateDeletedAtInWorkbookSubscription(
+            UpdateDeletedAtInWorkbookSubscriptionCommand(memberId = useCaseIn.memberId, workbookId = useCaseIn.workbookId)
         )
     }
 }

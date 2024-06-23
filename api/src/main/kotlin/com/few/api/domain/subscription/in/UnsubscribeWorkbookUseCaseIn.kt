@@ -1,4 +1,4 @@
-package com.few.api.web.usecase.subscription.`in`
+package com.few.api.domain.subscription.`in`
 
 data class UnsubscribeWorkbookUseCaseIn(
     val workbookId: Long,

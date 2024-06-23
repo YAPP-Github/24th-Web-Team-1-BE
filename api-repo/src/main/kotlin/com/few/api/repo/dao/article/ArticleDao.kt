@@ -2,8 +2,10 @@ package com.few.api.repo.dao.article
 
 import com.few.api.repo.dao.article.query.SelectArticleRecordQuery
 import com.few.api.repo.dao.article.query.SelectWorkBookArticleRecordQuery
+import com.few.api.repo.dao.article.query.SelectWorkbookMappedArticleRecordsQuery
 import com.few.api.repo.dao.article.record.SelectArticleRecord
 import com.few.api.repo.dao.article.record.SelectWorkBookArticleRecord
+import com.few.api.repo.dao.article.record.SelectWorkBookMappedArticleRecord
 import jooq.jooq_dsl.tables.ArticleIfo
 import jooq.jooq_dsl.tables.ArticleMst
 import jooq.jooq_dsl.tables.MappingWorkbookArticle
@@ -61,5 +63,27 @@ class ArticleDao(
             .and(articleMst.DELETED_AT.isNull)
             .fetchOneInto(SelectWorkBookArticleRecord::class.java)
             ?: throw IllegalArgumentException("cannot find $workbookId article record by articleId: $articleId")
+    }
+
+    fun selectWorkbookMappedArticleRecords(query: SelectWorkbookMappedArticleRecordsQuery): List<SelectWorkBookMappedArticleRecord> {
+        val workbookId = query.workbookId
+
+        return dslContext.select(
+            ArticleMst.ARTICLE_MST.ID.`as`(SelectWorkBookArticleRecord::articleId.name),
+            ArticleMst.ARTICLE_MST.MEMBER_ID.`as`(SelectWorkBookArticleRecord::writerId.name),
+            ArticleMst.ARTICLE_MST.MAIN_IMAGE_URL.`as`(SelectWorkBookArticleRecord::mainImageURL.name),
+            ArticleMst.ARTICLE_MST.TITLE.`as`(SelectWorkBookArticleRecord::title.name),
+            ArticleMst.ARTICLE_MST.CATEGORY_CD.`as`(SelectWorkBookArticleRecord::category.name),
+            ArticleIfo.ARTICLE_IFO.CONTENT.`as`(SelectWorkBookArticleRecord::content.name),
+            ArticleMst.ARTICLE_MST.CREATED_AT.`as`(SelectWorkBookArticleRecord::createdAt.name),
+            MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.DAY_COL.`as`(SelectWorkBookArticleRecord::day.name)
+        )
+            .from(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE)
+            .leftJoin(ArticleMst.ARTICLE_MST)
+            .on(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.ARTICLE_ID.eq(ArticleMst.ARTICLE_MST.ID))
+            .leftJoin(ArticleIfo.ARTICLE_IFO)
+            .on(ArticleMst.ARTICLE_MST.ID.eq(ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID))
+            .where(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.eq(workbookId))
+            .fetchInto(SelectWorkBookMappedArticleRecord::class.java)
     }
 }

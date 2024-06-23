@@ -48,12 +48,12 @@ class WorkbookSubscriptionController(
         return ApiResponseGenerator.success(HttpStatus.OK)
     }
 
-    @PostMapping("subscriptions/all")
+    @PostMapping("subscriptions/unsubs")
     fun unsubscribeAll(
         @RequestBody body: UnsubscribeAllRequest
     ): ApiResponse<ApiResponse.Success> {
         unsubscribeAllUseCase.execute(
-            UnsubscribeAllUseCaseIn(memberId = 1L, opinion = body.opinion) // TODO: memberId
+            UnsubscribeAllUseCaseIn(memberId = 1L, email = body.email, opinion = body.opinion) // TODO: memberId
         )
 
         return ApiResponseGenerator.success(HttpStatus.OK)

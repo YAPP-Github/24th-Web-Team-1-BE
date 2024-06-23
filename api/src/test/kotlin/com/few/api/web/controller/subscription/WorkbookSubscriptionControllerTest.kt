@@ -13,8 +13,10 @@ import com.few.api.web.controller.helper.toResponseSchema
 import com.few.api.web.controller.subscription.request.SubscribeWorkbookRequest
 import com.few.api.web.controller.subscription.request.UnsubscribeWorkbookRequest
 import com.few.api.domain.subscription.SubscribeWorkbookUseCase
+import com.few.api.domain.subscription.UnsubscribeAllUseCase
 import com.few.api.domain.subscription.UnsubscribeWorkbookUseCase
 import com.few.api.domain.subscription.`in`.SubscribeWorkbookUseCaseIn
+import com.few.api.domain.subscription.`in`.UnsubscribeAllUseCaseIn
 import com.few.api.domain.subscription.`in`.UnsubscribeWorkbookUseCaseIn
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -46,8 +48,11 @@ class WorkbookSubscriptionControllerTest : ControllerTestSpec() {
     @MockBean
     private lateinit var unsubscribeWorkbookUseCase: UnsubscribeWorkbookUseCase
 
+    @MockBean
+    private lateinit var unsubscribeAllUseCase: UnsubscribeAllUseCase
+
     companion object {
-        private val BASE_URL = "/api/v1/workbooks"
+        private val BASE_URL = "/api/v1/"
         private val TAG = "WorkbookSubscriptionController"
     }
 
@@ -70,7 +75,7 @@ class WorkbookSubscriptionControllerTest : ControllerTestSpec() {
         // given
         val api = "SubscribeWorkBook"
         val uri = UriComponentsBuilder.newInstance()
-            .path("${WorkbookSubscriptionControllerTest.BASE_URL}/{workbookId}/subs").build().toUriString()
+            .path("${WorkbookSubscriptionControllerTest.BASE_URL}/workbooks/{workbookId}/subs").build().toUriString()
 
         val email = "test@gmail.com"
         val body = objectMapper.writeValueAsString(SubscribeWorkbookRequest(email = email))
@@ -117,7 +122,7 @@ class WorkbookSubscriptionControllerTest : ControllerTestSpec() {
         // given
         val api = "UnsubscribeWorkBook"
         val uri = UriComponentsBuilder.newInstance()
-            .path("${WorkbookSubscriptionControllerTest.BASE_URL}/{workbookId}/unsubs")
+            .path("${WorkbookSubscriptionControllerTest.BASE_URL}/workbooks/{workbookId}/unsubs")
             .build()
             .toUriString()
 
@@ -158,6 +163,59 @@ class WorkbookSubscriptionControllerTest : ControllerTestSpec() {
                             .tag(TAG)
                             .requestSchema(Schema.schema(api.toRequestSchema()))
                             .pathParameters(parameterWithName("workbookId").description("학습지 Id"))
+                            .responseSchema(Schema.schema(api.toResponseSchema()))
+                            .responseFields(
+                                *Description.describe()
+                            )
+                            .build()
+                    )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("[POST] /api/v1/subscriptions/unsubs")
+    fun cancelSubAll() {
+        // given
+        val api = "UnsubscribeAll"
+        val uri = UriComponentsBuilder.newInstance()
+            .path("${WorkbookSubscriptionControllerTest.BASE_URL}/subscriptions/unsubs")
+            .build()
+            .toUriString()
+
+        // set usecase mock
+        val email = "test@gmail.com"
+        val body = objectMapper.writeValueAsString(
+            UnsubscribeWorkbookRequest(email = email, opinion = "전체 수신거부합니다.")
+        )
+
+        // set usecase mock
+        val memberId = 1L
+        val useCaseIn = UnsubscribeAllUseCaseIn(
+            email = email,
+            memberId = memberId,
+            opinion = "취소합니다."
+        )
+        doNothing().`when`(unsubscribeAllUseCase.execute(useCaseIn))
+
+        // when
+        this.webTestClient.post()
+            .uri(uri, 1)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange().expectStatus().is2xxSuccessful()
+            .expectBody().consumeWith(
+                WebTestClientRestDocumentation.document(
+                    api.toIdentifier(),
+                    ResourceDocumentation.resource(
+                        ResourceSnippetParameters.builder()
+                            .description("학습지 구독을 취소합니다.")
+                            .summary(api.toIdentifier())
+                            .privateResource(false)
+                            .deprecated(false)
+                            .tag(TAG)
+                            .requestSchema(Schema.schema(api.toRequestSchema()))
                             .responseSchema(Schema.schema(api.toResponseSchema()))
                             .responseFields(
                                 *Description.describe()

@@ -8,4 +8,4 @@ import org.springframework.test.context.ContextConfiguration
 @ActiveProfiles("new", "test", "batch-test", "email-local")
 @SpringBootTest(classes = [BatchConfig::class])
 @ContextConfiguration(initializers = [BatchTestContainerInitializer::class])
-abstract class BatchReaderWriterTestSpec
+abstract class BatchTestSpec

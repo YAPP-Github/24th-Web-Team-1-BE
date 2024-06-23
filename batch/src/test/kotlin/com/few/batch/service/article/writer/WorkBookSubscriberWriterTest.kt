@@ -1,6 +1,6 @@
 package com.few.batch.service.article.writer
 
-import com.few.batch.BatchReaderWriterTestSpec
+import com.few.batch.BatchTestSpec
 import com.few.email.service.problem.SendArticleEmailService
 import com.few.email.service.problem.dto.SendArticleEmailArgs
 import jooq.jooq_dsl.tables.ArticleIfo
@@ -17,7 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import java.time.LocalDate
 import kotlin.random.Random
 
-class WorkBookSubscriberWriterTest : BatchReaderWriterTestSpec() {
+class WorkBookSubscriberWriterTest : BatchTestSpec() {
 
     @Autowired
     private lateinit var helper: WorkBookSubscriberWriterTestSetHelper

@@ -20,7 +20,7 @@ class ReadProblemUseCase(
     fun execute(useCaseIn: ReadProblemUseCaseIn): ReadProblemUseCaseOut {
         val problemId = useCaseIn.problemId
 
-        val record = problemDao.selectProblemContentsByProblemId(SelectProblemQuery(problemId))
+        val record = problemDao.selectProblemContents(SelectProblemQuery(problemId))
 
         val contents: List<ReadProblemContentsUseCaseOutDetail> = objectMapper.readValue(record.contents)
 

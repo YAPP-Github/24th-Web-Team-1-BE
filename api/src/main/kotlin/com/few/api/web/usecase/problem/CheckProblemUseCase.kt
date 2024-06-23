@@ -20,7 +20,7 @@ class CheckProblemUseCase(
         val problemId = useCaseIn.problemId
         val submitAns = useCaseIn.sub
 
-        val record = problemDao.selectProblemAnswerByProblemId(SelectProblemAnswerQuery(problemId))
+        val record = problemDao.selectProblemAnswer(SelectProblemAnswerQuery(problemId))
         val isSolved = submitAns.equals(record.answer)
 
         val submitHistoryId = submitHistoryDao.insertSubmitHistory(

@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 
-@ActiveProfiles("new", "test", "api-repo-local")
+@ActiveProfiles("new", "test")
 @SpringBootTest(classes = [ApiRepoConfig::class, ObjectMapper::class])
 @ContextConfiguration(initializers = [RepoTestContainerInitializer::class])
 abstract class JooqTestSpec

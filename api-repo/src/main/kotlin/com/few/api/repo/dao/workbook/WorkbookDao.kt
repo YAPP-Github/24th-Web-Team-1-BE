@@ -21,6 +21,7 @@ class WorkbookDao(
         )
             .from(Workbook.WORKBOOK)
             .where(Workbook.WORKBOOK.ID.eq(query.id))
+            .and(Workbook.WORKBOOK.DELETED_AT.isNull)
             .fetchOneInto(SelectWorkBookRecord::class.java)
             ?: throw RuntimeException("WorkBook with ID ${query.id} not found")
     }

@@ -84,6 +84,7 @@ class ArticleDao(
             .leftJoin(ArticleIfo.ARTICLE_IFO)
             .on(ArticleMst.ARTICLE_MST.ID.eq(ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID))
             .where(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.eq(workbookId))
+            .and(ArticleMst.ARTICLE_MST.DELETED_AT.isNull)
             .fetchInto(SelectWorkBookMappedArticleRecord::class.java)
     }
 }

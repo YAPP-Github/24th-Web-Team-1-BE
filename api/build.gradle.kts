@@ -13,6 +13,10 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-ui:${DependencyVersion.SPRINGDOC}")
     implementation("org.springframework.restdocs:spring-restdocs-webtestclient")
     implementation("com.epages:restdocs-api-spec-mockmvc:${DependencyVersion.EPAGES_REST_DOCS_API_SPEC}")
+
+    /** test container */
+    implementation(platform("org.testcontainers:testcontainers-bom:${DependencyVersion.TEST_CONTAINER}"))
+    testImplementation("org.testcontainers:mysql")
 }
 
 plugins {

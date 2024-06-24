@@ -76,7 +76,7 @@ class WorkBookControllerTest : ControllerTestSpec() {
         `when`(readWorkbookUseCase.execute(ReadWorkbookUseCaseIn(workbookId))).thenReturn(
             ReadWorkbookUseCaseOut(
                 id = 1L,
-                mainImageUrl = "/main_img.png",
+                mainImageUrl = URL("http://localhost:8080/api/v1/workbooks/1/image"),
                 title = "재태크, 투자 필수 용어 모음집",
                 description = "사회 초년생부터, 직장인, 은퇴자까지 모두가 알아야 할 기본적인 재태크, 투자 필수 용어 모음집 입니다.",
                 category = "경제",

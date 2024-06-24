@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
+import java.net.URL
 
 class ArticleDaoTest : JooqTestSpec() {
 
@@ -59,7 +60,7 @@ class ArticleDaoTest : JooqTestSpec() {
         assertNotNull(result)
         assertEquals(1L, result.articleId)
         assertEquals(1L, result.writerId)
-        assertEquals("http://localhost:8080/image1.jpg", result.mainImageURL)
+        assertEquals(URL("http://localhost:8080/image1.jpg"), result.mainImageURL)
         assertEquals("this is title1", result.title)
         assertEquals("this is content1", result.content)
         assertEquals(0, result.category)
@@ -81,7 +82,7 @@ class ArticleDaoTest : JooqTestSpec() {
         assertNotNull(result)
         assertEquals(1L, result.articleId)
         assertEquals(1L, result.writerId)
-        assertEquals("http://localhost:8080/image1.jpg", result.mainImageURL)
+        assertEquals(URL("http://localhost:8080/image1.jpg"), result.mainImageURL)
         assertEquals("this is title1", result.title)
         assertEquals("this is content1", result.content)
         assertEquals(0, result.category)
@@ -107,7 +108,7 @@ class ArticleDaoTest : JooqTestSpec() {
         for (i in result.indices) {
             assertEquals(i + 1L, result[i].articleId)
             assertEquals(1L, result[i].writerId)
-            assertEquals("http://localhost:8080/image${i + 1}.jpg", result[i].mainImageURL)
+            assertEquals(URL("http://localhost:8080/image${i + 1}.jpg"), result[i].mainImageURL)
             assertEquals("this is title${i + 1}", result[i].title)
             assertEquals("this is content${i + 1}", result[i].content)
             assertEquals(0, result[i].category) // todo fix

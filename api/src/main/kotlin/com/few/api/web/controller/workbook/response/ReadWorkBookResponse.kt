@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 
 data class ReadWorkBookResponse(
     val id: Long,
-    val mainImageUrl: String,
+    val mainImageUrl: URL,
     val title: String,
     val description: String,
     val category: String,

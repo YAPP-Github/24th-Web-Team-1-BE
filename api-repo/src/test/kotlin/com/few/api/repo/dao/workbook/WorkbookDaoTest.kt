@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import java.net.URL
 
 class WorkbookDaoTest : JooqTestSpec() {
 
@@ -43,7 +44,7 @@ class WorkbookDaoTest : JooqTestSpec() {
         assertNotNull(result)
         assertEquals(1L, result.id)
         assertEquals("title1", result.title)
-        assertEquals("http://localhost:8080/image1.jpg", result.mainImageUrl)
+        assertEquals(URL("http://localhost:8080/image1.jpg"), result.mainImageUrl)
         assertEquals(0, result.category)
         assertEquals("description1", result.description)
     }

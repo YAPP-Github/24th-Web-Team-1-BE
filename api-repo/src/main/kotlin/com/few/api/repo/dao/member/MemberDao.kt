@@ -1,7 +1,7 @@
 package com.few.api.repo.dao.member
 
 import com.few.api.repo.dao.member.command.InsertMemberCommand
-import com.few.api.repo.dao.member.query.SelectMemberQuery
+import com.few.api.repo.dao.member.query.SelectMemberByEmailQuery
 import com.few.api.repo.dao.member.query.SelectWriterQuery
 import com.few.api.repo.dao.member.record.MemberRecord
 import com.few.api.repo.dao.member.record.WriterRecord
@@ -31,7 +31,7 @@ class MemberDao(
             ?: throw IllegalArgumentException("cannot find writer record by writerId: $writerId")
     }
 
-    fun selectMember(query: SelectMemberQuery): MemberRecord {
+    fun selectMemberByEmail(query: SelectMemberByEmailQuery): MemberRecord {
         val email = query.email
 
         return dslContext.select(

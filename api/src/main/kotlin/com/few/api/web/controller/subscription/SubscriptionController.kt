@@ -30,7 +30,7 @@ class SubscriptionController(
         @RequestBody body: SubscribeWorkbookRequest
     ): ApiResponse<ApiResponse.Success> {
         subscribeWorkbookUseCase.execute(
-            SubscribeWorkbookUseCaseIn(workbookId = workbookId, email = body.email) // TODO: memberId
+            SubscribeWorkbookUseCaseIn(workbookId = workbookId, email = body.email)
         )
 
         return ApiResponseGenerator.success(HttpStatus.OK)
@@ -42,7 +42,7 @@ class SubscriptionController(
         @RequestBody body: UnsubscribeWorkbookRequest
     ): ApiResponse<ApiResponse.Success> {
         unsubscribeWorkbookUseCase.execute(
-            UnsubscribeWorkbookUseCaseIn(workbookId = workbookId, email = body.email, opinion = body.opinion) // TODO: memberId
+            UnsubscribeWorkbookUseCaseIn(workbookId = workbookId, email = body.email, opinion = body.opinion)
         )
 
         return ApiResponseGenerator.success(HttpStatus.OK)
@@ -53,7 +53,7 @@ class SubscriptionController(
         @RequestBody body: UnsubscribeAllRequest
     ): ApiResponse<ApiResponse.Success> {
         unsubscribeAllUseCase.execute(
-            UnsubscribeAllUseCaseIn(email = body.email, opinion = body.opinion) // TODO: memberId
+            UnsubscribeAllUseCaseIn(email = body.email, opinion = body.opinion)
         )
 
         return ApiResponseGenerator.success(HttpStatus.OK)

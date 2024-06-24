@@ -4,7 +4,7 @@ import com.few.api.domain.subscription.service.dto.InsertMemberDto
 import com.few.api.domain.subscription.service.dto.ReadMemberIdDto
 import com.few.api.repo.dao.member.MemberDao
 import com.few.api.repo.dao.member.command.InsertMemberCommand
-import com.few.api.repo.dao.member.query.SelectMemberQuery
+import com.few.api.repo.dao.member.query.SelectMemberByEmailQuery
 import org.springframework.stereotype.Service
 
 @Service
@@ -13,7 +13,7 @@ class MemberService(
 ) {
 
     fun readMemberId(dto: ReadMemberIdDto): Long? {
-        return memberDao.selectMember(SelectMemberQuery(dto.email)).memberId
+        return memberDao.selectMemberByEmail(SelectMemberByEmailQuery(dto.email)).memberId
     }
 
     fun insertMember(dto: InsertMemberDto): Long {

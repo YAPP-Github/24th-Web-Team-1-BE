@@ -5,6 +5,7 @@ import com.few.api.domain.article.usecase.ReadArticleUseCase
 import com.few.api.web.controller.article.response.ReadArticleResponse
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
+import jakarta.validation.constraints.Min
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
@@ -21,7 +22,9 @@ class ArticleController(
 
     @GetMapping("/{articleId}")
     fun readArticle(
-        @PathVariable(value = "articleId") articleId: Long
+        @PathVariable(value = "articleId")
+        @Min(1)
+        articleId: Long
     ): ApiResponse<ApiResponse.SuccessBody<ReadArticleResponse>> {
         val useCaseOut = ReadArticleUseCaseIn(articleId).let { useCaseIn: ReadArticleUseCaseIn ->
             readArticleUseCase.execute(useCaseIn)

@@ -5,6 +5,7 @@ import com.few.api.domain.workbook.article.usecase.ReadWorkBookArticleUseCase
 import com.few.api.web.controller.workbook.article.response.ReadWorkBookArticleResponse
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
+import jakarta.validation.constraints.Min
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
@@ -21,8 +22,12 @@ class WorkBookArticleController(
 
     @GetMapping("/{articleId}")
     fun readWorkBookArticle(
-        @PathVariable(value = "workbookId") workbookId: Long,
-        @PathVariable(value = "articleId") articleId: Long
+        @PathVariable(value = "workbookId")
+        @Min(1)
+        workbookId: Long,
+        @PathVariable(value = "articleId")
+        @Min(1)
+        articleId: Long
     ): ApiResponse<ApiResponse.SuccessBody<ReadWorkBookArticleResponse>> {
         val useCaseOut = ReadWorkBookArticleUseCaseIn(workbookId = workbookId, articleId = articleId).let { useCaseIn: ReadWorkBookArticleUseCaseIn ->
             readWorkBookArticleUseCase.execute(useCaseIn)

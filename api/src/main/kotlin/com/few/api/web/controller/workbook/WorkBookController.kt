@@ -5,6 +5,7 @@ import com.few.api.web.controller.workbook.response.ReadWorkBookResponse
 import com.few.api.web.controller.workbook.response.WriterInfo
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
+import jakarta.validation.constraints.Min
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
@@ -21,7 +22,9 @@ class WorkBookController {
 
     @GetMapping("/{workbookId}")
     fun readWorkBook(
-        @PathVariable(value = "workbookId") workbookId: Long
+        @PathVariable(value = "workbookId")
+        @Min(1)
+        workbookId: Long
     ): ApiResponse<ApiResponse.SuccessBody<ReadWorkBookResponse>> {
         val data = ReadWorkBookResponse(
             id = 1L,

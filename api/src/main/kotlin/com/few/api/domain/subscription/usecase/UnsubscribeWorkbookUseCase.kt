@@ -1,7 +1,7 @@
 package com.few.api.domain.subscription.usecase
 
 import com.few.api.domain.subscription.service.MemberService
-import com.few.api.domain.subscription.service.dto.readMemberIdDto
+import com.few.api.domain.subscription.service.dto.ReadMemberIdDto
 import com.few.api.repo.dao.subscription.SubscriptionDao
 import com.few.api.repo.dao.subscription.command.UpdateDeletedAtInWorkbookSubscriptionCommand
 import com.few.api.domain.subscription.usecase.`in`.UnsubscribeWorkbookUseCaseIn
@@ -18,7 +18,8 @@ class UnsubscribeWorkbookUseCase(
     fun execute(useCaseIn: UnsubscribeWorkbookUseCaseIn) {
         // TODO: request sending email
 
-        val memberId = memberService.readMemberId(readMemberIdDto(useCaseIn.email))
+        val memberId =
+            memberService.readMemberId(ReadMemberIdDto(useCaseIn.email)) ?: throw RuntimeException("Member Not Found")
 
         subscriptionDao.updateDeletedAtInWorkbookSubscription(
             UpdateDeletedAtInWorkbookSubscriptionCommand(

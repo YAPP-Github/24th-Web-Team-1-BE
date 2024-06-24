@@ -1,7 +1,10 @@
 package com.few.api.repo.dao.member
 
+import com.few.api.repo.dao.member.command.InsertMemberCommand
+import com.few.api.repo.dao.member.query.SelectMemberByEmailQuery
 import com.few.api.repo.dao.member.query.SelectWriterQuery
 import com.few.api.repo.dao.member.query.SelectWritersQuery
+import com.few.api.repo.dao.member.record.MemberRecord
 import com.few.api.repo.dao.member.record.WriterRecord
 import jooq.jooq_dsl.tables.Member
 import org.jooq.DSLContext
@@ -41,5 +44,29 @@ class MemberDao(
             .and(Member.MEMBER.DELETED_AT.isNull)
             .orderBy(Member.MEMBER.ID.asc())
             .fetchInto(WriterRecord::class.java)
+    }
+
+    fun selectMemberByEmail(query: SelectMemberByEmailQuery): MemberRecord {
+        val email = query.email
+
+        return dslContext.select(
+            Member.MEMBER.ID.`as`(MemberRecord::memberId.name)
+        )
+            .from(Member.MEMBER)
+            .where(Member.MEMBER.EMAIL.eq(email))
+            .and(Member.MEMBER.DELETED_AT.isNull)
+            .fetchOneInto(MemberRecord::class.java)
+            ?: throw IllegalArgumentException("cannot find member record by email: $email")
+    }
+
+    fun insertMember(command: InsertMemberCommand): Long {
+        val result = dslContext.insertInto(Member.MEMBER)
+            .set(Member.MEMBER.EMAIL, command.email)
+            .set(Member.MEMBER.TYPE_CD, command.memberType.code)
+            .returning(Member.MEMBER.ID)
+            .fetchOne()
+
+        return result?.getValue(Member.MEMBER.ID)
+            ?: throw RuntimeException("Member with email ${command.email} insertion fail") // TODO: 에러 표준화
     }
 }

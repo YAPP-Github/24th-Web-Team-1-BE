@@ -81,7 +81,7 @@ class ArticleDao(
             .from(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE)
             .leftJoin(ArticleMst.ARTICLE_MST)
             .on(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.ARTICLE_ID.eq(ArticleMst.ARTICLE_MST.ID))
-            .leftJoin(ArticleIfo.ARTICLE_IFO)
+            .join(ArticleIfo.ARTICLE_IFO)
             .on(ArticleMst.ARTICLE_MST.ID.eq(ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID))
             .where(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.eq(workbookId))
             .and(ArticleMst.ARTICLE_MST.DELETED_AT.isNull)

@@ -61,3 +61,40 @@ tasks.register("generateApiSwaggerUI", Copy::class) {
     from(generateSwaggerUISampleTask.outputDir)
     into("$projectDir/src/main/resources/static/docs/swagger-ui")
 }
+
+val imageName = project.hasProperty("imageName").let {
+    if (it) {
+        project.property("imageName") as String
+    } else {
+        "api"
+    }
+}
+val releaseVersion = project.hasProperty("releaseVersion").let {
+    if (it) {
+        project.property("releaseVersion") as String
+    } else {
+        "latest"
+    }
+}
+
+tasks.register("buildDockerImage") {
+    dependsOn("bootJar")
+    dependsOn("generateApiSwaggerUI")
+
+    doLast {
+        exec {
+            workingDir(".")
+            commandLine("docker", "run", "--privileged", "--rm", "tonistiigi/binfmt", "--install", "all")
+        }
+
+        exec {
+            workingDir(".")
+            commandLine("docker", "buildx", "create", "--use")
+        }
+
+        exec {
+            workingDir(".")
+            commandLine("docker", "buildx", "build", "--platform=linux/amd64,linux/arm64", "-t", "fewletter/$imageName", "--build-arg", "RELEASE_VERSION=$releaseVersion", ".", "--push")
+        }
+    }
+}

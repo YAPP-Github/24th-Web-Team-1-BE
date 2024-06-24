@@ -6,6 +6,7 @@ import com.few.api.repo.dao.member.query.SelectWriterQuery
 import com.few.api.repo.dao.member.query.SelectWritersQuery
 import com.few.api.repo.dao.member.record.MemberRecord
 import com.few.api.repo.dao.member.record.WriterRecord
+import com.few.data.common.code.MemberType
 import jooq.jooq_dsl.tables.Member
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
@@ -26,7 +27,7 @@ class MemberDao(
         )
             .from(Member.MEMBER)
             .where(Member.MEMBER.ID.eq(writerId))
-            .and(Member.MEMBER.TYPE_CD.eq(1)) // todo fix after considering the type_cd
+            .and(Member.MEMBER.TYPE_CD.eq(MemberType.WRITER.code))
             .and(Member.MEMBER.DELETED_AT.isNull)
             .fetchOneInto(WriterRecord::class.java)
             ?: throw IllegalArgumentException("cannot find writer record by writerId: $writerId")
@@ -40,7 +41,7 @@ class MemberDao(
         )
             .from(Member.MEMBER)
             .where(Member.MEMBER.ID.`in`(query.writerIds))
-            .and(Member.MEMBER.TYPE_CD.eq(1)) // todo fix after considering the type_cd
+            .and(Member.MEMBER.TYPE_CD.eq(MemberType.WRITER.code))
             .and(Member.MEMBER.DELETED_AT.isNull)
             .orderBy(Member.MEMBER.ID.asc())
             .fetchInto(WriterRecord::class.java)

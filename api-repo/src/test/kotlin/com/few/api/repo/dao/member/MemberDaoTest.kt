@@ -5,6 +5,7 @@ import com.few.api.repo.dao.member.query.SelectWritersQuery
 import com.few.api.repo.dao.member.support.WriterDescription
 import com.few.api.repo.dao.member.support.WriterDescriptionJsonMapper
 import com.few.api.repo.jooq.JooqTestSpec
+import com.few.data.common.code.MemberType
 import jooq.jooq_dsl.tables.Member
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
@@ -39,7 +40,7 @@ class MemberDaoTest : JooqTestSpec() {
         dslContext.insertInto(Member.MEMBER)
             .set(Member.MEMBER.ID, 1)
             .set(Member.MEMBER.EMAIL, "member@gmail.com")
-            .set(Member.MEMBER.TYPE_CD, 0) // todo fix
+            .set(Member.MEMBER.TYPE_CD, MemberType.NORMAL.code)
             .execute()
 
         val writerDescription = writerDescriptionJsonMapper.toJson(
@@ -49,7 +50,7 @@ class MemberDaoTest : JooqTestSpec() {
         dslContext.insertInto(Member.MEMBER)
             .set(Member.MEMBER.ID, 2)
             .set(Member.MEMBER.EMAIL, "writer2@gmail.com")
-            .set(Member.MEMBER.TYPE_CD, 1) // todo fix
+            .set(Member.MEMBER.TYPE_CD, MemberType.WRITER.code)
             .set(Member.MEMBER.DESCRIPTION, JSON.valueOf(writerDescription))
             .execute()
         log.debug("===== finish setUp =====")
@@ -105,7 +106,7 @@ class MemberDaoTest : JooqTestSpec() {
             dslContext.insertInto(Member.MEMBER)
                 .set(Member.MEMBER.ID, i.toLong())
                 .set(Member.MEMBER.EMAIL, "writer$i@gmail.com")
-                .set(Member.MEMBER.TYPE_CD, 1) // todo fix
+                .set(Member.MEMBER.TYPE_CD, MemberType.WRITER.code)
                 .set(Member.MEMBER.DESCRIPTION, JSON.valueOf(writerDescription))
                 .execute()
         }

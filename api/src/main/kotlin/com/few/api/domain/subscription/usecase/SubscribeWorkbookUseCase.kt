@@ -1,23 +1,32 @@
 package com.few.api.domain.subscription.usecase
 
+import com.few.api.domain.subscription.service.MemberService
+import com.few.api.domain.subscription.service.dto.InsertMemberDto
+import com.few.api.domain.subscription.service.dto.ReadMemberIdDto
 import com.few.api.repo.dao.subscription.SubscriptionDao
 import com.few.api.repo.dao.subscription.command.InsertWorkbookSubscriptionCommand
 import com.few.api.repo.dao.subscription.query.CountWorkbookSubscriptionQuery
 import com.few.api.domain.subscription.usecase.`in`.SubscribeWorkbookUseCaseIn
+import com.few.data.common.code.MemberType
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
 @Component
 class SubscribeWorkbookUseCase(
-    private val subscriptionDao: SubscriptionDao
+    private val subscriptionDao: SubscriptionDao,
+    private val memberService: MemberService
 ) {
 
     @Transactional
     fun execute(useCaseIn: SubscribeWorkbookUseCaseIn) {
         // TODO: request sending email
 
+        val memberId = memberService.readMemberId(ReadMemberIdDto(useCaseIn.email)) ?: memberService.insertMember(
+            InsertMemberDto(useCaseIn.email, MemberType.NORMAL)
+        )
+
         // 이미 구독중인지 확인
-        CountWorkbookSubscriptionQuery(memberId = useCaseIn.memberId, workbookId = useCaseIn.workbookId).let { query ->
+        CountWorkbookSubscriptionQuery(memberId = memberId, workbookId = useCaseIn.workbookId).let { query ->
             subscriptionDao.selectCountWorkbookSubscription(query).let { cnt ->
                 if (cnt > 0) {
                     throw RuntimeException("Already subscribed")
@@ -26,7 +35,7 @@ class SubscribeWorkbookUseCase(
         }
 
         subscriptionDao.insertWorkbookSubscription(
-            InsertWorkbookSubscriptionCommand(memberId = useCaseIn.memberId, workbookId = useCaseIn.workbookId)
+            InsertWorkbookSubscriptionCommand(memberId = memberId, workbookId = useCaseIn.workbookId)
         )
     }
 }

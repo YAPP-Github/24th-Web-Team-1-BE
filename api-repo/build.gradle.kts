@@ -22,6 +22,9 @@ sourceSets {
 }
 
 dependencies {
+    /** module */
+    api(project(":data"))
+
     /** spring starter */
     api("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("com.mysql:mysql-connector-j")

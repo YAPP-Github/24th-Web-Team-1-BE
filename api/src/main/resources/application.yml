@@ -1,4 +1,7 @@
 spring:
+    messages:
+        basename:
+            ValidationMessages
     profiles:
         group:
             local:

@@ -25,12 +25,12 @@ jobs:
 
             - name: Build with Gradle
               run: |
-                  ./gradlew api:build
+                  ./gradlew --info api:build
 
             - name: Test with Gradle
               run: |
-                  ./gradlew test
+                  ./gradlew --info test
 
             - name: Build Docker Image
               run: |
-                  ./gradlew :api:dockerBuildImage
+                  ./gradlew --info :api:dockerBuildImage

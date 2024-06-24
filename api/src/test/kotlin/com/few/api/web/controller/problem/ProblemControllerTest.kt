@@ -20,6 +20,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
@@ -136,23 +137,21 @@ class ProblemControllerTest : ControllerTestSpec() {
         val uri = UriComponentsBuilder.newInstance()
             .path("$BASE_URL/{problemId}").build().toUriString()
 
-        val body = objectMapper.writeValueAsString(CheckProblemBody(sub = "sub"))
-
         // set usecase mock
         val problemId = 1L
         val sub = "제출답"
+        val body = objectMapper.writeValueAsString(CheckProblemBody(sub = sub))
         val useCaseIn = CheckProblemUseCaseIn(problemId, sub = sub)
         val useCaseOut = CheckProblemUseCaseOut(
             explanation = "ETF는 일반적으로 낮은 운용 비용을 특징으로 합니다.이는 ETF가 보통 지수 추종(passive management) 방식으로 운용되기 때문입니다. 지수를 추종하는 전략은 액티브 매니지먼트(active management)에 비해 관리가 덜 복잡하고, 따라서 비용이 낮습니다.",
             answer = "2",
             isSolved = true
         )
-        Mockito.`when`(checkProblemUseCase.execute(useCaseIn))
-            .thenReturn(useCaseOut)
+        `when`(checkProblemUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
 
         // when
         this.webTestClient.post()
-            .uri(uri, 1)
+            .uri(uri, problemId)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(body)

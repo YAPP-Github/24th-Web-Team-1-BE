@@ -105,21 +105,6 @@ subprojects {
     defaultTasks("bootRun")
 }
 
-/** Build Docker Image */
-val imageName = project.hasProperty("imageName") ?: "api:local"
-val releaseVersion = project.findProperty("releaseVersion")
-
-tasks.create("buildDockerImage") {
-    dependsOn(":bootJar")
-
-    doLast {
-        exec {
-            workingDir(".")
-            commandLine("docker", "build", "-t", imageName, "--build-arg", "RELEASE_VERSION=$releaseVersion", ".")
-        }
-    }
-}
-
 /** git hooks */
 tasks.register("gitExecutableHooks") {
     doLast {

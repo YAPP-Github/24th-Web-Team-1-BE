@@ -9,12 +9,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.restdocs.RestDocumentationExtension
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.ContextConfiguration
 
-@ActiveProfiles(value = ["test"])
+@ActiveProfiles(value = ["test", "new"])
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest(classes = [ApiMain::class])
 @ExtendWith(RestDocumentationExtension::class)
+@ContextConfiguration(initializers = [ControllerTestContainerInitializer::class])
 abstract class ControllerTestSpec {
 
     @Autowired

@@ -25,7 +25,7 @@ jobs:
 
             - name: Build with Gradle
               run: |
-                  ./gradlew --info api:build
+                  ./gradlew --info api:build -x test
 
             - name: Test with Gradle
               run: |

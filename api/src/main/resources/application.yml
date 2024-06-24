@@ -7,7 +7,3 @@ spring:
             prd:
                 - api-repo-prd
                 - email-prd
-            test:
-                - new
-                - api-repo-local
-                - email-local

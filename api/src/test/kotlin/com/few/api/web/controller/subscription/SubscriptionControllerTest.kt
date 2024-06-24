@@ -75,7 +75,7 @@ class SubscriptionControllerTest : ControllerTestSpec() {
         // given
         val api = "SubscribeWorkBook"
         val uri = UriComponentsBuilder.newInstance()
-            .path("${SubscriptionControllerTest.BASE_URL}/workbooks/{workbookId}/subs").build().toUriString()
+            .path("$BASE_URL/workbooks/{workbookId}/subs").build().toUriString()
 
         val email = "test@gmail.com"
         val body = objectMapper.writeValueAsString(SubscribeWorkbookRequest(email = email))
@@ -85,11 +85,11 @@ class SubscriptionControllerTest : ControllerTestSpec() {
         val memberId = 1L
 
         val useCaseIn = SubscribeWorkbookUseCaseIn(workbookId = workbookId, email = email, memberId = memberId)
-        doNothing().`when`(subscribeWorkbookUseCase.execute(useCaseIn))
+        doNothing().`when`(subscribeWorkbookUseCase).execute(useCaseIn)
 
         // when
         this.webTestClient.post()
-            .uri(uri, 1)
+            .uri(uri, workbookId)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(body)
@@ -127,25 +127,23 @@ class SubscriptionControllerTest : ControllerTestSpec() {
             .toUriString()
 
         // set usecase mock
-        val email = "test@gmail.com"
-        val body = objectMapper.writeValueAsString(
-            UnsubscribeWorkbookRequest(email = email, opinion = "취소합니다.")
-        )
-
-        // set usecase mock
         val workbookId = 1L
         val memberId = 1L
-
+        val email = "test@gmail.com"
+        val opinion = "취소합니다."
+        val body = objectMapper.writeValueAsString(
+            UnsubscribeWorkbookRequest(email = email, opinion = opinion)
+        )
         val useCaseIn = UnsubscribeWorkbookUseCaseIn(
             workbookId = workbookId,
             email = email,
-            opinion = "취소합니다."
+            opinion = opinion
         )
-        doNothing().`when`(unsubscribeWorkbookUseCase.execute(useCaseIn))
+        doNothing().`when`(unsubscribeWorkbookUseCase).execute(useCaseIn)
 
         // when
         this.webTestClient.post()
-            .uri(uri, 1)
+            .uri(uri, workbookId)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(body)
@@ -178,27 +176,26 @@ class SubscriptionControllerTest : ControllerTestSpec() {
         // given
         val api = "UnsubscribeAll"
         val uri = UriComponentsBuilder.newInstance()
-            .path("${SubscriptionControllerTest.BASE_URL}/subscriptions/unsubs")
+            .path("$BASE_URL/subscriptions/unsubs")
             .build()
             .toUriString()
 
         // set usecase mock
-        val email = "test@gmail.com"
-        val body = objectMapper.writeValueAsString(
-            UnsubscribeWorkbookRequest(email = email, opinion = "전체 수신거부합니다.")
-        )
-
-        // set usecase mock
         val memberId = 1L
+        val email = "test@gmail.com"
+        val opinion = "전체 수신거부합니다."
+        val body = objectMapper.writeValueAsString(
+            UnsubscribeWorkbookRequest(email = email, opinion = opinion)
+        )
         val useCaseIn = UnsubscribeAllUseCaseIn(
             email = email,
-            opinion = "취소합니다."
+            opinion = opinion
         )
-        doNothing().`when`(unsubscribeAllUseCase.execute(useCaseIn))
+        doNothing().`when`(unsubscribeAllUseCase).execute(useCaseIn)
 
         // when
         this.webTestClient.post()
-            .uri(uri, 1)
+            .uri(uri)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(body)

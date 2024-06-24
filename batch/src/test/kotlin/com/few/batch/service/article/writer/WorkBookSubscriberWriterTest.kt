@@ -1,8 +1,8 @@
 package com.few.batch.service.article.writer
 
 import com.few.batch.BatchTestSpec
-import com.few.email.service.problem.SendArticleEmailService
-import com.few.email.service.problem.dto.SendArticleEmailArgs
+import com.few.email.service.article.SendArticleEmailService
+import com.few.email.service.article.dto.SendArticleEmailArgs
 import jooq.jooq_dsl.tables.ArticleIfo
 import jooq.jooq_dsl.tables.MappingWorkbookArticle
 import jooq.jooq_dsl.tables.Member

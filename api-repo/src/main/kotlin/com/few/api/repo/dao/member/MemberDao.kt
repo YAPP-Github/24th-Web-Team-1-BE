@@ -35,9 +35,7 @@ class MemberDao(
         val email = query.email
 
         return dslContext.select(
-            Member.MEMBER.ID.`as`(MemberRecord::memberId.name),
-            DSL.jsonGetAttributeAsText(Member.MEMBER.DESCRIPTION, "name").`as`(MemberRecord::name.name),
-            DSL.jsonGetAttribute(Member.MEMBER.DESCRIPTION, "url").`as`(WriterRecord::url.name)
+            Member.MEMBER.ID.`as`(MemberRecord::memberId.name)
         )
             .from(Member.MEMBER)
             .where(Member.MEMBER.EMAIL.eq(email))

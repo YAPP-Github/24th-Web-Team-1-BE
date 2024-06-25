@@ -1,0 +1,35 @@
+name: Integration Test
+
+on:
+    pull_request:
+        branches: [ "main" ]
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+env:
+    MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Set up JDK 17
+              uses: actions/setup-java@v3
+              with:
+                  java-version: '17'
+                  distribution: 'temurin'
+
+            - name: Jooq Code Generation
+              run: |
+                  ./gradlew --info jooqCodegen
+
+            - name: Build with Gradle
+              run: |
+                  ./gradlew --info api:build
+
+            - name: Test with Gradle
+              run: |
+                  ./gradlew --info test

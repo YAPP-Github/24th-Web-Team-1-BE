@@ -1,0 +1,14 @@
+version: '3.1'
+services:
+    api:
+        container_name: api
+        image: fewletter/api:latest
+        ports:
+            - "8080:8080"
+        environment:
+            SPRING_PROFILES_ACTIVE: ${API_SPRING_PROFILES_ACTIVE}
+            DB_HOSTNAME: ${DB_HOSTNAME}
+            DB_USERNAME: ${DB_USERNAME}
+            DB_PASSWORD: ${DB_PASSWORD}
+            EMAIL_USERNAME: ${EMAIL_USERNAME}
+            EMAIL_PASSWORD: ${EMAIL_PASSWORD}

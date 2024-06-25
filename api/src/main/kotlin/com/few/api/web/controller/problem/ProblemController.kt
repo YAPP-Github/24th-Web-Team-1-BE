@@ -29,7 +29,7 @@ class ProblemController(
     @GetMapping("/{problemId}")
     fun readProblem(
         @PathVariable(value = "problemId")
-        @Min(1)
+        @Min(value = 1, message = "{min.id}")
         problemId: Long
     ): ApiResponse<ApiResponse.SuccessBody<ReadProblemResponse>> {
         val useCaseOut = readProblemUseCase.execute(ReadProblemUseCaseIn(problemId))
@@ -48,7 +48,7 @@ class ProblemController(
     @PostMapping("/{problemId}")
     fun checkProblem(
         @PathVariable(value = "problemId")
-        @Min(1)
+        @Min(value = 1, message = "{min.id}")
         problemId: Long,
         @Valid @RequestBody
         body: CheckProblemBody

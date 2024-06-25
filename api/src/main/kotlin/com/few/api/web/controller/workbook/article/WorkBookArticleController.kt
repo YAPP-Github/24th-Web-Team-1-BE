@@ -24,10 +24,10 @@ class WorkBookArticleController(
     @GetMapping("/{articleId}")
     fun readWorkBookArticle(
         @PathVariable(value = "workbookId")
-        @Min(1)
+        @Min(value = 1, message = "{min.id}")
         workbookId: Long,
         @PathVariable(value = "articleId")
-        @Min(1)
+        @Min(value = 1, message = "{min.id}")
         articleId: Long
     ): ApiResponse<ApiResponse.SuccessBody<ReadWorkBookArticleResponse>> {
         val useCaseOut = ReadWorkBookArticleUseCaseIn(workbookId = workbookId, articleId = articleId).let { useCaseIn: ReadWorkBookArticleUseCaseIn ->

@@ -30,7 +30,7 @@ class SubscriptionController(
     @PostMapping("/workbooks/{workbookId}/subs")
     fun subscribeWorkbook(
         @PathVariable(value = "workbookId")
-        @Min(1)
+        @Min(value = 1, message = "{min.id}")
         workbookId: Long,
         @Valid @RequestBody
         body: SubscribeWorkbookRequest
@@ -45,7 +45,7 @@ class SubscriptionController(
     @PostMapping("/workbooks/{workbookId}/unsubs")
     fun unsubscribeWorkbook(
         @PathVariable(value = "workbookId")
-        @Min(1)
+        @Min(value = 1, message = "{min.id}")
         workbookId: Long,
         @Valid @RequestBody
         body: UnsubscribeWorkbookRequest

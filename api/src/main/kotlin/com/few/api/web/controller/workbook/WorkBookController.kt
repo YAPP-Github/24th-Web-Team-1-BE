@@ -24,7 +24,7 @@ class WorkBookController {
     @GetMapping("/{workbookId}")
     fun readWorkBook(
         @PathVariable(value = "workbookId")
-        @Min(1)
+        @Min(value = 1, message = "{min.id}")
         workbookId: Long
     ): ApiResponse<ApiResponse.SuccessBody<ReadWorkBookResponse>> {
         val data = ReadWorkBookResponse(

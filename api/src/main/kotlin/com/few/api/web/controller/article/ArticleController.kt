@@ -24,7 +24,7 @@ class ArticleController(
     @GetMapping("/{articleId}")
     fun readArticle(
         @PathVariable(value = "articleId")
-        @Min(1)
+        @Min(value = 1, message = "{min.id}")
         articleId: Long
     ): ApiResponse<ApiResponse.SuccessBody<ReadArticleResponse>> {
         val useCaseOut = ReadArticleUseCaseIn(articleId).let { useCaseIn: ReadArticleUseCaseIn ->

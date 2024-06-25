@@ -23,9 +23,13 @@ jobs:
                   java-version: '17'
                   distribution: 'temurin'
 
+            - name: Jooq Code Generation
+              run: |
+                  ./gradlew --info jooqCodegen
+
             - name: Build with Gradle
               run: |
-                  ./gradlew --stacktrace api:build -x test
+                  ./gradlew --info api:build
 
             - name: Test with Gradle
               run: |

@@ -84,7 +84,7 @@ class SubscriptionControllerTest : ControllerTestSpec() {
         val workbookId = 1L
         val memberId = 1L
 
-        val useCaseIn = SubscribeWorkbookUseCaseIn(workbookId = workbookId, email = email, memberId = memberId)
+        val useCaseIn = SubscribeWorkbookUseCaseIn(workbookId = workbookId, email = email)
         doNothing().`when`(subscribeWorkbookUseCase).execute(useCaseIn)
 
         // when

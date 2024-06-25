@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cd ..
+docker-compose -f docker-compose-api.yml down
+docker-compose -f docker-compose-api.yml up -d
+sleep 10

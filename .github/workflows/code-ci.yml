@@ -35,6 +35,9 @@ jobs:
               run: |
                   ./gradlew --info test
 
+            - name : Docker Login
+              run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
             - name: Build Docker Image
               run: |
                   ./gradlew --info api:buildDockerImage

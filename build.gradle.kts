@@ -94,14 +94,6 @@ subprojects {
         swaggerUI("org.webjars:swagger-ui:${DependencyVersion.SWAGGER_UI}")
     }
 
-    tasks.getByName("bootJar") {
-        enabled = false
-    }
-
-    tasks.getByName("jar") {
-        enabled = true
-    }
-
     defaultTasks("bootRun")
 }
 

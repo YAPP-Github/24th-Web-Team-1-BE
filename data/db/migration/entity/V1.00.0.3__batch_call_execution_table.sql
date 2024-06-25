@@ -1,5 +1,5 @@
 -- 배치 요청 기록 테이블
-CREATE TABLE batch_call_execution
+CREATE TABLE BATCH_CALL_EXECUTION
 (
     id          BIGINT PRIMARY KEY AUTO_INCREMENT,
     status      bit(1) NOT NULL,

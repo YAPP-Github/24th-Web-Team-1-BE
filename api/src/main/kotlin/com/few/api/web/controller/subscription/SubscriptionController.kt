@@ -11,13 +11,16 @@ import com.few.api.domain.subscription.usecase.`in`.SubscribeWorkbookUseCaseIn
 import com.few.api.domain.subscription.usecase.`in`.UnsubscribeAllUseCaseIn
 import com.few.api.domain.subscription.usecase.`in`.UnsubscribeWorkbookUseCaseIn
 import com.few.api.web.controller.subscription.request.UnsubscribeAllRequest
+import jakarta.validation.Valid
+import jakarta.validation.constraints.Min
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
 @Validated
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping(value = ["/api/v1"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class SubscriptionController(
     private val subscribeWorkbookUseCase: SubscribeWorkbookUseCase,
     private val unsubscribeWorkbookUseCase: UnsubscribeWorkbookUseCase,
@@ -26,8 +29,11 @@ class SubscriptionController(
 
     @PostMapping("/workbooks/{workbookId}/subs")
     fun subscribeWorkbook(
-        @PathVariable(value = "workbookId") workbookId: Long,
-        @RequestBody body: SubscribeWorkbookRequest
+        @PathVariable(value = "workbookId")
+        @Min(value = 1, message = "{min.id}")
+        workbookId: Long,
+        @Valid @RequestBody
+        body: SubscribeWorkbookRequest
     ): ApiResponse<ApiResponse.Success> {
         subscribeWorkbookUseCase.execute(
             SubscribeWorkbookUseCaseIn(workbookId = workbookId, email = body.email)
@@ -38,8 +44,11 @@ class SubscriptionController(
 
     @PostMapping("/workbooks/{workbookId}/unsubs")
     fun unsubscribeWorkbook(
-        @PathVariable(value = "workbookId") workbookId: Long,
-        @RequestBody body: UnsubscribeWorkbookRequest
+        @PathVariable(value = "workbookId")
+        @Min(value = 1, message = "{min.id}")
+        workbookId: Long,
+        @Valid @RequestBody
+        body: UnsubscribeWorkbookRequest
     ): ApiResponse<ApiResponse.Success> {
         unsubscribeWorkbookUseCase.execute(
             UnsubscribeWorkbookUseCaseIn(workbookId = workbookId, email = body.email, opinion = body.opinion)
@@ -50,7 +59,8 @@ class SubscriptionController(
 
     @PostMapping("/subscriptions/unsubs")
     fun deactivateAllSubscriptions(
-        @RequestBody body: UnsubscribeAllRequest
+        @Valid @RequestBody
+        body: UnsubscribeAllRequest
     ): ApiResponse<ApiResponse.Success> {
         unsubscribeAllUseCase.execute(
             UnsubscribeAllUseCaseIn(email = body.email, opinion = body.opinion)

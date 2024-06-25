@@ -37,4 +37,4 @@ jobs:
 
             - name: Build Docker Image
               run: |
-                  ./gradlew --info api:dockerBuildImage
+                  ./gradlew --info api:buildDockerImage

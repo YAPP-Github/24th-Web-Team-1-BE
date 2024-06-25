@@ -141,9 +141,17 @@ jooq {
     }
 }
 
+val serverUrl = project.hasProperty("serverUrl").let {
+    if (it) {
+        project.property("serverUrl") as String
+    } else {
+        "http://localhost:8080"
+    }
+}
+
 /** convert snippet to swagger */
 openapi3 {
-    this.setServer("http://localhost:8080") // todo refactor to use setServers
+    this.setServer(serverUrl)
     title = project.name
     version = project.version.toString()
     format = "yaml"
@@ -156,7 +164,7 @@ openapi3 {
 postman {
     title = project.name
     version = project.version.toString()
-    baseUrl = "http://localhost:8080"
+    baseUrl = serverUrl
     outputDirectory = "src/main/resources/static/"
     outputFileNamePrefix = "postman"
 }

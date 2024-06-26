@@ -2,7 +2,8 @@ name: Batch Cron
 
 on:
     schedule:
-        - cron: '*/10 * * * *'
+        # 매 오전 8시에 실행
+        - cron: '0 8 * * *'
     workflow_dispatch:
 
 jobs:

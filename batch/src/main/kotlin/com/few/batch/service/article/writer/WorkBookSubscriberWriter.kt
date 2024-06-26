@@ -11,9 +11,11 @@ import jooq.jooq_dsl.tables.MappingWorkbookArticle
 import jooq.jooq_dsl.tables.Member
 import jooq.jooq_dsl.tables.Subscription
 import org.jooq.DSLContext
+import org.jooq.impl.DSL
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 data class MemberReceiveArticle(
     val workbookId: Long,
@@ -121,11 +123,39 @@ class WorkBookSubscriberWriter(
             }
         }
 
+        /** 워크북 마지막 학습지 DAY_COL을 조회한다 */
+        val lastDayCol = dslContext.select(
+            mappingWorkbookArticleT.WORKBOOK_ID,
+            DSL.max(mappingWorkbookArticleT.DAY_COL)
+        )
+            .from(mappingWorkbookArticleT)
+            .where(mappingWorkbookArticleT.WORKBOOK_ID.`in`(targetWorkBookIds))
+            .and(mappingWorkbookArticleT.DELETED_AT.isNull)
+            .groupBy(mappingWorkbookArticleT.WORKBOOK_ID)
+            .fetch()
+            .intoMap(mappingWorkbookArticleT.WORKBOOK_ID, DSL.max(mappingWorkbookArticleT.DAY_COL))
+
+        /** 마지막 학습지를 받은 구독자들의 ID를 필터링한다.*/
+        val receiveLastDayMembers = items.filter {
+            it.targetWorkBookId in lastDayCol.keys
+        }.filter {
+            (it.progress.toInt() + 1) == lastDayCol[it.targetWorkBookId]
+        }.map {
+            it.memberId
+        }
+
         val successMemberIds = memberSuccessRecords.filter { it.value }.keys
         /** 이메일 전송에 성공한 구독자들의 진행률을 업데이트한다.*/
         dslContext.update(subscriptionT)
             .set(subscriptionT.PROGRESS, subscriptionT.PROGRESS.add(1))
             .where(subscriptionT.MEMBER_ID.`in`(successMemberIds))
+            .and(subscriptionT.TARGET_WORKBOOK_ID.`in`(targetWorkBookIds))
+            .execute()
+
+        /** 마지막 학습지를 받은 구독자들은 구독을 해지한다.*/
+        dslContext.update(subscriptionT)
+            .set(subscriptionT.DELETED_AT, LocalDateTime.now())
+            .where(subscriptionT.MEMBER_ID.`in`(receiveLastDayMembers))
             .and(subscriptionT.TARGET_WORKBOOK_ID.`in`(targetWorkBookIds))
             .execute()
 

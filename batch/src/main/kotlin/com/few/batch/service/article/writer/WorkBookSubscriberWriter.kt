@@ -70,6 +70,7 @@ class WorkBookSubscriberWriter(
 
         /** 구독자들이 구독한 학습지 ID와 구독자의 학습지 구독 진행률을 기준으로 구독자가 받을 학습지 정보를 조회한다.*/
         val memberReceiveArticles = targetWorkBookProgress.keys.stream().map { workbookId ->
+            val dayCols = targetWorkBookProgress[workbookId]!!.stream().map { it + 1L }.toList()
             // todo check refactoring
             dslContext.select(
                 mappingWorkbookArticleT.WORKBOOK_ID.`as`(MemberReceiveArticle::workbookId.name),
@@ -80,7 +81,7 @@ class WorkBookSubscriberWriter(
                 .where(
                     mappingWorkbookArticleT.WORKBOOK_ID.eq(workbookId)
                 )
-                .and(mappingWorkbookArticleT.DAY_COL.`in`(targetWorkBookProgress[workbookId]!!))
+                .and(mappingWorkbookArticleT.DAY_COL.`in`(dayCols))
                 .and(mappingWorkbookArticleT.DELETED_AT.isNull)
                 .fetchInto(MemberReceiveArticle::class.java)
         }.flatMap { it.stream() }.toList().let {
@@ -103,7 +104,7 @@ class WorkBookSubscriberWriter(
         // todo check !! target is not null
         val emailServiceArgs = items.map {
             val toEmail = memberEmailRecords[it.memberId]!!
-            val memberArticle = memberReceiveArticles.getByWorkBookIdAndDayCol(it.targetWorkBookId, it.progress)
+            val memberArticle = memberReceiveArticles.getByWorkBookIdAndDayCol(it.targetWorkBookId, it.progress + 1)
             val articleContent = articleContentsMap[memberArticle.articleId]!!
             return@map it.memberId to SendArticleEmailArgs(toEmail, ARTICLE_SUBJECT, ARTICLE_TEMPLATE, articleContent, ARTICLE_STYLE)
         }

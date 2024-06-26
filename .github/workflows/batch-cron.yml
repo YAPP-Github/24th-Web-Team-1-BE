@@ -1,0 +1,17 @@
+name: Batch Cron
+
+on:
+    schedule:
+        - cron: '*/10 * * * *'
+    workflow_dispatch:
+
+jobs:
+    code-review:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+              run: |
+                  curl -X 'POST' \
+                    'https://api.fewletter.site/batch/article' \
+                    -H 'accept: application/json' \
+                    -H 'Content-Type: application/json'

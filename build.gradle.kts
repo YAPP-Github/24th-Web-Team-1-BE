@@ -214,6 +214,13 @@ subprojects {
     defaultTasks("bootRun")
 }
 
+/** do all jooq codegen */
+tasks.register("jooqCodegenAll") {
+    dependsOn(":api:jooqCodegen")
+    dependsOn(":api-repo:jooqCodegen")
+    dependsOn(":batch:jooqCodegen")
+}
+
 /** git hooks */
 tasks.register("gitExecutableHooks") {
     doLast {

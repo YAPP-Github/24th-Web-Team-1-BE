@@ -25,7 +25,7 @@ jobs:
 
             - name: Jooq Code Generation
               run: |
-                  ./gradlew --info jooqCodegen
+                  ./gradlew --info jooqCodegenAll
 
             - name: Build with Gradle
               run: |

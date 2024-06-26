@@ -203,7 +203,6 @@ val releaseVersion = project.hasProperty("releaseVersion").let {
 
 tasks.register("buildDockerImage") {
     dependsOn("bootJar")
-    dependsOn("generateApiSwaggerUI")
 
     doLast {
         exec {

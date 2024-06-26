@@ -35,9 +35,17 @@ jobs:
               run: |
                   ./gradlew --info test
 
+            - name: Generate OpenAPI3
+              run: |
+                  ./gradlew --info api:openapi3 -PserverUrl=https://api.fewletter.site
+
+            - name: Generate Swagger
+              run: |
+                  ./gradlew --info api:generateApiSwaggerUI
+
             - name : Docker Login
               run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
             - name: Build Docker Image
               run: |
-                  ./gradlew --info api:buildDockerImage -PreleaseVersion=${{ env.RELEASE_VERSION }} -PserverUrl=https://api.fewletter.site
+                  ./gradlew --info api:buildDockerImage -PreleaseVersion=${{ env.RELEASE_VERSION }}

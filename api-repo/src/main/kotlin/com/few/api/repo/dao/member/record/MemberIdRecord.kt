@@ -1,5 +1,5 @@
 package com.few.api.repo.dao.member.record
 
-data class MemberRecord(
+data class MemberIdRecord(
     val memberId: Long
 )

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component
 class ProblemDao(
     private val dslContext: DSLContext
 ) {
-    fun selectProblemContents(query: SelectProblemQuery): SelectProblemRecord {
+    fun selectProblemContents(query: SelectProblemQuery): SelectProblemRecord? {
         return dslContext.select(
             Problem.PROBLEM.ID.`as`(SelectProblemRecord::id.name),
             Problem.PROBLEM.TITLE.`as`(SelectProblemRecord::title.name),
@@ -26,10 +26,9 @@ class ProblemDao(
             .where(Problem.PROBLEM.ID.eq(query.problemId))
             .and(Problem.PROBLEM.DELETED_AT.isNull)
             .fetchOneInto(SelectProblemRecord::class.java)
-            ?: throw RuntimeException("Problem with ID ${query.problemId} not found") // TODO: 에러 표준화
     }
 
-    fun selectProblemAnswer(query: SelectProblemAnswerQuery): SelectProblemAnswerRecord {
+    fun selectProblemAnswer(query: SelectProblemAnswerQuery): SelectProblemAnswerRecord? {
         return dslContext.select(
             Problem.PROBLEM.ID.`as`(SelectProblemAnswerRecord::id.name),
             Problem.PROBLEM.ANSWER.`as`(SelectProblemAnswerRecord::answer.name),
@@ -39,10 +38,9 @@ class ProblemDao(
             .where(Problem.PROBLEM.ID.eq(query.problemId))
             .and(Problem.PROBLEM.DELETED_AT.isNull)
             .fetchOneInto(SelectProblemAnswerRecord::class.java)
-            ?: throw RuntimeException("Problem Answer with ID ${query.problemId} not found") // TODO: 에러 표준화
     }
 
-    fun selectProblemsByArticleId(query: SelectProblemsByArticleIdQuery): ProblemIdsRecord {
+    fun selectProblemsByArticleId(query: SelectProblemsByArticleIdQuery): ProblemIdsRecord? {
         val articleId = query.articleId
 
         return dslContext.select()

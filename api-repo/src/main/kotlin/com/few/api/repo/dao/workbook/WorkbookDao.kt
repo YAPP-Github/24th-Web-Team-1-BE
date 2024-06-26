@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository
 class WorkbookDao(
     private val dslContext: DSLContext
 ) {
-    fun selectWorkBook(query: SelectWorkBookRecordQuery): SelectWorkBookRecord {
+    fun selectWorkBook(query: SelectWorkBookRecordQuery): SelectWorkBookRecord? {
         return dslContext.select(
             Workbook.WORKBOOK.ID.`as`(SelectWorkBookRecord::id.name),
             Workbook.WORKBOOK.TITLE.`as`(SelectWorkBookRecord::title.name),
@@ -23,6 +23,5 @@ class WorkbookDao(
             .where(Workbook.WORKBOOK.ID.eq(query.id))
             .and(Workbook.WORKBOOK.DELETED_AT.isNull)
             .fetchOneInto(SelectWorkBookRecord::class.java)
-            ?: throw RuntimeException("WorkBook with ID ${query.id} not found")
     }
 }

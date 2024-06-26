@@ -17,12 +17,13 @@ class SubscribeWorkbookUseCase(
     private val memberService: MemberService
 ) {
 
+    // todo 이미 가입된 경우
     @Transactional
     fun execute(useCaseIn: SubscribeWorkbookUseCaseIn) {
         // TODO: request sending email
 
-        val memberId = memberService.readMemberId(ReadMemberIdDto(useCaseIn.email)) ?: memberService.insertMember(
-            InsertMemberDto(useCaseIn.email, MemberType.NORMAL)
+        val memberId = memberService.readMemberId(ReadMemberIdDto(useCaseIn.email))?.memberId ?: memberService.insertMember(
+            InsertMemberDto(email = useCaseIn.email, memberType = MemberType.NORMAL)
         )
 
         // 이미 구독중인지 확인

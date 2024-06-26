@@ -20,6 +20,7 @@ class ReadProblemUseCase(
         val problemId = useCaseIn.problemId
 
         val record = problemDao.selectProblemContents(SelectProblemQuery(problemId))
+            ?: throw RuntimeException("Problem with ID $problemId not found") // TODO: 에러 표준화
 
         val contents: List<ReadProblemContentsUseCaseOutDetail> = contentsJsonMapper.toObject(record.contents).contents.map {
             ReadProblemContentsUseCaseOutDetail(

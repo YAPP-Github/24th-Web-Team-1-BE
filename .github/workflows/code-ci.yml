@@ -27,13 +27,13 @@ jobs:
               run: |
                   ./gradlew --info jooqCodegenAll
 
-            - name: Build with Gradle
-              run: |
-                  ./gradlew --info api:build
-
             - name: Test with Gradle
               run: |
                   ./gradlew --info test
+
+            - name: Build with Gradle
+              run: |
+                  ./gradlew --info api:build -x test
 
             - name: Generate OpenAPI3
               run: |

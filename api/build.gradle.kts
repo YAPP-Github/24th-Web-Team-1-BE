@@ -16,7 +16,7 @@ dependencies {
     implementation(project(":batch"))
 
     /** spring starter */
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
 
     /** swagger & restdocs */

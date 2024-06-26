@@ -142,6 +142,8 @@ class WorkBookSubscriberWriter(
             (it.progress.toInt() + 1) == lastDayCol[it.targetWorkBookId]
         }.map {
             it.memberId
+        }.filter {
+            memberSuccessRecords[it] == true
         }
 
         val successMemberIds = memberSuccessRecords.filter { it.value }.keys

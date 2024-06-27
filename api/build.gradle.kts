@@ -1,9 +1,11 @@
+
 import org.hidetake.gradle.swagger.generator.GenerateSwaggerUI
 
 dependencies {
     /** module */
     implementation(project(":api-repo"))
     implementation(project(":batch"))
+    implementation(project(":storage"))
 
     /** spring starter */
     implementation("org.springframework.boot:spring-boot-starter-webflux")

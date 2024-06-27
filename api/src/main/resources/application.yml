@@ -7,6 +7,11 @@ spring:
             local:
                 - api-repo-local
                 - email-local
+                - storage-local
             prd:
                 - api-repo-prd
                 - email-prd
+                - storage-prd
+logging:
+    level:
+        root: debug

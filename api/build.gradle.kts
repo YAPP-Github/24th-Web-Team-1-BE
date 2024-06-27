@@ -14,6 +14,7 @@ dependencies {
     /** swagger & restdocs */
     implementation("org.springdoc:springdoc-openapi-ui:${DependencyVersion.SPRINGDOC}")
     implementation("org.springframework.restdocs:spring-restdocs-webtestclient")
+    implementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     implementation("com.epages:restdocs-api-spec-mockmvc:${DependencyVersion.EPAGES_REST_DOCS_API_SPEC}")
 
     /** test container */

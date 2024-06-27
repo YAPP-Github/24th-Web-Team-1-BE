@@ -24,3 +24,13 @@ spring:
                         enable: true
                     EnableSSL:
                         enable: true
+image:
+    store:
+        url: http://127.0.0.1:9000
+        access-key: thisisroot
+        secret-key: thisisroot
+        bucket-name: picture
+        region: ap-northeast-2
+
+cdn:
+    url: http://127.0.0.1:9000

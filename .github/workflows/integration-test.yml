@@ -9,7 +9,7 @@ permissions:
     contents: read
 
 env:
-    MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+    EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
 
 jobs:
     build:

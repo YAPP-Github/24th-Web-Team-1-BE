@@ -10,7 +10,7 @@ permissions:
 
 env:
     RELEASE_VERSION: ${{ github.sha }}
-    MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+    EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
 
 jobs:
     build:

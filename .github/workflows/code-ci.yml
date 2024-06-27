@@ -41,7 +41,7 @@ jobs:
 
             - name: Generate Swagger
               run: |
-                  ./gradlew --info api:generateApiSwaggerUI
+                  ./gradlew --info api:generateStaticSwaggerUIApi
 
             - name : Docker Login
               run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}

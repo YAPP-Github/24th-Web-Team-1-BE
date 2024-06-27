@@ -53,19 +53,23 @@ postman {
     outputFileNamePrefix = "postman"
 }
 
+/** generate swagger ui */
 swaggerSources {
+    /** generateSwaggerUIApi */
     register("api") {
         setInputFile(file("$projectDir/src/main/resources/static/openapi3.yaml"))
     }
 }
 
-tasks.withType(GenerateSwaggerUI::class) {
-    dependsOn("openapi3")
-}
-
-tasks.register("generateApiSwaggerUI", Copy::class) {
-    dependsOn("generateSwaggerUI")
+/**
+ * generate static swagger ui <br/>
+ * need snippet to generate swagger ui
+ * */
+tasks.register("generateStaticSwaggerUIApi", Copy::class) {
+    /** generateSwaggerUIApi */
     val generateSwaggerUISampleTask = tasks.named("generateSwaggerUIApi", GenerateSwaggerUI::class).get()
+
+    /** copy */
     from(generateSwaggerUISampleTask.outputDir)
     into("$projectDir/src/main/resources/static/docs/swagger-ui")
 }

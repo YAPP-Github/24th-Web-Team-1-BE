@@ -59,11 +59,39 @@ tasks.withType(GenerateSwaggerUI::class) {
 }
 
 tasks.register("generateApiSwaggerUI", Copy::class) {
-    dependsOn("generateSwaggerUI")
+//    dependsOn("generateSwaggerUI")
     val generateSwaggerUISampleTask = tasks.named("generateSwaggerUIApi", GenerateSwaggerUI::class).get()
     from(generateSwaggerUISampleTask.outputDir)
     into("$projectDir/src/main/resources/static/docs/swagger-ui")
+    doLast {
+        val swaggerSpecSource = "$projectDir/src/main/resources/static/docs/swagger-ui/swagger-spec.js"
+        file(swaggerSpecSource).writeText(
+            file(swaggerSpecSource).readText().replace(
+                "operationId\" : \"PutImageApi\",",
+                "operationId\" : \"PutImageApi\",\n" +
+                    putImageRequestScriptSource
+            )
+        )
+    }
 }
+
+val putImageRequestScriptSource = "" +
+    "        \"requestBody\" : {\n" +
+    "            \"content\" : {\n" +
+    "                \"multipart/form-data\" : {\n" +
+    "                    \"schema\" : {\n" +
+    "                        \"type\" : \"object\",\n" +
+    "                        \"properties\" : {\n" +
+    "                            \"source\" : {\n" +
+    "                                \"type\" : \"string\",\n" +
+    "                                \"format\" : \"binary\"\n" +
+    "                            }\n" +
+    "                        }\n" +
+    "\n" +
+    "                    }\n" +
+    "                }\n" +
+    "            }\n" +
+    "        },"
 
 val imageName = project.hasProperty("imageName").let {
     if (it) {

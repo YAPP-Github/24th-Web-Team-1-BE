@@ -1,4 +1,5 @@
 import org.hidetake.gradle.swagger.generator.GenerateSwaggerUI
+import java.util.Random
 
 dependencies {
     /** module */
@@ -79,14 +80,14 @@ val imageName = project.hasProperty("imageName").let {
     if (it) {
         project.property("imageName") as String
     } else {
-        "api"
+        "fewletter/api"
     }
 }
 val releaseVersion = project.hasProperty("releaseVersion").let {
     if (it) {
         project.property("releaseVersion") as String
     } else {
-        "latest"
+        Random().nextInt(90000) + 10000
     }
 }
 
@@ -106,7 +107,18 @@ tasks.register("buildDockerImage") {
 
         exec {
             workingDir(".")
-            commandLine("docker", "buildx", "build", "--platform=linux/amd64,linux/arm64", "-t", "fewletter/$imageName", "--build-arg", "RELEASE_VERSION=$releaseVersion", ".", "--push")
+            commandLine(
+                "docker", "buildx", "build", "--platform=linux/amd64,linux/arm64", "-t",
+                "$imageName:latest", "--build-arg", "RELEASE_VERSION=$releaseVersion", ".", "--push"
+            )
+        }
+
+        exec {
+            workingDir(".")
+            commandLine(
+                "docker", "buildx", "build", "--platform=linux/amd64,linux/arm64", "-t",
+                "$imageName:$releaseVersion", "--build-arg", "RELEASE_VERSION=$releaseVersion", ".", "--push"
+            )
         }
     }
 }

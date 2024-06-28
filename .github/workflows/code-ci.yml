@@ -48,4 +48,4 @@ jobs:
 
             - name: Build Docker Image
               run: |
-                  ./gradlew --info api:buildDockerImage -PreleaseVersion=${{ env.RELEASE_VERSION }}
+                  ./gradlew --info api:buildDockerImage -PimageName=fewletter/api -PreleaseVersion=${{ env.RELEASE_VERSION }}

@@ -67,6 +67,7 @@ swaggerSources {
  * */
 tasks.register("generateStaticSwaggerUIApi", Copy::class) {
     /** generateSwaggerUIApi */
+    dependsOn("generateSwaggerUIApi")
     val generateSwaggerUISampleTask = tasks.named("generateSwaggerUIApi", GenerateSwaggerUI::class).get()
 
     /** copy */

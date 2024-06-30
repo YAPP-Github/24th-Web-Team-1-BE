@@ -31,7 +31,7 @@ class PutImageUseCase(
             imageSource.transferTo(it)
         }.getOrThrow()
         val dateDir = LocalDate.now().toString()
-        val imageName = "$dateDir/${generateImageName()}" + ".$suffix"
+        val imageName = "images/$dateDir/${generateImageName()}" + ".$suffix"
 
         val url = putImageService.execute(imageName, image)?.let { res ->
             val source = res.`object`

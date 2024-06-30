@@ -1,7 +1,7 @@
 package com.few.api.domain.image.service
 
 import com.few.api.domain.image.service.dto.GetUrlQuery
-import com.few.image.service.GetPreSignedImageUrlService
+import com.few.storage.image.service.GetPreSignedImageUrlService // todo commit at #97
 import com.few.storage.image.service.support.CdnProperty
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service

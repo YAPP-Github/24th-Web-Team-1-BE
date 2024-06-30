@@ -6,7 +6,7 @@ import com.few.api.domain.image.service.GetUrlService
 import com.few.api.domain.image.service.dto.GetUrlQuery
 import com.few.api.repo.dao.image.ImageDao
 import com.few.api.repo.dao.image.command.InsertImageIfoCommand
-import com.few.image.service.PutImageService
+import com.few.storage.image.service.PutImageService
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.io.File

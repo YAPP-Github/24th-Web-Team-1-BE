@@ -65,7 +65,6 @@ swaggerSources {
     }
 }
 
-
 /**
  * generate static swagger ui <br/>
  * need snippet to generate swagger ui

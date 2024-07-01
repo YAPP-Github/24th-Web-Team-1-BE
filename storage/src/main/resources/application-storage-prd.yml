@@ -9,5 +9,10 @@ image:
         bucket-name: ${IMAGE_STORE_BUCKET_NAME}
         region: ${STORAGE_REGION}
 
+document:
+    store:
+        bucket-name: ${DOCUMENT_STORE_BUCKET_NAME}
+        region: ${STORAGE_REGION}
+
 cdn:
     url: ${CDN_URL}

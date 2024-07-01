@@ -4,14 +4,13 @@ import com.few.api.domain.admin.document.dto.PutImageUseCaseIn
 import com.few.api.domain.admin.document.dto.PutImageUseCaseOut
 import com.few.api.domain.admin.document.service.GetUrlService
 import com.few.api.domain.admin.document.service.dto.GetUrlQuery
+import com.few.api.domain.admin.document.utils.ObjectPathGenerator
 import com.few.api.repo.dao.image.ImageDao
 import com.few.api.repo.dao.image.command.InsertImageIfoCommand
 import com.few.storage.image.service.PutImageService
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.io.File
-import java.time.LocalDate
-import kotlin.random.Random
 
 @Component
 class PutImageUseCase(
@@ -30,8 +29,7 @@ class PutImageUseCase(
         }.onSuccess {
             imageSource.transferTo(it)
         }.getOrThrow()
-        val dateDir = LocalDate.now().toString()
-        val imageName = "images/$dateDir/${generateImageName()}" + ".$suffix"
+        val imageName = ObjectPathGenerator.imagePath(suffix)
 
         val url = putImageService.execute(imageName, image)?.let { res ->
             val source = res.`object`
@@ -46,16 +44,5 @@ class PutImageUseCase(
         }
 
         return PutImageUseCaseOut(url!!)
-    }
-
-    private fun generateImageName(): String {
-        return randomString()
-    }
-
-    private fun randomString(): String {
-        val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-        return (1..16)
-            .map { Random.nextInt(0, charPool.size).let { charPool[it] } }
-            .joinToString("")
     }
 }

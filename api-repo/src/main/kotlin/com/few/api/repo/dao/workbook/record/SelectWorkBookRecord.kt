@@ -7,7 +7,7 @@ data class SelectWorkBookRecord(
     val id: Long,
     val title: String,
     val mainImageUrl: URL,
-    val category: Long,
+    val category: Byte,
     val description: String,
     val createdAt: LocalDateTime
 )

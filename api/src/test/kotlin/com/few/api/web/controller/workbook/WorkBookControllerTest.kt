@@ -13,6 +13,7 @@ import com.few.api.domain.workbook.usecase.ReadWorkbookUseCase
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
+import com.few.data.common.code.CategoryType
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -79,7 +80,7 @@ class WorkBookControllerTest : ControllerTestSpec() {
                 mainImageUrl = URL("http://localhost:8080/api/v1/workbooks/1/image"),
                 title = "재태크, 투자 필수 용어 모음집",
                 description = "사회 초년생부터, 직장인, 은퇴자까지 모두가 알아야 할 기본적인 재태크, 투자 필수 용어 모음집 입니다.",
-                category = "경제",
+                category = CategoryType.fromCode(0)!!.name,
                 createdAt = LocalDateTime.now(),
                 writers = listOf(
                     WriterDetail(1L, "안나포", URL("http://localhost:8080/api/v1/users/1")),

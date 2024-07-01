@@ -9,6 +9,7 @@ import com.few.api.domain.article.service.dto.BrowseArticleProblemIdsQuery
 import com.few.api.domain.article.service.dto.ReadWriterRecordQuery
 import com.few.api.repo.dao.article.ArticleDao
 import com.few.api.repo.dao.article.query.SelectArticleRecordQuery
+import com.few.data.common.code.CategoryType
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
@@ -43,7 +44,7 @@ class ReadArticleUseCase(
             title = articleRecord.title,
             content = articleRecord.content,
             problemIds = problemIds.problemIds,
-            category = articleRecord.category.toString(), // todo fix to enum
+            category = CategoryType.convertToDisplayName(articleRecord.category),
             createdAt = articleRecord.createdAt
         )
     }

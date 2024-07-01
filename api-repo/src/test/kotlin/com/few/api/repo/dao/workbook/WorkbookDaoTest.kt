@@ -41,7 +41,7 @@ class WorkbookDaoTest : JooqTestSpec() {
         }
 
         // then
-        assertNotNull(result)
+        assertNotNull(result!!)
         assertEquals(1L, result.id)
         assertEquals("title1", result.title)
         assertEquals(URL("http://localhost:8080/image1.jpg"), result.mainImageUrl)

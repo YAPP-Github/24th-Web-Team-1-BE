@@ -9,7 +9,7 @@ permissions:
     contents: read
 
 env:
-    MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+    EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
 
 jobs:
     build:
@@ -24,11 +24,7 @@ jobs:
 
             - name: Jooq Code Generation
               run: |
-                  ./gradlew --info jooqCodegen
-
-            - name: Build with Gradle
-              run: |
-                  ./gradlew --info api:build
+                  ./gradlew --info jooqCodegenAll
 
             - name: Test with Gradle
               run: |

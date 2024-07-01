@@ -4,7 +4,7 @@ import com.few.api.repo.dao.member.command.InsertMemberCommand
 import com.few.api.repo.dao.member.query.SelectMemberByEmailQuery
 import com.few.api.repo.dao.member.query.SelectWriterQuery
 import com.few.api.repo.dao.member.query.SelectWritersQuery
-import com.few.api.repo.dao.member.record.MemberRecord
+import com.few.api.repo.dao.member.record.MemberIdRecord
 import com.few.api.repo.dao.member.record.WriterRecord
 import com.few.data.common.code.MemberType
 import jooq.jooq_dsl.tables.Member
@@ -47,17 +47,16 @@ class MemberDao(
             .fetchInto(WriterRecord::class.java)
     }
 
-    fun selectMemberByEmail(query: SelectMemberByEmailQuery): MemberRecord {
+    fun selectMemberByEmail(query: SelectMemberByEmailQuery): MemberIdRecord? {
         val email = query.email
 
         return dslContext.select(
-            Member.MEMBER.ID.`as`(MemberRecord::memberId.name)
+            Member.MEMBER.ID.`as`(MemberIdRecord::memberId.name)
         )
             .from(Member.MEMBER)
             .where(Member.MEMBER.EMAIL.eq(email))
             .and(Member.MEMBER.DELETED_AT.isNull)
-            .fetchOneInto(MemberRecord::class.java)
-            ?: throw IllegalArgumentException("cannot find member record by email: $email")
+            .fetchOneInto(MemberIdRecord::class.java)
     }
 
     fun insertMember(command: InsertMemberCommand): Long {

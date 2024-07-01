@@ -57,7 +57,7 @@ class ArticleDaoTest : JooqTestSpec() {
         }
 
         // then
-        assertNotNull(result)
+        assertNotNull(result!!)
         assertEquals(1L, result.articleId)
         assertEquals(1L, result.writerId)
         assertEquals(URL("http://localhost:8080/image1.jpg"), result.mainImageURL)
@@ -79,7 +79,7 @@ class ArticleDaoTest : JooqTestSpec() {
         }
 
         // then
-        assertNotNull(result)
+        assertNotNull(result!!)
         assertEquals(1L, result.articleId)
         assertEquals(1L, result.writerId)
         assertEquals(URL("http://localhost:8080/image1.jpg"), result.mainImageURL)

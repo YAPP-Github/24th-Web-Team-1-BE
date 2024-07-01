@@ -10,3 +10,6 @@ spring:
             prd:
                 - api-repo-prd
                 - email-prd
+logging:
+    level:
+        root: debug

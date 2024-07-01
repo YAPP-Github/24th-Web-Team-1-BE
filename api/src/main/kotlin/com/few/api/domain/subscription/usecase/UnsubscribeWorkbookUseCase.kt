@@ -19,7 +19,7 @@ class UnsubscribeWorkbookUseCase(
         // TODO: request sending email
 
         val memberId =
-            memberService.readMemberId(ReadMemberIdDto(useCaseIn.email)) ?: throw RuntimeException("Member Not Found")
+            memberService.readMemberId(ReadMemberIdDto(useCaseIn.email))?.memberId ?: throw RuntimeException("Not found member")
 
         subscriptionDao.updateDeletedAtInWorkbookSubscription(
             UpdateDeletedAtInWorkbookSubscriptionCommand(

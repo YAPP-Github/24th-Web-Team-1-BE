@@ -1,0 +1,18 @@
+name: Batch Cron
+
+on:
+    schedule:
+        # 매 오전 8시에 실행
+        - cron: '0 8 * * *'
+    workflow_dispatch:
+
+jobs:
+    code-review:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+              run: |
+                  curl -X 'POST' \
+                    'https://api.fewletter.site/batch/article' \
+                    -H 'accept: application/json' \
+                    -H 'Content-Type: application/json'

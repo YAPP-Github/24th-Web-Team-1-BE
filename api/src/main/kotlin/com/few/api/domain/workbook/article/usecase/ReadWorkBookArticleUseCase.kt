@@ -25,7 +25,7 @@ class ReadWorkBookArticleUseCase(
             useCaseIn.articleId
         ).let { query: SelectWorkBookArticleRecordQuery ->
             articleDao.selectWorkBookArticleRecord(query)
-        }
+        } ?: throw IllegalArgumentException("cannot find $useCaseIn.workbookId article record by articleId: $useCaseIn.articleId")
 
         val writerRecord =
             ReadWriterRecordQuery(articleRecord.writerId).let { query: ReadWriterRecordQuery ->

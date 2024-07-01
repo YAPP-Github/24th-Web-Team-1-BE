@@ -1,5 +1,5 @@
 -- 작가 및 유저
-CREATE TABLE member
+CREATE TABLE MEMBER
 (
     id          BIGINT       NOT NULL AUTO_INCREMENT,
     email       VARCHAR(255) NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE member
 );
 
 -- 아티클 마스터
-CREATE TABLE article_mst
+CREATE TABLE ARTICLE_MST
 (
     id             BIGINT       NOT NULL AUTO_INCREMENT,
     member_id      BIGINT       NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE article_mst
 );
 
 -- 아티클 인포
-CREATE TABLE article_ifo
+CREATE TABLE ARTICLE_IFO
 (
     article_mst_id BIGINT NOT NULL,
     content        TEXT   NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE article_ifo
 );
 
 -- 학습지
-CREATE TABLE workbook
+CREATE TABLE WORKBOOK
 (
     id             BIGINT       NOT NULL AUTO_INCREMENT,
     title          VARCHAR(255) NOT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE workbook
 );
 
 -- 작가-학습지 매핑테이블(다대다)
-CREATE TABLE mapping_member_workbook
+CREATE TABLE MAPPING_MEMBER_WORKBOOK
 (
     member_id   BIGINT NOT NULL,
     workbook_id BIGINT NOT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE mapping_member_workbook
 );
 
 -- 학습지-아티클 매핑테이블(다대다)
-CREATE TABLE mapping_workbook_article
+CREATE TABLE MAPPING_WORKBOOK_ARTICLE
 (
     workbook_id BIGINT NOT NULL,
     article_id  BIGINT NOT NULL,
@@ -67,7 +67,7 @@ CREATE TABLE mapping_workbook_article
 );
 
 -- 문제, 정답, 해설(메타데이터)
-CREATE TABLE problem
+CREATE TABLE PROBLEM
 (
     id          BIGINT       NOT NULL AUTO_INCREMENT,
     article_id  BIGINT       NOT NULL,
@@ -82,7 +82,7 @@ CREATE TABLE problem
 );
 
 -- 풀이 히스토리
-CREATE TABLE submit_history
+CREATE TABLE SUBMIT_HISTORY
 (
     id         BIGINT       NOT NULL AUTO_INCREMENT,
     problem_id BIGINT       NOT NULL,
@@ -95,7 +95,7 @@ CREATE TABLE submit_history
 );
 
 -- 구독
-CREATE TABLE subscription
+CREATE TABLE SUBSCRIPTION
 (
     id                 BIGINT    NOT NULL AUTO_INCREMENT,
     member_id          BIGINT    NOT NULL,
@@ -110,7 +110,7 @@ CREATE TABLE subscription
 
 -- [인덱스 추가] --
 -- problem_idx1: problem 테이블에서 article_id 기반으로 문제 조회시 사용
-CREATE INDEX problem_idx1 ON problem (article_id);
+CREATE INDEX problem_idx1 ON PROBLEM (article_id);
 
 -- article_mst_idx1: 작가가 작성한 아티클 조회시 사용
-CREATE INDEX article_mst_idx1 ON article_mst (member_id);
+CREATE INDEX article_mst_idx1 ON ARTICLE_MST (member_id);

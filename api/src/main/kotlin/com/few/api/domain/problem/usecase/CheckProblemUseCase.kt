@@ -20,8 +20,8 @@ class CheckProblemUseCase(
         val problemId = useCaseIn.problemId
         val submitAns = useCaseIn.sub
 
-        val record = problemDao.selectProblemAnswer(SelectProblemAnswerQuery(problemId))
-        val isSolved = submitAns.equals(record.answer)
+        val record = problemDao.selectProblemAnswer(SelectProblemAnswerQuery(problemId)) ?: throw RuntimeException("Problem Answer with ID $problemId not found") // TODO: 에러 표준화
+        val isSolved = record.answer == submitAns
 
         val submitHistoryId = submitHistoryDao.insertSubmitHistory(
             InsertSubmitHistoryCommand(problemId, 1L, submitAns, isSolved)

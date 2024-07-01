@@ -20,7 +20,7 @@ class ReadWorkbookUseCase(
         val workbookId = useCaseIn.workbookId
 
         val workbookRecord = SelectWorkBookRecordQuery(workbookId).let { query ->
-            workbookDao.selectWorkBook(query)
+            workbookDao.selectWorkBook(query) ?: throw RuntimeException("WorkBook with ID ${query.id} not found")
         }
 
         val workbookMappedArticles = BrowseWorkbookArticlesQuery(workbookId).let { query ->

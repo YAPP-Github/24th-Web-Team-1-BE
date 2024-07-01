@@ -1,8 +1,10 @@
 package com.few.api.repo.dao.workbook
 
 import com.few.api.repo.dao.workbook.command.InsertWorkBookCommand
+import com.few.api.repo.dao.workbook.command.MapWorkBookToArticleCommand
 import com.few.api.repo.dao.workbook.query.SelectWorkBookRecordQuery
 import com.few.api.repo.dao.workbook.record.SelectWorkBookRecord
+import jooq.jooq_dsl.tables.MappingWorkbookArticle
 import jooq.jooq_dsl.tables.Workbook
 import org.jooq.DSLContext
 import org.springframework.stereotype.Repository
@@ -35,5 +37,13 @@ class WorkbookDao(
             .returning(Workbook.WORKBOOK.ID)
             .fetchOne()
             ?.id
+    }
+
+    fun mapWorkBookToArticle(command: MapWorkBookToArticleCommand) {
+        dslContext.insertInto(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE)
+            .set(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID, command.workbookId)
+            .set(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.ARTICLE_ID, command.articleId)
+            .set(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.DAY_COL, command.dayCol)
+            .execute()
     }
 }

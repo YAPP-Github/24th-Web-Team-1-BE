@@ -1,5 +1,7 @@
 package com.few.storage.image.service
 
-fun interface RemoveImageService {
-    fun execute(image: String): Boolean
+import com.few.storage.RemoveObjectService
+
+fun interface RemoveImageService : RemoveObjectService {
+    override fun execute(image: String): Boolean
 }

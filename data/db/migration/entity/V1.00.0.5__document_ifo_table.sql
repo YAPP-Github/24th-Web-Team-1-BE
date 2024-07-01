@@ -1,0 +1,9 @@
+-- 문서 정보 테이블
+CREATE TABLE DOCUMENT_IFO
+(
+    id         BIGINT PRIMARY KEY AUTO_INCREMENT,
+    path       VARCHAR(255) NOT NULL,
+    alias      VARCHAR(255) NOT NULL DEFAULT '',
+    url        TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

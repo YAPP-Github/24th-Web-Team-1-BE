@@ -38,4 +38,7 @@ object DependencyVersion {
 
     /** aws-sdk */
     const val AWS_SDK = "1.12.220"
+
+    /** commonmark */
+    const val COMMONMARK = "0.22.0"
 }

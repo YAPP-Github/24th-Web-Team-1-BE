@@ -34,5 +34,9 @@ image:
     store:
         bucket-name: picture
 
+document:
+    store:
+        bucket-name: document
+
 cdn:
     url: http://127.0.0.1:9000

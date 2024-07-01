@@ -86,6 +86,14 @@ tasks.register("generateStaticSwaggerUIApi", Copy::class) {
                     putImageRequestScriptSource
             )
         )
+
+        file(swaggerSpecSource).writeText(
+            file(swaggerSpecSource).readText().replace(
+                "operationId\" : \"ConvertContentApi\",",
+                "operationId\" : \"ConvertContentApi\",\n" +
+                    putContentRequestScriptSource
+            )
+        )
     }
 }
 
@@ -97,6 +105,24 @@ val putImageRequestScriptSource = "" +
     "                        \"type\" : \"object\",\n" +
     "                        \"properties\" : {\n" +
     "                            \"source\" : {\n" +
+    "                                \"type\" : \"string\",\n" +
+    "                                \"format\" : \"binary\"\n" +
+    "                            }\n" +
+    "                        }\n" +
+    "\n" +
+    "                    }\n" +
+    "                }\n" +
+    "            }\n" +
+    "        },"
+
+val putContentRequestScriptSource = "" +
+    "        \"requestBody\" : {\n" +
+    "            \"content\" : {\n" +
+    "                \"multipart/form-data\" : {\n" +
+    "                    \"schema\" : {\n" +
+    "                        \"type\" : \"object\",\n" +
+    "                        \"properties\" : {\n" +
+    "                            \"content\" : {\n" +
     "                                \"type\" : \"string\",\n" +
     "                                \"format\" : \"binary\"\n" +
     "                            }\n" +

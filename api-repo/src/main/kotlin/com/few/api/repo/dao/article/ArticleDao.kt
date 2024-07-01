@@ -1,5 +1,6 @@
 package com.few.api.repo.dao.article
 
+import com.few.api.repo.dao.article.command.InsertFullArticleRecordCommand
 import com.few.api.repo.dao.article.query.SelectArticleRecordQuery
 import com.few.api.repo.dao.article.query.SelectWorkBookArticleRecordQuery
 import com.few.api.repo.dao.article.query.SelectWorkbookMappedArticleRecordsQuery
@@ -84,5 +85,22 @@ class ArticleDao(
             .where(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.eq(workbookId))
             .and(ArticleMst.ARTICLE_MST.DELETED_AT.isNull)
             .fetchInto(SelectWorkBookMappedArticleRecord::class.java)
+    }
+
+    fun insertFullArticleRecord(command: InsertFullArticleRecordCommand): Long {
+        val mstId = dslContext.insertInto(ArticleMst.ARTICLE_MST)
+            .set(ArticleMst.ARTICLE_MST.MEMBER_ID, command.writerId)
+            .set(ArticleMst.ARTICLE_MST.MAIN_IMAGE_URL, command.mainImageURL.toString())
+            .set(ArticleMst.ARTICLE_MST.TITLE, command.title)
+            .set(ArticleMst.ARTICLE_MST.CATEGORY_CD, command.category)
+            .returning(ArticleMst.ARTICLE_MST.ID)
+            .fetchOne()
+
+        dslContext.insertInto(ArticleIfo.ARTICLE_IFO)
+            .set(ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID, mstId!!.getValue(ArticleMst.ARTICLE_MST.ID))
+            .set(ArticleIfo.ARTICLE_IFO.CONTENT, command.content)
+            .execute()
+
+        return mstId.getValue(ArticleMst.ARTICLE_MST.ID)
     }
 }

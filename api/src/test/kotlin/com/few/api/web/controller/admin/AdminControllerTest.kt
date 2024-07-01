@@ -12,6 +12,7 @@ import com.few.api.web.controller.admin.request.*
 import com.few.api.web.controller.admin.response.ImageSourceResponse
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
+import com.few.data.common.code.CategoryType
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -88,7 +89,7 @@ class AdminControllerTest : ControllerTestSpec() {
         val uri = UriComponentsBuilder.newInstance().path("$BASE_URL/workbooks").build().toUriString()
         val title = "title"
         val mainImageUrl = URL("http://localhost:8080")
-        val category = "category"
+        val category = CategoryType.fromCode(0)!!.name
         val description = "description"
         val request = AddWorkbookRequest(title, mainImageUrl, category, description)
         val body = objectMapper.writeValueAsString(request)
@@ -135,7 +136,7 @@ class AdminControllerTest : ControllerTestSpec() {
             "writer@gmail.com",
             URL("http://localhost:8080"),
             "title",
-            "category",
+            CategoryType.fromCode(0)!!.name,
             "contentSource",
             ProblemDto(
                 "title",
@@ -157,7 +158,7 @@ class AdminControllerTest : ControllerTestSpec() {
                     "writer@gmail.com",
                     URL("http://localhost:8080"),
                     "title",
-                    "category",
+                    CategoryType.fromCode(0)!!.name,
                     "contentSource",
                     ProblemDetail(
                         "title",

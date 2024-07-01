@@ -4,6 +4,7 @@ import com.few.api.repo.dao.article.query.SelectArticleRecordQuery
 import com.few.api.repo.dao.article.query.SelectWorkBookArticleRecordQuery
 import com.few.api.repo.dao.article.query.SelectWorkbookMappedArticleRecordsQuery
 import com.few.api.repo.jooq.JooqTestSpec
+import com.few.data.common.code.CategoryType
 import jooq.jooq_dsl.tables.ArticleIfo
 import jooq.jooq_dsl.tables.ArticleMst
 import jooq.jooq_dsl.tables.MappingWorkbookArticle
@@ -36,7 +37,7 @@ class ArticleDaoTest : JooqTestSpec() {
             .set(ArticleMst.ARTICLE_MST.MEMBER_ID, 1L)
             .set(ArticleMst.ARTICLE_MST.MAIN_IMAGE_URL, "http://localhost:8080/image1.jpg")
             .set(ArticleMst.ARTICLE_MST.TITLE, "this is title1")
-            .set(ArticleMst.ARTICLE_MST.CATEGORY_CD, 0)
+            .set(ArticleMst.ARTICLE_MST.CATEGORY_CD, CategoryType.fromCode(0)!!.code)
             .execute()
         dslContext.insertInto(ArticleIfo.ARTICLE_IFO)
             .set(ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID, 1L)
@@ -63,7 +64,7 @@ class ArticleDaoTest : JooqTestSpec() {
         assertEquals(URL("http://localhost:8080/image1.jpg"), result.mainImageURL)
         assertEquals("this is title1", result.title)
         assertEquals("this is content1", result.content)
-        assertEquals(0, result.category)
+        assertEquals(CategoryType.fromCode(0)!!.code, result.category)
     }
 
     @Test
@@ -85,7 +86,7 @@ class ArticleDaoTest : JooqTestSpec() {
         assertEquals(URL("http://localhost:8080/image1.jpg"), result.mainImageURL)
         assertEquals("this is title1", result.title)
         assertEquals("this is content1", result.content)
-        assertEquals(0, result.category)
+        assertEquals(CategoryType.fromCode(0)!!.code, result.category)
         assertEquals(1L, result.day)
     }
 
@@ -111,7 +112,7 @@ class ArticleDaoTest : JooqTestSpec() {
             assertEquals(URL("http://localhost:8080/image${i + 1}.jpg"), result[i].mainImageURL)
             assertEquals("this is title${i + 1}", result[i].title)
             assertEquals("this is content${i + 1}", result[i].content)
-            assertEquals(0, result[i].category) // todo fix
+            assertEquals(CategoryType.fromCode(0)!!.code, result[i].category)
         }
     }
 
@@ -142,7 +143,7 @@ class ArticleDaoTest : JooqTestSpec() {
             .set(ArticleMst.ARTICLE_MST.MEMBER_ID, 1L)
             .set(ArticleMst.ARTICLE_MST.MAIN_IMAGE_URL, "http://localhost:8080/image$id.jpg")
             .set(ArticleMst.ARTICLE_MST.TITLE, "this is title$id")
-            .set(ArticleMst.ARTICLE_MST.CATEGORY_CD, 0)
+            .set(ArticleMst.ARTICLE_MST.CATEGORY_CD, CategoryType.fromCode(0)!!.code)
             .execute()
     }
 

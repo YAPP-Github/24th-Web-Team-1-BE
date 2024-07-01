@@ -4,6 +4,7 @@ import com.few.api.repo.dao.workbook.command.InsertWorkBookCommand
 import com.few.api.repo.dao.workbook.command.MapWorkBookToArticleCommand
 import com.few.api.repo.dao.workbook.query.SelectWorkBookRecordQuery
 import com.few.api.repo.dao.workbook.record.SelectWorkBookRecord
+import com.few.data.common.code.CategoryType
 import jooq.jooq_dsl.tables.MappingWorkbookArticle
 import jooq.jooq_dsl.tables.Workbook
 import org.jooq.DSLContext
@@ -32,7 +33,7 @@ class WorkbookDao(
         return dslContext.insertInto(Workbook.WORKBOOK)
             .set(Workbook.WORKBOOK.TITLE, command.title)
             .set(Workbook.WORKBOOK.MAIN_IMAGE_URL, command.mainImageUrl.toString())
-            .set(Workbook.WORKBOOK.CATEGORY_CD, 0) // todo fix
+            .set(Workbook.WORKBOOK.CATEGORY_CD, CategoryType.convertToCode(command.category))
             .set(Workbook.WORKBOOK.DESCRIPTION, command.description)
             .returning(Workbook.WORKBOOK.ID)
             .fetchOne()

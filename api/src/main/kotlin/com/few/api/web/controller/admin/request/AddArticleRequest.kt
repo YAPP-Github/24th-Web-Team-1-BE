@@ -29,6 +29,8 @@ data class ProblemDto(
     val explanation: String
 )
 data class ProblemContentDto(
+    @field:NotBlank(message = "{min.problem.number}")
     val number: Long,
+    @field:NotBlank(message = "{problem.content.notblank}")
     val content: String
 )

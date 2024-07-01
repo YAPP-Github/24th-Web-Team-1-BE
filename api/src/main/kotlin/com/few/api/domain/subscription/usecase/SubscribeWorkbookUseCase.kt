@@ -28,27 +28,35 @@ class SubscribeWorkbookUseCase(
         )
 
         val subTargetWorkbookId = useCaseIn.workbookId
+        val command = InsertWorkbookSubscriptionCommand(
+            memberId = memberId,
+            workbookId = subTargetWorkbookId
+        )
+
+        /** 구독 히스토리가 있는지 확인 */
         SelectAllWorkbookSubscriptionStatusQueryNotConsiderDeletedAt(memberId = memberId, workbookId = subTargetWorkbookId).let { query ->
             subscriptionDao.selectAllWorkbookSubscriptionStatus(query).let { subscriptionStatusList ->
+                /** 이미 구독한 경우가 있는 경우 */
                 if (subscriptionStatusList.isNotEmpty()) {
                     subscriptionStatusList.stream().filter { status ->
                         status.id == query.workbookId
                     }.findAny().get().let { status ->
-                        InsertWorkbookSubscriptionCommand(memberId = memberId, workbookId = subTargetWorkbookId).let { command ->
-                            if (status.subHistory) {
-                                CountWorkbookMappedArticlesQuery(subTargetWorkbookId).let { query ->
-                                    subscriptionDao.countWorkbookMappedArticles(query)
-                                }?.let { lastDay ->
-                                    if (lastDay <= (status.day)) {
-                                        throw RuntimeException("이미 학습을 완료한 워크북입니다.")
-                                    }
-                                    subscriptionDao.reSubscribeWorkbookSubscription(command)
+                        if (status.subHistory) {
+                            CountWorkbookMappedArticlesQuery(subTargetWorkbookId).let { query ->
+                                subscriptionDao.countWorkbookMappedArticles(query)
+                            }?.let { lastDay ->
+                                /** 이미 학습을 완료한 경우 */
+                                if (lastDay <= (status.day)) {
+                                    throw RuntimeException("이미 학습을 완료한 워크북입니다.")
                                 }
-                            } else {
-                                subscriptionDao.insertWorkbookSubscription(command)
+                                /** 재구독 */
+                                subscriptionDao.reSubscribeWorkbookSubscription(command)
                             }
                         }
                     }
+                } else {
+                    /** 구독한 경우가 없는 경우 */
+                    subscriptionDao.insertWorkbookSubscription(command)
                 }
             }
         }

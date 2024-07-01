@@ -16,13 +16,17 @@ class BatchSendArticleEmailService(
 ) {
     @Transactional
     fun execute() {
+        val startTime = System.currentTimeMillis()
         workBookSubscriberReader.execute().let { item ->
-            workBookSubscriberWriter.execute(item).let { execution ->
-                objectMapper.writeValueAsString(execution).let { json ->
-                    if (!json.contains("fail")) {
-                        batchCallExecutionService.execute(false, json)
-                    } else {
-                        batchCallExecutionService.execute(true, json)
+            workBookSubscriberWriter.execute(item).let { resultExecution ->
+                val elapsedTime = System.currentTimeMillis() - startTime
+                resultExecution.plus("elapsedTime" to elapsedTime).let { execution ->
+                    objectMapper.writeValueAsString(execution).let { json ->
+                        if (!json.contains("fail")) {
+                            batchCallExecutionService.execute(true, json)
+                        } else {
+                            batchCallExecutionService.execute(false, json)
+                        }
                     }
                 }
             }

@@ -43,16 +43,18 @@ class SubscriptionDao(
             .execute()
     }
 
-    fun selectAllWorkbookSubscriptionStatus(query: SelectAllWorkbookSubscriptionStatusQueryNotConsiderDeletedAt): List<WorkbookSubscriptionStatus> {
+    fun selectTopWorkbookSubscriptionStatus(query: SelectAllWorkbookSubscriptionStatusQueryNotConsiderDeletedAt): WorkbookSubscriptionStatus? {
         return dslContext.select(
-            SUBSCRIPTION.ID.`as`(WorkbookSubscriptionStatus::id.name),
-            SUBSCRIPTION.DELETED_AT.isNotNull.`as`(WorkbookSubscriptionStatus::subHistory.name),
+            SUBSCRIPTION.TARGET_WORKBOOK_ID.`as`(WorkbookSubscriptionStatus::workbookId.name),
+            SUBSCRIPTION.DELETED_AT.isNull.`as`(WorkbookSubscriptionStatus::isActiveSub.name),
             SUBSCRIPTION.PROGRESS.add(1).`as`(WorkbookSubscriptionStatus::day.name)
         )
             .from(SUBSCRIPTION)
             .where(SUBSCRIPTION.MEMBER_ID.eq(query.memberId))
             .and(SUBSCRIPTION.TARGET_WORKBOOK_ID.eq(query.workbookId))
-            .fetchInto(WorkbookSubscriptionStatus::class.java)
+            .orderBy(SUBSCRIPTION.CREATED_AT.desc())
+            .limit(1)
+            .fetchOneInto(WorkbookSubscriptionStatus::class.java)
     }
 
     fun updateDeletedAtInAllSubscription(command: UpdateDeletedAtInAllSubscriptionCommand) {

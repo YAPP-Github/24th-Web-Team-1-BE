@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository
 class ArticleDao(
     private val dslContext: DSLContext
 ) {
-    fun selectArticleRecord(query: SelectArticleRecordQuery): SelectArticleRecord {
+    fun selectArticleRecord(query: SelectArticleRecordQuery): SelectArticleRecord? {
         val articleId = query.articleId
 
         return dslContext.select(
@@ -33,10 +33,9 @@ class ArticleDao(
             .where(ArticleMst.ARTICLE_MST.ID.eq(articleId))
             .and(ArticleMst.ARTICLE_MST.DELETED_AT.isNull)
             .fetchOneInto(SelectArticleRecord::class.java)
-            ?: throw IllegalArgumentException("cannot find article record by articleId: $articleId")
     }
 
-    fun selectWorkBookArticleRecord(query: SelectWorkBookArticleRecordQuery): SelectWorkBookArticleRecord {
+    fun selectWorkBookArticleRecord(query: SelectWorkBookArticleRecordQuery): SelectWorkBookArticleRecord? {
         val articleMst = ArticleMst.ARTICLE_MST
         val articleIfo = ArticleIfo.ARTICLE_IFO
         val mappingWorkbookArticle = MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE
@@ -62,7 +61,6 @@ class ArticleDao(
             .where(articleMst.ID.eq(articleId))
             .and(articleMst.DELETED_AT.isNull)
             .fetchOneInto(SelectWorkBookArticleRecord::class.java)
-            ?: throw IllegalArgumentException("cannot find $workbookId article record by articleId: $articleId")
     }
 
     fun selectWorkbookMappedArticleRecords(query: SelectWorkbookMappedArticleRecordsQuery): List<SelectWorkBookMappedArticleRecord> {

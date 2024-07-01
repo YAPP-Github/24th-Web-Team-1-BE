@@ -16,7 +16,7 @@ class ContentsJsonMapper(
         val contents = objectMapper.readTree(value).get("contents")
         val contentList = mutableListOf<Content>()
         contents.forEach {
-            contentList.add(Content(it.get("id").asLong(), it.get("content").asText()))
+            contentList.add(Content(it.get("number").asLong(), it.get("content").asText()))
         }
         return Contents(contentList)
     }

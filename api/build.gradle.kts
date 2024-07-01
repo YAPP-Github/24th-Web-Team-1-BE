@@ -1,5 +1,6 @@
 
 import org.hidetake.gradle.swagger.generator.GenerateSwaggerUI
+import java.util.Random
 
 dependencies {
     /** module */
@@ -8,7 +9,7 @@ dependencies {
     implementation(project(":storage"))
 
     /** spring starter */
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
 
     /** swagger & restdocs */
@@ -28,9 +29,17 @@ plugins {
     id("org.hidetake.swagger.generator") version DependencyVersion.SWAGGER_GENERATOR
 }
 
+val serverUrl = project.hasProperty("serverUrl").let {
+    if (it) {
+        project.property("serverUrl") as String
+    } else {
+        "http://localhost:8080"
+    }
+}
+
 /** convert snippet to swagger */
 openapi3 {
-    this.setServer("http://localhost:8080") // todo refactor to use setServers
+    this.setServer(serverUrl)
     title = project.name
     version = project.version.toString()
     format = "yaml"
@@ -43,24 +52,30 @@ openapi3 {
 postman {
     title = project.name
     version = project.version.toString()
-    baseUrl = "http://localhost:8080"
+    baseUrl = serverUrl
     outputDirectory = "src/main/resources/static/"
     outputFileNamePrefix = "postman"
 }
 
+/** generate swagger ui */
 swaggerSources {
+    /** generateSwaggerUIApi */
     register("api") {
         setInputFile(file("$projectDir/src/main/resources/static/openapi3.yaml"))
     }
 }
 
-tasks.withType(GenerateSwaggerUI::class) {
-    dependsOn("openapi3")
-}
 
-tasks.register("generateApiSwaggerUI", Copy::class) {
-//    dependsOn("generateSwaggerUI")
+/**
+ * generate static swagger ui <br/>
+ * need snippet to generate swagger ui
+ * */
+tasks.register("generateStaticSwaggerUIApi", Copy::class) {
+    /** generateSwaggerUIApi */
+    dependsOn("generateSwaggerUIApi")
     val generateSwaggerUISampleTask = tasks.named("generateSwaggerUIApi", GenerateSwaggerUI::class).get()
+
+    /** copy */
     from(generateSwaggerUISampleTask.outputDir)
     into("$projectDir/src/main/resources/static/docs/swagger-ui")
     doLast {
@@ -97,20 +112,19 @@ val imageName = project.hasProperty("imageName").let {
     if (it) {
         project.property("imageName") as String
     } else {
-        "api"
+        "fewletter/api"
     }
 }
 val releaseVersion = project.hasProperty("releaseVersion").let {
     if (it) {
         project.property("releaseVersion") as String
     } else {
-        "latest"
+        Random().nextInt(90000) + 10000
     }
 }
 
 tasks.register("buildDockerImage") {
     dependsOn("bootJar")
-    dependsOn("generateApiSwaggerUI")
 
     doLast {
         exec {
@@ -125,7 +139,18 @@ tasks.register("buildDockerImage") {
 
         exec {
             workingDir(".")
-            commandLine("docker", "buildx", "build", "--platform=linux/amd64,linux/arm64", "-t", "fewletter/$imageName", "--build-arg", "RELEASE_VERSION=$releaseVersion", ".", "--push")
+            commandLine(
+                "docker", "buildx", "build", "--platform=linux/amd64,linux/arm64", "-t",
+                "$imageName:latest", "--build-arg", "RELEASE_VERSION=$releaseVersion", ".", "--push"
+            )
+        }
+
+        exec {
+            workingDir(".")
+            commandLine(
+                "docker", "buildx", "build", "--platform=linux/amd64,linux/arm64", "-t",
+                "$imageName:$releaseVersion", "--build-arg", "RELEASE_VERSION=$releaseVersion", ".", "--push"
+            )
         }
     }
 }

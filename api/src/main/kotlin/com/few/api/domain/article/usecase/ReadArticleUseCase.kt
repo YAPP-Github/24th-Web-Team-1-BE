@@ -23,7 +23,7 @@ class ReadArticleUseCase(
     fun execute(useCaseIn: ReadArticleUseCaseIn): ReadArticleUseCaseOut {
         val articleRecord = SelectArticleRecordQuery(useCaseIn.articleId).let { query: SelectArticleRecordQuery ->
             articleDao.selectArticleRecord(query)
-        }
+        } ?: throw IllegalArgumentException("cannot find article record by articleId: $useCaseIn.articleId")
 
         val writerRecord = ReadWriterRecordQuery(articleRecord.writerId).let { query: ReadWriterRecordQuery ->
             readArticleWriterRecordService.execute(query)

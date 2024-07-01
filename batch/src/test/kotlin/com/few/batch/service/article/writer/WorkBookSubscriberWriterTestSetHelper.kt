@@ -88,7 +88,7 @@ class WorkBookSubscriberWriterTestSetHelper(
                         .where(
                             MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.eq(workbookId)
                         )
-                        .and(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.DAY_COL.eq(it[Subscription.SUBSCRIPTION.PROGRESS].toInt()))
+                        .and(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.DAY_COL.eq(it[Subscription.SUBSCRIPTION.PROGRESS].toInt() + 1))
                         .and(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.DELETED_AT.isNull)
                         .fetchOneInto(String::class.java)
 

@@ -35,11 +35,11 @@ class ContentsJsonMapperTest {
             {
                 "contents": [
                     {
-                        "id": 1,
+                        "number": 1,
                         "content": "this is number one"
                     },
                     {
-                        "id": 2,
+                        "number": 2,
                         "content": "this is number two"
                     }
                 ]

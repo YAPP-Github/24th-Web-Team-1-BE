@@ -10,6 +10,9 @@ plugins {
     id("org.springframework.boot") version DependencyVersion.SPRING_BOOT
     id("io.spring.dependency-management") version DependencyVersion.SPRING_DEPENDENCY_MANAGEMENT
 
+    /** jooq */
+    id("org.jooq.jooq-codegen-gradle") version DependencyVersion.JOOQ
+
     /** ktlint */
     id("org.jlleitschuh.gradle.ktlint") version DependencyVersion.KTLINT
 
@@ -44,6 +47,16 @@ allprojects {
     tasks.withType<Test> {
         useJUnitPlatform()
     }
+
+    sourceSets {
+        main {
+            java {
+                val mainDir = "src/main/kotlin"
+                val jooqDir = "src/generated"
+                srcDirs(mainDir, jooqDir)
+            }
+        }
+    }
 }
 
 tasks.getByName("bootJar") {
@@ -57,6 +70,7 @@ subprojects {
     apply(plugin = "org.jetbrains.kotlin.kapt")
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
     apply(plugin = "org.hidetake.swagger.generator")
+    apply(plugin = "org.jooq.jooq-codegen-gradle")
 
     /**
      * https://kotlinlang.org/docs/reference/compiler-plugins.html#spring-support
@@ -80,6 +94,13 @@ subprojects {
         implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
+        /** jooq */
+        implementation("org.springframework.boot:spring-boot-starter-jooq")
+        implementation("org.jooq:jooq:${DependencyVersion.JOOQ}")
+        implementation("org.jooq:jooq-meta:${DependencyVersion.JOOQ}")
+        implementation("org.jooq:jooq-codegen:${DependencyVersion.JOOQ}")
+        jooqCodegen("org.jooq:jooq-meta-extensions:${DependencyVersion.JOOQ}")
+
         /** test **/
         testImplementation("org.springframework.boot:spring-boot-starter-test")
         testImplementation("io.mockk:mockk:${DependencyVersion.MOCKK}")
@@ -94,7 +115,110 @@ subprojects {
         swaggerUI("org.webjars:swagger-ui:${DependencyVersion.SWAGGER_UI}")
     }
 
+    /** copy data migration */
+    tasks.create("copyDataMigration") {
+        doLast {
+            val root = rootDir
+            val flyWayResourceDir = "/db/migration/entity"
+            val dataMigrationDir = "$root/data/$flyWayResourceDir"
+            File(dataMigrationDir).walkTopDown().forEach {
+                if (it.isFile) {
+                    it.copyTo(
+                        File("${project.projectDir}/src/main/resources$flyWayResourceDir/${it.name}"),
+                        true
+                    )
+                }
+            }
+        }
+    }
+
+    /** copy data migration before compile kotlin */
+    tasks.getByName("compileKotlin") {
+        dependsOn("copyDataMigration")
+    }
+
+    /** jooq codegen after copy data migration */
+    tasks.getByName("jooqCodegen") {
+        dependsOn("copyDataMigration")
+    }
+
+    jooq {
+        configuration {
+            generator {
+                database {
+                    name = "org.jooq.meta.extensions.ddl.DDLDatabase"
+                    properties {
+                        // Specify the location of your SQL script.
+                        // You may use ant-style file matching, e.g. /path/**/to/*.sql
+                        //
+                        // Where:
+                        // - ** matches any directory subtree
+                        // - * matches any number of characters in a directory / file name
+                        // - ? matches a single character in a directory / file name
+                        property {
+                            key = "scripts"
+                            value = "src/main/resources/db/migration/**/*.sql"
+                        }
+
+                        // The sort order of the scripts within a directory, where:
+                        //
+                        // - semantic: sorts versions, e.g. v-3.10.0 is after v-3.9.0 (default)
+                        // - alphanumeric: sorts strings, e.g. v-3.10.0 is before v-3.9.0
+                        // - flyway: sorts files the same way as flyway does
+                        // - none: doesn't sort directory contents after fetching them from the directory
+                        property {
+                            key = "sort"
+                            value = "flyway"
+                        }
+
+                        // The default schema for unqualified objects:
+                        //
+                        // - public: all unqualified objects are located in the PUBLIC (upper case) schema
+                        // - none: all unqualified objects are located in the default schema (default)
+                        //
+                        // This configuration can be overridden with the schema mapping feature
+                        property {
+                            key = "unqualifiedSchema"
+                            value = "none"
+                        }
+
+                        // The default name case for unquoted objects:
+                        //
+                        // - as_is: unquoted object names are kept unquoted
+                        // - upper: unquoted object names are turned into upper case (most databases)
+                        // - lower: unquoted object names are turned into lower case (e.g. PostgreSQL)
+                        property {
+                            key = "defaultNameCase"
+                            value = "as_is"
+                        }
+                    }
+                }
+
+                generate {
+                    isDeprecated = false
+                    isRecords = true
+                    isImmutablePojos = true
+                    isFluentSetters = true
+                    isJavaTimeTypes = true
+                }
+
+                target {
+                    packageName = "jooq.jooq_dsl"
+                    directory = "src/generated"
+                    encoding = "UTF-8"
+                }
+            }
+        }
+    }
+
     defaultTasks("bootRun")
+}
+
+/** do all jooq codegen */
+tasks.register("jooqCodegenAll") {
+    dependsOn(":api:jooqCodegen")
+    dependsOn(":api-repo:jooqCodegen")
+    dependsOn(":batch:jooqCodegen")
 }
 
 /** git hooks */

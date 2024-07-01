@@ -12,6 +12,7 @@ spring:
                 - api-repo-prd
                 - email-prd
                 - storage-prd
+
 logging:
     level:
         root: debug

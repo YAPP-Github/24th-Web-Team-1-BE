@@ -13,7 +13,7 @@ class BrowseArticleProblemsService(
 
     fun execute(query: BrowseArticleProblemIdsQuery): ProblemIdsRecord {
         SelectProblemsByArticleIdQuery(query.articleId).let { query: SelectProblemsByArticleIdQuery ->
-            return problemDao.selectProblemsByArticleId(query)
+            return problemDao.selectProblemsByArticleId(query) ?: throw IllegalArgumentException("cannot find problems by articleId: ${query.articleId}") // todo 에러 표준화
         }
     }
 }

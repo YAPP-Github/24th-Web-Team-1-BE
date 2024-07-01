@@ -10,7 +10,7 @@ permissions:
 
 env:
     RELEASE_VERSION: ${{ github.sha }}
-    MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+    EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
 
 jobs:
     build:
@@ -25,19 +25,27 @@ jobs:
 
             - name: Jooq Code Generation
               run: |
-                  ./gradlew --info jooqCodegen
-
-            - name: Build with Gradle
-              run: |
-                  ./gradlew --info api:build
+                  ./gradlew --info jooqCodegenAll
 
             - name: Test with Gradle
               run: |
                   ./gradlew --info test
+
+            - name: Build with Gradle
+              run: |
+                  ./gradlew --info api:build -x test
+
+            - name: Generate OpenAPI3
+              run: |
+                  ./gradlew --info api:openapi3 -PserverUrl=https://api.fewletter.site
+
+            - name: Generate Swagger
+              run: |
+                  ./gradlew --info api:generateStaticSwaggerUIApi
 
             - name : Docker Login
               run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
             - name: Build Docker Image
               run: |
-                  ./gradlew --info api:buildDockerImage
+                  ./gradlew --info api:buildDockerImage -PimageName=fewletter/api -PreleaseVersion=${{ env.RELEASE_VERSION }}

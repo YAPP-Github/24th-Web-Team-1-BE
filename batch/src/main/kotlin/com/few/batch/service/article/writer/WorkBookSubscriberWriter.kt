@@ -11,9 +11,11 @@ import jooq.jooq_dsl.tables.MappingWorkbookArticle
 import jooq.jooq_dsl.tables.Member
 import jooq.jooq_dsl.tables.Subscription
 import org.jooq.DSLContext
+import org.jooq.impl.DSL
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 data class MemberReceiveArticle(
     val workbookId: Long,
@@ -70,6 +72,7 @@ class WorkBookSubscriberWriter(
 
         /** 구독자들이 구독한 학습지 ID와 구독자의 학습지 구독 진행률을 기준으로 구독자가 받을 학습지 정보를 조회한다.*/
         val memberReceiveArticles = targetWorkBookProgress.keys.stream().map { workbookId ->
+            val dayCols = targetWorkBookProgress[workbookId]!!.stream().map { it + 1L }.toList()
             // todo check refactoring
             dslContext.select(
                 mappingWorkbookArticleT.WORKBOOK_ID.`as`(MemberReceiveArticle::workbookId.name),
@@ -80,7 +83,7 @@ class WorkBookSubscriberWriter(
                 .where(
                     mappingWorkbookArticleT.WORKBOOK_ID.eq(workbookId)
                 )
-                .and(mappingWorkbookArticleT.DAY_COL.`in`(targetWorkBookProgress[workbookId]!!))
+                .and(mappingWorkbookArticleT.DAY_COL.`in`(dayCols))
                 .and(mappingWorkbookArticleT.DELETED_AT.isNull)
                 .fetchInto(MemberReceiveArticle::class.java)
         }.flatMap { it.stream() }.toList().let {
@@ -103,7 +106,7 @@ class WorkBookSubscriberWriter(
         // todo check !! target is not null
         val emailServiceArgs = items.map {
             val toEmail = memberEmailRecords[it.memberId]!!
-            val memberArticle = memberReceiveArticles.getByWorkBookIdAndDayCol(it.targetWorkBookId, it.progress)
+            val memberArticle = memberReceiveArticles.getByWorkBookIdAndDayCol(it.targetWorkBookId, it.progress + 1)
             val articleContent = articleContentsMap[memberArticle.articleId]!!
             return@map it.memberId to SendArticleEmailArgs(toEmail, ARTICLE_SUBJECT, ARTICLE_TEMPLATE, articleContent, ARTICLE_STYLE)
         }
@@ -120,11 +123,41 @@ class WorkBookSubscriberWriter(
             }
         }
 
+        /** 워크북 마지막 학습지 DAY_COL을 조회한다 */
+        val lastDayCol = dslContext.select(
+            mappingWorkbookArticleT.WORKBOOK_ID,
+            DSL.max(mappingWorkbookArticleT.DAY_COL)
+        )
+            .from(mappingWorkbookArticleT)
+            .where(mappingWorkbookArticleT.WORKBOOK_ID.`in`(targetWorkBookIds))
+            .and(mappingWorkbookArticleT.DELETED_AT.isNull)
+            .groupBy(mappingWorkbookArticleT.WORKBOOK_ID)
+            .fetch()
+            .intoMap(mappingWorkbookArticleT.WORKBOOK_ID, DSL.max(mappingWorkbookArticleT.DAY_COL))
+
+        /** 마지막 학습지를 받은 구독자들의 ID를 필터링한다.*/
+        val receiveLastDayMembers = items.filter {
+            it.targetWorkBookId in lastDayCol.keys
+        }.filter {
+            (it.progress.toInt() + 1) == lastDayCol[it.targetWorkBookId]
+        }.map {
+            it.memberId
+        }.filter {
+            memberSuccessRecords[it] == true
+        }
+
         val successMemberIds = memberSuccessRecords.filter { it.value }.keys
         /** 이메일 전송에 성공한 구독자들의 진행률을 업데이트한다.*/
         dslContext.update(subscriptionT)
             .set(subscriptionT.PROGRESS, subscriptionT.PROGRESS.add(1))
             .where(subscriptionT.MEMBER_ID.`in`(successMemberIds))
+            .and(subscriptionT.TARGET_WORKBOOK_ID.`in`(targetWorkBookIds))
+            .execute()
+
+        /** 마지막 학습지를 받은 구독자들은 구독을 해지한다.*/
+        dslContext.update(subscriptionT)
+            .set(subscriptionT.DELETED_AT, LocalDateTime.now())
+            .where(subscriptionT.MEMBER_ID.`in`(receiveLastDayMembers))
             .and(subscriptionT.TARGET_WORKBOOK_ID.`in`(targetWorkBookIds))
             .execute()
 

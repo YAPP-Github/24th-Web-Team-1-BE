@@ -59,7 +59,7 @@ class ProblemDaoTest : JooqTestSpec() {
         val result = problemDao.selectProblemsByArticleId(query)
 
         // then
-        assertNotNull(result)
+        assertNotNull(result!!)
         assertEquals(1, result.problemIds.size)
         assertEquals(1, result.problemIds[0])
     }

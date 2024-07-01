@@ -6,6 +6,7 @@ import com.few.api.repo.dao.subscription.command.UpdateDeletedAtInWorkbookSubscr
 import com.few.api.repo.dao.subscription.query.SelectAllWorkbookSubscriptionStatusQueryNotConsiderDeletedAt
 import com.few.api.repo.dao.subscription.record.WorkbookSubscriptionStatus
 import com.few.api.repo.dao.subscription.query.CountWorkbookMappedArticlesQuery
+import com.few.api.repo.dao.subscription.record.CountAllSubscriptionStatusRecord
 import jooq.jooq_dsl.Tables.MAPPING_WORKBOOK_ARTICLE
 import jooq.jooq_dsl.Tables.SUBSCRIPTION
 import org.jooq.DSLContext
@@ -67,5 +68,16 @@ class SubscriptionDao(
             .from(MAPPING_WORKBOOK_ARTICLE)
             .where(MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.eq(query.workbookId))
             .fetchOne(0, Int::class.java)
+    }
+
+    fun countAllSubscriptionStatus(): CountAllSubscriptionStatusRecord {
+        val total = dslContext.selectCount()
+            .from(SUBSCRIPTION)
+            .fetchOne(0, Int::class.java)!!
+        val active = dslContext.selectCount()
+            .from(SUBSCRIPTION)
+            .where(SUBSCRIPTION.DELETED_AT.isNull)
+            .fetchOne(0, Int::class.java)!!
+        return CountAllSubscriptionStatusRecord(total.toLong(), active.toLong())
     }
 }

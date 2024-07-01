@@ -14,7 +14,7 @@ interface GetUrlService {
 }
 
 @Profile("local")
-@Service(value = "adminGetLocalUrlService") // todo remove value and image/GetLocalUrlService
+@Service
 class GetLocalUrlService(
     private val services: Map<String, GetPreSignedObjectUrlService>
 ) : GetUrlService {
@@ -34,7 +34,7 @@ class GetLocalUrlService(
 }
 
 @Profile("!local")
-@Service(value = "adminGetCdnUrlService") // todo remove value and image/GetCdnUrlService
+@Service
 class GetCdnUrlService(
     private val cdnProperty: CdnProperty
 ) : GetUrlService {

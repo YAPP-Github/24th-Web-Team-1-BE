@@ -6,12 +6,10 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.few.api.domain.admin.document.dto.*
-import com.few.api.domain.admin.document.usecase.AddArticleUseCase
-import com.few.api.domain.admin.document.usecase.AddWorkbookUseCase
-import com.few.api.domain.admin.document.usecase.ConvertContentUseCase
-import com.few.api.domain.admin.document.usecase.MapArticleUseCase
+import com.few.api.domain.admin.document.usecase.*
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.admin.request.*
+import com.few.api.web.controller.admin.response.ImageSourceResponse
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
 import org.junit.jupiter.api.BeforeEach
@@ -60,6 +58,9 @@ class AdminControllerTest : ControllerTestSpec() {
 
     @MockBean
     private lateinit var convertContentUseCase: ConvertContentUseCase
+
+    @MockBean
+    private lateinit var putImageUseCase: PutImageUseCase
 
     companion object {
         private val BASE_URL = "/api/v1/admin"
@@ -275,6 +276,52 @@ class AdminControllerTest : ControllerTestSpec() {
                             ).build()
                     )
                 )
+            )
+    }
+
+    @Test
+    @DisplayName("[POST] /api/v1/utilities/conversion/image")
+    fun putImage() {
+        // given
+        val api = "PutImage"
+        val uri = UriComponentsBuilder.newInstance().path("$BASE_URL/utilities/conversion/image").build().toUriString()
+        val request = ImageSourceRequest(source = MockMultipartFile("source", "test.jpg", "image/jpeg", "test".toByteArray()))
+        val response = ImageSourceResponse(URL("http://localhost:8080/test.jpg"))
+        val useCaseOut = PutImageUseCaseOut(response.url)
+        val useCaseIn = PutImageUseCaseIn(request.source)
+        `when`(putImageUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
+
+        // when
+        mockMvc.perform(
+            multipart(uri)
+                .file(request.source as MockMultipartFile)
+                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+        )
+            .andExpect(status().isOk)
+            .andDo(
+                document(
+                    api.toIdentifier(),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .summary(api.toIdentifier())
+                            .description("이미지 업로드")
+                            .tag(TAG)
+                            .requestSchema(Schema.schema(api.toRequestSchema()))
+                            .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
+                                *Description.describe(
+                                    arrayOf(
+                                        PayloadDocumentation.fieldWithPath("data")
+                                            .fieldWithObject("data"),
+                                        PayloadDocumentation.fieldWithPath("data.url")
+                                            .fieldWithString(
+                                                "이미지 URL"
+                                            )
+                                    )
+                                )
+                            ).build()
+                    )
+                )
+
             )
     }
 }

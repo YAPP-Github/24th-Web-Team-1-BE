@@ -1,4 +1,4 @@
-package com.few.api.web.controller.image.response
+package com.few.api.web.controller.admin.response
 
 import java.net.URL
 

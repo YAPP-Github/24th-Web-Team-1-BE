@@ -1,4 +1,4 @@
-package com.few.api.domain.image.dto
+package com.few.api.domain.admin.document.dto
 
 import java.net.URL
 

@@ -1,9 +1,9 @@
-package com.few.api.domain.image.usecase
+package com.few.api.domain.admin.document.usecase
 
-import com.few.api.domain.image.dto.PutImageUseCaseIn
-import com.few.api.domain.image.dto.PutImageUseCaseOut
-import com.few.api.domain.image.service.GetUrlService
-import com.few.api.domain.image.service.dto.GetUrlQuery
+import com.few.api.domain.admin.document.dto.PutImageUseCaseIn
+import com.few.api.domain.admin.document.dto.PutImageUseCaseOut
+import com.few.api.domain.admin.document.service.GetUrlService
+import com.few.api.domain.admin.document.service.dto.GetUrlQuery
 import com.few.api.repo.dao.image.ImageDao
 import com.few.api.repo.dao.image.command.InsertImageIfoCommand
 import com.few.storage.image.service.PutImageService

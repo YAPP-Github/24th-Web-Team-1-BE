@@ -1,10 +1,7 @@
 package com.few.api.web.controller.admin
 
 import com.few.api.domain.admin.document.dto.*
-import com.few.api.domain.admin.document.usecase.AddArticleUseCase
-import com.few.api.domain.admin.document.usecase.AddWorkbookUseCase
-import com.few.api.domain.admin.document.usecase.ConvertContentUseCase
-import com.few.api.domain.admin.document.usecase.MapArticleUseCase
+import com.few.api.domain.admin.document.usecase.*
 import com.few.api.web.controller.admin.request.AddArticleRequest
 import com.few.api.web.controller.admin.request.AddWorkbookRequest
 import com.few.api.web.controller.admin.request.ConvertContentRequest
@@ -12,6 +9,8 @@ import com.few.api.web.controller.admin.request.MapArticleRequest
 import com.few.api.web.controller.admin.response.AddArticleResponse
 import com.few.api.web.controller.admin.response.AddWorkbookResponse
 import com.few.api.web.controller.admin.response.ConvertContentResponse
+import com.few.api.web.controller.admin.request.ImageSourceRequest
+import com.few.api.web.controller.admin.response.ImageSourceResponse
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
 import com.few.api.web.support.MessageCode
@@ -30,7 +29,8 @@ class AdminController(
     private val addArticleUseCase: AddArticleUseCase,
     private val addWorkbookUseCase: AddWorkbookUseCase,
     private val mapArticleUseCase: MapArticleUseCase,
-    private val convertContentUseCase: ConvertContentUseCase
+    private val convertContentUseCase: ConvertContentUseCase,
+    private val putImageUseCase: PutImageUseCase
 ) {
     @PostMapping("/workbooks")
     fun addWorkbook(@RequestBody request: AddWorkbookRequest): ApiResponse<ApiResponse.SuccessBody<AddWorkbookResponse>> {
@@ -101,6 +101,17 @@ class AdminController(
 
         ConvertContentResponse(useCaseOut.content, useCaseOut.originDownLoadUrl).let {
             return ApiResponseGenerator.success(it, HttpStatus.OK)
+        }
+    }
+
+    @PostMapping("/utilities/conversion/image", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    fun putImage(request: ImageSourceRequest): ApiResponse<ApiResponse.SuccessBody<ImageSourceResponse>> {
+        val useCaseOut = PutImageUseCaseIn(request.source).let { useCaseIn: PutImageUseCaseIn ->
+            putImageUseCase.execute(useCaseIn)
+        }
+
+        return ImageSourceResponse(useCaseOut.url).let {
+            ApiResponseGenerator.success(it, HttpStatus.OK)
         }
     }
 }

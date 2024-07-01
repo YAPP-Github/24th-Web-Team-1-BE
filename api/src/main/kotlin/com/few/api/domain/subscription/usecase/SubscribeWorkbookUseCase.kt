@@ -1,5 +1,6 @@
 package com.few.api.domain.subscription.usecase
 
+import com.few.api.domain.subscription.event.dto.WorkbookSubscriptionEvent
 import com.few.api.domain.subscription.service.MemberService
 import com.few.api.domain.subscription.service.dto.InsertMemberDto
 import com.few.api.domain.subscription.service.dto.ReadMemberIdDto
@@ -9,13 +10,15 @@ import com.few.api.repo.dao.subscription.query.SelectAllWorkbookSubscriptionStat
 import com.few.api.domain.subscription.usecase.`in`.SubscribeWorkbookUseCaseIn
 import com.few.api.repo.dao.subscription.query.CountWorkbookMappedArticlesQuery
 import com.few.data.common.code.MemberType
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
 @Component
 class SubscribeWorkbookUseCase(
     private val subscriptionDao: SubscriptionDao,
-    private val memberService: MemberService
+    private val memberService: MemberService,
+    private val applicationEventPublisher: ApplicationEventPublisher
 ) {
 
     // todo 이미 가입된 경우
@@ -58,6 +61,7 @@ class SubscribeWorkbookUseCase(
                     /** 구독한 경우가 없는 경우 */
                     subscriptionDao.insertWorkbookSubscription(command)
                 }
+                applicationEventPublisher.publishEvent(WorkbookSubscriptionEvent(workbookId = subTargetWorkbookId))
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.few.api.repo.dao.workbook
 
+import com.few.api.repo.dao.workbook.command.InsertWorkBookCommand
 import com.few.api.repo.dao.workbook.query.SelectWorkBookRecordQuery
 import com.few.api.repo.dao.workbook.record.SelectWorkBookRecord
 import jooq.jooq_dsl.tables.Workbook
@@ -23,5 +24,16 @@ class WorkbookDao(
             .where(Workbook.WORKBOOK.ID.eq(query.id))
             .and(Workbook.WORKBOOK.DELETED_AT.isNull)
             .fetchOneInto(SelectWorkBookRecord::class.java)
+    }
+
+    fun insertWorkBook(command: InsertWorkBookCommand): Long? {
+        return dslContext.insertInto(Workbook.WORKBOOK)
+            .set(Workbook.WORKBOOK.TITLE, command.title)
+            .set(Workbook.WORKBOOK.MAIN_IMAGE_URL, command.mainImageUrl.toString())
+            .set(Workbook.WORKBOOK.CATEGORY_CD, 0) // todo fix
+            .set(Workbook.WORKBOOK.DESCRIPTION, command.description)
+            .returning(Workbook.WORKBOOK.ID)
+            .fetchOne()
+            ?.id
     }
 }

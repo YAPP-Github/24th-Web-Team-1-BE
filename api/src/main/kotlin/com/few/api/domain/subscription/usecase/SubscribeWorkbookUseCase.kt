@@ -21,7 +21,6 @@ class SubscribeWorkbookUseCase(
     private val applicationEventPublisher: ApplicationEventPublisher
 ) {
 
-    // todo 이미 가입된 경우
     @Transactional
     fun execute(useCaseIn: SubscribeWorkbookUseCaseIn) {
         // TODO: request sending email
@@ -36,33 +35,31 @@ class SubscribeWorkbookUseCase(
             workbookId = subTargetWorkbookId
         )
 
-        /** 구독 히스토리가 있는지 확인 */
-        SelectAllWorkbookSubscriptionStatusQueryNotConsiderDeletedAt(memberId = memberId, workbookId = subTargetWorkbookId).let { query ->
-            subscriptionDao.selectAllWorkbookSubscriptionStatus(query).let { subscriptionStatusList ->
-                /** 이미 구독한 경우가 있는 경우 */
-                if (subscriptionStatusList.isNotEmpty()) {
-                    subscriptionStatusList.stream().filter { status ->
-                        status.id == query.workbookId
-                    }.findAny().get().let { status ->
-                        if (status.subHistory) {
-                            CountWorkbookMappedArticlesQuery(subTargetWorkbookId).let { query ->
-                                subscriptionDao.countWorkbookMappedArticles(query)
-                            }?.let { lastDay ->
-                                /** 이미 학습을 완료한 경우 */
-                                if (lastDay <= (status.day)) {
-                                    throw RuntimeException("이미 학습을 완료한 워크북입니다.")
-                                }
-                                /** 재구독 */
-                                subscriptionDao.reSubscribeWorkbookSubscription(command)
-                            }
-                        }
-                    }
-                } else {
-                    /** 구독한 경우가 없는 경우 */
-                    subscriptionDao.insertWorkbookSubscription(command)
+        val subscriptionStatus = subscriptionDao.selectTopWorkbookSubscriptionStatus(
+            SelectAllWorkbookSubscriptionStatusQueryNotConsiderDeletedAt(memberId = memberId, workbookId = subTargetWorkbookId)
+        )
+
+        when {
+            /** 구독한 히스토리가 없는 경우 */
+            subscriptionStatus == null -> {
+                subscriptionDao.insertWorkbookSubscription(command)
+            }
+
+            /** 이미 구독한 히스토리가 있고 구독이 취소된 경우 */
+            !subscriptionStatus.isActiveSub -> {
+                val lastDay = subscriptionDao.countWorkbookMappedArticles(CountWorkbookMappedArticlesQuery(subTargetWorkbookId)) ?: throw RuntimeException("워크북 매핑된 아티클을 조회할 수 없습니다.")
+                if (lastDay <= subscriptionStatus.day) {
+                    throw RuntimeException("이미 학습을 완료한 워크북입니다.")
                 }
-                applicationEventPublisher.publishEvent(WorkbookSubscriptionEvent(workbookId = subTargetWorkbookId))
+                /** 재구독 */
+                subscriptionDao.reSubscribeWorkbookSubscription(command)
+            }
+
+            /** 이미 구독한 히스토리가 있고 구독이 취소되지 않은 경우 */
+            else -> {
+                throw RuntimeException("이미 구독한 워크북입니다.")
             }
         }
+        applicationEventPublisher.publishEvent(WorkbookSubscriptionEvent(workbookId = subTargetWorkbookId))
     }
 }

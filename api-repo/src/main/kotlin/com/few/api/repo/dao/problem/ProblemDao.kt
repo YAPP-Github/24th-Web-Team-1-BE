@@ -1,19 +1,23 @@
 package com.few.api.repo.dao.problem
 
+import com.few.api.repo.dao.problem.command.InsertProblemsCommand
 import com.few.api.repo.dao.problem.query.SelectProblemAnswerQuery
 import com.few.api.repo.dao.problem.query.SelectProblemQuery
 import com.few.api.repo.dao.problem.query.SelectProblemsByArticleIdQuery
 import com.few.api.repo.dao.problem.record.ProblemIdsRecord
 import com.few.api.repo.dao.problem.record.SelectProblemAnswerRecord
 import com.few.api.repo.dao.problem.record.SelectProblemRecord
+import com.few.api.repo.dao.problem.support.ContentsJsonMapper
 import jooq.jooq_dsl.tables.Problem
 import org.jooq.DSLContext
+import org.jooq.JSON
 import org.jooq.impl.DSL
 import org.springframework.stereotype.Component
 
 @Component
 class ProblemDao(
-    private val dslContext: DSLContext
+    private val dslContext: DSLContext,
+    private val contentsJsonMapper: ContentsJsonMapper
 ) {
     fun selectProblemContents(query: SelectProblemQuery): SelectProblemRecord? {
         return dslContext.select(
@@ -50,5 +54,16 @@ class ProblemDao(
             .fetch()
             .map { it[Problem.PROBLEM.ID] }
             .let { ProblemIdsRecord(it) }
+    }
+
+    fun insertProblems(command: InsertProblemsCommand) {
+        dslContext.insertInto(Problem.PROBLEM)
+            .set(Problem.PROBLEM.ARTICLE_ID, command.articleId)
+            .set(Problem.PROBLEM.CREATOR_ID, command.createrId)
+            .set(Problem.PROBLEM.TITLE, command.title)
+            .set(Problem.PROBLEM.CONTENTS, JSON.valueOf(contentsJsonMapper.toJson(command.contents)))
+            .set(Problem.PROBLEM.ANSWER, command.answer)
+            .set(Problem.PROBLEM.EXPLANATION, command.explanation)
+            .execute()
     }
 }

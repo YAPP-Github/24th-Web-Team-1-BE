@@ -9,6 +9,7 @@ import com.few.api.domain.workbook.article.dto.ReadWorkBookArticleOut
 import com.few.api.domain.workbook.article.dto.WriterDetail
 import com.few.api.repo.dao.article.ArticleDao
 import com.few.api.repo.dao.article.query.SelectWorkBookArticleRecordQuery
+import com.few.data.common.code.CategoryType
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -47,7 +48,7 @@ class ReadWorkBookArticleUseCase(
             title = articleRecord.title,
             content = articleRecord.content,
             problemIds = problemIds.problemIds,
-            category = articleRecord.category.toString(), // todo fix to enum
+            category = CategoryType.convertToDisplayName(articleRecord.category),
             createdAt = articleRecord.createdAt,
             day = articleRecord.day
         )

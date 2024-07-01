@@ -2,6 +2,7 @@ package com.few.api.repo.dao.workbook
 
 import com.few.api.repo.dao.workbook.query.SelectWorkBookRecordQuery
 import com.few.api.repo.jooq.JooqTestSpec
+import com.few.data.common.code.CategoryType
 import jooq.jooq_dsl.tables.Workbook
 import org.jooq.DSLContext
 import org.junit.jupiter.api.Assertions.*
@@ -25,7 +26,7 @@ class WorkbookDaoTest : JooqTestSpec() {
             .set(Workbook.WORKBOOK.ID, 1)
             .set(Workbook.WORKBOOK.TITLE, "title1")
             .set(Workbook.WORKBOOK.MAIN_IMAGE_URL, "http://localhost:8080/image1.jpg")
-            .set(Workbook.WORKBOOK.CATEGORY_CD, 0) // todo fix
+            .set(Workbook.WORKBOOK.CATEGORY_CD, CategoryType.fromCode(0)!!.code)
             .set(Workbook.WORKBOOK.DESCRIPTION, "description1")
             .execute()
     }

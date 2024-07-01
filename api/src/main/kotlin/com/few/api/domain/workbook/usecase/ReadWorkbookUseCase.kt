@@ -7,6 +7,7 @@ import com.few.api.domain.workbook.service.dto.BrowseWorkbookArticlesQuery
 import com.few.api.domain.workbook.service.dto.BrowseWriterRecordsQuery
 import com.few.api.repo.dao.workbook.WorkbookDao
 import com.few.api.repo.dao.workbook.query.SelectWorkBookRecordQuery
+import com.few.data.common.code.CategoryType
 import org.springframework.stereotype.Component
 
 @Component
@@ -36,7 +37,7 @@ class ReadWorkbookUseCase(
             mainImageUrl = workbookRecord.mainImageUrl,
             title = workbookRecord.title,
             description = workbookRecord.description,
-            category = workbookRecord.category.toString(), // todo fix enum to string
+            category = CategoryType.convertToDisplayName(workbookRecord.category),
             createdAt = workbookRecord.createdAt,
             writers = writerRecords.toWriterDetails(),
             articles = workbookMappedArticles.toArticleDetails()

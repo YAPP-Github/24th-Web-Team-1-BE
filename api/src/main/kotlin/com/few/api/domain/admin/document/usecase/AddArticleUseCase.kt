@@ -10,6 +10,7 @@ import com.few.api.repo.dao.problem.ProblemDao
 import com.few.api.repo.dao.problem.command.InsertProblemsCommand
 import com.few.api.repo.dao.problem.support.Content
 import com.few.api.repo.dao.problem.support.Contents
+import com.few.data.common.code.CategoryType
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
@@ -31,7 +32,7 @@ class AddArticleUseCase(
             writerId = writerId.memberId,
             mainImageURL = useCaseIn.articleImageUrl,
             title = useCaseIn.title,
-            category = 0, // todo fix
+            category = CategoryType.convertToCode(useCaseIn.category),
             content = useCaseIn.contentSource
         ).let { articleDao.insertFullArticleRecord(it) }
 

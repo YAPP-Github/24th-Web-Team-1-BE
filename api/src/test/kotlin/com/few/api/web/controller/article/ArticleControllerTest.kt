@@ -12,6 +12,7 @@ import com.few.api.domain.article.usecase.ReadArticleUseCase
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
+import com.few.data.common.code.CategoryType
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -77,7 +78,7 @@ class ArticleControllerTest : ControllerTestSpec() {
                     url = URL("http://localhost:8080/api/v1/writers/1")
                 ),
                 title = "ETF(상장 지수 펀드)란? 모르면 손해라고?",
-                content = "content",
+                content = CategoryType.fromCode(0)!!.name,
                 problemIds = listOf(1L, 2L, 3L),
                 category = "경제",
                 createdAt = LocalDateTime.now()

@@ -1,5 +1,7 @@
 package com.few.storage.image.service
 
-fun interface GetPreSignedImageUrlService {
-    fun execute(image: String): String?
+import com.few.storage.GetPreSignedObjectUrlService
+
+fun interface GetPreSignedImageUrlService : GetPreSignedObjectUrlService {
+    override fun execute(image: String): String?
 }

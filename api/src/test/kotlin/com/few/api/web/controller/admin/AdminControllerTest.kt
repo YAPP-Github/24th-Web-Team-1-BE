@@ -1,0 +1,280 @@
+package com.few.api.web.controller.admin
+
+import com.epages.restdocs.apispec.ResourceDocumentation
+import com.epages.restdocs.apispec.ResourceDocumentation.resource
+import com.epages.restdocs.apispec.ResourceSnippetParameters
+import com.epages.restdocs.apispec.Schema
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.few.api.domain.admin.document.dto.*
+import com.few.api.domain.admin.document.usecase.AddArticleUseCase
+import com.few.api.domain.admin.document.usecase.AddWorkbookUseCase
+import com.few.api.domain.admin.document.usecase.ConvertContentUseCase
+import com.few.api.domain.admin.document.usecase.MapArticleUseCase
+import com.few.api.web.controller.ControllerTestSpec
+import com.few.api.web.controller.admin.request.*
+import com.few.api.web.controller.description.Description
+import com.few.api.web.controller.helper.*
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import org.mockito.Mockito.doNothing
+import org.mockito.Mockito.`when`
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.http.MediaType
+import org.springframework.http.codec.json.Jackson2JsonDecoder
+import org.springframework.http.codec.json.Jackson2JsonEncoder
+import org.springframework.mock.web.MockMultipartFile
+import org.springframework.restdocs.RestDocumentationContextProvider
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart
+import org.springframework.restdocs.payload.PayloadDocumentation
+import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
+import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.web.util.UriComponentsBuilder
+import java.net.URL
+
+class AdminControllerTest : ControllerTestSpec() {
+
+    @Autowired
+    private lateinit var objectMapper: ObjectMapper
+
+    private lateinit var webTestClient: WebTestClient
+
+    @Autowired
+    private lateinit var mockMvc: MockMvc
+
+    @Autowired
+    private lateinit var adminController: AdminController
+
+    @MockBean
+    private lateinit var addArticleUseCase: AddArticleUseCase
+
+    @MockBean
+    private lateinit var addWorkbookUseCase: AddWorkbookUseCase
+
+    @MockBean
+    private lateinit var mapArticleUseCase: MapArticleUseCase
+
+    @MockBean
+    private lateinit var convertContentUseCase: ConvertContentUseCase
+
+    companion object {
+        private val BASE_URL = "/api/v1/admin"
+        private val TAG = "AdminController"
+    }
+
+    @BeforeEach
+    fun setUp(restDocumentation: RestDocumentationContextProvider) {
+        webTestClient = WebTestClient.bindToController(adminController)
+            .controllerAdvice(super.apiControllerExceptionHandler)
+            .httpMessageCodecs {
+                it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(objectMapper))
+                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(objectMapper))
+            }
+            .configureClient()
+            .filter(WebTestClientRestDocumentation.documentationConfiguration(restDocumentation))
+            .build()
+    }
+
+    @Test
+    @DisplayName("[POST] /api/v1/admin/workbooks")
+    fun addWorkbook() {
+        // given
+        val api = "AddWorkbook"
+        val uri = UriComponentsBuilder.newInstance().path("$BASE_URL/workbooks").build().toUriString()
+        val title = "title"
+        val mainImageUrl = URL("http://localhost:8080")
+        val category = "category"
+        val description = "description"
+        val request = AddWorkbookRequest(title, mainImageUrl, category, description)
+        val body = objectMapper.writeValueAsString(request)
+        `when`(addWorkbookUseCase.execute(AddWorkbookUseCaseIn(title, mainImageUrl, category, description))).thenReturn(
+            AddWorkbookUseCaseOut(1L)
+        )
+
+        // when
+        this.webTestClient.post()
+            .uri(uri)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange().expectStatus().is2xxSuccessful()
+            .expectBody().consumeWith(
+                WebTestClientRestDocumentation.document(
+                    api.toIdentifier(),
+                    ResourceDocumentation.resource(
+                        ResourceSnippetParameters.builder().description("학습지 추가")
+                            .summary(api.toIdentifier()).privateResource(false).deprecated(false)
+                            .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))
+                            .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
+                                *Description.describe(
+                                    arrayOf(
+                                        PayloadDocumentation.fieldWithPath("data")
+                                            .fieldWithObject("data"),
+                                        PayloadDocumentation.fieldWithPath("data.workbookId")
+                                            .fieldWithNumber("워크북 Id")
+                                    )
+                                )
+                            ).build()
+                    )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("[POST] /api/v1/admin/articles")
+    fun addArticle() {
+        // given
+        val api = "AddArticle"
+        val uri = UriComponentsBuilder.newInstance().path("$BASE_URL/articles").build().toUriString()
+        val request = AddArticleRequest(
+            "writer@gmail.com",
+            URL("http://localhost:8080"),
+            "title",
+            "category",
+            "contentSource",
+            ProblemDto(
+                "title",
+                listOf(
+                    ProblemContentDto(1L, "content1"),
+                    ProblemContentDto(2L, "content2"),
+                    ProblemContentDto(3L, "content3"),
+                    ProblemContentDto(4L, "content4")
+                ),
+                "1",
+                "explanation"
+            )
+        )
+        val body = objectMapper.writeValueAsString(request)
+
+        `when`(
+            addArticleUseCase.execute(
+                AddArticleUseCaseIn(
+                    "writer@gmail.com",
+                    URL("http://localhost:8080"),
+                    "title",
+                    "category",
+                    "contentSource",
+                    ProblemDetail(
+                        "title",
+                        listOf(
+                            ProblemContentDetail(1L, "content1"),
+                            ProblemContentDetail(2L, "content2"),
+                            ProblemContentDetail(3L, "content3"),
+                            ProblemContentDetail(4L, "content4")
+                        ),
+                        "1",
+                        "explanation"
+                    )
+                )
+            )
+        ).thenReturn(AddArticleUseCaseOut(1L))
+
+        // when
+        this.webTestClient.post()
+            .uri(uri)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange().expectStatus().is2xxSuccessful()
+            .expectBody().consumeWith(
+                WebTestClientRestDocumentation.document(
+                    api.toIdentifier(),
+                    ResourceDocumentation.resource(
+                        ResourceSnippetParameters.builder().description("아티클 추가")
+                            .summary(api.toIdentifier()).privateResource(false).deprecated(false)
+                            .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))
+                            .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
+                                *Description.describe(
+                                    arrayOf(
+                                        PayloadDocumentation.fieldWithPath("data")
+                                            .fieldWithObject("data"),
+                                        PayloadDocumentation.fieldWithPath("data.articleId")
+                                            .fieldWithNumber("아티클 Id")
+                                    )
+                                )
+                            ).build()
+                    )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("[POST] /api/v1/admin/relations/articles")
+    fun mapArticle() {
+        // given
+        val api = "MapArticle"
+        val uri = UriComponentsBuilder.newInstance().path("$BASE_URL/relations/articles").build().toUriString()
+        val request = MapArticleRequest(1L, 1L, 1)
+        val body = objectMapper.writeValueAsString(request)
+        doNothing().`when`(mapArticleUseCase).execute(MapArticleUseCaseIn(1L, 1L, 1))
+
+        // when
+        this.webTestClient.post()
+            .uri(uri)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange().expectStatus().is2xxSuccessful()
+            .expectBody().consumeWith(
+                WebTestClientRestDocumentation.document(
+                    api.toIdentifier(),
+                    resource(
+                        ResourceSnippetParameters.builder().description("아티클 매핑")
+                            .summary(api.toIdentifier()).privateResource(false).deprecated(false)
+                            .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))
+                            .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
+                                *Description.describe()
+                            ).build()
+                    )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("[POST] /api/v1/admin/utilities/conversion/content")
+    fun convertContent() {
+        // given
+        val api = "ConvertContent"
+        val uri = UriComponentsBuilder.newInstance().path("$BASE_URL/utilities/conversion/content").build().toUriString()
+        val request = ConvertContentRequest(MockMultipartFile("content", "test.md", "text/markdown", "#test".toByteArray()))
+        val useCaseOut = ConvertContentUseCaseOut("converted content", URL("http://localhost:8080/test.md"))
+        val useCaseIn = ConvertContentUseCaseIn(request.content)
+        `when`(convertContentUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
+
+        // when
+        mockMvc.perform(
+            multipart(uri)
+                .file(request.content as MockMultipartFile)
+                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+        )
+            .andExpect(status().isOk)
+            .andDo(
+                document(
+                    api.toIdentifier(),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .summary(api.toIdentifier())
+                            .description("MD to HTML 변환")
+                            .tag(TAG)
+                            .requestSchema(Schema.schema(api.toRequestSchema()))
+                            .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
+                                *Description.describe(
+                                    arrayOf(
+                                        PayloadDocumentation.fieldWithPath("data")
+                                            .fieldWithObject("data"),
+                                        PayloadDocumentation.fieldWithPath("data.content")
+                                            .fieldWithString("변환된 컨텐츠"),
+                                        PayloadDocumentation.fieldWithPath("data.originDownLoadUrl")
+                                            .fieldWithString("원본 컨텐츠 다운로드 URL")
+                                    )
+                                )
+                            ).build()
+                    )
+                )
+            )
+    }
+}

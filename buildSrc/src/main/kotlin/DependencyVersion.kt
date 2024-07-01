@@ -32,4 +32,10 @@ object DependencyVersion {
     /** swagger */
     const val SWAGGER_GENERATOR = "2.18.2"
     const val SWAGGER_UI = "4.11.1"
+
+    /** minio */
+    const val MINIO = "8.5.5"
+
+    /** aws-sdk */
+    const val AWS_SDK = "1.12.220"
 }

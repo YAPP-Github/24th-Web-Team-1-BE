@@ -1,0 +1,13 @@
+storage:
+    url: ${STORAGE_URL}
+    access-key: ${STORAGE_ACCESS_KEY}
+    secret-key: ${STORAGE_SECRET_KEY}
+    region: ${STORAGE_REGION}
+
+image:
+    store:
+        bucket-name: ${IMAGE_STORE_BUCKET_NAME}
+        region: ${STORAGE_REGION}
+
+cdn:
+    url: ${CDN_URL}

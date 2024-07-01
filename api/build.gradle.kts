@@ -1,3 +1,4 @@
+
 import org.hidetake.gradle.swagger.generator.GenerateSwaggerUI
 import java.util.Random
 
@@ -5,6 +6,7 @@ dependencies {
     /** module */
     implementation(project(":api-repo"))
     implementation(project(":batch"))
+    implementation(project(":storage"))
 
     /** spring starter */
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -13,6 +15,7 @@ dependencies {
     /** swagger & restdocs */
     implementation("org.springdoc:springdoc-openapi-ui:${DependencyVersion.SPRINGDOC}")
     implementation("org.springframework.restdocs:spring-restdocs-webtestclient")
+    implementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     implementation("com.epages:restdocs-api-spec-mockmvc:${DependencyVersion.EPAGES_REST_DOCS_API_SPEC}")
 
     /** test container */
@@ -62,6 +65,7 @@ swaggerSources {
     }
 }
 
+
 /**
  * generate static swagger ui <br/>
  * need snippet to generate swagger ui
@@ -74,7 +78,35 @@ tasks.register("generateStaticSwaggerUIApi", Copy::class) {
     /** copy */
     from(generateSwaggerUISampleTask.outputDir)
     into("$projectDir/src/main/resources/static/docs/swagger-ui")
+    doLast {
+        val swaggerSpecSource = "$projectDir/src/main/resources/static/docs/swagger-ui/swagger-spec.js"
+        file(swaggerSpecSource).writeText(
+            file(swaggerSpecSource).readText().replace(
+                "operationId\" : \"PutImageApi\",",
+                "operationId\" : \"PutImageApi\",\n" +
+                    putImageRequestScriptSource
+            )
+        )
+    }
 }
+
+val putImageRequestScriptSource = "" +
+    "        \"requestBody\" : {\n" +
+    "            \"content\" : {\n" +
+    "                \"multipart/form-data\" : {\n" +
+    "                    \"schema\" : {\n" +
+    "                        \"type\" : \"object\",\n" +
+    "                        \"properties\" : {\n" +
+    "                            \"source\" : {\n" +
+    "                                \"type\" : \"string\",\n" +
+    "                                \"format\" : \"binary\"\n" +
+    "                            }\n" +
+    "                        }\n" +
+    "\n" +
+    "                    }\n" +
+    "                }\n" +
+    "            }\n" +
+    "        },"
 
 val imageName = project.hasProperty("imageName").let {
     if (it) {

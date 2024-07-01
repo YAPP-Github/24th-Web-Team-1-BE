@@ -12,3 +12,17 @@ services:
       - "13306:3306"
     volumes:
       - ./mysql-init.d:/docker-entrypoint-initdb.d
+
+  minio:
+      image: minio/minio
+      ports:
+          - "9000:9000"
+          - "9001:9001"
+      shm_size: '1gb'
+      environment:
+          - MINIO_ACCESS_KEY=thisisroot
+          - MINIO_SECRET_KEY=thisisroot
+          - MINIO_ROOT_USER=thisisroot
+          - MINIO_ROOT_PASSWORD=thisisroot
+          - MINIO_REGION_NAME=ap-northeast-2
+      command: server /data --console-address ":9001"

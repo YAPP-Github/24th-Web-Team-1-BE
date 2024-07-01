@@ -2,13 +2,15 @@ package com.few.api.config
 
 import com.few.api.repo.config.ApiRepoConfig
 import com.few.batch.config.BatchConfig
+import com.few.storage.image.config.ImageStorageConfig
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 
 @Configuration
 @ComponentScan(basePackages = [ApiConfig.BASE_PACKAGE])
-@Import(ApiRepoConfig::class, BatchConfig::class)
+@Import(ApiRepoConfig::class, BatchConfig::class, ImageStorageConfig::class)
+@EnableWebMvc
 class ApiConfig {
     companion object {
         const val BASE_PACKAGE = "com.few.api"

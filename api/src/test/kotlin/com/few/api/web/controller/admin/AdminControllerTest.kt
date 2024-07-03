@@ -137,7 +137,8 @@ class AdminControllerTest : ControllerTestSpec() {
             URL("http://localhost:8080"),
             "title",
             CategoryType.fromCode(0)!!.name,
-            "contentSource",
+            "md",
+            "content source",
             listOf(
                 ProblemDto(
                     "title1",
@@ -172,7 +173,8 @@ class AdminControllerTest : ControllerTestSpec() {
                     URL("http://localhost:8080"),
                     "title",
                     CategoryType.fromCode(0)!!.name,
-                    "contentSource",
+                    "md",
+                    "content source",
                     listOf(
                         ProblemDetail(
                             "title1",

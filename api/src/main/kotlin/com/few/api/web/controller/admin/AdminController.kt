@@ -57,6 +57,7 @@ class AdminController(
             articleImageUrl = request.articleImageUrl,
             title = request.title,
             category = request.category,
+            contentType = request.contentType,
             contentSource = request.contentSource,
             problemData = request.problemData.map { datum ->
                 ProblemDetail(

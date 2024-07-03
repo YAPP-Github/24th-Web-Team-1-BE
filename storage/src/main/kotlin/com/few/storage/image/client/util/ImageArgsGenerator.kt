@@ -16,13 +16,14 @@ class ImageArgsGenerator {
         }
 
         fun putImage(bucket: String, name: String, image: File): ImagePutObjectArgs {
-            // content type
             val contentType = image.extension.let { ext ->
                 when (ext) {
                     "jpg", "jpeg" -> ContentType.IMAGE_JPEG
                     "png" -> ContentType.IMAGE_PNG
                     "gif" -> ContentType.IMAGE_GIF
-                    else -> ContentType.APPLICATION_OCTET_STREAM
+                    "svg" -> ContentType.IMAGE_SVG
+                    "webp" -> ContentType.IMAGE_WEBP
+                    else -> throw IllegalArgumentException("Unsupported image type: $ext")
                 }
             }
             return ImagePutObjectArgs(bucket, name, BufferedInputStream(FileInputStream(image)), image.length(), -1, contentType)

@@ -1,17 +1,11 @@
 package com.few.data.common.code
 
 enum class CategoryType(val code: Byte, val displayName: String) {
-    POLITICS(0, "정치"),
-    ECONOMY(10, "경제"),
-    SOCIETY(20, "사회"),
-    CULTURE(30, "문화"),
-    LIFE(40, "생활"),
-    IT(50, "IT"),
-    SCIENCE(60, "과학"),
-    ENTERTAINMENTS(70, "엔터테인먼트"),
-    SPORTS(80, "스포츠"),
-    GLOBAL(90, "국제"),
-    ETC(100, "기타");
+    ECONOMY(0, "경제"),
+    IT(10, "IT"),
+    MARKETING(20, "마케팅"),
+    CULTURE(30, "교양"),
+    SCIENCE(40, "과학");
 
     companion object {
         fun fromCode(code: Byte): CategoryType? {

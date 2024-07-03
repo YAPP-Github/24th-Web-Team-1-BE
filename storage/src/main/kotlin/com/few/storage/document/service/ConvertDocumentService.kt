@@ -17,7 +17,19 @@ class ConvertDocumentService {
     fun mdToHtml(md: String): String {
         val html = Jsoup.parse(ARTICLE)
         val article = htmlRenderer.render(parser.parse(md))
-        html.body().append(article)
-        return html.toString()
+        html.getElementsByTag("article").append(article)
+        html.getElementsByTag("h1").forEach {
+            it.addClass("sub1-semibold")
+        }
+        html.getElementsByTag("h2").forEach {
+            it.addClass("sub1-semibold")
+        }
+        html.getElementsByTag("h3").forEach {
+            it.addClass("sub1-semibold")
+        }
+        html.getElementsByTag("img").forEach {
+            it.addClass("!max-h-[260px] object-contain")
+        }
+        return html.body().html()
     }
 }

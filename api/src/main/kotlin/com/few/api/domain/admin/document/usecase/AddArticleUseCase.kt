@@ -37,22 +37,24 @@ class AddArticleUseCase(
         ).let { articleDao.insertFullArticleRecord(it) }
 
         /** insert problems */
-        InsertProblemsCommand(
-            articleId = articleMstId,
-            createrId = 0L, // todo fix
-            title = useCaseIn.title,
-            contents = Contents(
-                useCaseIn.problemData.contents.map {
-                    Content(
-                        it.number,
-                        it.content
-                    )
-                }
-            ),
-            answer = useCaseIn.problemData.answer,
-            explanation = useCaseIn.problemData.explanation
-        ).let {
-            problemDao.insertProblems(it)
+        useCaseIn.problemData.stream().map { problemDatum ->
+            InsertProblemsCommand(
+                articleId = articleMstId,
+                createrId = 0L, // todo fix
+                title = problemDatum.title,
+                contents = Contents(
+                    problemDatum.contents.map { detail ->
+                        Content(
+                            detail.number,
+                            detail.content
+                        )
+                    }
+                ),
+                answer = problemDatum.answer,
+                explanation = problemDatum.explanation
+            )
+        }.toList().let { commands ->
+            problemDao.insertProblems(commands)
         }
 
         return AddArticleUseCaseOut(articleMstId)

@@ -16,7 +16,7 @@ data class AddArticleRequest(
     /** Article IFO */
     @field:NotBlank(message = "{content.source.notblank}")
     val contentSource: String,
-    val problemData: ProblemDto
+    val problemData: List<ProblemDto>
 )
 
 data class ProblemDto(

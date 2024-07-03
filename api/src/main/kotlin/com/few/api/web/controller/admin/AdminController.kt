@@ -58,17 +58,19 @@ class AdminController(
             title = request.title,
             category = request.category,
             contentSource = request.contentSource,
-            problemData = ProblemDetail(
-                title = request.problemData.title,
-                contents = request.problemData.contents.map {
-                    ProblemContentDetail(
-                        number = it.number,
-                        content = it.content
-                    )
-                },
-                answer = request.problemData.answer,
-                explanation = request.problemData.explanation
-            )
+            problemData = request.problemData.map { datum ->
+                ProblemDetail(
+                    title = datum.title,
+                    contents = datum.contents.map { detail ->
+                        ProblemContentDetail(
+                            number = detail.number,
+                            content = detail.content
+                        )
+                    },
+                    answer = datum.answer,
+                    explanation = datum.explanation
+                )
+            }.toList()
         ).let { useCaseIn ->
             addArticleUseCase.execute(useCaseIn)
         }

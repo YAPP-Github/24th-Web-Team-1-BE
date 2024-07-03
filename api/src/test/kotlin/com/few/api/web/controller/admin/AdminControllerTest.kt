@@ -138,16 +138,29 @@ class AdminControllerTest : ControllerTestSpec() {
             "title",
             CategoryType.fromCode(0)!!.name,
             "contentSource",
-            ProblemDto(
-                "title",
-                listOf(
-                    ProblemContentDto(1L, "content1"),
-                    ProblemContentDto(2L, "content2"),
-                    ProblemContentDto(3L, "content3"),
-                    ProblemContentDto(4L, "content4")
+            listOf(
+                ProblemDto(
+                    "title1",
+                    listOf(
+                        ProblemContentDto(1L, "content1"),
+                        ProblemContentDto(2L, "content2"),
+                        ProblemContentDto(3L, "content3"),
+                        ProblemContentDto(4L, "content4")
+                    ),
+                    "1",
+                    "explanation"
                 ),
-                "1",
-                "explanation"
+                ProblemDto(
+                    "title2",
+                    listOf(
+                        ProblemContentDto(1L, "content1"),
+                        ProblemContentDto(2L, "content2"),
+                        ProblemContentDto(3L, "content3"),
+                        ProblemContentDto(4L, "content4")
+                    ),
+                    "2",
+                    "explanation"
+                )
             )
         )
         val body = objectMapper.writeValueAsString(request)
@@ -160,16 +173,29 @@ class AdminControllerTest : ControllerTestSpec() {
                     "title",
                     CategoryType.fromCode(0)!!.name,
                     "contentSource",
-                    ProblemDetail(
-                        "title",
-                        listOf(
-                            ProblemContentDetail(1L, "content1"),
-                            ProblemContentDetail(2L, "content2"),
-                            ProblemContentDetail(3L, "content3"),
-                            ProblemContentDetail(4L, "content4")
+                    listOf(
+                        ProblemDetail(
+                            "title1",
+                            listOf(
+                                ProblemContentDetail(1L, "content1"),
+                                ProblemContentDetail(2L, "content2"),
+                                ProblemContentDetail(3L, "content3"),
+                                ProblemContentDetail(4L, "content4")
+                            ),
+                            "1",
+                            "explanation"
                         ),
-                        "1",
-                        "explanation"
+                        ProblemDetail(
+                            "title2",
+                            listOf(
+                                ProblemContentDetail(1L, "content1"),
+                                ProblemContentDetail(2L, "content2"),
+                                ProblemContentDetail(3L, "content3"),
+                                ProblemContentDetail(4L, "content4")
+                            ),
+                            "2",
+                            "explanation"
+                        )
                     )
                 )
             )

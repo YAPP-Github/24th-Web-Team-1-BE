@@ -28,7 +28,7 @@ class ConvertDocumentService {
             it.addClass("sub1-semibold")
         }
         html.getElementsByTag("img").forEach {
-            it.addClass("!max-h-[260px] object-contain")
+            it.attr("style", "max-height: 260px; object-fit: contain;")
         }
         return html.body().html()
     }

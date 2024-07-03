@@ -4,7 +4,6 @@ import org.commonmark.parser.Parser
 import org.commonmark.renderer.html.HtmlRenderer
 import org.jsoup.Jsoup
 import org.springframework.stereotype.Service
-import java.io.File
 
 @Service
 class ConvertDocumentService {
@@ -23,7 +22,7 @@ class ConvertDocumentService {
             it.addClass("sub1-semibold")
         }
         html.getElementsByTag("h2").forEach {
-            it.addClass("sub1-semibold top bottom 5px")
+            it.addClass("sub1-semibold")
         }
         html.getElementsByTag("h3").forEach {
             it.addClass("sub1-semibold")
@@ -33,12 +32,4 @@ class ConvertDocumentService {
         }
         return html.body().html()
     }
-}
-
-fun main() {
-    val convertDocumentService = ConvertDocumentService()
-    val file =
-        File("/Users/jongjun/Documents/Code/Spring/24th-Web-Team-1-BE/storage/src/main/resources/test.md")
-    val md = file.readText()
-    println(convertDocumentService.mdToHtml(md))
 }

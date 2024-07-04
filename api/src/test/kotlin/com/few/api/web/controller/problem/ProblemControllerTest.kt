@@ -5,14 +5,17 @@ import com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.few.api.domain.problem.usecase.BrowseProblemsUseCase
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
 import com.few.api.web.controller.problem.request.CheckProblemBody
 import com.few.api.domain.problem.usecase.CheckProblemUseCase
 import com.few.api.domain.problem.usecase.ReadProblemUseCase
+import com.few.api.domain.problem.usecase.`in`.BrowseProblemsUseCaseIn
 import com.few.api.domain.problem.usecase.`in`.CheckProblemUseCaseIn
 import com.few.api.domain.problem.usecase.`in`.ReadProblemUseCaseIn
+import com.few.api.domain.problem.usecase.out.BrowseProblemsUseCaseOut
 import com.few.api.domain.problem.usecase.out.CheckProblemUseCaseOut
 import com.few.api.domain.problem.usecase.out.ReadProblemContentsUseCaseOutDetail
 import com.few.api.domain.problem.usecase.out.ReadProblemUseCaseOut
@@ -41,6 +44,9 @@ class ProblemControllerTest : ControllerTestSpec() {
     private lateinit var problemController: ProblemController
 
     @MockBean
+    private lateinit var browseProblemsUseCase: BrowseProblemsUseCase
+
+    @MockBean
     private lateinit var readProblemUseCase: ReadProblemUseCase
 
     @MockBean
@@ -59,6 +65,57 @@ class ProblemControllerTest : ControllerTestSpec() {
             .configureClient()
             .filter(WebTestClientRestDocumentation.documentationConfiguration(restDocumentation))
             .build()
+    }
+
+    @Test
+    @DisplayName("[GET] /api/v1/problems?articleId=")
+    fun browseProblems() {
+        // given
+        val api = "BrowseProblems"
+        val articleId = 1L
+        val uri = UriComponentsBuilder.newInstance()
+            .path(BASE_URL)
+            .queryParam("articleId", articleId)
+            .build()
+            .toUriString()
+
+        val useCaseIn = BrowseProblemsUseCaseIn(articleId)
+        val useCaseOut = BrowseProblemsUseCaseOut(listOf(1L, 2L, 3L))
+        `when`(browseProblemsUseCase.execute(useCaseIn))
+            .thenReturn(useCaseOut)
+
+        // when
+        this.webTestClient.get()
+            .uri(uri)
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange().expectStatus().isOk()
+            .expectBody().consumeWith(
+                WebTestClientRestDocumentation.document(
+                    api.toIdentifier(),
+                    ResourceDocumentation.resource(
+                        ResourceSnippetParameters.builder()
+                            .description("아티클 Id로 문제 목록 조회")
+                            .summary(api.toIdentifier())
+                            .privateResource(false)
+                            .deprecated(false)
+                            .tag(TAG)
+                            .requestSchema(Schema.schema(api.toRequestSchema()))
+                            .queryParameters(parameterWithName("articleId").description("아티클 Id").optional())
+                            .responseSchema(Schema.schema(api.toResponseSchema()))
+                            .responseFields(
+                                *Description.describe(
+                                    arrayOf(
+                                        PayloadDocumentation.fieldWithPath("data")
+                                            .fieldWithObject("data"),
+                                        PayloadDocumentation.fieldWithPath("data.problemIds[]")
+                                            .fieldWithArray("문제 Id 목록")
+                                    )
+                                )
+                            )
+                            .build()
+                    )
+                )
+            )
     }
 
     @Test

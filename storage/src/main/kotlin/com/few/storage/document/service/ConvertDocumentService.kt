@@ -19,16 +19,19 @@ class ConvertDocumentService {
         val article = htmlRenderer.render(parser.parse(md))
         html.getElementsByTag("article").append(article)
         html.getElementsByTag("h1").forEach {
-            it.addClass("sub1-semibold")
+            it.attr("style", "font-size: 20px; line-height: 140%; font-weight: 600")
         }
         html.getElementsByTag("h2").forEach {
-            it.addClass("sub1-semibold")
+            it.attr("style", "font-size: 20px; line-height: 140%; font-weight: 600")
         }
         html.getElementsByTag("h3").forEach {
-            it.addClass("sub1-semibold")
+            it.attr("style", "font-size: 20px; line-height: 140%; font-weight: 600")
         }
         html.getElementsByTag("img").forEach {
-            it.attr("style", "max-height: 260px; object-fit: contain;")
+            it.attr("style", "max-height: 280px; object-fit: contain; max-width: 480px; margin-left: auto; margin-right: auto; width: 100%;")
+        }
+        html.getElementsByTag("article").forEach {
+            it.attr("style", "max-width: 480px; font-size: 15px; line-height: 170%; font-weight: 400;")
         }
         return html.body().html()
     }

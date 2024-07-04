@@ -2,6 +2,7 @@ package com.few.api.web.handler
 
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
+import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.ConstraintViolationException
 import org.springframework.beans.TypeMismatchException
 import org.springframework.core.codec.DecodingException
@@ -24,7 +25,8 @@ class ApiControllerExceptionHandler(
 
     @ExceptionHandler(IllegalArgumentException::class)
     fun handleBadRequest(
-        ex: IllegalArgumentException
+        ex: IllegalArgumentException,
+        request: HttpServletRequest
     ): ApiResponse<ApiResponse.FailureBody> {
         return ApiResponseGenerator.fail(ExceptionMessage.FAIL.message, HttpStatus.BAD_REQUEST)
     }
@@ -41,7 +43,8 @@ class ApiControllerExceptionHandler(
         HttpMessageNotReadableException::class
     )
     fun handleBadRequest(
-        ex: Exception
+        ex: Exception,
+        request: HttpServletRequest
     ): ApiResponse<ApiResponse.FailureBody> {
         return handleRequestDetails(ex)
     }
@@ -75,7 +78,8 @@ class ApiControllerExceptionHandler(
 
     @ExceptionHandler(IllegalStateException::class)
     fun handleIllegalState(
-        ex: Exception
+        ex: Exception,
+        request: HttpServletRequest
     ): ApiResponse<ApiResponse.FailureBody> {
         return ApiResponseGenerator.fail(
             ExceptionMessage.FAIL.message,
@@ -85,7 +89,8 @@ class ApiControllerExceptionHandler(
 
     @ExceptionHandler(NoSuchElementException::class)
     fun handleForbidden(
-        ex: AccessDeniedException
+        ex: AccessDeniedException,
+        request: HttpServletRequest
     ): ApiResponse<ApiResponse.FailureBody> {
         return ApiResponseGenerator.fail(
             ExceptionMessage.ACCESS_DENIED.message,
@@ -95,8 +100,10 @@ class ApiControllerExceptionHandler(
 
     @ExceptionHandler(Exception::class)
     fun handleInternalServerError(
-        ex: Exception
+        ex: Exception,
+        request: HttpServletRequest
     ): ApiResponse<ApiResponse.FailureBody> {
+        loggingHandler.writeLog(ex, request)
         return ApiResponseGenerator.fail(
             ExceptionMessage.FAIL.message,
             HttpStatus.INTERNAL_SERVER_ERROR

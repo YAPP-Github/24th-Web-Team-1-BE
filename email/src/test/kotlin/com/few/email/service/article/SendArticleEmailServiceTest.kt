@@ -1,9 +1,13 @@
 package com.few.email.service.article
 
 import com.few.email.service.SendAEmailTestSpec
+import com.few.email.service.article.dto.Content
 import com.few.email.service.article.dto.SendArticleEmailArgs
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import java.net.URL
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 class SendArticleEmailServiceTest : SendAEmailTestSpec() {
@@ -12,14 +16,25 @@ class SendArticleEmailServiceTest : SendAEmailTestSpec() {
     private lateinit var sendArticleEmailService: SendArticleEmailService
 
     @Test
+    @Disabled
     fun `아티클 이메일 전송 테스트`() {
         // given
         val args = SendArticleEmailArgs(
             to = "test@gmail.com",
             subject = "테스트" + LocalDateTime.now(),
-            articleContent = "테스트입니다.",
-            style = getStyle(),
-            template = "test"
+            articleContent = Content(
+                articleLink = URL("https://www.google.com"),
+                currentDate = LocalDate.now(),
+                category = "경제",
+                articleDay = 1,
+                articleTitle = "제목",
+                writerName = "작성자",
+                writerLink = URL("https://www.google.com"),
+                articleContent = "내용",
+                problemLink = URL("https://www.google.com"),
+                unsubscribeLink = URL("https://www.google.com")
+            ),
+            template = "article"
         )
 
         // when

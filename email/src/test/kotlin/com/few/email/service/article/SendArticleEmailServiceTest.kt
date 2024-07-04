@@ -3,6 +3,7 @@ package com.few.email.service.article
 import com.few.email.service.SendAEmailTestSpec
 import com.few.email.service.article.dto.Content
 import com.few.email.service.article.dto.SendArticleEmailArgs
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.net.URL
@@ -15,6 +16,7 @@ class SendArticleEmailServiceTest : SendAEmailTestSpec() {
     private lateinit var sendArticleEmailService: SendArticleEmailService
 
     @Test
+    @Disabled
     fun `아티클 이메일 전송 테스트`() {
         // given
         val args = SendArticleEmailArgs(

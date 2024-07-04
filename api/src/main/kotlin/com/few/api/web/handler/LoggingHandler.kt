@@ -1,7 +1,7 @@
 package com.few.api.web.handler
 
+import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
-import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.stereotype.Component
 
 /** 로깅을 담당하는 핸들러  */
@@ -9,12 +9,12 @@ import org.springframework.stereotype.Component
 class LoggingHandler {
     private val log = LoggerFactory.getLogger(LoggingHandler::class.java)
 
-    fun writeLog(ex: Exception, request: ServerHttpRequest) {
+    fun writeLog(ex: Exception, request: HttpServletRequest) {
         try {
             log.error(
                 LOG_MESSAGE_FORMAT,
                 request.method,
-                request.uri,
+                request.requestURL,
                 ex.message,
                 ex
             )

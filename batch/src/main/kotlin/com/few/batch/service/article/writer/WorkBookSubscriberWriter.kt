@@ -30,7 +30,7 @@ data class MemberReceiveArticles(
     fun getByWorkBookIdAndDayCol(workbookId: Long, dayCol: Long): MemberReceiveArticle {
         return articles.find {
             it.workbookId == workbookId && it.dayCol == dayCol
-        } ?: throw IllegalArgumentException("article not found")
+        } ?: throw IllegalArgumentException("Cannot find article by workbookId: $workbookId, dayCol: $dayCol")
     }
 
     fun getArticleIds(): List<Long> {
@@ -52,7 +52,7 @@ data class ArticleContent(
 fun List<ArticleContent>.peek(articleId: Long): ArticleContent {
     return this.find {
         it.id == articleId
-    } ?: throw IllegalArgumentException("article not found")
+    } ?: throw IllegalArgumentException("Cannot find article by articleId: $articleId")
 }
 
 @Component

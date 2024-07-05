@@ -3,8 +3,8 @@ spring:
     protocol: smtp
     host: smtp.gmail.com
     port: 587
-    username: DevFewFew@gmail.com
-    password: ${EMAIL_PASSWORD:password}
+    username: few.quiz.letter@gmail.com
+    password: ${EMAIL_PASSWORD:wnan gvvb cajl yzeb}
     properties:
       mail:
         smtp:

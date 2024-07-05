@@ -42,7 +42,7 @@ class ProblemController(
             return ApiResponseGenerator.success(response, HttpStatus.OK)
         }
 
-        throw IllegalArgumentException("Invalid parameter")
+        throw IllegalArgumentException("Invalid Parameter")
     }
 
     @GetMapping("/{problemId}")

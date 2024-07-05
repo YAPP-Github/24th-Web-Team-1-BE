@@ -4,7 +4,7 @@ spring:
         protocol: smtp
         port: 25
         username: 36a1889f02050c
-        password: ${EMAIL_PASSWORD}
+        password: ${EMAIL_PASSWORD:24fdb93cdb30d4}
         properties:
             mail:
                 smtp:

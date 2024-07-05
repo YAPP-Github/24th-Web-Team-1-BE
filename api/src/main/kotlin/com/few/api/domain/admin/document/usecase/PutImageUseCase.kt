@@ -5,6 +5,8 @@ import com.few.api.domain.admin.document.dto.PutImageUseCaseOut
 import com.few.api.domain.admin.document.service.GetUrlService
 import com.few.api.domain.admin.document.service.dto.GetUrlQuery
 import com.few.api.domain.admin.document.utils.ObjectPathGenerator
+import com.few.api.exception.common.ExternalIntegrationException
+import com.few.api.exception.common.InsertException
 import com.few.api.repo.dao.image.ImageDao
 import com.few.api.repo.dao.image.command.InsertImageIfoCommand
 import com.few.storage.image.service.PutImageService
@@ -37,11 +39,11 @@ class PutImageUseCase(
                 getUrlService.execute(query)
             }.let { url ->
                 InsertImageIfoCommand(source, url).let { command ->
-                    imageDao.insertImageIfo(command) ?: throw IllegalStateException("Failed to save image info")
+                    imageDao.insertImageIfo(command) ?: throw InsertException("image.insertfail.record")
                 }
                 return@let url
             }
-        }
+        } ?: throw ExternalIntegrationException("external.presignedfail.image")
 
         return PutImageUseCaseOut(url!!)
     }

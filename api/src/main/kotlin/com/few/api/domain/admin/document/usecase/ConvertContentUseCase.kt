@@ -5,6 +5,8 @@ import com.few.api.domain.admin.document.dto.ConvertContentUseCaseOut
 import com.few.api.domain.admin.document.service.GetUrlService
 import com.few.api.domain.admin.document.service.dto.GetUrlQuery
 import com.few.api.domain.admin.document.utils.ObjectPathGenerator
+import com.few.api.exception.common.ExternalIntegrationException
+import com.few.api.exception.common.InsertException
 
 import com.few.api.repo.dao.document.DocumentDao
 import com.few.api.repo.dao.document.command.InsertDocumentIfoCommand
@@ -42,11 +44,11 @@ class ConvertContentUseCase(
                     path = documentName,
                     url = url
                 ).let { command ->
-                    documentDao.insertDocumentIfo(command)
+                    documentDao.insertDocumentIfo(command) ?: throw InsertException("document.insertfail.record")
                 }
                 url
             }
-        } ?: throw IllegalStateException("Failed to put document")
+        } ?: throw ExternalIntegrationException("external.document.presignedfail")
 
         val html =
             convertDocumentService.mdToHtml(document.readBytes().toString(Charsets.UTF_8))

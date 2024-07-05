@@ -29,6 +29,7 @@ class SubscriptionDao(
     fun reSubscribeWorkbookSubscription(command: InsertWorkbookSubscriptionCommand) {
         dslContext.update(SUBSCRIPTION)
             .set(SUBSCRIPTION.DELETED_AT, null as LocalDateTime?)
+            .set(SUBSCRIPTION.UNSUBS_OPINION, null as String?)
             .where(SUBSCRIPTION.MEMBER_ID.eq(command.memberId))
             .and(SUBSCRIPTION.TARGET_WORKBOOK_ID.eq(command.workbookId))
             .execute()

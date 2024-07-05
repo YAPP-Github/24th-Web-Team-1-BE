@@ -4,13 +4,13 @@ import com.few.email.sender.dto.SendMailArgs
 import java.net.URL
 import java.time.LocalDate
 
-class SendArticleEmailArgs(
-    to: String,
-    subject: String,
-    template: String,
-    val articleContent: Content,
-    val style: String = ""
-) : SendMailArgs<Content, String>(to, subject, template, articleContent, style)
+data class SendArticleEmailArgs(
+    override val to: String,
+    override val subject: String,
+    override val template: String,
+    override val content: Content,
+    override val properties: String = ""
+) : SendMailArgs<Content, String>
 
 data class Content(
     val articleLink: URL,

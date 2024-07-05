@@ -10,7 +10,7 @@ class SubmitHistoryDao(
     private val dslContext: DSLContext
 ) {
 
-    fun insertSubmitHistory(command: InsertSubmitHistoryCommand): Long {
+    fun insertSubmitHistory(command: InsertSubmitHistoryCommand): Long? {
         val result = dslContext.insertInto(SUBMIT_HISTORY)
             .set(SUBMIT_HISTORY.PROBLEM_ID, command.problemId)
             .set(SUBMIT_HISTORY.MEMBER_ID, command.memberId)
@@ -20,6 +20,5 @@ class SubmitHistoryDao(
             .fetchOne()
 
         return result?.getValue(SUBMIT_HISTORY.ID)
-            ?: throw RuntimeException("Submit History with ID ${command.problemId} insertion fail") // TODO: 에러 표준화
     }
 }

@@ -13,6 +13,6 @@ spring:
                 - email-prd
                 - storage-prd
 
-logging:
-    level:
-        root: debug
+log:
+    file:
+        path: ${LOGS_ABSOLUTE_PATH:./var/log/api}

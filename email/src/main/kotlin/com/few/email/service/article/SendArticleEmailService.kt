@@ -19,7 +19,7 @@ class SendArticleEmailService(
 
     override fun getHtml(args: SendArticleEmailArgs): String {
         val context = Context()
-        context.setVariable("articleLink", args.articleContent.articleLink)
+        context.setVariable("articleLink", args.articleContent.articleLink.toString() + "?fromEmail=true")
         context.setVariable(
             "currentDate",
             args.articleContent.currentDate.format(

@@ -19,23 +19,23 @@ class SendArticleEmailService(
 
     override fun getHtml(args: SendArticleEmailArgs): String {
         val context = Context()
-        context.setVariable("articleLink", args.articleContent.articleLink.toString() + "?fromEmail=true")
+        context.setVariable("articleLink", args.content.articleLink.toString() + "?fromEmail=true")
         context.setVariable(
             "currentDate",
-            args.articleContent.currentDate.format(
+            args.content.currentDate.format(
                 DateTimeFormatter.ofPattern("yyyy/MM/dd EEEE").withLocale(
                     Locale.KOREA
                 )
             )
         )
-        context.setVariable("category", args.articleContent.category)
-        context.setVariable("articleDay", "Day" + args.articleContent.articleDay)
-        context.setVariable("articleTitle", args.articleContent.articleTitle)
-        context.setVariable("writerName", args.articleContent.writerName)
-        context.setVariable("writerLink", args.articleContent.writerLink)
-        context.setVariable("articleContent", args.articleContent.articleContent)
-        context.setVariable("problemLink", args.articleContent.problemLink)
-        context.setVariable("unsubscribeLink", args.articleContent.unsubscribeLink)
+        context.setVariable("category", args.content.category)
+        context.setVariable("articleDay", "Day" + args.content.articleDay)
+        context.setVariable("articleTitle", args.content.articleTitle)
+        context.setVariable("writerName", args.content.writerName)
+        context.setVariable("writerLink", args.content.writerLink)
+        context.setVariable("articleContent", args.content.articleContent)
+        context.setVariable("problemLink", args.content.problemLink)
+        context.setVariable("unsubscribeLink", args.content.unsubscribeLink)
         return templateEngine.process(args.template, context)
     }
 }

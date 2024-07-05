@@ -22,7 +22,7 @@ class SendArticleEmailServiceTest : SendAEmailTestSpec() {
         val args = SendArticleEmailArgs(
             to = "test@gmail.com",
             subject = "테스트" + LocalDateTime.now(),
-            articleContent = Content(
+            content = Content(
                 articleLink = URL("https://www.google.com"),
                 currentDate = LocalDate.now(),
                 category = "경제",

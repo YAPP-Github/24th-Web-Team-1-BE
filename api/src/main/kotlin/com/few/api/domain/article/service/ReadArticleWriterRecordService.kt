@@ -13,7 +13,7 @@ class ReadArticleWriterRecordService(
 ) {
 
     @Transactional(readOnly = true)
-    fun execute(query: ReadWriterRecordQuery): WriterRecord {
+    fun execute(query: ReadWriterRecordQuery): WriterRecord? {
         SelectWriterQuery(query.writerId).let { query: SelectWriterQuery ->
             return memberDao.selectWriter(query)
         }

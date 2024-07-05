@@ -17,7 +17,7 @@ class MemberDao(
     private val dslContext: DSLContext
 ) {
 
-    fun selectWriter(query: SelectWriterQuery): WriterRecord {
+    fun selectWriter(query: SelectWriterQuery): WriterRecord? {
         val writerId = query.writerId
 
         return dslContext.select(
@@ -30,7 +30,6 @@ class MemberDao(
             .and(Member.MEMBER.TYPE_CD.eq(MemberType.WRITER.code))
             .and(Member.MEMBER.DELETED_AT.isNull)
             .fetchOneInto(WriterRecord::class.java)
-            ?: throw IllegalArgumentException("cannot find writer record by writerId: $writerId")
     }
 
     fun selectWriters(query: SelectWritersQuery): List<WriterRecord> {
@@ -59,7 +58,7 @@ class MemberDao(
             .fetchOneInto(MemberIdRecord::class.java)
     }
 
-    fun insertMember(command: InsertMemberCommand): Long {
+    fun insertMember(command: InsertMemberCommand): Long? {
         val result = dslContext.insertInto(Member.MEMBER)
             .set(Member.MEMBER.EMAIL, command.email)
             .set(Member.MEMBER.TYPE_CD, command.memberType.code)
@@ -67,6 +66,5 @@ class MemberDao(
             .fetchOne()
 
         return result?.getValue(Member.MEMBER.ID)
-            ?: throw RuntimeException("Member with email ${command.email} insertion fail") // TODO: 에러 표준화
     }
 }

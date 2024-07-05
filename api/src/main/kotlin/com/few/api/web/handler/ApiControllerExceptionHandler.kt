@@ -1,5 +1,9 @@
 package com.few.api.web.handler
 
+import com.few.api.exception.common.ExternalIntegrationException
+import com.few.api.exception.common.InsertException
+import com.few.api.exception.common.NotFoundException
+import com.few.api.exception.subscribe.SubscribeIllegalArgumentException
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
 import jakarta.servlet.http.HttpServletRequest
@@ -22,6 +26,22 @@ import java.nio.file.AccessDeniedException
 class ApiControllerExceptionHandler(
     private val loggingHandler: LoggingHandler
 ) {
+
+    @ExceptionHandler(ExternalIntegrationException::class, InsertException::class, NotFoundException::class)
+    fun handleCommonException(
+        ex: Exception,
+        request: HttpServletRequest
+    ): ApiResponse<ApiResponse.FailureBody> {
+        return ApiResponseGenerator.fail(ex.message!!, HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(SubscribeIllegalArgumentException::class)
+    fun handleSubscribeException(
+        ex: Exception,
+        request: HttpServletRequest
+    ): ApiResponse<ApiResponse.FailureBody> {
+        return ApiResponseGenerator.fail(ex.message!!, HttpStatus.BAD_REQUEST)
+    }
 
     @ExceptionHandler(IllegalArgumentException::class)
     fun handleBadRequest(

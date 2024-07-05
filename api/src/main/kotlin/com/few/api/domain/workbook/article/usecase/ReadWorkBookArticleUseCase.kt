@@ -7,6 +7,7 @@ import com.few.api.domain.article.service.dto.ReadWriterRecordQuery
 import com.few.api.domain.workbook.article.dto.ReadWorkBookArticleUseCaseIn
 import com.few.api.domain.workbook.article.dto.ReadWorkBookArticleOut
 import com.few.api.domain.workbook.article.dto.WriterDetail
+import com.few.api.exception.common.NotFoundException
 import com.few.api.repo.dao.article.ArticleDao
 import com.few.api.repo.dao.article.query.SelectWorkBookArticleRecordQuery
 import com.few.data.common.code.CategoryType
@@ -26,11 +27,11 @@ class ReadWorkBookArticleUseCase(
             useCaseIn.articleId
         ).let { query: SelectWorkBookArticleRecordQuery ->
             articleDao.selectWorkBookArticleRecord(query)
-        } ?: throw IllegalArgumentException("cannot find $useCaseIn.workbookId article record by articleId: $useCaseIn.articleId")
+        } ?: throw NotFoundException("article.notfound.articleidworkbookid")
 
         val writerRecord =
             ReadWriterRecordQuery(articleRecord.writerId).let { query: ReadWriterRecordQuery ->
-                readArticleWriterRecordService.execute(query)
+                readArticleWriterRecordService.execute(query) ?: throw NotFoundException("writer.notfound.id")
             }
 
         val problemIds =

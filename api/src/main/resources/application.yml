@@ -15,6 +15,9 @@ spring:
                 - email-prd
                 - storage-prd
 
+auth:
+    batch: ${AUTH_BATCH:0518}
+
 log:
     file:
         path: ${LOGS_ABSOLUTE_PATH:./var/log/api}

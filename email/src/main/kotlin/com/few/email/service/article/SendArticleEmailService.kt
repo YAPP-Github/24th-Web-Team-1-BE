@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component
 import org.thymeleaf.TemplateEngine
 import org.thymeleaf.context.Context
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 @Component
 class SendArticleEmailService(
@@ -19,7 +20,14 @@ class SendArticleEmailService(
     override fun getHtml(args: SendArticleEmailArgs): String {
         val context = Context()
         context.setVariable("articleLink", args.articleContent.articleLink)
-        context.setVariable("currentDate", args.articleContent.currentDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd EEEE")))
+        context.setVariable(
+            "currentDate",
+            args.articleContent.currentDate.format(
+                DateTimeFormatter.ofPattern("yyyy/MM/dd EEEE").withLocale(
+                    Locale.KOREA
+                )
+            )
+        )
         context.setVariable("category", args.articleContent.category)
         context.setVariable("articleDay", "Day" + args.articleContent.articleDay)
         context.setVariable("articleTitle", args.articleContent.articleTitle)

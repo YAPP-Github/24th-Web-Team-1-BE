@@ -5,6 +5,8 @@ services:
         image: fewletter/api:latest
         ports:
             - "8080:8080"
+        volumes:
+            - /var/log/api:/var/log/api
         environment:
             SPRING_PROFILES_ACTIVE: ${API_SPRING_PROFILES_ACTIVE}
             DB_HOSTNAME: ${DB_HOSTNAME}

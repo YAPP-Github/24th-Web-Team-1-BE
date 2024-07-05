@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration debug="true">
+  <property resource="application.yml"/>
+
+  <springProperty name="LOGS_ABSOLUTE_PATH" source="log.file.path"/>
+
+  <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+  <appender name="API_ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!-- rollover daily -->
+      <fileNamePattern>${LOGS_ABSOLUTE_PATH}/%d/%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <maxFileSize>100MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+    </rollingPolicy>
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+    </encoder>
+  </appender>
+
+  <springProfile name="prd">
+      <root level="INFO">
+          <appender-ref ref="CONSOLE"/>
+      </root>
+      <logger name="com.few" level="DEBUG">
+          <appender-ref ref="API_ROLLING"/>
+      </logger>
+      <logger name="org.jooq" level="DEBUG">
+          <appender-ref ref="API_ROLLING"/>
+      </logger>
+      <logger name="org.springframework" level="INFO">
+          <appender-ref ref="API_ROLLING"/>
+      </logger>
+  </springProfile>
+
+  <springProfile name="local">
+    <root level="DEBUG">
+      <appender-ref ref="CONSOLE"/>
+    </root>
+  </springProfile>
+
+</configuration>

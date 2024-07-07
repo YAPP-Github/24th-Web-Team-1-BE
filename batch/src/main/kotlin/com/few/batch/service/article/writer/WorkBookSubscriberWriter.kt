@@ -147,7 +147,7 @@ class WorkBookSubscriberWriter(
                     writerLink = article.writerLink,
                     articleContent = article.articleContent,
                     problemLink = URL("https://www.fewletter.com/problem?articleId=${memberArticle.articleId}"),
-                    unsubscribeLink = URL("https://www.fewletter.com/unsbuscribe?user=${memberEmailRecords[it.memberId]}&workbookId=${it.targetWorkBookId}&articleId=${memberArticle.articleId}")
+                    unsubscribeLink = URL("https://www.fewletter.com/unsubscribe?user=${memberEmailRecords[it.memberId]}&workbookId=${it.targetWorkBookId}&articleId=${memberArticle.articleId}")
                 )
             }
             return@map it.memberId to

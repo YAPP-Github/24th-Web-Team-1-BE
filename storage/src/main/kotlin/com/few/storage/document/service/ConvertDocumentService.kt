@@ -33,6 +33,9 @@ class ConvertDocumentService {
         html.getElementsByTag("article").forEach {
             it.attr("style", "max-width: 480px; font-size: 15px; line-height: 170%; font-weight: 400;")
         }
+        html.getElementsByTag("a").forEach {
+            it.attr("style", "overflow: hidden; word-break: break-all;")
+        }
         return html.body().html()
     }
 }

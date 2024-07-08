@@ -5,14 +5,19 @@ spring:
     profiles:
         group:
             local:
+                - client-local
                 - api-repo-local
                 - email-local
                 - storage-local
             prd:
+                - client-prd
                 - api-repo-prd
                 - email-prd
                 - storage-prd
 
-logging:
-    level:
-        root: debug
+auth:
+    batch: ${AUTH_BATCH:0518}
+
+log:
+    file:
+        path: ${LOGS_ABSOLUTE_PATH:./var/log/api}

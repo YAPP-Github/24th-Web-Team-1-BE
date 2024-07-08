@@ -1,9 +1,10 @@
-package com.few.data.common.code
+package com.few.batch.data.common.code
 
 /**
- * @see com.few.batch.data.common.code.BatchCategoryType
+ * BatchCategoryType is origin from CategoryType in few-data module.
+ * @see com.few.data.common.code.CategoryType
  */
-enum class CategoryType(val code: Byte, val displayName: String) {
+enum class BatchCategoryType(val code: Byte, val displayName: String) {
     ECONOMY(0, "경제"),
     IT(10, "IT"),
     MARKETING(20, "마케팅"),
@@ -11,7 +12,7 @@ enum class CategoryType(val code: Byte, val displayName: String) {
     SCIENCE(40, "과학");
 
     companion object {
-        fun fromCode(code: Byte): CategoryType? {
+        fun fromCode(code: Byte): BatchCategoryType? {
             return entries.find { it.code == code }
         }
 

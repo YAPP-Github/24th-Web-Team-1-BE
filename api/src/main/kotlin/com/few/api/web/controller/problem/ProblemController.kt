@@ -1,5 +1,6 @@
 package com.few.api.web.controller.problem
 
+import com.few.api.domain.problem.usecase.BrowseProblemsUseCase
 import com.few.api.web.controller.problem.request.CheckProblemBody
 import com.few.api.web.controller.problem.response.CheckProblemResponse
 import com.few.api.web.controller.problem.response.ProblemContents
@@ -8,8 +9,10 @@ import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
 import com.few.api.domain.problem.usecase.CheckProblemUseCase
 import com.few.api.domain.problem.usecase.ReadProblemUseCase
+import com.few.api.domain.problem.usecase.`in`.BrowseProblemsUseCaseIn
 import com.few.api.domain.problem.usecase.`in`.CheckProblemUseCaseIn
 import com.few.api.domain.problem.usecase.`in`.ReadProblemUseCaseIn
+import com.few.api.web.controller.problem.response.BrowseProblemsResponse
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Min
 import org.springframework.http.HttpStatus
@@ -22,9 +25,25 @@ import java.util.*
 @RestController
 @RequestMapping(value = ["/api/v1/problems"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class ProblemController(
+    private val browseProblemsUseCase: BrowseProblemsUseCase,
     private val readProblemUseCase: ReadProblemUseCase,
     private val checkProblemUseCase: CheckProblemUseCase
 ) {
+
+    @GetMapping
+    fun browseProblems(@RequestParam(value = "articleId", required = false) articleId: Long?): ApiResponse<ApiResponse.SuccessBody<BrowseProblemsResponse>> {
+        articleId?.let { id ->
+            val useCaseOut = BrowseProblemsUseCaseIn(id).let { useCaseIn ->
+                browseProblemsUseCase.execute(useCaseIn)
+            }
+
+            val response = BrowseProblemsResponse(useCaseOut.problemIds)
+
+            return ApiResponseGenerator.success(response, HttpStatus.OK)
+        }
+
+        throw IllegalArgumentException("Invalid parameter")
+    }
 
     @GetMapping("/{problemId}")
     fun readProblem(

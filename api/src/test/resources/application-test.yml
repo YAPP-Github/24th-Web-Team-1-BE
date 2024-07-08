@@ -40,3 +40,11 @@ document:
 
 cdn:
     url: http://127.0.0.1:9000
+
+client:
+    timeout:
+        connect: 5000
+        read: 5000
+
+webhook:
+    discord: https://discord.com/api/webhooks/1234567890/abcdefg

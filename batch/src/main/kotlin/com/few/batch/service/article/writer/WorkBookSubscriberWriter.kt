@@ -102,7 +102,7 @@ class WorkBookSubscriberWriter(
             .intoMap(articleIfoT.ARTICLE_MST_ID, articleIfoT.CONTENT)
 
         val memberSuccessRecords = memberIds.associateWith { true }.toMutableMap()
-        val failRecords = mutableMapOf<String, ArrayList<Long>>()
+        val failRecords = mutableMapOf<String, ArrayList<Map<Long, String>>>()
         // todo check !! target is not null
         val emailServiceArgs = items.map {
             val toEmail = memberEmailRecords[it.memberId]!!
@@ -118,7 +118,8 @@ class WorkBookSubscriberWriter(
             } catch (e: Exception) {
                 memberSuccessRecords[it.first] = false
                 failRecords["EmailSendFail"] = failRecords.getOrDefault("EmailSendFail", arrayListOf()).apply {
-                    add(it.first)
+                    val message = e.message ?: "Unknown Error"
+                    add(mapOf(it.first to message))
                 }
             }
         }
@@ -162,9 +163,9 @@ class WorkBookSubscriberWriter(
             .execute()
 
         return if (failRecords.isNotEmpty()) {
-            mapOf("success" to memberSuccessRecords, "fail" to failRecords)
+            mapOf("records" to memberSuccessRecords, "fail" to failRecords)
         } else {
-            mapOf("success" to memberSuccessRecords)
+            mapOf("records" to memberSuccessRecords)
         }
     }
 }

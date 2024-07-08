@@ -7,9 +7,9 @@ import jakarta.servlet.ServletRequest
 import jakarta.servlet.ServletResponse
 import jakarta.servlet.http.HttpServletRequest
 import org.apache.commons.lang3.RandomStringUtils
-import org.jboss.logging.MDC
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.slf4j.MDC
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
 
@@ -38,7 +38,7 @@ class MDCFilter(private val mapper: ObjectMapper) : Filter {
         val requestEndTime = System.currentTimeMillis()
         val elapsedTime = requestEndTime - requestStartTime
         MDC.put("ElapsedTime", elapsedTime.toString() + "ms")
-        log.info("{}", mapper.writeValueAsString(MDC.getMap()))
+        log.info("{}", mapper.writeValueAsString(MDC.getCopyOfContextMap()))
         MDC.clear()
     }
 }

@@ -5,6 +5,8 @@ import com.few.api.domain.admin.document.dto.AddArticleUseCaseOut
 import com.few.api.domain.admin.document.service.GetUrlService
 import com.few.api.domain.admin.document.service.dto.GetUrlQuery
 import com.few.api.domain.admin.document.utils.ObjectPathGenerator
+import com.few.api.exception.common.ExternalIntegrationException
+import com.few.api.exception.common.NotFoundException
 import com.few.api.repo.dao.article.ArticleDao
 import com.few.api.repo.dao.article.command.InsertFullArticleRecordCommand
 import com.few.api.repo.dao.document.DocumentDao
@@ -38,7 +40,7 @@ class AddArticleUseCase(
         /** select writerId */
         val writerId = SelectMemberByEmailQuery(useCaseIn.writerEmail).let {
             memberDao.selectMemberByEmail(it)
-        } ?: throw RuntimeException("writer not found")
+        } ?: throw NotFoundException("member.notfound.id")
 
         /**
          * - content type: "md"
@@ -72,7 +74,7 @@ class AddArticleUseCase(
                         }
                         url
                     }
-                } ?: throw IllegalStateException("Failed to put document")
+                } ?: throw ExternalIntegrationException("external.putfail.docummet")
 
                 htmlSource
             }
@@ -80,7 +82,7 @@ class AddArticleUseCase(
                 useCaseIn.contentSource
             }
             else -> {
-                throw IllegalArgumentException("content type is not supported")
+                throw IllegalArgumentException("Unsupported content type: ${useCaseIn.contentType}")
             }
         }
 

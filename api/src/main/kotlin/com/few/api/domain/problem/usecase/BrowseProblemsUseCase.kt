@@ -2,6 +2,7 @@ package com.few.api.domain.problem.usecase
 
 import com.few.api.domain.problem.usecase.`in`.BrowseProblemsUseCaseIn
 import com.few.api.domain.problem.usecase.out.BrowseProblemsUseCaseOut
+import com.few.api.exception.common.NotFoundException
 import com.few.api.repo.dao.problem.ProblemDao
 import com.few.api.repo.dao.problem.query.SelectProblemsByArticleIdQuery
 import org.springframework.stereotype.Component
@@ -13,7 +14,7 @@ class BrowseProblemsUseCase(
 
     fun execute(useCaseIn: BrowseProblemsUseCaseIn): BrowseProblemsUseCaseOut {
         SelectProblemsByArticleIdQuery(useCaseIn.articleId).let { query: SelectProblemsByArticleIdQuery ->
-            problemDao.selectProblemsByArticleId(query) ?: throw IllegalArgumentException("cannot find problems by articleId: ${query.articleId}") // todo 에러 표준화
+            problemDao.selectProblemsByArticleId(query) ?: throw NotFoundException("problem.notfound.articleId")
         }.let {
             return BrowseProblemsUseCaseOut(it.problemIds)
         }

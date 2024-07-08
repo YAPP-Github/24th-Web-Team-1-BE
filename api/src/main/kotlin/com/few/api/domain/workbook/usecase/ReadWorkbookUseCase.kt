@@ -5,6 +5,7 @@ import com.few.api.domain.workbook.dto.ReadWorkbookUseCaseOut
 import com.few.api.domain.workbook.service.*
 import com.few.api.domain.workbook.service.dto.BrowseWorkbookArticlesQuery
 import com.few.api.domain.workbook.service.dto.BrowseWriterRecordsQuery
+import com.few.api.exception.common.NotFoundException
 import com.few.api.repo.dao.workbook.WorkbookDao
 import com.few.api.repo.dao.workbook.query.SelectWorkBookRecordQuery
 import com.few.data.common.code.CategoryType
@@ -21,7 +22,7 @@ class ReadWorkbookUseCase(
         val workbookId = useCaseIn.workbookId
 
         val workbookRecord = SelectWorkBookRecordQuery(workbookId).let { query ->
-            workbookDao.selectWorkBook(query) ?: throw RuntimeException("WorkBook with ID ${query.id} not found")
+            workbookDao.selectWorkBook(query) ?: throw NotFoundException("workbook.notfound.id")
         }
 
         val workbookMappedArticles = BrowseWorkbookArticlesQuery(workbookId).let { query ->

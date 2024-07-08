@@ -7,6 +7,7 @@ import com.few.api.domain.article.service.BrowseArticleProblemsService
 import com.few.api.domain.article.service.ReadArticleWriterRecordService
 import com.few.api.domain.article.service.dto.BrowseArticleProblemIdsQuery
 import com.few.api.domain.article.service.dto.ReadWriterRecordQuery
+import com.few.api.exception.common.NotFoundException
 import com.few.api.repo.dao.article.ArticleDao
 import com.few.api.repo.dao.article.query.SelectArticleRecordQuery
 import com.few.data.common.code.CategoryType
@@ -24,10 +25,10 @@ class ReadArticleUseCase(
     fun execute(useCaseIn: ReadArticleUseCaseIn): ReadArticleUseCaseOut {
         val articleRecord = SelectArticleRecordQuery(useCaseIn.articleId).let { query: SelectArticleRecordQuery ->
             articleDao.selectArticleRecord(query)
-        } ?: throw IllegalArgumentException("cannot find article record by articleId: $useCaseIn.articleId")
+        } ?: throw NotFoundException("article.notfound.id")
 
         val writerRecord = ReadWriterRecordQuery(articleRecord.writerId).let { query: ReadWriterRecordQuery ->
-            readArticleWriterRecordService.execute(query)
+            readArticleWriterRecordService.execute(query) ?: throw NotFoundException("writer.notfound.id")
         }
 
         val problemIds = BrowseArticleProblemIdsQuery(articleRecord.articleId).let { query: BrowseArticleProblemIdsQuery ->

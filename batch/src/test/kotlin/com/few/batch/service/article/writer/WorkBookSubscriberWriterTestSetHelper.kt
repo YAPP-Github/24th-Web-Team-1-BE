@@ -151,7 +151,7 @@ class WorkBookSubscriberWriterTestSetHelper(
                             writerLink = URL("http://localhost:8080"),
                             articleContent = articleDto.content,
                             problemLink = URL("https://www.fewletter.com/problem?articleId=${articleDto.articleId}"),
-                            unsubscribeLink = URL("https://www.fewletter.com/unsbuscribe?user=member${it[Subscription.SUBSCRIPTION.MEMBER_ID]}@gmail.com&workbookId=$workbookId&articleId=${articleDto.articleId}")
+                            unsubscribeLink = URL("https://www.fewletter.com/unsubscribe?user=member${it[Subscription.SUBSCRIPTION.MEMBER_ID]}@gmail.com&workbookId=$workbookId&articleId=${articleDto.articleId}")
                         )
                     )
                     items.add(dto)

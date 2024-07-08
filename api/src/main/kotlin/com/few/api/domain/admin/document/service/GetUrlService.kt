@@ -2,6 +2,7 @@ package com.few.api.domain.admin.document.service
 
 import com.few.api.domain.admin.document.service.dto.GetUrlQuery
 import com.few.api.domain.admin.document.service.dto.getPreSignedUrlServiceKey
+import com.few.api.exception.common.ExternalIntegrationException
 import com.few.storage.GetPreSignedObjectUrlService
 import com.few.storage.image.service.support.CdnProperty
 import org.springframework.context.annotation.Profile
@@ -23,13 +24,13 @@ class GetLocalUrlService(
             key.lowercase(Locale.getDefault())
                 .contains(query.getPreSignedUrlServiceKey())
         }.findAny().let {
-            if (it.isEmpty) throw IllegalStateException("Failed to find service")
+            if (it.isEmpty) throw IllegalArgumentException("Cannot find service for ${query.getPreSignedUrlServiceKey()}")
             services[it.get()]!!
         }
 
         return service.execute(query.`object`)?.let {
             URL(it)
-        } ?: throw IllegalStateException("Failed to get image url")
+        } ?: throw ExternalIntegrationException("external.presignedfail.url")
     }
 }
 

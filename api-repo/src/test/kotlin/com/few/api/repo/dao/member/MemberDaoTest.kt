@@ -67,7 +67,7 @@ class MemberDaoTest : JooqTestSpec() {
             memberDao.selectWriter(it)
         }
 
-        assertNotNull(result)
+        assertNotNull(result!!)
         assertEquals(2L, result.writerId)
         assertEquals("few2", result.name)
         assertEquals(URL("http://localhost:8080/writers/url2"), result.url)

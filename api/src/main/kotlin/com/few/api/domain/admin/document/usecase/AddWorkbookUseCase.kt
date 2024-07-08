@@ -2,6 +2,7 @@ package com.few.api.domain.admin.document.usecase
 
 import com.few.api.domain.admin.document.dto.AddWorkbookUseCaseIn
 import com.few.api.domain.admin.document.dto.AddWorkbookUseCaseOut
+import com.few.api.exception.common.InsertException
 import com.few.api.repo.dao.workbook.WorkbookDao
 import com.few.api.repo.dao.workbook.command.InsertWorkBookCommand
 import org.springframework.stereotype.Component
@@ -20,7 +21,7 @@ class AddWorkbookUseCase(
             description = useCaseIn.description
         ).let {
             workbookDao.insertWorkBook(it)
-        } ?: throw RuntimeException("Failed to insert workbook")
+        } ?: throw InsertException("workbook.insertfail.record")
 
         return AddWorkbookUseCaseOut(workbookId)
     }

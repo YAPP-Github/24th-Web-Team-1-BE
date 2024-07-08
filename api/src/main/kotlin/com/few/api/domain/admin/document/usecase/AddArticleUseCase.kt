@@ -80,7 +80,7 @@ class AddArticleUseCase(
                 useCaseIn.contentSource
             }
             else -> {
-                throw IllegalArgumentException("content type is not supported")
+                throw IllegalArgumentException("Unsupported content type: ${useCaseIn.contentType}")
             }
         }
 

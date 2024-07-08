@@ -17,11 +17,11 @@ enum class BatchCategoryType(val code: Byte, val displayName: String) {
         }
 
         fun convertToCode(displayName: String): Byte {
-            return entries.find { it.name == displayName }?.code ?: throw IllegalArgumentException("Invalid category name")
+            return entries.find { it.name == displayName }?.code ?: throw IllegalArgumentException("Invalid category name $displayName")
         }
 
         fun convertToDisplayName(code: Byte): String {
-            return entries.find { it.code == code }?.displayName ?: throw IllegalArgumentException("Invalid category code")
+            return entries.find { it.code == code }?.displayName ?: throw IllegalArgumentException("Invalid category code $code")
         }
     }
 }

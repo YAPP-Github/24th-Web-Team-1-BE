@@ -59,7 +59,7 @@ class AdminController(
             category = request.category,
             contentType = request.contentType,
             contentSource = request.contentSource,
-            problemData = request.problemData.map { datum ->
+            problems = request.problemData.map { datum ->
                 ProblemDetail(
                     title = datum.title,
                     contents = datum.contents.map { detail ->

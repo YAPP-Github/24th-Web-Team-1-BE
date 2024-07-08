@@ -94,7 +94,7 @@ class AddArticleUseCase(
         ).let { articleDao.insertFullArticleRecord(it) }
 
         /** insert problems */
-        useCaseIn.problemData.stream().map { problemDatum ->
+        useCaseIn.problems.stream().map { problemDatum ->
             InsertProblemsCommand(
                 articleId = articleMstId,
                 createrId = 0L, // todo fix

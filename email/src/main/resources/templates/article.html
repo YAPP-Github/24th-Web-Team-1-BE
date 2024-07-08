@@ -1,126 +1,179 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
+<html lang="KR">
 
 <head>
-  <title></title>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"><!--[if mso]><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch><o:AllowPNG/></o:OfficeDocumentSettings></xml><![endif]--><!--[if !mso]><!-->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900" rel="stylesheet" type="text/css"><!--<![endif]-->
-  <style>
-      ${style}
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+    <title>FEW</title>
 </head>
 
-<body style="background-color: #f8f8ff; margin: 0; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
-<table class="nl-container" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f8f8ff;">
-  <tbody>
-  <tr>
-    <td>
-      <table class="row row-1" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-        <tbody>
-        <tr>
-          <td>
-            <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 700px; margin: 0 auto;" width="700">
-              <tbody>
-              <tr>
-                <td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
-                  <table class="empty_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                    <tr>
-                      <td class="pad">
-                        <div></div>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-              </tbody>
+<body style="
+      margin: 0 auto;
+      width: 100%;
+      max-width: 480px;
+      font-family: 'Pretendard Variable', Pretendard, -apple-system,
+        BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI',
+        'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic',
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+        background-color: #ffffff;
+    ">
+<table align="center" width="100%" cellpadding="0" cellspacing="0"
+       style="max-width: 480px; width: 100%; background-color: #ffffff; color : #000000">
+    <tr>
+        <td style="padding: 30px 20px">
+            <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td align="center" style="width: 100%; height: auto;">
+                        <img src="https://eehhqckznniu25210545.cdn.ntruss.com/images/2024-07-05/B4RRKVh8aEHCHBTS.png"
+                             alt="few_logo" style="display: block; margin: 0 auto; width: 335px; height: 100px" />
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center" style="padding: 12px 0">
+                        <p style="
+                    margin: 0;
+                    font-size: 14px;
+                    line-height: 21px;
+                    font-weight: 500;
+                  " id="current-date" th:text="${currentDate}"></p>
+                        <a th:href="${articleLink}" target="_blank" style="
+                    text-decoration: underline;
+                    color: #484848;
+                    font-size: 14px;
+                    line-height: 21px;
+                    font-weight: 500;
+                  ">웹으로 읽을래요!</a>
+                    </td>
+                </tr>
             </table>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-      <table class="row row-2" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-        <tbody>
-        <tr>
-          <td>
-            <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #1eb649; color: #000000; width: 700px; margin: 0 auto;" width="700">
-              <tbody>
-              <tr>
-                <td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
-                  <table class="image_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                    <tr>
-                      <td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-                        <div class="alignment" align="center" style="line-height:10px">
-                          <!--todo fix image-->
-                          <div class="fullWidth" style="max-width: 420px;"><img src="https://github.com/YAPP-Github/24th-Web-Team-1-BE/assets/102807742/94c0d873-254c-41de-af5b-2fee3de394de" style="display: block; height: auto; border: 0; width: 100%;" width="420" alt="Alternate text" title="Alternate text"></div>
-                        </div>
-                      </td>
-                    </tr>
-                  </table>
-                  <div class="spacer_block block-2 mobile_hide" style="height:30px;line-height:30px;font-size:1px;">&#8202;</div>
-                  <div class="spacer_block block-3" style="height:10px;line-height:10px;font-size:1px;">&#8202;</div>
-                  <table class="paragraph_block block-4" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
-                    <tr>
-                      <td class="pad" style="padding-bottom:5px;padding-left:10px;padding-right:10px;padding-top:10px;">
-                        <div style="color:#ffffff;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:25px;line-height:150%;text-align:center;mso-line-height-alt:37.5px;">
-                          <p style="margin: 0; word-break: break-word;"><strong>이메일 인증 번호</strong></p>
-                        </div>
-                      </td>
-                    </tr>
-                  </table>
-                  <div class="spacer_block block-5" style="height:20px;line-height:20px;font-size:1px;">&#8202;</div>
-                  <table class="paragraph_block block-6" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
-                    <tr>
-                      <td class="pad">
-                        <div style="color:#ffffff;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:46px;line-height:120%;text-align:center;mso-line-height-alt:55.199999999999996px;">
-                          <p style="margin: 0; word-break: break-word;"><span><strong><span th:text="${content}"></span></strong></span></p>
-                        </div>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-              </tbody>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="padding: 20px">
+            <table cellpadding="0" cellspacing="0" border="0" style="table-layout: auto">
+                <tr style="gap: 12px">
+                    <td colspan="1">
+                            <span style="
+                    background-color: #f5f5f5;
+                    padding: 6px 4px;
+                    color: #484848;
+                    font-size: 14px;
+                    line-height: 21px;
+                    font-weight: 500;
+                    width: fit-content;
+                  " th:text="${category}" id="category"></span>
+                        <span style="
+                    background-color: #f5f5f5;
+                    padding: 6px 4px;
+                    color: #484848;
+                    font-size: 14px;
+                    line-height: 21px;
+                    font-weight: 500;
+                    margin-left: 10px;
+                    width: fit-content;
+                  " id="current-day" th:text="${articleDay}"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding-top: 20px">
+                        <h1 style="
+                    margin: 0;
+                    font-size: 28px;
+                    line-height: 42px;
+                    font-weight: 700;
+                    color: black;
+                  " id="article-title" th:text="${articleTitle}"></h1>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="1" style="padding-top: 20px">
+                            <span style="
+                      color: #a5a5a5;
+                      font-size: 16px;
+                      font-weight: 500;
+                      line-height: normal;
+                    ">작가</span>
+                        <span style="
+                      color: #484848;
+                      font-size: 16px;
+                      margin-left: 8px;
+                      font-weight: 700;
+                      line-height: normal;
+                    " id="writer-name" th:text="${writerName}"></span>
+                        <a th:href="${writerLink}" id="writer-link" target="_blank" style="vertical-align: middle">
+                            <img src="https://eehhqckznniu25210545.cdn.ntruss.com/images/2024-07-05/KDXS0LewYPPd4pmQ.png"
+                                 alt="next" />
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="
+                  padding: 20px 0;
+                  font-size: 16px;
+                  line-height: 25.44px;
+                  font-weight: 400;
+                " id="article-content" th:utext="${articleContent}"></td>
+                </tr>
             </table>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-      <table class="row row-3" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff;">
-        <tbody>
-        <tr>
-          <td>
-            <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; background-color: #ffffff; width: 700px; margin: 0 auto;" width="700">
-              <tbody>
-              <tr>
-                <td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
-                  <table class="icons_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                    <tr>
-                      <td class="pad" style="vertical-align: middle; color: #1e0e4b; font-family: 'Inter', sans-serif; font-size: 15px; padding-bottom: 5px; padding-top: 5px; text-align: center;">
-                        <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                          <tr>
-                            <td class="alignment" style="vertical-align: middle; text-align: center;"><!--[if vml]><table align="center" cellpadding="0" cellspacing="0" role="presentation" style="display:inline-block;padding-left:0px;padding-right:0px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;"><![endif]-->
-                              <!--[if !vml]><!-->
-                              <table class="icons-inner" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; display: inline-block; margin-right: -4px; padding-left: 0px; padding-right: 0px;" cellpadding="0" cellspacing="0" role="presentation"><!--<![endif]-->
-                              </table>
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-              </tbody>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="padding: 20px">
+            <table cellpadding="0" cellspacing="0" border="0" style="width: 100%">
+                <tr>
+                    <td colspan="2" align="center" style="padding-top: 20px">
+                        <a th:href="${problemLink}" target="_blank" style="
+                    display: block;
+                    width: 100%;
+                    padding: 17px 0;
+                    text-align: center;
+                    color: #ffffff;
+                    background-color: #264932;
+                    text-decoration: none;
+                    font-size: 14px;
+                    line-height: 21px;
+                    font-weight: 500;
+                    font-family: 'Pretendard Variable';
+                  ">문제 풀러 가기</a>
+                    </td>
+                </tr>
             </table>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </td>
-  </tr>
-  </tbody>
-</table><!-- End -->
+        </td>
+    </tr>
+
+    <tr>
+        <td style="padding: 30px 20px; text-align: center">
+            <table align="center">
+                <tr>
+                    <td style="padding: 0 6px">
+                        <a href="https://www.instagram.com/few.letter/" target="_blank">
+                            <img src="https://eehhqckznniu25210545.cdn.ntruss.com/images/2024-07-05/EqMtNZVbz44ZeKKc.png"
+                                 alt="instagram" />
+                        </a>
+                    </td>
+                    <td style="padding: 0 6px">
+                        <a href="https://www.fewletter.com" target="_blank">
+                            <img src="https://eehhqckznniu25210545.cdn.ntruss.com/images/2024-07-05/ppvejDQYz1MPbbBR.png"
+                                 alt="link" />
+                        </a>
+                    </td>
+                </tr>
+            </table>
+            <p style="
+              margin: 10px 0 0 0;
+              font-size: 14px;
+              line-height: 21px;
+              font-weight: 500;
+              color: #a5a5a5;
+            ">
+                <a th:href="${unsubscribeLink}" target="_blank"
+                   style="text-decoration: underline; color: #a5a5a5">수신거부</a>
+            </p>
+        </td>
+    </tr>
+</table>
 </body>
 
 </html>

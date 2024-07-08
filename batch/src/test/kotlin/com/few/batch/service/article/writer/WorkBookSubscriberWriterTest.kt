@@ -7,6 +7,7 @@ import jooq.jooq_dsl.tables.ArticleIfo
 import jooq.jooq_dsl.tables.MappingWorkbookArticle
 import jooq.jooq_dsl.tables.Member
 import jooq.jooq_dsl.tables.Subscription
+import org.jboss.logging.MDC
 import org.jooq.DSLContext
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -14,7 +15,6 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
-import java.time.LocalDate
 import kotlin.random.Random
 
 class WorkBookSubscriberWriterTest : BatchTestSpec() {
@@ -40,10 +40,14 @@ class WorkBookSubscriberWriterTest : BatchTestSpec() {
 
         // setup member
         helper.setUpMembers(10)
+        helper.setUpWriter(11)
 
         // setup subscription
         helper.setUpSubscriptions(start = 1, count = 5, workbookId = 1)
         helper.setUpSubscriptions(start = 6, count = 10, workbookId = 2)
+
+        // setup article mst
+        helper.setUpArticleMst(start = 1, count = 10, writerId = 11)
 
         // setup mapping workbook article
         helper.setUpMappingWorkbookArticle(start = 1, count = 5, workbookId = 1)
@@ -79,16 +83,16 @@ class WorkBookSubscriberWriterTest : BatchTestSpec() {
         // given
         val items = helper.browseItems(listOf(1, 2))
         val failItem = items[Random.nextInt(6, items.size - 1)]
+        val failArgs = SendArticleEmailArgs(
+            "member${failItem.memberId}@gmail.com",
+            "Day${failItem.content.articleDay} ${failItem.content.articleTitle}",
+            "article",
+            failItem.content,
+            ""
+        )
+        MDC.put("test", failArgs)
         `when`(
-            sendArticleEmailService.send(
-                SendArticleEmailArgs(
-                    "member${failItem.memberId}@gmail.com",
-                    "${LocalDate.now()} 일자 학습 아티클",
-                    "article",
-                    failItem.content,
-                    "style"
-                )
-            )
+            sendArticleEmailService.send(failArgs)
         ).thenThrow(RuntimeException("send email error"))
 
         // when

@@ -1,5 +1,8 @@
 package com.few.data.common.code
 
+/**
+ * @see com.few.batch.data.common.code.BatchCategoryType
+ */
 enum class CategoryType(val code: Byte, val displayName: String) {
     POLITICS(0, "정치"),
     ECONOMY(10, "경제"),

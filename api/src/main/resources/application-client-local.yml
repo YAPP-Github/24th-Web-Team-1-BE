@@ -1,0 +1,7 @@
+client:
+    timeout:
+        connect: 5000
+        read: 5000
+
+webhook:
+    discord: ${WEBHOOK_DISCORD}

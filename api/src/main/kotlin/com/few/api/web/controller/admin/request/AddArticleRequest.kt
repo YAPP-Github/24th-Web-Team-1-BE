@@ -14,9 +14,11 @@ data class AddArticleRequest(
     @field:NotBlank(message = "{category.notblank}")
     val category: String,
     /** Article IFO */
+    @NotBlank(message = "{content.type.notblank}")
+    val contentType: String,
     @field:NotBlank(message = "{content.source.notblank}")
     val contentSource: String,
-    val problemData: ProblemDto
+    val problemData: List<ProblemDto>
 )
 
 data class ProblemDto(

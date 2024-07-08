@@ -5,6 +5,8 @@ services:
         image: fewletter/api:latest
         ports:
             - "8080:8080"
+        volumes:
+            - /var/log/api:/var/log/api
         environment:
             SPRING_PROFILES_ACTIVE: ${API_SPRING_PROFILES_ACTIVE}
             DB_HOSTNAME: ${DB_HOSTNAME}
@@ -19,3 +21,6 @@ services:
             IMAGE_STORE_BUCKET_NAME: ${IMAGE_STORE_BUCKET_NAME}
             DOCUMENT_STORE_BUCKET_NAME: ${DOCUMENT_STORE_BUCKET_NAME}
             CDN_URL: ${CDN_URL}
+            WEBHOOK_DISCORD: ${WEBHOOK_DISCORD}
+            TIMEOUT_CONNECT: ${TIMEOUT_CONNECT}
+            TIMEOUT_READ: ${TIMEOUT_READ}

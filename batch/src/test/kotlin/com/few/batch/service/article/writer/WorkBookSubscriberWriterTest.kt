@@ -4,10 +4,10 @@ import com.few.batch.BatchTestSpec
 import com.few.email.service.article.SendArticleEmailService
 import com.few.email.service.article.dto.SendArticleEmailArgs
 import jooq.jooq_dsl.tables.ArticleIfo
+import jooq.jooq_dsl.tables.ArticleMst
 import jooq.jooq_dsl.tables.MappingWorkbookArticle
 import jooq.jooq_dsl.tables.Member
 import jooq.jooq_dsl.tables.Subscription
-import org.jboss.logging.MDC
 import org.jooq.DSLContext
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -37,6 +37,7 @@ class WorkBookSubscriberWriterTest : BatchTestSpec() {
         dslContext.deleteFrom(Subscription.SUBSCRIPTION).execute()
         dslContext.deleteFrom(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE).execute()
         dslContext.deleteFrom(ArticleIfo.ARTICLE_IFO).execute()
+        dslContext.deleteFrom(ArticleMst.ARTICLE_MST).execute()
 
         // setup member
         helper.setUpMembers(10)
@@ -90,7 +91,6 @@ class WorkBookSubscriberWriterTest : BatchTestSpec() {
             failItem.content,
             ""
         )
-        MDC.put("test", failArgs)
         `when`(
             sendArticleEmailService.send(failArgs)
         ).thenThrow(RuntimeException("send email error"))

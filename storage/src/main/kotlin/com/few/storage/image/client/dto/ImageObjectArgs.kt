@@ -21,15 +21,15 @@ fun ImageRemoveObjectArgs.toS3Args(): DeleteObjectRequest {
 }
 
 fun ImagePutObjectArgs.toS3Args(): PutObjectRequest {
-    // content length
     val objectSize = this.objectSize
+    val contentType = this.contentType.toString()
     return PutObjectRequest(
         this.bucket,
         this.imagePath,
         this.stream,
         ObjectMetadata().apply {
-            contentType = this.contentType
-            contentLength = objectSize
+            this.contentType = contentType
+            this.contentLength = objectSize
         }
     )
 }

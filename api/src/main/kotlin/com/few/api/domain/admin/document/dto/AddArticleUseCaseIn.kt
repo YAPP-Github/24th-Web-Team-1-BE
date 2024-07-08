@@ -9,8 +9,9 @@ data class AddArticleUseCaseIn(
     val title: String,
     val category: String,
     /** Article IFO */
+    val contentType: String,
     val contentSource: String,
-    val problemData: ProblemDetail
+    val problems: List<ProblemDetail>
 
 )
 

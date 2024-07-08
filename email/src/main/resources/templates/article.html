@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="KR">
-
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"
+    />
     <title>FEW</title>
 </head>
-
-<body style="
+<body
+    style="
       margin: 0 auto;
       width: 100%;
       max-width: 480px;
@@ -16,33 +18,51 @@
         'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic',
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
         background-color: #ffffff;
-    ">
-<table align="center" width="100%" cellpadding="0" cellspacing="0"
-       style="max-width: 480px; width: 100%; background-color: #ffffff; color : #000000">
+    "
+>
+<table
+    align="center"
+    width="100%"
+    cellpadding="0"
+    cellspacing="0"
+    style="max-width: 480px; width: 100%; background-color: #ffffff; color : #000000"
+>
     <tr>
         <td style="padding: 30px 20px">
             <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
-                    <td align="center" style="width: 100%; height: auto;">
-                        <img src="https://eehhqckznniu25210545.cdn.ntruss.com/images/2024-07-05/B4RRKVh8aEHCHBTS.png"
-                             alt="few_logo" style="display: block; margin: 0 auto; width: 335px; height: 100px" />
+                    <td align="center">
+                        <img
+                            src=" https://eehhqckznniu25210545.cdn.ntruss.com/images/2024-07-04/Thz2rKkvTB0j14RG.jpg"
+                            alt="few_logo"
+                            style="display: block; margin: 0 auto"
+                        />
                     </td>
                 </tr>
                 <tr>
                     <td align="center" style="padding: 12px 0">
-                        <p style="
+                        <p
+                            style="
                     margin: 0;
                     font-size: 14px;
                     line-height: 21px;
                     font-weight: 500;
-                  " id="current-date" th:text="${currentDate}"></p>
-                        <a th:href="${articleLink}" target="_blank" style="
+                  "
+                            id="current-date"
+                            th:text="${currentDate}"
+                        ></p>
+                        <a
+                            th:href="${articleLink}"
+                            target="_blank"
+                            style="
                     text-decoration: underline;
                     color: #484848;
                     font-size: 14px;
                     line-height: 21px;
                     font-weight: 500;
-                  ">웹으로 읽을래요!</a>
+                  "
+                        >웹으로 읽을래요!</a
+                        >
                     </td>
                 </tr>
             </table>
@@ -51,10 +71,16 @@
 
     <tr>
         <td style="padding: 20px">
-            <table cellpadding="0" cellspacing="0" border="0" style="table-layout: auto">
+            <table
+                cellpadding="0"
+                cellspacing="0"
+                border="0"
+                style="table-layout: auto"
+            >
                 <tr style="gap: 12px">
                     <td colspan="1">
-                            <span style="
+                <span
+                    style="
                     background-color: #f5f5f5;
                     padding: 6px 4px;
                     color: #484848;
@@ -62,8 +88,12 @@
                     line-height: 21px;
                     font-weight: 500;
                     width: fit-content;
-                  " th:text="${category}" id="category"></span>
-                        <span style="
+                  "
+                    th:text="${category}"
+                    id="category"
+                ></span>
+                        <span
+                            style="
                     background-color: #f5f5f5;
                     padding: 6px 4px;
                     color: #484848;
@@ -72,48 +102,75 @@
                     font-weight: 500;
                     margin-left: 10px;
                     width: fit-content;
-                  " id="current-day" th:text="${articleDay}"></span>
+                  "
+                            id="current-day"
+                            th:text="${articleDay}"
+                        ></span>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="2" style="padding-top: 20px">
-                        <h1 style="
+                        <h1
+                            style="
                     margin: 0;
                     font-size: 28px;
                     line-height: 42px;
                     font-weight: 700;
                     color: black;
-                  " id="article-title" th:text="${articleTitle}"></h1>
+                  "
+                            id="article-title"
+                            th:text="${articleTitle}"
+                        ></h1>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="1" style="padding-top: 20px">
-                            <span style="
+                  <span
+                      style="
                       color: #a5a5a5;
                       font-size: 16px;
                       font-weight: 500;
                       line-height: normal;
-                    ">작가</span>
-                        <span style="
+                    "
+                  >작가</span
+                  >
+                        <span
+                            style="
                       color: #484848;
                       font-size: 16px;
                       margin-left: 8px;
                       font-weight: 700;
                       line-height: normal;
-                    " id="writer-name" th:text="${writerName}"></span>
-                        <a th:href="${writerLink}" id="writer-link" target="_blank" style="vertical-align: middle">
-                            <img src="https://eehhqckznniu25210545.cdn.ntruss.com/images/2024-07-05/KDXS0LewYPPd4pmQ.png"
-                                 alt="next" />
+                    "
+                            id="writer-name"
+                            th:text="${writerName}"
+                        ></span
+                        >
+                        <a
+                            th:href="${writerLink}"
+                            id="writer-link"
+                            target="_blank"
+                            style="vertical-align: middle"
+                        >
+                            <img
+                                src="https://eehhqckznniu25210545.cdn.ntruss.com/images/2024-07-04/HFYlYJaAdCRcCdjd.jpg"
+                                alt="next"
+                            />
                         </a>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="
+                    <td
+                        colspan="2"
+                        style="
                   padding: 20px 0;
                   font-size: 16px;
                   line-height: 25.44px;
                   font-weight: 400;
-                " id="article-content" th:utext="${articleContent}"></td>
+                "
+                        id="article-content"
+                        th:utext="${articleContent}"
+                    ></td>
                 </tr>
             </table>
         </td>
@@ -124,7 +181,10 @@
             <table cellpadding="0" cellspacing="0" border="0" style="width: 100%">
                 <tr>
                     <td colspan="2" align="center" style="padding-top: 20px">
-                        <a th:href="${problemLink}" target="_blank" style="
+                        <a
+                            th:href="${problemLink}"
+                            target="_blank"
+                            style="
                     display: block;
                     width: 100%;
                     padding: 17px 0;
@@ -136,7 +196,9 @@
                     line-height: 21px;
                     font-weight: 500;
                     font-family: 'Pretendard Variable';
-                  ">문제 풀러 가기</a>
+                  "
+                        >문제 풀러 가기</a
+                        >
                     </td>
                 </tr>
             </table>
@@ -149,31 +211,40 @@
                 <tr>
                     <td style="padding: 0 6px">
                         <a href="https://www.instagram.com/few.letter/" target="_blank">
-                            <img src="https://eehhqckznniu25210545.cdn.ntruss.com/images/2024-07-05/EqMtNZVbz44ZeKKc.png"
-                                 alt="instagram" />
+                            <img
+                                src=" https://eehhqckznniu25210545.cdn.ntruss.com/images/2024-07-04/1ksEPTfnQ1XYnZyk.jpg"
+                                alt="instagram"
+                            />
                         </a>
                     </td>
                     <td style="padding: 0 6px">
                         <a href="https://www.fewletter.com" target="_blank">
-                            <img src="https://eehhqckznniu25210545.cdn.ntruss.com/images/2024-07-05/ppvejDQYz1MPbbBR.png"
-                                 alt="link" />
+                            <img
+                                src=" https://eehhqckznniu25210545.cdn.ntruss.com/images/2024-07-04/8bCemrlqO08QHNrT.jpg"
+                                alt="link"
+                            />
                         </a>
                     </td>
                 </tr>
             </table>
-            <p style="
+            <p
+                style="
               margin: 10px 0 0 0;
               font-size: 14px;
               line-height: 21px;
               font-weight: 500;
               color: #a5a5a5;
-            ">
-                <a th:href="${unsubscribeLink}" target="_blank"
-                   style="text-decoration: underline; color: #a5a5a5">수신거부</a>
+            "
+            >
+                <a
+                    th:href="${unsubscribeLink}"
+                    target="_blank"
+                    style="text-decoration: underline; color: #a5a5a5"
+                >수신거부</a
+                >
             </p>
         </td>
     </tr>
 </table>
 </body>
-
 </html>

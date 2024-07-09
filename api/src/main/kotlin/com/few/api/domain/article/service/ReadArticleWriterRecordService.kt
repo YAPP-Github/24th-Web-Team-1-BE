@@ -1,6 +1,6 @@
 package com.few.api.domain.article.service
 
-import com.few.api.domain.article.service.dto.ReadWriterRecordQuery
+import com.few.api.domain.article.service.dto.ReadWriterRecordInDto
 import com.few.api.repo.dao.member.MemberDao
 import com.few.api.repo.dao.member.query.SelectWriterQuery
 import com.few.api.repo.dao.member.record.WriterRecord
@@ -13,7 +13,7 @@ class ReadArticleWriterRecordService(
 ) {
 
     @Transactional(readOnly = true)
-    fun execute(query: ReadWriterRecordQuery): WriterRecord? {
+    fun execute(query: ReadWriterRecordInDto): WriterRecord? {
         SelectWriterQuery(query.writerId).let { query: SelectWriterQuery ->
             return memberDao.selectWriter(query)
         }

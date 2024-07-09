@@ -1,7 +1,7 @@
 package com.few.api.domain.subscription.usecase
 
 import com.few.api.domain.subscription.service.MemberService
-import com.few.api.domain.subscription.service.dto.ReadMemberIdDto
+import com.few.api.domain.subscription.service.dto.ReadMemberIdInDto
 import com.few.api.domain.subscription.usecase.dto.UnsubscribeAllUseCaseIn
 import com.few.api.exception.common.NotFoundException
 import com.few.api.repo.dao.subscription.SubscriptionDao
@@ -20,7 +20,7 @@ class UnsubscribeAllUseCase(
         // TODO: request sending email
 
         val memberId =
-            memberService.readMemberId(ReadMemberIdDto(useCaseIn.email))?.memberId ?: throw NotFoundException("member.notfound.email")
+            memberService.readMemberId(ReadMemberIdInDto(useCaseIn.email))?.memberId ?: throw NotFoundException("member.notfound.email")
 
         subscriptionDao.updateDeletedAtInAllSubscription(
             UpdateDeletedAtInAllSubscriptionCommand(memberId = memberId, opinion = useCaseIn.opinion)

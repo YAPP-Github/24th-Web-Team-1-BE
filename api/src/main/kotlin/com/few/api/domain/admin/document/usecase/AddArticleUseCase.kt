@@ -3,7 +3,7 @@ package com.few.api.domain.admin.document.usecase
 import com.few.api.domain.admin.document.usecase.dto.AddArticleUseCaseIn
 import com.few.api.domain.admin.document.usecase.dto.AddArticleUseCaseOut
 import com.few.api.domain.admin.document.service.GetUrlService
-import com.few.api.domain.admin.document.service.dto.GetUrlQuery
+import com.few.api.domain.admin.document.service.dto.GetUrlInDto
 import com.few.api.domain.admin.document.utils.ObjectPathGenerator
 import com.few.api.exception.common.ExternalIntegrationException
 import com.few.api.exception.common.NotFoundException
@@ -63,7 +63,7 @@ class AddArticleUseCase(
 
                 putDocumentService.execute(documentName, document)?.let { res ->
                     val source = res.`object`
-                    GetUrlQuery(source).let { query ->
+                    GetUrlInDto(source).let { query ->
                         getUrlService.execute(query)
                     }.let { url ->
                         InsertDocumentIfoCommand(

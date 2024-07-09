@@ -1,5 +1,5 @@
 package com.few.api.domain.subscription.service.dto
 
-data class ReadWorkbookTitleDto(
+data class ReadWorkbookTitleInDto(
     val workbookId: Long
 )

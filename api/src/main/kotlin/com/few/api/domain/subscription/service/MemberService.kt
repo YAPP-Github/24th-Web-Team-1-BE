@@ -1,7 +1,7 @@
 package com.few.api.domain.subscription.service
 
-import com.few.api.domain.subscription.service.dto.InsertMemberDto
-import com.few.api.domain.subscription.service.dto.ReadMemberIdDto
+import com.few.api.domain.subscription.service.dto.InsertMemberInDto
+import com.few.api.domain.subscription.service.dto.ReadMemberIdInDto
 import com.few.api.exception.common.InsertException
 import com.few.api.repo.dao.member.MemberDao
 import com.few.api.repo.dao.member.command.InsertMemberCommand
@@ -14,11 +14,11 @@ class MemberService(
     private val memberDao: MemberDao
 ) {
 
-    fun readMemberId(dto: ReadMemberIdDto): MemberIdRecord? {
+    fun readMemberId(dto: ReadMemberIdInDto): MemberIdRecord? {
         return memberDao.selectMemberByEmail(SelectMemberByEmailQuery(dto.email))
     }
 
-    fun insertMember(dto: InsertMemberDto): Long {
+    fun insertMember(dto: InsertMemberInDto): Long {
         return memberDao.insertMember(InsertMemberCommand(dto.email, dto.memberType)) ?: throw InsertException("member.insertfail.record")
     }
 }

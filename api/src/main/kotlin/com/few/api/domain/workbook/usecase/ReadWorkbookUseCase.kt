@@ -3,8 +3,8 @@ package com.few.api.domain.workbook.usecase
 import com.few.api.domain.workbook.usecase.dto.ReadWorkbookUseCaseIn
 import com.few.api.domain.workbook.usecase.dto.ReadWorkbookUseCaseOut
 import com.few.api.domain.workbook.service.*
-import com.few.api.domain.workbook.service.dto.BrowseWorkbookArticlesQuery
-import com.few.api.domain.workbook.service.dto.BrowseWriterRecordsQuery
+import com.few.api.domain.workbook.service.dto.BrowseWorkbookArticlesInDto
+import com.few.api.domain.workbook.service.dto.BrowseWriterRecordsInDto
 import com.few.api.exception.common.NotFoundException
 import com.few.api.repo.dao.workbook.WorkbookDao
 import com.few.api.repo.dao.workbook.query.SelectWorkBookRecordQuery
@@ -25,11 +25,11 @@ class ReadWorkbookUseCase(
             workbookDao.selectWorkBook(query) ?: throw NotFoundException("workbook.notfound.id")
         }
 
-        val workbookMappedArticles = BrowseWorkbookArticlesQuery(workbookId).let { query ->
+        val workbookMappedArticles = BrowseWorkbookArticlesInDto(workbookId).let { query ->
             workbookArticleService.browseWorkbookArticles(query)
         }
 
-        val writerRecords = BrowseWriterRecordsQuery(workbookMappedArticles.writerIds()).let { query ->
+        val writerRecords = BrowseWriterRecordsInDto(workbookMappedArticles.writerIds()).let { query ->
             workbookMemberService.browseWriterRecords(query)
         }
 

@@ -1,6 +1,6 @@
 package com.few.api.domain.article.service
 
-import com.few.api.domain.article.service.dto.BrowseArticleProblemIdsQuery
+import com.few.api.domain.article.service.dto.BrowseArticleProblemIdsInDto
 import com.few.api.exception.common.NotFoundException
 import com.few.api.repo.dao.problem.ProblemDao
 import com.few.api.repo.dao.problem.query.SelectProblemsByArticleIdQuery
@@ -12,7 +12,7 @@ class BrowseArticleProblemsService(
     private val problemDao: ProblemDao
 ) {
 
-    fun execute(query: BrowseArticleProblemIdsQuery): ProblemIdsRecord {
+    fun execute(query: BrowseArticleProblemIdsInDto): ProblemIdsRecord {
         SelectProblemsByArticleIdQuery(query.articleId).let { query: SelectProblemsByArticleIdQuery ->
             return problemDao.selectProblemsByArticleId(query) ?: throw NotFoundException("problem.notfound.articleId")
         }

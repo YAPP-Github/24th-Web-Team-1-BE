@@ -1,5 +1,5 @@
 package com.few.api.domain.article.service.dto
 
-data class ReadWriterRecordQuery(
+data class ReadWriterRecordInDto(
     val writerId: Long
 )

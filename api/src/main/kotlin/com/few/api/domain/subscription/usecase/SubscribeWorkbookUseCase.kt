@@ -2,8 +2,8 @@ package com.few.api.domain.subscription.usecase
 
 import com.few.api.domain.subscription.event.dto.WorkbookSubscriptionEvent
 import com.few.api.domain.subscription.service.MemberService
-import com.few.api.domain.subscription.service.dto.InsertMemberDto
-import com.few.api.domain.subscription.service.dto.ReadMemberIdDto
+import com.few.api.domain.subscription.service.dto.InsertMemberInDto
+import com.few.api.domain.subscription.service.dto.ReadMemberIdInDto
 import com.few.api.repo.dao.subscription.SubscriptionDao
 import com.few.api.repo.dao.subscription.command.InsertWorkbookSubscriptionCommand
 import com.few.api.repo.dao.subscription.query.SelectAllWorkbookSubscriptionStatusNotConsiderDeletedAtQuery
@@ -27,8 +27,8 @@ class SubscribeWorkbookUseCase(
     fun execute(useCaseIn: SubscribeWorkbookUseCaseIn) {
         // TODO: request sending email
 
-        val memberId = memberService.readMemberId(ReadMemberIdDto(useCaseIn.email))?.memberId ?: memberService.insertMember(
-            InsertMemberDto(email = useCaseIn.email, memberType = MemberType.NORMAL)
+        val memberId = memberService.readMemberId(ReadMemberIdInDto(useCaseIn.email))?.memberId ?: memberService.insertMember(
+            InsertMemberInDto(email = useCaseIn.email, memberType = MemberType.NORMAL)
         )
 
         val subTargetWorkbookId = useCaseIn.workbookId

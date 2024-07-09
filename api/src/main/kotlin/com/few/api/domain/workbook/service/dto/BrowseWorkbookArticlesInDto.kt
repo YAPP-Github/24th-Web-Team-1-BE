@@ -1,5 +1,5 @@
 package com.few.api.domain.workbook.service.dto
 
-data class BrowseWorkbookArticlesQuery(
+data class BrowseWorkbookArticlesInDto(
     val workbookId: Long
 )

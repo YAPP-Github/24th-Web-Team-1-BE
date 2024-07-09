@@ -1,4 +1,4 @@
-package com.few.api.domain.article.dto
+package com.few.api.domain.article.usecase.dto
 
 import java.net.URL
 import java.time.LocalDateTime

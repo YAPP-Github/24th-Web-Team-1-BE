@@ -1,7 +1,7 @@
 package com.few.api.domain.workbook.usecase
 
-import com.few.api.domain.workbook.dto.ReadWorkbookUseCaseIn
-import com.few.api.domain.workbook.dto.ReadWorkbookUseCaseOut
+import com.few.api.domain.workbook.usecase.dto.ReadWorkbookUseCaseIn
+import com.few.api.domain.workbook.usecase.dto.ReadWorkbookUseCaseOut
 import com.few.api.domain.workbook.service.*
 import com.few.api.domain.workbook.service.dto.BrowseWorkbookArticlesQuery
 import com.few.api.domain.workbook.service.dto.BrowseWriterRecordsQuery

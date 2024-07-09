@@ -7,6 +7,7 @@ import com.epages.restdocs.apispec.Schema
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.few.api.domain.admin.document.dto.*
 import com.few.api.domain.admin.document.usecase.*
+import com.few.api.domain.admin.document.usecase.dto.*
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.admin.request.*
 import com.few.api.web.controller.admin.response.ImageSourceResponse

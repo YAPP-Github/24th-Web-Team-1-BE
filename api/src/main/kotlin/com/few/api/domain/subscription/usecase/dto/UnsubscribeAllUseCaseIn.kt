@@ -1,4 +1,4 @@
-package com.few.api.domain.subscription.usecase.`in`
+package com.few.api.domain.subscription.usecase.dto
 
 data class UnsubscribeAllUseCaseIn(
     val opinion: String,

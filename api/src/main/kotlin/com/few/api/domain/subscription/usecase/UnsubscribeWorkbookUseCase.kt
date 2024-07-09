@@ -4,7 +4,7 @@ import com.few.api.domain.subscription.service.MemberService
 import com.few.api.domain.subscription.service.dto.ReadMemberIdDto
 import com.few.api.repo.dao.subscription.SubscriptionDao
 import com.few.api.repo.dao.subscription.command.UpdateDeletedAtInWorkbookSubscriptionCommand
-import com.few.api.domain.subscription.usecase.`in`.UnsubscribeWorkbookUseCaseIn
+import com.few.api.domain.subscription.usecase.dto.UnsubscribeWorkbookUseCaseIn
 import com.few.api.exception.common.NotFoundException
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional

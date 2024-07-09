@@ -1,6 +1,6 @@
 package com.few.api.web.controller.article
 
-import com.few.api.domain.article.dto.ReadArticleUseCaseIn
+import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseIn
 import com.few.api.domain.article.usecase.ReadArticleUseCase
 import com.few.api.web.controller.article.response.ReadArticleResponse
 import com.few.api.web.support.ApiResponse

@@ -1,4 +1,4 @@
-package com.few.api.domain.problem.usecase.out
+package com.few.api.domain.problem.usecase.dto
 
 class ReadProblemUseCaseOut(
     val id: Long,

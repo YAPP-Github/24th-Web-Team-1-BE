@@ -1,6 +1,6 @@
 package com.few.api.web.controller.article.response
 
-import com.few.api.domain.article.dto.ReadArticleUseCaseOut
+import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseOut
 import java.net.URL
 import java.time.LocalDateTime
 

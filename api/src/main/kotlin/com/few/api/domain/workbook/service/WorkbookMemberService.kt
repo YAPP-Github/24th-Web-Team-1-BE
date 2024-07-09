@@ -1,6 +1,6 @@
 package com.few.api.domain.workbook.service
 
-import com.few.api.domain.workbook.dto.WriterDetail
+import com.few.api.domain.workbook.usecase.dto.WriterDetail
 import com.few.api.domain.workbook.service.dto.BrowseWriterRecordsQuery
 import com.few.api.repo.dao.member.MemberDao
 import com.few.api.repo.dao.member.query.SelectWritersQuery

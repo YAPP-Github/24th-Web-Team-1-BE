@@ -1,6 +1,6 @@
 package com.few.api.web.controller.workbook.response
 
-import com.few.api.domain.workbook.dto.ReadWorkbookUseCaseOut
+import com.few.api.domain.workbook.usecase.dto.ReadWorkbookUseCaseOut
 import java.net.URL
 import java.time.LocalDateTime
 

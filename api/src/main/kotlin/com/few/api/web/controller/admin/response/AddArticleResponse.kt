@@ -1,6 +1,6 @@
 package com.few.api.web.controller.admin.response
 
-import com.few.api.domain.admin.document.dto.AddArticleUseCaseOut
+import com.few.api.domain.admin.document.usecase.dto.AddArticleUseCaseOut
 
 data class AddArticleResponse(
     val articleId: Long

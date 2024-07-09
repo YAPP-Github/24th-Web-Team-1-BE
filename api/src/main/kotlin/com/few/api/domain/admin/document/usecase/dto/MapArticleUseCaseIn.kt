@@ -1,4 +1,4 @@
-package com.few.api.domain.admin.document.dto
+package com.few.api.domain.admin.document.usecase.dto
 
 data class MapArticleUseCaseIn(
     val workbookId: Long,

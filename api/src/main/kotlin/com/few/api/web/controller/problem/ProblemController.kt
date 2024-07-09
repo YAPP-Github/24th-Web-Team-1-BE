@@ -9,9 +9,9 @@ import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
 import com.few.api.domain.problem.usecase.CheckProblemUseCase
 import com.few.api.domain.problem.usecase.ReadProblemUseCase
-import com.few.api.domain.problem.usecase.`in`.BrowseProblemsUseCaseIn
-import com.few.api.domain.problem.usecase.`in`.CheckProblemUseCaseIn
-import com.few.api.domain.problem.usecase.`in`.ReadProblemUseCaseIn
+import com.few.api.domain.problem.usecase.dto.BrowseProblemsUseCaseIn
+import com.few.api.domain.problem.usecase.dto.CheckProblemUseCaseIn
+import com.few.api.domain.problem.usecase.dto.ReadProblemUseCaseIn
 import com.few.api.web.controller.problem.response.BrowseProblemsResponse
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Min

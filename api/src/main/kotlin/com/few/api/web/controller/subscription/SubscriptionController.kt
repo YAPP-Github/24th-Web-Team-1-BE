@@ -7,9 +7,9 @@ import com.few.api.web.support.ApiResponseGenerator
 import com.few.api.domain.subscription.usecase.SubscribeWorkbookUseCase
 import com.few.api.domain.subscription.usecase.UnsubscribeAllUseCase
 import com.few.api.domain.subscription.usecase.UnsubscribeWorkbookUseCase
-import com.few.api.domain.subscription.usecase.`in`.SubscribeWorkbookUseCaseIn
-import com.few.api.domain.subscription.usecase.`in`.UnsubscribeAllUseCaseIn
-import com.few.api.domain.subscription.usecase.`in`.UnsubscribeWorkbookUseCaseIn
+import com.few.api.domain.subscription.usecase.dto.SubscribeWorkbookUseCaseIn
+import com.few.api.domain.subscription.usecase.dto.UnsubscribeAllUseCaseIn
+import com.few.api.domain.subscription.usecase.dto.UnsubscribeWorkbookUseCaseIn
 import com.few.api.web.controller.subscription.request.UnsubscribeAllRequest
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Min

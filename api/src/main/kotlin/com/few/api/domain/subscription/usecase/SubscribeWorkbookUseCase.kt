@@ -7,7 +7,7 @@ import com.few.api.domain.subscription.service.dto.ReadMemberIdDto
 import com.few.api.repo.dao.subscription.SubscriptionDao
 import com.few.api.repo.dao.subscription.command.InsertWorkbookSubscriptionCommand
 import com.few.api.repo.dao.subscription.query.SelectAllWorkbookSubscriptionStatusQueryNotConsiderDeletedAt
-import com.few.api.domain.subscription.usecase.`in`.SubscribeWorkbookUseCaseIn
+import com.few.api.domain.subscription.usecase.dto.SubscribeWorkbookUseCaseIn
 import com.few.api.exception.common.NotFoundException
 import com.few.api.exception.subscribe.SubscribeIllegalArgumentException
 import com.few.api.repo.dao.subscription.query.CountWorkbookMappedArticlesQuery

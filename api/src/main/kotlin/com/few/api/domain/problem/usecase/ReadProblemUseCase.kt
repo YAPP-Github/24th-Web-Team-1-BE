@@ -2,9 +2,9 @@ package com.few.api.domain.problem.usecase
 
 import com.few.api.repo.dao.problem.ProblemDao
 import com.few.api.repo.dao.problem.query.SelectProblemQuery
-import com.few.api.domain.problem.usecase.`in`.ReadProblemUseCaseIn
-import com.few.api.domain.problem.usecase.out.ReadProblemContentsUseCaseOutDetail
-import com.few.api.domain.problem.usecase.out.ReadProblemUseCaseOut
+import com.few.api.domain.problem.usecase.dto.ReadProblemUseCaseIn
+import com.few.api.domain.problem.usecase.dto.ReadProblemContentsUseCaseOutDetail
+import com.few.api.domain.problem.usecase.dto.ReadProblemUseCaseOut
 import com.few.api.exception.common.NotFoundException
 import com.few.api.repo.dao.problem.support.ContentsJsonMapper
 import org.springframework.stereotype.Component

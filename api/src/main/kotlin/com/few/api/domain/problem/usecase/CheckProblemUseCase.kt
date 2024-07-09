@@ -4,8 +4,8 @@ import com.few.api.repo.dao.problem.ProblemDao
 import com.few.api.repo.dao.problem.SubmitHistoryDao
 import com.few.api.repo.dao.problem.command.InsertSubmitHistoryCommand
 import com.few.api.repo.dao.problem.query.SelectProblemAnswerQuery
-import com.few.api.domain.problem.usecase.`in`.CheckProblemUseCaseIn
-import com.few.api.domain.problem.usecase.out.CheckProblemUseCaseOut
+import com.few.api.domain.problem.usecase.dto.CheckProblemUseCaseIn
+import com.few.api.domain.problem.usecase.dto.CheckProblemUseCaseOut
 import com.few.api.exception.common.InsertException
 import com.few.api.exception.common.NotFoundException
 import org.springframework.stereotype.Component

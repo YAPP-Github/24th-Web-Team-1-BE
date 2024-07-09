@@ -1,4 +1,4 @@
-package com.few.api.domain.problem.usecase.out
+package com.few.api.domain.problem.usecase.dto
 
 data class CheckProblemUseCaseOut(
     val explanation: String,

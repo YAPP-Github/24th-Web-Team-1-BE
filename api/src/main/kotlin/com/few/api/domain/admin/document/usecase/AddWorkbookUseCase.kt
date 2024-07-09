@@ -1,7 +1,7 @@
 package com.few.api.domain.admin.document.usecase
 
-import com.few.api.domain.admin.document.dto.AddWorkbookUseCaseIn
-import com.few.api.domain.admin.document.dto.AddWorkbookUseCaseOut
+import com.few.api.domain.admin.document.usecase.dto.AddWorkbookUseCaseIn
+import com.few.api.domain.admin.document.usecase.dto.AddWorkbookUseCaseOut
 import com.few.api.exception.common.InsertException
 import com.few.api.repo.dao.workbook.WorkbookDao
 import com.few.api.repo.dao.workbook.command.InsertWorkBookCommand

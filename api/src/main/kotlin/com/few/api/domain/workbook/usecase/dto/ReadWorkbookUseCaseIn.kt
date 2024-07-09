@@ -1,4 +1,4 @@
-package com.few.api.domain.workbook.dto
+package com.few.api.domain.workbook.usecase.dto
 
 data class ReadWorkbookUseCaseIn(
     val workbookId: Long

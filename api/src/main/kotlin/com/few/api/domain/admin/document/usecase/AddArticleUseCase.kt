@@ -1,7 +1,7 @@
 package com.few.api.domain.admin.document.usecase
 
-import com.few.api.domain.admin.document.dto.AddArticleUseCaseIn
-import com.few.api.domain.admin.document.dto.AddArticleUseCaseOut
+import com.few.api.domain.admin.document.usecase.dto.AddArticleUseCaseIn
+import com.few.api.domain.admin.document.usecase.dto.AddArticleUseCaseOut
 import com.few.api.domain.admin.document.service.GetUrlService
 import com.few.api.domain.admin.document.service.dto.GetUrlQuery
 import com.few.api.domain.admin.document.utils.ObjectPathGenerator

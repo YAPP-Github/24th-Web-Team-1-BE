@@ -1,8 +1,8 @@
 package com.few.api.domain.article.usecase
 
-import com.few.api.domain.article.dto.ReadArticleUseCaseIn
-import com.few.api.domain.article.dto.ReadArticleUseCaseOut
-import com.few.api.domain.article.dto.WriterDetail
+import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseIn
+import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseOut
+import com.few.api.domain.article.usecase.dto.WriterDetail
 import com.few.api.domain.article.service.BrowseArticleProblemsService
 import com.few.api.domain.article.service.ReadArticleWriterRecordService
 import com.few.api.domain.article.service.dto.BrowseArticleProblemIdsQuery

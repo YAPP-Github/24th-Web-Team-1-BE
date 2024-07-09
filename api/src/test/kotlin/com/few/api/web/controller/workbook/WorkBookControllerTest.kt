@@ -5,10 +5,10 @@ import com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.few.api.domain.workbook.dto.ArticleDetail
-import com.few.api.domain.workbook.dto.ReadWorkbookUseCaseIn
-import com.few.api.domain.workbook.dto.ReadWorkbookUseCaseOut
-import com.few.api.domain.workbook.dto.WriterDetail
+import com.few.api.domain.workbook.usecase.dto.ArticleDetail
+import com.few.api.domain.workbook.usecase.dto.ReadWorkbookUseCaseIn
+import com.few.api.domain.workbook.usecase.dto.ReadWorkbookUseCaseOut
+import com.few.api.domain.workbook.usecase.dto.WriterDetail
 import com.few.api.domain.workbook.usecase.ReadWorkbookUseCase
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description

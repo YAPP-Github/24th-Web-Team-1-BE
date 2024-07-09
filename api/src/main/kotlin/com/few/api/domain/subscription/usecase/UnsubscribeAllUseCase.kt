@@ -2,7 +2,7 @@ package com.few.api.domain.subscription.usecase
 
 import com.few.api.domain.subscription.service.MemberService
 import com.few.api.domain.subscription.service.dto.ReadMemberIdDto
-import com.few.api.domain.subscription.usecase.`in`.UnsubscribeAllUseCaseIn
+import com.few.api.domain.subscription.usecase.dto.UnsubscribeAllUseCaseIn
 import com.few.api.exception.common.NotFoundException
 import com.few.api.repo.dao.subscription.SubscriptionDao
 import com.few.api.repo.dao.subscription.command.UpdateDeletedAtInAllSubscriptionCommand

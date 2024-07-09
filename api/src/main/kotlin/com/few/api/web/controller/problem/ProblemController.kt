@@ -1,7 +1,7 @@
 package com.few.api.web.controller.problem
 
 import com.few.api.domain.problem.usecase.BrowseProblemsUseCase
-import com.few.api.web.controller.problem.request.CheckProblemBody
+import com.few.api.web.controller.problem.request.CheckProblemRequest
 import com.few.api.web.controller.problem.response.CheckProblemResponse
 import com.few.api.web.controller.problem.response.ProblemContents
 import com.few.api.web.controller.problem.response.ReadProblemResponse
@@ -70,7 +70,7 @@ class ProblemController(
         @Min(value = 1, message = "{min.id}")
         problemId: Long,
         @Valid @RequestBody
-        body: CheckProblemBody
+        body: CheckProblemRequest
     ): ApiResponse<ApiResponse.SuccessBody<CheckProblemResponse>> {
         val useCaseOut = checkProblemUseCase.execute(CheckProblemUseCaseIn(problemId, body.sub))
 

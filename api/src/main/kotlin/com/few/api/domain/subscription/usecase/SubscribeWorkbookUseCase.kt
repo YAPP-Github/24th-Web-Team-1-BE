@@ -6,7 +6,7 @@ import com.few.api.domain.subscription.service.dto.InsertMemberDto
 import com.few.api.domain.subscription.service.dto.ReadMemberIdDto
 import com.few.api.repo.dao.subscription.SubscriptionDao
 import com.few.api.repo.dao.subscription.command.InsertWorkbookSubscriptionCommand
-import com.few.api.repo.dao.subscription.query.SelectAllWorkbookSubscriptionStatusQueryNotConsiderDeletedAt
+import com.few.api.repo.dao.subscription.query.SelectAllWorkbookSubscriptionStatusNotConsiderDeletedAtQuery
 import com.few.api.domain.subscription.usecase.dto.SubscribeWorkbookUseCaseIn
 import com.few.api.exception.common.NotFoundException
 import com.few.api.exception.subscribe.SubscribeIllegalArgumentException
@@ -38,7 +38,7 @@ class SubscribeWorkbookUseCase(
         )
 
         val subscriptionStatus = subscriptionDao.selectTopWorkbookSubscriptionStatus(
-            SelectAllWorkbookSubscriptionStatusQueryNotConsiderDeletedAt(memberId = memberId, workbookId = subTargetWorkbookId)
+            SelectAllWorkbookSubscriptionStatusNotConsiderDeletedAtQuery(memberId = memberId, workbookId = subTargetWorkbookId)
         )
 
         when {

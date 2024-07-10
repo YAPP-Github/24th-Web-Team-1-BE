@@ -1,7 +1,7 @@
 package com.few.api.web.controller.admin
 
-import com.few.api.domain.admin.document.dto.*
 import com.few.api.domain.admin.document.usecase.*
+import com.few.api.domain.admin.document.usecase.dto.*
 import com.few.api.web.controller.admin.request.AddArticleRequest
 import com.few.api.web.controller.admin.request.AddWorkbookRequest
 import com.few.api.web.controller.admin.request.ConvertContentRequest

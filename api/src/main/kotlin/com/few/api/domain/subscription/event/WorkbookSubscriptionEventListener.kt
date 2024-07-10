@@ -4,7 +4,7 @@ import com.few.api.client.subscription.SubscriptionClient
 import com.few.api.client.subscription.dto.WorkbookSubscriptionArgs
 import com.few.api.domain.subscription.event.dto.WorkbookSubscriptionEvent
 import com.few.api.domain.subscription.service.WorkbookService
-import com.few.api.domain.subscription.service.dto.ReadWorkbookTitleDto
+import com.few.api.domain.subscription.service.dto.ReadWorkbookTitleInDto
 import com.few.api.exception.common.NotFoundException
 import com.few.api.repo.dao.subscription.SubscriptionDao
 import org.springframework.context.event.EventListener
@@ -21,8 +21,8 @@ class WorkbookSubscriptionEventListener(
     @Async
     @EventListener
     fun handleWorkbookSubscriptionEvent(event: WorkbookSubscriptionEvent) {
-        val title = ReadWorkbookTitleDto(event.workbookId).let { dto ->
-            workbookService.readWorkbookTitle(dto)
+        val title = ReadWorkbookTitleInDto(event.workbookId).let { dto ->
+            workbookService.readWorkbookTitle(dto)?.workbookTitle
                 ?: throw NotFoundException("workbook.notfound.id")
         }
         subscriptionDao.countAllSubscriptionStatus().let { record ->

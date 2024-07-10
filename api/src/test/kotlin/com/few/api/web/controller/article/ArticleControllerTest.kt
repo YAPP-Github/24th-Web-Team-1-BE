@@ -5,9 +5,9 @@ import com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.few.api.domain.article.dto.ReadArticleUseCaseIn
-import com.few.api.domain.article.dto.ReadArticleUseCaseOut
-import com.few.api.domain.article.dto.WriterDetail
+import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseIn
+import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseOut
+import com.few.api.domain.article.usecase.dto.WriterDetail
 import com.few.api.domain.article.usecase.ReadArticleUseCase
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description

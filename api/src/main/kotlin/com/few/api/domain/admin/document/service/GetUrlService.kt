@@ -1,6 +1,7 @@
 package com.few.api.domain.admin.document.service
 
-import com.few.api.domain.admin.document.service.dto.GetUrlQuery
+import com.few.api.domain.admin.document.service.dto.GetUrlInDto
+import com.few.api.domain.admin.document.service.dto.GetUrlOutDto
 import com.few.api.domain.admin.document.service.dto.getPreSignedUrlServiceKey
 import com.few.api.exception.common.ExternalIntegrationException
 import com.few.storage.GetPreSignedObjectUrlService
@@ -11,7 +12,7 @@ import java.net.URL
 import java.util.*
 
 interface GetUrlService {
-    fun execute(query: GetUrlQuery): URL
+    fun execute(query: GetUrlInDto): GetUrlOutDto
 }
 
 @Profile("local")
@@ -19,7 +20,7 @@ interface GetUrlService {
 class GetLocalUrlService(
     private val services: Map<String, GetPreSignedObjectUrlService>
 ) : GetUrlService {
-    override fun execute(query: GetUrlQuery): URL {
+    override fun execute(query: GetUrlInDto): GetUrlOutDto {
         val service = services.keys.stream().filter { key ->
             key.lowercase(Locale.getDefault())
                 .contains(query.getPreSignedUrlServiceKey())
@@ -29,7 +30,7 @@ class GetLocalUrlService(
         }
 
         return service.execute(query.`object`)?.let {
-            URL(it)
+            GetUrlOutDto(URL(it))
         } ?: throw ExternalIntegrationException("external.presignedfail.url")
     }
 }
@@ -39,7 +40,7 @@ class GetLocalUrlService(
 class GetCdnUrlService(
     private val cdnProperty: CdnProperty
 ) : GetUrlService {
-    override fun execute(query: GetUrlQuery): URL {
-        return URL(cdnProperty.url + "/" + query.`object`)
+    override fun execute(query: GetUrlInDto): GetUrlOutDto {
+        return GetUrlOutDto(URL(cdnProperty.url + "/" + query.`object`))
     }
 }

@@ -1,7 +1,7 @@
 package com.few.api.domain.problem.usecase
 
-import com.few.api.domain.problem.usecase.`in`.BrowseProblemsUseCaseIn
-import com.few.api.domain.problem.usecase.out.BrowseProblemsUseCaseOut
+import com.few.api.domain.problem.usecase.dto.BrowseProblemsUseCaseIn
+import com.few.api.domain.problem.usecase.dto.BrowseProblemsUseCaseOut
 import com.few.api.exception.common.NotFoundException
 import com.few.api.repo.dao.problem.ProblemDao
 import com.few.api.repo.dao.problem.query.SelectProblemsByArticleIdQuery

@@ -1,10 +1,10 @@
 package com.few.api.domain.subscription.usecase
 
 import com.few.api.domain.subscription.service.MemberService
-import com.few.api.domain.subscription.service.dto.ReadMemberIdDto
+import com.few.api.domain.subscription.service.dto.ReadMemberIdInDto
 import com.few.api.repo.dao.subscription.SubscriptionDao
 import com.few.api.repo.dao.subscription.command.UpdateDeletedAtInWorkbookSubscriptionCommand
-import com.few.api.domain.subscription.usecase.`in`.UnsubscribeWorkbookUseCaseIn
+import com.few.api.domain.subscription.usecase.dto.UnsubscribeWorkbookUseCaseIn
 import com.few.api.exception.common.NotFoundException
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -20,7 +20,7 @@ class UnsubscribeWorkbookUseCase(
         // TODO: request sending email
 
         val memberId =
-            memberService.readMemberId(ReadMemberIdDto(useCaseIn.email))?.memberId ?: throw NotFoundException("member.notfound.email")
+            memberService.readMemberId(ReadMemberIdInDto(useCaseIn.email))?.memberId ?: throw NotFoundException("member.notfound.email")
 
         subscriptionDao.updateDeletedAtInWorkbookSubscription(
             UpdateDeletedAtInWorkbookSubscriptionCommand(

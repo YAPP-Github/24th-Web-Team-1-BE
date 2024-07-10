@@ -1,9 +1,9 @@
 package com.few.api.domain.admin.document.usecase
 
-import com.few.api.domain.admin.document.dto.PutImageUseCaseIn
-import com.few.api.domain.admin.document.dto.PutImageUseCaseOut
+import com.few.api.domain.admin.document.usecase.dto.PutImageUseCaseIn
+import com.few.api.domain.admin.document.usecase.dto.PutImageUseCaseOut
 import com.few.api.domain.admin.document.service.GetUrlService
-import com.few.api.domain.admin.document.service.dto.GetUrlQuery
+import com.few.api.domain.admin.document.service.dto.GetUrlInDto
 import com.few.api.domain.admin.document.utils.ObjectPathGenerator
 import com.few.api.exception.common.ExternalIntegrationException
 import com.few.api.exception.common.InsertException
@@ -35,13 +35,13 @@ class PutImageUseCase(
 
         val url = putImageService.execute(imageName, image)?.let { res ->
             val source = res.`object`
-            GetUrlQuery(source).let { query ->
+            GetUrlInDto(source).let { query ->
                 getUrlService.execute(query)
-            }.let { url ->
-                InsertImageIfoCommand(source, url).let { command ->
+            }.let { dto ->
+                InsertImageIfoCommand(source, dto.url).let { command ->
                     imageDao.insertImageIfo(command) ?: throw InsertException("image.insertfail.record")
                 }
-                return@let url
+                return@let dto.url
             }
         } ?: throw ExternalIntegrationException("external.presignedfail.image")
 

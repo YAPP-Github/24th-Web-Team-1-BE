@@ -1,6 +1,6 @@
 package com.few.api.domain.admin.document.usecase
 
-import com.few.api.domain.admin.document.dto.MapArticleUseCaseIn
+import com.few.api.domain.admin.document.usecase.dto.MapArticleUseCaseIn
 import com.few.api.repo.dao.workbook.WorkbookDao
 import com.few.api.repo.dao.workbook.command.MapWorkBookToArticleCommand
 import org.springframework.stereotype.Component

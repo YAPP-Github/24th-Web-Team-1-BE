@@ -2,8 +2,8 @@ package com.few.api.domain.workbook.article.usecase
 
 import com.few.api.domain.article.service.BrowseArticleProblemsService
 import com.few.api.domain.article.service.ReadArticleWriterRecordService
-import com.few.api.domain.article.service.dto.BrowseArticleProblemIdsQuery
-import com.few.api.domain.article.service.dto.ReadWriterRecordQuery
+import com.few.api.domain.article.service.dto.BrowseArticleProblemIdsInDto
+import com.few.api.domain.article.service.dto.ReadWriterRecordInDto
 import com.few.api.domain.workbook.article.dto.ReadWorkBookArticleUseCaseIn
 import com.few.api.domain.workbook.article.dto.ReadWorkBookArticleOut
 import com.few.api.domain.workbook.article.dto.WriterDetail
@@ -30,12 +30,12 @@ class ReadWorkBookArticleUseCase(
         } ?: throw NotFoundException("article.notfound.articleidworkbookid")
 
         val writerRecord =
-            ReadWriterRecordQuery(articleRecord.writerId).let { query: ReadWriterRecordQuery ->
+            ReadWriterRecordInDto(articleRecord.writerId).let { query: ReadWriterRecordInDto ->
                 readArticleWriterRecordService.execute(query) ?: throw NotFoundException("writer.notfound.id")
             }
 
         val problemIds =
-            BrowseArticleProblemIdsQuery(articleRecord.articleId).let { query: BrowseArticleProblemIdsQuery ->
+            BrowseArticleProblemIdsInDto(articleRecord.articleId).let { query: BrowseArticleProblemIdsInDto ->
                 browseArticleProblemsService.execute(query)
             }
 

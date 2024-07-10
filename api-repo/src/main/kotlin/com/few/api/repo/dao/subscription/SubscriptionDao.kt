@@ -3,7 +3,7 @@ package com.few.api.repo.dao.subscription
 import com.few.api.repo.dao.subscription.command.InsertWorkbookSubscriptionCommand
 import com.few.api.repo.dao.subscription.command.UpdateDeletedAtInAllSubscriptionCommand
 import com.few.api.repo.dao.subscription.command.UpdateDeletedAtInWorkbookSubscriptionCommand
-import com.few.api.repo.dao.subscription.query.SelectAllWorkbookSubscriptionStatusQueryNotConsiderDeletedAt
+import com.few.api.repo.dao.subscription.query.SelectAllWorkbookSubscriptionStatusNotConsiderDeletedAtQuery
 import com.few.api.repo.dao.subscription.record.WorkbookSubscriptionStatus
 import com.few.api.repo.dao.subscription.query.CountWorkbookMappedArticlesQuery
 import com.few.api.repo.dao.subscription.record.CountAllSubscriptionStatusRecord
@@ -44,7 +44,7 @@ class SubscriptionDao(
             .execute()
     }
 
-    fun selectTopWorkbookSubscriptionStatus(query: SelectAllWorkbookSubscriptionStatusQueryNotConsiderDeletedAt): WorkbookSubscriptionStatus? {
+    fun selectTopWorkbookSubscriptionStatus(query: SelectAllWorkbookSubscriptionStatusNotConsiderDeletedAtQuery): WorkbookSubscriptionStatus? {
         return dslContext.select(
             SUBSCRIPTION.TARGET_WORKBOOK_ID.`as`(WorkbookSubscriptionStatus::workbookId.name),
             SUBSCRIPTION.DELETED_AT.isNull.`as`(WorkbookSubscriptionStatus::isActiveSub.name),

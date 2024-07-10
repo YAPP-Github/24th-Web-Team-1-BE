@@ -1,6 +1,6 @@
 package com.few.api.web.controller.workbook
 
-import com.few.api.domain.workbook.dto.ReadWorkbookUseCaseIn
+import com.few.api.domain.workbook.usecase.dto.ReadWorkbookUseCaseIn
 import com.few.api.domain.workbook.usecase.ReadWorkbookUseCase
 import com.few.api.web.controller.workbook.response.ReadWorkBookResponse
 import com.few.api.web.support.ApiResponse

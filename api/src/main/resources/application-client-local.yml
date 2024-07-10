@@ -4,4 +4,4 @@ client:
         read: 5000
 
 webhook:
-    discord: ${WEBHOOK_DISCORD}
+    discord: "localhost:8080/webhook/discord/unused"

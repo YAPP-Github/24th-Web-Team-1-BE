@@ -15,9 +15,9 @@ import com.few.api.web.controller.subscription.request.UnsubscribeWorkbookReques
 import com.few.api.domain.subscription.usecase.SubscribeWorkbookUseCase
 import com.few.api.domain.subscription.usecase.UnsubscribeAllUseCase
 import com.few.api.domain.subscription.usecase.UnsubscribeWorkbookUseCase
-import com.few.api.domain.subscription.usecase.`in`.SubscribeWorkbookUseCaseIn
-import com.few.api.domain.subscription.usecase.`in`.UnsubscribeAllUseCaseIn
-import com.few.api.domain.subscription.usecase.`in`.UnsubscribeWorkbookUseCaseIn
+import com.few.api.domain.subscription.usecase.dto.SubscribeWorkbookUseCaseIn
+import com.few.api.domain.subscription.usecase.dto.UnsubscribeAllUseCaseIn
+import com.few.api.domain.subscription.usecase.dto.UnsubscribeWorkbookUseCaseIn
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

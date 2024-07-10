@@ -22,7 +22,7 @@ class WorkbookSubscriptionEventListener(
     @EventListener
     fun handleWorkbookSubscriptionEvent(event: WorkbookSubscriptionEvent) {
         val title = ReadWorkbookTitleInDto(event.workbookId).let { dto ->
-            workbookService.readWorkbookTitle(dto)
+            workbookService.readWorkbookTitle(dto)?.workbookTitle
                 ?: throw NotFoundException("workbook.notfound.id")
         }
         subscriptionDao.countAllSubscriptionStatus().let { record ->

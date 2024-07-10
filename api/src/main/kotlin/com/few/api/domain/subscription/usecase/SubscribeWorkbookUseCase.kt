@@ -29,7 +29,7 @@ class SubscribeWorkbookUseCase(
 
         val memberId = memberService.readMemberId(ReadMemberIdInDto(useCaseIn.email))?.memberId ?: memberService.insertMember(
             InsertMemberInDto(email = useCaseIn.email, memberType = MemberType.NORMAL)
-        )
+        ).memberId
 
         val subTargetWorkbookId = useCaseIn.workbookId
         val command = InsertWorkbookSubscriptionCommand(

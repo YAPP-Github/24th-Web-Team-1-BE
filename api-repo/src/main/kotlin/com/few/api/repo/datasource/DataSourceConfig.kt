@@ -19,7 +19,7 @@ class DataSourceConfig {
     }
 
     @Bean(name = [API_DATASOURCE])
-    @ConfigurationProperties(prefix = "spring.datasource")
+    @ConfigurationProperties(prefix = "spring.datasource.hikari")
     fun apiDataSource(): DataSource {
         return DataSourceBuilder.create().type(HikariDataSource::class.java).build()
     }

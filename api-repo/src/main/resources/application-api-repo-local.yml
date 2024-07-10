@@ -1,11 +1,11 @@
 spring:
   datasource:
-    jdbcUrl:  jdbc:mysql://localhost:13306/api?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
-    username: root
-    password: root
-    driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
-      pool-name: HikariCP
+      jdbcUrl: jdbc:mysql://localhost:13306/api?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+      username: root
+      password: root
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      pool-name: MAIN-POOL
       minimum-idle: 4
       maximum-pool-size: 16
       connection-timeout: 30000  # 30 seconds

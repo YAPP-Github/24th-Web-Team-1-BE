@@ -37,11 +37,11 @@ class PutImageUseCase(
             val source = res.`object`
             GetUrlInDto(source).let { query ->
                 getUrlService.execute(query)
-            }.let { url ->
-                InsertImageIfoCommand(source, url).let { command ->
+            }.let { dto ->
+                InsertImageIfoCommand(source, dto.url).let { command ->
                     imageDao.insertImageIfo(command) ?: throw InsertException("image.insertfail.record")
                 }
-                return@let url
+                return@let dto.url
             }
         } ?: throw ExternalIntegrationException("external.presignedfail.image")
 

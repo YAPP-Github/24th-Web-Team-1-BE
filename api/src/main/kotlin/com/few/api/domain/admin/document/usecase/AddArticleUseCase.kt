@@ -65,14 +65,14 @@ class AddArticleUseCase(
                     val source = res.`object`
                     GetUrlInDto(source).let { query ->
                         getUrlService.execute(query)
-                    }.let { url ->
+                    }.let { dto ->
                         InsertDocumentIfoCommand(
                             path = documentName,
-                            url = url
+                            url = dto.url
                         ).let { command ->
                             documentDao.insertDocumentIfo(command)
                         }
-                        url
+                        dto.url
                     }
                 } ?: throw ExternalIntegrationException("external.putfail.docummet")
 

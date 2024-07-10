@@ -39,14 +39,14 @@ class ConvertContentUseCase(
             val source = res.`object`
             GetUrlInDto(source).let { query ->
                 getUrlService.execute(query)
-            }.let { url ->
+            }.let { dto ->
                 InsertDocumentIfoCommand(
                     path = documentName,
-                    url = url
+                    url = dto.url
                 ).let { command ->
                     documentDao.insertDocumentIfo(command) ?: throw InsertException("document.insertfail.record")
                 }
-                url
+                dto.url
             }
         } ?: throw ExternalIntegrationException("external.document.presignedfail")
 

@@ -4,6 +4,14 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+        pool-name: HikariCP
+        minimum-idle: 4
+        maximum-pool-size: 16
+        connection-timeout: 30000  # 30 seconds
+        idle-timeout: 300000  # 5 minutes
+        max-lifetime: 1800000  # 30 minutes
+        connection-test-query: SELECT 1
   flyway:
     locations: classpath:db/migration/entity
     sql-migration-suffixes: sql

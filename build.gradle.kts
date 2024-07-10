@@ -22,7 +22,7 @@ plugins {
     id("org.hidetake.swagger.generator") version DependencyVersion.SWAGGER_GENERATOR
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_18
 
 allprojects {
     group = "com.few"

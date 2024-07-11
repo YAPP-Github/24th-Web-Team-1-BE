@@ -4,6 +4,7 @@ import com.few.api.repo.config.ApiRepoConfig
 import com.few.batch.config.BatchConfig
 import com.few.storage.document.config.DocumentStorageConfig
 import com.few.storage.image.config.ImageStorageConfig
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc
 @Import(ApiRepoConfig::class, BatchConfig::class, ImageStorageConfig::class, DocumentStorageConfig::class)
 @EnableWebMvc
 @EnableAsync
+@ConfigurationPropertiesScan(basePackages = [ApiConfig.BASE_PACKAGE])
 class ApiConfig {
     companion object {
         const val BASE_PACKAGE = "com.few.api"

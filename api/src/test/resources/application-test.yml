@@ -48,3 +48,11 @@ client:
 
 webhook:
     discord: https://discord.com/api/webhooks/1234567890/abcdefg
+
+discord:
+    thread-pool:
+        core-pool-size: 5
+        max-pool-size: 15
+        queue-capacity: 30
+        wait-for-tasks-to-complete-on-shutdown: true
+        await-termination-seconds: 60

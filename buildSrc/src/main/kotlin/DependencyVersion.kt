@@ -41,4 +41,7 @@ object DependencyVersion {
 
     /** commonmark */
     const val COMMONMARK = "0.22.0"
+
+    /** Logger **/
+    const val KOTLIN_LOGGING = "7.0.0"
 }

@@ -21,6 +21,9 @@ dependencies {
     /** test container */
     implementation(platform("org.testcontainers:testcontainers-bom:${DependencyVersion.TEST_CONTAINER}"))
     testImplementation("org.testcontainers:mysql")
+
+    /** Kotlin Logger **/
+    implementation("io.github.oshai:kotlin-logging-jvm:${DependencyVersion.KOTLIN_LOGGING}")
 }
 
 plugins {

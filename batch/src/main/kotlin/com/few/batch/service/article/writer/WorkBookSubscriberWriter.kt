@@ -206,6 +206,7 @@ class WorkBookSubscriberWriter(
         /** 마지막 학습지를 받은 구독자들은 구독을 해지한다.*/
         dslContext.update(subscriptionT)
             .set(subscriptionT.DELETED_AT, LocalDateTime.now())
+            .set(subscriptionT.UNSUBS_OPINION, "receive.all")
             .where(subscriptionT.MEMBER_ID.`in`(receiveLastDayMembers))
             .and(subscriptionT.TARGET_WORKBOOK_ID.`in`(targetWorkBookIds))
             .execute()

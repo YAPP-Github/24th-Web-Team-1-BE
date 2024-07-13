@@ -134,6 +134,7 @@ class WorkBookSubscriberWriter(
             .and(articleIfoT.DELETED_AT.isNull)
             .fetchInto(ArticleContent::class.java)
 
+        // todo fix
         val memberSuccessRecords = memberIds.associateWith { true }.toMutableMap()
         val failRecords = mutableMapOf<String, ArrayList<Map<Long, String>>>()
         // todo check !! target is not null

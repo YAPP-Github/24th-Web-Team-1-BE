@@ -2,6 +2,7 @@ package com.few.api.domain.subscription.event
 
 import com.few.api.client.subscription.SubscriptionClient
 import com.few.api.client.subscription.dto.WorkbookSubscriptionArgs
+import com.few.api.config.ApiThreadPoolConfig.Companion.DISCORD_HOOK_EVENT_POOL
 import com.few.api.domain.subscription.event.dto.WorkbookSubscriptionEvent
 import com.few.api.domain.subscription.service.WorkbookService
 import com.few.api.domain.subscription.service.dto.ReadWorkbookTitleInDto
@@ -18,7 +19,7 @@ class WorkbookSubscriptionEventListener(
     private val workbookService: WorkbookService
 ) {
 
-    @Async
+    @Async(value = DISCORD_HOOK_EVENT_POOL)
     @EventListener
     fun handleWorkbookSubscriptionEvent(event: WorkbookSubscriptionEvent) {
         val title = ReadWorkbookTitleInDto(event.workbookId).let { dto ->

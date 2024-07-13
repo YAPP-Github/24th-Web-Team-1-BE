@@ -12,7 +12,7 @@ env:
     EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
 
 jobs:
-    build:
+    integration-test:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3

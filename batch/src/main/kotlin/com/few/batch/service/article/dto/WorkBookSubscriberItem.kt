@@ -1,11 +1,11 @@
 package com.few.batch.service.article.dto
 
-fun List<WorkBookSubscriberItem>.toMemberIds(): List<Long> {
-    return this.map { it.memberId }
+fun List<WorkBookSubscriberItem>.toMemberIds(): Set<Long> {
+    return this.map { it.memberId }.toSet()
 }
 
-fun List<WorkBookSubscriberItem>.toTargetWorkBookIds(): List<Long> {
-    return this.map { it.targetWorkBookId }
+fun List<WorkBookSubscriberItem>.toTargetWorkBookIds(): Set<Long> {
+    return this.map { it.targetWorkBookId }.toSet()
 }
 
 /** key: 구독자들이 구독한 학습지 ID, value: 구독자들의 학습지 구독 진행률 */

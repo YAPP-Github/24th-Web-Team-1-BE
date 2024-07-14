@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class WorkbookDao(
-    private val dslContext: DSLContext
+    private val dslContext: DSLContext,
 ) {
     fun selectWorkBook(query: SelectWorkBookRecordQuery): SelectWorkBookRecord? {
         return dslContext.select(

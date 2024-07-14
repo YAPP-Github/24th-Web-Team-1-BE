@@ -5,5 +5,5 @@ import java.net.URL
 data class ReadWriterOutDto(
     val writerId: Long,
     val name: String,
-    val url: URL
+    val url: URL,
 )

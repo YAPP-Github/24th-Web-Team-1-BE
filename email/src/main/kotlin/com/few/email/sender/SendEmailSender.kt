@@ -9,7 +9,7 @@ import org.springframework.mail.javamail.MimeMessageHelper
 
 abstract class SendEmailSender<T : SendMailArgs<*, *>>(
     private val mailProperties: MailProperties,
-    private val emailSender: JavaMailSender
+    private val emailSender: JavaMailSender,
 ) {
     companion object {
         private const val UTF_8 = "utf-8"

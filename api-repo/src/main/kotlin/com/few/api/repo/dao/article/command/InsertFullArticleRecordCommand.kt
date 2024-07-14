@@ -7,5 +7,5 @@ data class InsertFullArticleRecordCommand(
     val mainImageURL: URL,
     val title: String,
     val category: Byte,
-    val content: String
+    val content: String,
 )

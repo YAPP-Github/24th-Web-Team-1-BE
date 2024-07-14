@@ -16,14 +16,14 @@ import javax.sql.DataSource
 class BatchTestFlywayConfig {
     @Bean
     fun flyway(
-        configuration: org.flywaydb.core.api.configuration.Configuration?
+        configuration: org.flywaydb.core.api.configuration.Configuration?,
     ): Flyway {
         return Flyway(configuration)
     }
 
     @Bean
     fun flywayMigrationInitializer(
-        flyway: Flyway?
+        flyway: Flyway?,
     ): FlywayMigrationInitializer {
         return FlywayMigrationInitializer(flyway) { obj: Flyway -> obj.migrate() }
     }
@@ -36,7 +36,7 @@ class BatchTestFlywayConfig {
 
     @Bean
     fun configuration(
-        dataSource: DataSource?
+        dataSource: DataSource?,
     ): org.flywaydb.core.api.configuration.Configuration {
         val configuration = FluentConfiguration()
         configuration.dataSource(dataSource)

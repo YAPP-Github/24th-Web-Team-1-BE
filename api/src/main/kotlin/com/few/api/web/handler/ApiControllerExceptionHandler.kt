@@ -24,13 +24,13 @@ import java.nio.file.AccessDeniedException
 /** API 요청 처리 중 발생하는 예외를 처리하는 핸들러  */
 @RestControllerAdvice
 class ApiControllerExceptionHandler(
-    private val loggingHandler: LoggingHandler
+    private val loggingHandler: LoggingHandler,
 ) {
 
     @ExceptionHandler(ExternalIntegrationException::class, InsertException::class, NotFoundException::class)
     fun handleCommonException(
         ex: Exception,
-        request: HttpServletRequest
+        request: HttpServletRequest,
     ): ApiResponse<ApiResponse.FailureBody> {
         return ApiResponseGenerator.fail(ex.message!!, HttpStatus.BAD_REQUEST)
     }
@@ -38,7 +38,7 @@ class ApiControllerExceptionHandler(
     @ExceptionHandler(SubscribeIllegalArgumentException::class)
     fun handleSubscribeException(
         ex: Exception,
-        request: HttpServletRequest
+        request: HttpServletRequest,
     ): ApiResponse<ApiResponse.FailureBody> {
         return ApiResponseGenerator.fail(ex.message!!, HttpStatus.BAD_REQUEST)
     }
@@ -46,7 +46,7 @@ class ApiControllerExceptionHandler(
     @ExceptionHandler(IllegalArgumentException::class)
     fun handleBadRequest(
         ex: IllegalArgumentException,
-        request: HttpServletRequest
+        request: HttpServletRequest,
     ): ApiResponse<ApiResponse.FailureBody> {
         return ApiResponseGenerator.fail(ExceptionMessage.FAIL.message, HttpStatus.BAD_REQUEST)
     }
@@ -64,7 +64,7 @@ class ApiControllerExceptionHandler(
     )
     fun handleBadRequest(
         ex: Exception,
-        request: HttpServletRequest
+        request: HttpServletRequest,
     ): ApiResponse<ApiResponse.FailureBody> {
         return handleRequestDetails(ex)
     }
@@ -99,7 +99,7 @@ class ApiControllerExceptionHandler(
     @ExceptionHandler(IllegalStateException::class)
     fun handleIllegalState(
         ex: Exception,
-        request: HttpServletRequest
+        request: HttpServletRequest,
     ): ApiResponse<ApiResponse.FailureBody> {
         return ApiResponseGenerator.fail(
             ExceptionMessage.FAIL.message,
@@ -110,7 +110,7 @@ class ApiControllerExceptionHandler(
     @ExceptionHandler(NoSuchElementException::class)
     fun handleForbidden(
         ex: AccessDeniedException,
-        request: HttpServletRequest
+        request: HttpServletRequest,
     ): ApiResponse<ApiResponse.FailureBody> {
         return ApiResponseGenerator.fail(
             ExceptionMessage.ACCESS_DENIED.message,
@@ -121,7 +121,7 @@ class ApiControllerExceptionHandler(
     @ExceptionHandler(Exception::class)
     fun handleInternalServerError(
         ex: Exception,
-        request: HttpServletRequest
+        request: HttpServletRequest,
     ): ApiResponse<ApiResponse.FailureBody> {
         loggingHandler.writeLog(ex, request)
         return ApiResponseGenerator.fail(

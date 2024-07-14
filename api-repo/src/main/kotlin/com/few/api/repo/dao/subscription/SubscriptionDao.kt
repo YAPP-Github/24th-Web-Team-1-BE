@@ -15,7 +15,7 @@ import java.time.LocalDateTime
 
 @Component
 class SubscriptionDao(
-    private val dslContext: DSLContext
+    private val dslContext: DSLContext,
 ) {
 
     fun insertWorkbookSubscription(command: InsertWorkbookSubscriptionCommand) {

@@ -10,5 +10,5 @@ data class SelectArticleRecord(
     val title: String,
     val category: Byte,
     val content: String,
-    val createdAt: LocalDateTime
+    val createdAt: LocalDateTime,
 )

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class SubmitHistoryDao(
-    private val dslContext: DSLContext
+    private val dslContext: DSLContext,
 ) {
 
     fun insertSubmitHistory(command: InsertSubmitHistoryCommand): Long? {

@@ -11,7 +11,7 @@ import java.io.File
 @Service
 class S3PutDocumentService(
     @Value("\${document.store.bucket-name}") val bucket: String,
-    private val documentStoreClient: DocumentStoreClient
+    private val documentStoreClient: DocumentStoreClient,
 ) : PutDocumentService {
     override fun execute(name: String, file: File): DocumentWriteResponse? {
         DocumentArgsGenerator.putDocument(bucket, name, file).let { args ->

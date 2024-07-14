@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class ReadArticleWriterRecordService(
-    private val memberDao: MemberDao
+    private val memberDao: MemberDao,
 ) {
 
     fun execute(query: ReadWriterRecordInDto): ReadWriterOutDto? {

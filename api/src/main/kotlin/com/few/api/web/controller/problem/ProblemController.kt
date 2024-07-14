@@ -27,7 +27,7 @@ import java.util.*
 class ProblemController(
     private val browseProblemsUseCase: BrowseProblemsUseCase,
     private val readProblemUseCase: ReadProblemUseCase,
-    private val checkProblemUseCase: CheckProblemUseCase
+    private val checkProblemUseCase: CheckProblemUseCase,
 ) {
 
     @GetMapping
@@ -49,7 +49,7 @@ class ProblemController(
     fun readProblem(
         @PathVariable(value = "problemId")
         @Min(value = 1, message = "{min.id}")
-        problemId: Long
+        problemId: Long,
     ): ApiResponse<ApiResponse.SuccessBody<ReadProblemResponse>> {
         val useCaseOut = readProblemUseCase.execute(ReadProblemUseCaseIn(problemId))
 
@@ -70,7 +70,7 @@ class ProblemController(
         @Min(value = 1, message = "{min.id}")
         problemId: Long,
         @Valid @RequestBody
-        body: CheckProblemRequest
+        body: CheckProblemRequest,
     ): ApiResponse<ApiResponse.SuccessBody<CheckProblemResponse>> {
         val useCaseOut = checkProblemUseCase.execute(CheckProblemUseCaseIn(problemId, body.sub))
 

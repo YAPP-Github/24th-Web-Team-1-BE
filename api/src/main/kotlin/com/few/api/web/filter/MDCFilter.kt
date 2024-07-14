@@ -20,7 +20,7 @@ class MDCFilter(private val mapper: ObjectMapper) : Filter {
     override fun doFilter(
         request: ServletRequest?,
         response: ServletResponse?,
-        chain: FilterChain?
+        chain: FilterChain?,
     ) {
         val requestStartTime = System.currentTimeMillis()
         val traceId = RandomStringUtils.randomAlphanumeric(10)

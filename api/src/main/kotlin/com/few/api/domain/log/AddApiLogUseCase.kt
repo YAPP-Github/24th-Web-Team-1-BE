@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Component
 class AddApiLogUseCase(
-    private val logIfoDao: LogIfoDao
+    private val logIfoDao: LogIfoDao,
 ) {
     @Transactional
     fun execute(useCaseIn: AddApiLogUseCaseIn) {

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/batch")
 class BatchController(
     private val batchSendArticleEmailService: BatchSendArticleEmailService,
-    @Value("\${auth.batch}") private val auth: String
+    @Value("\${auth.batch}") private val auth: String,
 ) {
 
     @PostMapping("/article")

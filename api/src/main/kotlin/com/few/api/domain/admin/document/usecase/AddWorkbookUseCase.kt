@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Component
 class AddWorkbookUseCase(
-    private val workbookDao: WorkbookDao
+    private val workbookDao: WorkbookDao,
 ) {
     @Transactional
     fun execute(useCaseIn: AddWorkbookUseCaseIn): AddWorkbookUseCaseOut {

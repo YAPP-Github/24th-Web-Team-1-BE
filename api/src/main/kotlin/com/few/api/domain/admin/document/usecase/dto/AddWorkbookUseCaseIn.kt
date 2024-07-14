@@ -6,5 +6,5 @@ data class AddWorkbookUseCaseIn(
     val title: String,
     val mainImageUrl: URL,
     val category: String,
-    val description: String
+    val description: String,
 )

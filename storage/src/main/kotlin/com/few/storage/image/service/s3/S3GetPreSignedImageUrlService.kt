@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 @Service
 class S3GetPreSignedImageUrlService(
     @Value("\${image.store.bucket-name}") val bucket: String,
-    private val imageStoreClient: ImageStoreClient
+    private val imageStoreClient: ImageStoreClient,
 ) : GetPreSignedImageUrlService {
     override fun execute(image: String): String? {
         ImageArgsGenerator.preSignedUrl(bucket, image).let { args ->

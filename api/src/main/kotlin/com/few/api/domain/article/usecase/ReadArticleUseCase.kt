@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional
 class ReadArticleUseCase(
     private val articleDao: ArticleDao,
     private val readArticleWriterRecordService: ReadArticleWriterRecordService,
-    private val browseArticleProblemsService: BrowseArticleProblemsService
+    private val browseArticleProblemsService: BrowseArticleProblemsService,
 ) {
 
     @Transactional(readOnly = true)

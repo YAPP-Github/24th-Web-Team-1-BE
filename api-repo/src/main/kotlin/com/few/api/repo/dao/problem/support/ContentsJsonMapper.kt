@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class ContentsJsonMapper(
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper,
 ) {
 
     fun toJson(contents: Contents): String {

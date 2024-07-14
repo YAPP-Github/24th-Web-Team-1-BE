@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class WriterDescriptionJsonMapper(
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper,
 ) {
     init {
         objectMapper.registerKotlinModule()

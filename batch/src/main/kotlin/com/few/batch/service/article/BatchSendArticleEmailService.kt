@@ -12,7 +12,7 @@ class BatchSendArticleEmailService(
     private val workBookSubscriberReader: WorkBookSubscriberReader,
     private val workBookSubscriberWriter: WorkBookSubscriberWriter,
     private val batchCallExecutionService: BatchCallExecutionService,
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper,
 ) {
     @Transactional
     fun execute() {

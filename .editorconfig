@@ -10,3 +10,5 @@ disabled_rules=no-wildcard-imports,import-ordering,comment-spacing
 
 [*.{kt,kts}]
 insert_final_newline=false
+# enable trailing_comma
+ij_kotlin_allow_trailing_comma=true

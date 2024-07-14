@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class BatchCallExecutionService(
-    private val dslContext: DSLContext
+    private val dslContext: DSLContext,
 ) {
     fun execute(status: Boolean, jsonDescription: String) {
         dslContext.insertInto(BATCH_CALL_EXECUTION)

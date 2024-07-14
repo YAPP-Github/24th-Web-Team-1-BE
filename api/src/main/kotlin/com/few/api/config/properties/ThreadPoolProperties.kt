@@ -7,7 +7,7 @@ data class ThreadPoolProperties(
     var maxPoolSize: Int? = null,
     var queueCapacity: Int? = null,
     var waitForTasksToCompleteOnShutdown: Boolean? = null,
-    var awaitTerminationSeconds: Int? = null
+    var awaitTerminationSeconds: Int? = null,
 ) {
     fun getCorePoolSize(): Int {
         return corePoolSize ?: throw NotSetPropertyException("core pool size")

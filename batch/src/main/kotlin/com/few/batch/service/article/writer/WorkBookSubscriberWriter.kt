@@ -49,6 +49,11 @@ data class ArticleContent(
     val writerLink: URL
 )
 
+data class ReceiveLastDayMember(
+    val memberId: Long,
+    val targetWorkBookId: Long
+)
+
 fun List<ArticleContent>.peek(articleId: Long): ArticleContent {
     return this.find {
         it.id == articleId
@@ -129,6 +134,7 @@ class WorkBookSubscriberWriter(
             .and(articleIfoT.DELETED_AT.isNull)
             .fetchInto(ArticleContent::class.java)
 
+        // todo fix
         val memberSuccessRecords = memberIds.associateWith { true }.toMutableMap()
         val failRecords = mutableMapOf<String, ArrayList<Map<Long, String>>>()
         // todo check !! target is not null
@@ -190,9 +196,9 @@ class WorkBookSubscriberWriter(
         }.filter {
             (it.progress.toInt() + 1) == lastDayCol[it.targetWorkBookId]
         }.map {
-            it.memberId
+            ReceiveLastDayMember(it.memberId, it.targetWorkBookId)
         }.filter {
-            memberSuccessRecords[it] == true
+            memberSuccessRecords[it.memberId] == true
         }
 
         val successMemberIds = memberSuccessRecords.filter { it.value }.keys
@@ -204,12 +210,15 @@ class WorkBookSubscriberWriter(
             .execute()
 
         /** 마지막 학습지를 받은 구독자들은 구독을 해지한다.*/
-        dslContext.update(subscriptionT)
-            .set(subscriptionT.DELETED_AT, LocalDateTime.now())
-            .set(subscriptionT.UNSUBS_OPINION, "receive.all")
-            .where(subscriptionT.MEMBER_ID.`in`(receiveLastDayMembers))
-            .and(subscriptionT.TARGET_WORKBOOK_ID.`in`(targetWorkBookIds))
-            .execute()
+        // todo refactoring to batch update
+        for (receiveLastDayMember in receiveLastDayMembers) {
+            dslContext.update(subscriptionT)
+                .set(subscriptionT.DELETED_AT, LocalDateTime.now())
+                .set(subscriptionT.UNSUBS_OPINION, "receive.all")
+                .where(subscriptionT.MEMBER_ID.eq(receiveLastDayMember.memberId))
+                .and(subscriptionT.TARGET_WORKBOOK_ID.eq(receiveLastDayMember.targetWorkBookId))
+                .execute()
+        }
 
         return if (failRecords.isNotEmpty()) {
             mapOf("records" to memberSuccessRecords, "fail" to failRecords)

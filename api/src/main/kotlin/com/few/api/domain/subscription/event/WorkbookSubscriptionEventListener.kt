@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component
 class WorkbookSubscriptionEventListener(
     private val subscriptionDao: SubscriptionDao,
     private val subscriptionClient: SubscriptionClient,
-    private val workbookService: WorkbookService
+    private val workbookService: WorkbookService,
 ) {
 
     @Async(value = DISCORD_HOOK_EVENT_POOL)

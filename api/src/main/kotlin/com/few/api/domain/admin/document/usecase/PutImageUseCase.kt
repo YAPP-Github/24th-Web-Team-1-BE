@@ -18,7 +18,7 @@ import java.io.File
 class PutImageUseCase(
     private val imageDao: ImageDao,
     private val putImageService: PutImageService,
-    private val getUrlService: GetUrlService
+    private val getUrlService: GetUrlService,
 ) {
 
     @Transactional

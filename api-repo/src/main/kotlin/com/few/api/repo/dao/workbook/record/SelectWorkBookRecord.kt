@@ -9,5 +9,5 @@ data class SelectWorkBookRecord(
     val mainImageUrl: URL,
     val category: Byte,
     val description: String,
-    val createdAt: LocalDateTime
+    val createdAt: LocalDateTime,
 )

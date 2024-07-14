@@ -11,11 +11,11 @@ data class ReadWorkBookArticleOut(
     val problemIds: List<Long>,
     val category: String,
     val createdAt: LocalDateTime,
-    val day: Long
+    val day: Long,
 )
 
 data class WriterDetail(
     val id: Long,
     val name: String,
-    val url: URL
+    val url: URL,
 )

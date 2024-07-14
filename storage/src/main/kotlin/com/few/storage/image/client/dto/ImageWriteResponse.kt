@@ -5,5 +5,5 @@ data class ImageWriteResponse(
     val region: String,
     val `object`: String,
     val etag: String,
-    val versionId: String
+    val versionId: String,
 )

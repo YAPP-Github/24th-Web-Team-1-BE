@@ -11,5 +11,5 @@ data class SelectWorkBookArticleRecord(
     val category: Byte,
     val content: String,
     val createdAt: LocalDateTime,
-    val day: Long
+    val day: Long,
 )

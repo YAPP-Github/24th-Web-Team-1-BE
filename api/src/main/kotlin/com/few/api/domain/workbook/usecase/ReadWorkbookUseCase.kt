@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component
 class ReadWorkbookUseCase(
     private val workbookDao: WorkbookDao,
     private val workbookArticleService: WorkbookArticleService,
-    private val workbookMemberService: WorkbookMemberService
+    private val workbookMemberService: WorkbookMemberService,
 ) {
 
     fun execute(useCaseIn: ReadWorkbookUseCaseIn): ReadWorkbookUseCaseOut {

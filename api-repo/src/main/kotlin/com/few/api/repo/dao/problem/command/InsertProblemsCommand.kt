@@ -8,5 +8,5 @@ data class InsertProblemsCommand(
     val title: String,
     val contents: Contents,
     val answer: String,
-    val explanation: String
+    val explanation: String,
 )

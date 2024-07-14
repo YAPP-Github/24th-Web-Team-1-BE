@@ -9,7 +9,8 @@ enum class BatchCategoryType(val code: Byte, val displayName: String) {
     IT(10, "IT"),
     MARKETING(20, "마케팅"),
     CULTURE(30, "교양"),
-    SCIENCE(40, "과학");
+    SCIENCE(40, "과학"),
+    ;
 
     companion object {
         fun fromCode(code: Byte): BatchCategoryType? {

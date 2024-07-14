@@ -5,5 +5,5 @@ data class DocumentWriteResponse(
     val region: String,
     val `object`: String,
     val etag: String,
-    val versionId: String
+    val versionId: String,
 )

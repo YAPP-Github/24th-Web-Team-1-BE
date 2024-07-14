@@ -37,5 +37,5 @@ data class WorkBookSubscriberItem(
     /** 학습지 ID */
     val targetWorkBookId: Long,
     /** 진행률 */
-    val progress: Long
+    val progress: Long,
 )

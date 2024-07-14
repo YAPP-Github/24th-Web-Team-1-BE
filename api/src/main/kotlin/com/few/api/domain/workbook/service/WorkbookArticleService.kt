@@ -17,7 +17,7 @@ fun List<WorkBookArticleOutDto>.toArticleDetails(): List<ArticleDetail> {
 
 @Service
 class WorkbookArticleService(
-    private val articleDao: ArticleDao
+    private val articleDao: ArticleDao,
 ) {
     fun browseWorkbookArticles(query: BrowseWorkbookArticlesInDto): List<WorkBookArticleOutDto> {
         return SelectWorkbookMappedArticleRecordsQuery(query.workbookId).let { query ->

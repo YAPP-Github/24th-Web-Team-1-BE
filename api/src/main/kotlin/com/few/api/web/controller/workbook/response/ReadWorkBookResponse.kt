@@ -12,7 +12,7 @@ data class ReadWorkBookResponse(
     val category: String,
     val createdAt: LocalDateTime,
     val writers: List<WriterInfo>,
-    val articles: List<ArticleInfo>
+    val articles: List<ArticleInfo>,
 ) {
     constructor(useCaseOut: ReadWorkbookUseCaseOut) :
         this(
@@ -29,7 +29,7 @@ data class ReadWorkBookResponse(
 
 data class ArticleInfo(
     val id: Long,
-    val title: String
+    val title: String,
 )
 
 /**
@@ -38,5 +38,5 @@ data class ArticleInfo(
 data class WriterInfo(
     val id: Long,
     val name: String,
-    val url: URL
+    val url: URL,
 )

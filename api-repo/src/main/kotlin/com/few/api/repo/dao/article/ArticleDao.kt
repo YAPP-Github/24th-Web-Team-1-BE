@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class ArticleDao(
-    private val dslContext: DSLContext
+    private val dslContext: DSLContext,
 ) {
     fun selectArticleRecord(query: SelectArticleRecordQuery): SelectArticleRecord? {
         val articleId = query.articleId

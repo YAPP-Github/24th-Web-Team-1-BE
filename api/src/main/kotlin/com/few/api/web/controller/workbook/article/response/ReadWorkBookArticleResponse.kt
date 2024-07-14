@@ -12,7 +12,7 @@ data class ReadWorkBookArticleResponse(
     val problemIds: List<Long>,
     val category: String,
     val createdAt: LocalDateTime,
-    val day: Long
+    val day: Long,
 ) {
     constructor(useCaseOut: ReadWorkBookArticleOut) : this(
         id = useCaseOut.id,

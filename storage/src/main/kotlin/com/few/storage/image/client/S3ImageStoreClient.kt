@@ -6,7 +6,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 
 class S3ImageStoreClient(
     private val s3client: AmazonS3Client,
-    private val region: String
+    private val region: String,
 ) : ImageStoreClient {
 
     private val log = KotlinLogging.logger {}

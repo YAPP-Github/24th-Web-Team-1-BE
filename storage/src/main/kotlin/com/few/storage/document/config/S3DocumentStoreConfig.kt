@@ -16,7 +16,7 @@ import org.springframework.context.event.ContextRefreshedEvent
 @Import(ClientConfig::class)
 class S3DocumentStoreConfig(
     @Value("\${document.store.bucket-name}") val bucket: String,
-    @Value("\${storage.region}") val region: String
+    @Value("\${storage.region}") val region: String,
 ) : ApplicationListener<ContextRefreshedEvent> {
     private val log = KotlinLogging.logger {}
 

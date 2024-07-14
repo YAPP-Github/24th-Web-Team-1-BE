@@ -20,7 +20,7 @@ import javax.sql.DataSource
 class FlywayConfig {
     @Bean(name = [ApiRepoConfig.BEAN_NAME_PREFIX + "Flyway"])
     fun flyway(
-        configuration: org.flywaydb.core.api.configuration.Configuration?
+        configuration: org.flywaydb.core.api.configuration.Configuration?,
     ): Flyway {
         return Flyway(configuration)
     }
@@ -28,14 +28,14 @@ class FlywayConfig {
     @Profile("!new")
     @Bean(name = [ApiRepoConfig.BEAN_NAME_PREFIX + "FlywayValidateInitializer"])
     fun flywayValidateInitializer(
-        flyway: Flyway?
+        flyway: Flyway?,
     ): FlywayMigrationInitializer {
         return FlywayMigrationInitializer(flyway) { obj: Flyway -> obj.validate() }
     }
 
     @Bean(name = [ApiRepoConfig.BEAN_NAME_PREFIX + "FlywayMigrationInitializer"])
     fun flywayMigrationInitializer(
-        flyway: Flyway?
+        flyway: Flyway?,
     ): FlywayMigrationInitializer {
         return FlywayMigrationInitializer(flyway) { obj: Flyway -> obj.migrate() }
     }
@@ -48,7 +48,7 @@ class FlywayConfig {
 
     @Bean(name = [ApiRepoConfig.BEAN_NAME_PREFIX + "FlywayConfiguration"])
     fun configuration(
-        @Qualifier(DataSourceConfig.API_DATASOURCE) dataSource: DataSource?
+        @Qualifier(DataSourceConfig.API_DATASOURCE) dataSource: DataSource?,
     ): org.flywaydb.core.api.configuration.Configuration {
         val configuration = FluentConfiguration()
         configuration.dataSource(dataSource)

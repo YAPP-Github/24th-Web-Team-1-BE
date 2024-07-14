@@ -11,5 +11,5 @@ data class AddWorkbookRequest(
     @field:NotBlank(message = "{category.notblank}")
     val category: String,
     @field:NotBlank(message = "{workbook.description.notblank}")
-    val description: String
+    val description: String,
 )

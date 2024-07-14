@@ -18,7 +18,7 @@ data class AddArticleRequest(
     val contentType: String,
     @field:NotBlank(message = "{content.source.notblank}")
     val contentSource: String,
-    val problemData: List<ProblemDto>
+    val problemData: List<ProblemDto>,
 )
 
 data class ProblemDto(
@@ -28,11 +28,11 @@ data class ProblemDto(
     @field:NotBlank(message = "{problem.answer.notblank}")
     val answer: String,
     @field:NotBlank(message = "{problem.explanation.notblank}")
-    val explanation: String
+    val explanation: String,
 )
 data class ProblemContentDto(
     @field:NotBlank(message = "{min.problem.number}")
     val number: Long,
     @field:NotBlank(message = "{problem.content.notblank}")
-    val content: String
+    val content: String,
 )

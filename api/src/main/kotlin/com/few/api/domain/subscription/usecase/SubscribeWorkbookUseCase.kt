@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional
 class SubscribeWorkbookUseCase(
     private val subscriptionDao: SubscriptionDao,
     private val memberService: MemberService,
-    private val applicationEventPublisher: ApplicationEventPublisher
+    private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
 
     @Transactional

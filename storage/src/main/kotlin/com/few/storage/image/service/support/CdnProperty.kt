@@ -5,5 +5,5 @@ import org.springframework.stereotype.Component
 
 @Component
 data class CdnProperty(
-    @Value("\${cdn.url}") val url: String
+    @Value("\${cdn.url}") val url: String,
 )

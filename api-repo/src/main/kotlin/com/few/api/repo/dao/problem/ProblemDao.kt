@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component
 @Component
 class ProblemDao(
     private val dslContext: DSLContext,
-    private val contentsJsonMapper: ContentsJsonMapper
+    private val contentsJsonMapper: ContentsJsonMapper,
 ) {
     fun selectProblemContents(query: SelectProblemQuery): SelectProblemRecord? {
         return dslContext.select(

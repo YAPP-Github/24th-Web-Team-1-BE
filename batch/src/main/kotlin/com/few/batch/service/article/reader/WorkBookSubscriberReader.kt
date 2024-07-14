@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Component
 class WorkBookSubscriberReader(
-    private val dslContext: DSLContext
+    private val dslContext: DSLContext,
 ) {
 
     /** 구독 테이블에서 학습지를 구독하고 있는 회원의 정보를 조회한다.*/

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class DocumentDao(
-    private val dslContext: DSLContext
+    private val dslContext: DSLContext,
 ) {
 
     fun insertDocumentIfo(command: InsertDocumentIfoCommand): Long? {

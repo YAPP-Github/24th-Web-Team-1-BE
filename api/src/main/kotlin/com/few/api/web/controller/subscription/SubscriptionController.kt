@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*
 class SubscriptionController(
     private val subscribeWorkbookUseCase: SubscribeWorkbookUseCase,
     private val unsubscribeWorkbookUseCase: UnsubscribeWorkbookUseCase,
-    private val unsubscribeAllUseCase: UnsubscribeAllUseCase
+    private val unsubscribeAllUseCase: UnsubscribeAllUseCase,
 ) {
 
     @PostMapping("/workbooks/{workbookId}/subs")
@@ -33,7 +33,7 @@ class SubscriptionController(
         @Min(value = 1, message = "{min.id}")
         workbookId: Long,
         @Valid @RequestBody
-        body: SubscribeWorkbookRequest
+        body: SubscribeWorkbookRequest,
     ): ApiResponse<ApiResponse.Success> {
         subscribeWorkbookUseCase.execute(
             SubscribeWorkbookUseCaseIn(workbookId = workbookId, email = body.email)
@@ -48,7 +48,7 @@ class SubscriptionController(
         @Min(value = 1, message = "{min.id}")
         workbookId: Long,
         @Valid @RequestBody
-        body: UnsubscribeWorkbookRequest
+        body: UnsubscribeWorkbookRequest,
     ): ApiResponse<ApiResponse.Success> {
         unsubscribeWorkbookUseCase.execute(
             UnsubscribeWorkbookUseCaseIn(workbookId = workbookId, email = body.email, opinion = body.opinion)
@@ -60,7 +60,7 @@ class SubscriptionController(
     @PostMapping("/subscriptions/unsubs")
     fun deactivateAllSubscriptions(
         @Valid @RequestBody
-        body: UnsubscribeAllRequest
+        body: UnsubscribeAllRequest,
     ): ApiResponse<ApiResponse.Success> {
         unsubscribeAllUseCase.execute(
             UnsubscribeAllUseCaseIn(email = body.email, opinion = body.opinion)

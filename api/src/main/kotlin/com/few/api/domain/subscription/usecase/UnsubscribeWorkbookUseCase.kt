@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional
 @Component
 class UnsubscribeWorkbookUseCase(
     private val subscriptionDao: SubscriptionDao,
-    private val memberService: MemberService
+    private val memberService: MemberService,
 ) {
 
     @Transactional

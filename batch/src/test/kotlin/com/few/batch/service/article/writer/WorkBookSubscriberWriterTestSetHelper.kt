@@ -26,19 +26,19 @@ data class TestWorkBookSubscriberDto(
     val memberId: Long,
     val targetWorkBookId: Long,
     val progress: Long,
-    val content: Content
+    val content: Content,
 )
 
 data class ArticleDto(
     val articleId: Long,
     val dayCol: Int,
     val content: String,
-    val title: String
+    val title: String,
 )
 
 @TestComponent
 class WorkBookSubscriberWriterTestSetHelper(
-    private val dslContext: DSLContext
+    private val dslContext: DSLContext,
 ) {
 
     fun setUpMembers(count: Int) {

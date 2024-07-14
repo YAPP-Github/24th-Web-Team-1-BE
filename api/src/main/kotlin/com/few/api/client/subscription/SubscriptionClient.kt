@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate
 @Service
 class SubscriptionClient(
     private val restTemplate: RestTemplate,
-    @Value("\${webhook.discord}") private val discordWebhook: String
+    @Value("\${webhook.discord}") private val discordWebhook: String,
 ) {
     private val log = LogFactory.getLog(SubscriptionClient::class.java)
 

@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional
 @Component
 class UnsubscribeAllUseCase(
     private val subscriptionDao: SubscriptionDao,
-    private val memberService: MemberService
+    private val memberService: MemberService,
 ) {
 
     @Transactional

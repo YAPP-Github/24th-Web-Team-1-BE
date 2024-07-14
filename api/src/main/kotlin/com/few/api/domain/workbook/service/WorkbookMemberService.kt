@@ -13,7 +13,7 @@ fun List<WriterOutDto>.toWriterDetails(): List<WriterDetail> {
 
 @Service
 class WorkbookMemberService(
-    private val memberDao: MemberDao
+    private val memberDao: MemberDao,
 ) {
     fun browseWriterRecords(query: BrowseWriterRecordsInDto): List<WriterOutDto> {
         return SelectWritersQuery(query.writerIds).let { query ->

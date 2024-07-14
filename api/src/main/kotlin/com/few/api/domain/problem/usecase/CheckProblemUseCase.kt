@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional
 @Component
 class CheckProblemUseCase(
     private val problemDao: ProblemDao,
-    private val submitHistoryDao: SubmitHistoryDao
+    private val submitHistoryDao: SubmitHistoryDao,
 ) {
 
     @Transactional

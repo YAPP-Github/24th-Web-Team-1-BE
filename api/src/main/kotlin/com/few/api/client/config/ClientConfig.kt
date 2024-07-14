@@ -14,7 +14,7 @@ class ClientConfig {
     fun restTemplate(
         restTemplateBuilder: RestTemplateBuilder,
         @Value("\${client.timeout.connect}") connectTimeout: Int,
-        @Value("\${client.timeout.read}") readTimeout: Int
+        @Value("\${client.timeout.read}") readTimeout: Int,
     ): RestTemplate {
         return restTemplateBuilder
             .setConnectTimeout(Duration.ofSeconds(connectTimeout.toLong()))

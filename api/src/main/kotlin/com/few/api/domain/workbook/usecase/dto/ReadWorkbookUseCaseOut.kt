@@ -11,16 +11,16 @@ data class ReadWorkbookUseCaseOut(
     val category: String,
     val createdAt: LocalDateTime,
     val writers: List<WriterDetail>,
-    val articles: List<ArticleDetail>
+    val articles: List<ArticleDetail>,
 )
 
 data class WriterDetail(
     val id: Long,
     val name: String,
-    val url: URL
+    val url: URL,
 )
 
 data class ArticleDetail(
     val id: Long,
-    val title: String
+    val title: String,
 )

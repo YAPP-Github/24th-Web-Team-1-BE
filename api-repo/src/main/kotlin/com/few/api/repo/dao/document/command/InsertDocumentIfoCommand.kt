@@ -5,5 +5,5 @@ import java.net.URL
 data class InsertDocumentIfoCommand(
     val path: String,
     val url: URL,
-    val alias: String = ""
+    val alias: String = "",
 )

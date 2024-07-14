@@ -21,11 +21,11 @@ import java.time.LocalDateTime
 data class MemberReceiveArticle(
     val workbookId: Long,
     val articleId: Long,
-    val dayCol: Long
+    val dayCol: Long,
 )
 
 data class MemberReceiveArticles(
-    val articles: List<MemberReceiveArticle>
+    val articles: List<MemberReceiveArticle>,
 ) {
     fun getByWorkBookIdAndDayCol(workbookId: Long, dayCol: Long): MemberReceiveArticle {
         return articles.find {
@@ -46,12 +46,12 @@ data class ArticleContent(
     val articleTitle: String,
     val articleContent: String,
     val writerName: String,
-    val writerLink: URL
+    val writerLink: URL,
 )
 
 data class ReceiveLastDayMember(
     val memberId: Long,
-    val targetWorkBookId: Long
+    val targetWorkBookId: Long,
 )
 
 fun List<ArticleContent>.peek(articleId: Long): ArticleContent {
@@ -63,7 +63,7 @@ fun List<ArticleContent>.peek(articleId: Long): ArticleContent {
 @Component
 class WorkBookSubscriberWriter(
     private val dslContext: DSLContext,
-    private val sendArticleEmailService: SendArticleEmailService
+    private val sendArticleEmailService: SendArticleEmailService,
 ) {
 
     companion object {

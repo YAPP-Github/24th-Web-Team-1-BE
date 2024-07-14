@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional
 @Component
 class ReadProblemUseCase(
     private val problemDao: ProblemDao,
-    private val contentsJsonMapper: ContentsJsonMapper
+    private val contentsJsonMapper: ContentsJsonMapper,
 ) {
 
     @Transactional(readOnly = true)

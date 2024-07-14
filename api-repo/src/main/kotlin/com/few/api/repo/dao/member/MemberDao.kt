@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class MemberDao(
-    private val dslContext: DSLContext
+    private val dslContext: DSLContext,
 ) {
 
     fun selectWriter(query: SelectWriterQuery): WriterRecord? {

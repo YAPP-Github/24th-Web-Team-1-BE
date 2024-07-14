@@ -1,13 +1,13 @@
 package com.few.api.web.handler
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.servlet.http.HttpServletRequest
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 /** 로깅을 담당하는 핸들러  */
 @Component
 class LoggingHandler {
-    private val log = LoggerFactory.getLogger(LoggingHandler::class.java)
+    private val log = KotlinLogging.logger {}
 
     fun writeLog(ex: Exception, request: HttpServletRequest) {
         try {

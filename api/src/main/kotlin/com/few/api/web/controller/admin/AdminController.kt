@@ -30,7 +30,7 @@ class AdminController(
     private val addWorkbookUseCase: AddWorkbookUseCase,
     private val mapArticleUseCase: MapArticleUseCase,
     private val convertContentUseCase: ConvertContentUseCase,
-    private val putImageUseCase: PutImageUseCase
+    private val putImageUseCase: PutImageUseCase,
 ) {
     @PostMapping("/workbooks")
     fun addWorkbook(@RequestBody request: AddWorkbookRequest): ApiResponse<ApiResponse.SuccessBody<AddWorkbookResponse>> {
@@ -50,7 +50,7 @@ class AdminController(
 
     @PostMapping("/articles")
     fun addArticle(
-        @RequestBody request: AddArticleRequest
+        @RequestBody request: AddArticleRequest,
     ): ApiResponse<ApiResponse.SuccessBody<AddArticleResponse>> {
         val useCaseOut = AddArticleUseCaseIn(
             writerEmail = request.writerEmail,
@@ -96,7 +96,7 @@ class AdminController(
 
     @PostMapping("/utilities/conversion/content", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun convertContent(
-        request: ConvertContentRequest
+        request: ConvertContentRequest,
     ): ApiResponse<ApiResponse.SuccessBody<ConvertContentResponse>> {
         val useCaseOut = ConvertContentUseCaseIn(request.content).let {
             convertContentUseCase.execute(it)

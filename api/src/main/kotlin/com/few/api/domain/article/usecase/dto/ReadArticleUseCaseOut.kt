@@ -10,11 +10,11 @@ data class ReadArticleUseCaseOut(
     val content: String,
     val problemIds: List<Long>,
     val category: String,
-    val createdAt: LocalDateTime
+    val createdAt: LocalDateTime,
 )
 
 data class WriterDetail(
     val id: Long,
     val name: String,
-    val url: URL
+    val url: URL,
 )

@@ -5,5 +5,5 @@ package com.few.api.repo.dao.subscription.query
  */
 data class SelectAllWorkbookSubscriptionStatusNotConsiderDeletedAtQuery(
     val workbookId: Long,
-    val memberId: Long
+    val memberId: Long,
 )

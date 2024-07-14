@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class BrowseProblemsUseCase(
-    private val problemDao: ProblemDao
+    private val problemDao: ProblemDao,
 ) {
 
     fun execute(useCaseIn: BrowseProblemsUseCaseIn): BrowseProblemsUseCaseOut {

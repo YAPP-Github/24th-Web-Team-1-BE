@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class WorkbookService(
-    private val workbookDao: WorkbookDao
+    private val workbookDao: WorkbookDao,
 ) {
 
     fun readWorkbookTitle(dto: ReadWorkbookTitleInDto): ReadWorkbookTitleOutDto? {

@@ -37,7 +37,7 @@ fun ImagePutObjectArgs.toS3Args(): PutObjectRequest {
 data class ImageGetPreSignedObjectUrlArgs(
     val bucket: String,
     val imagePath: String,
-    val method: String
+    val method: String,
 )
 
 data class ImagePutObjectArgs(
@@ -46,10 +46,10 @@ data class ImagePutObjectArgs(
     val stream: InputStream,
     val objectSize: Long,
     val partSize: Long,
-    val contentType: ContentType = ContentType.IMAGE_JPEG
+    val contentType: ContentType = ContentType.IMAGE_JPEG,
 )
 
 data class ImageRemoveObjectArgs(
     val bucket: String,
-    val imagePath: String
+    val imagePath: String,
 )

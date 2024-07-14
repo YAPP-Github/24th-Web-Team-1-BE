@@ -11,7 +11,7 @@ import java.io.File
 @Service
 class S3PutImageService(
     @Value("\${image.store.bucket-name}") val bucket: String,
-    private val imageStoreClient: ImageStoreClient
+    private val imageStoreClient: ImageStoreClient,
 ) : PutImageService {
     override fun execute(name: String, file: File): ImageWriteResponse? {
         ImageArgsGenerator.putImage(bucket, name, file).let { args ->

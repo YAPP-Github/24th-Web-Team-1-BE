@@ -21,7 +21,7 @@ class ConvertContentUseCase(
     private val documentDao: DocumentDao,
     private val convertDocumentService: ConvertDocumentService,
     private val putDocumentService: PutDocumentService,
-    private val getUrlService: GetUrlService
+    private val getUrlService: GetUrlService,
 ) {
     @Transactional
     fun execute(useCaseIn: ConvertContentUseCaseIn): ConvertContentUseCaseOut {

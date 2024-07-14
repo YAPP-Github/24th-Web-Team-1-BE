@@ -19,11 +19,11 @@ class ApiResponse<B> : ResponseEntity<B> {
      * */
     class SuccessBody<D>(
         val data: D,
-        val message: String
+        val message: String,
     ) : Serializable
 
     /** API 응답 성공 객체  */
     class Success(
-        val message: String
+        val message: String,
     ) : Serializable
 }

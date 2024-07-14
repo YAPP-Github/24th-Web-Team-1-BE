@@ -7,5 +7,5 @@ fun GetUrlInDto.getPreSignedUrlServiceKey(): String {
     return this.`object`.split("/")[0].lowercase(Locale.getDefault()).replace("s", "")
 }
 data class GetUrlInDto(
-    val `object`: String
+    val `object`: String,
 )

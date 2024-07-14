@@ -11,7 +11,7 @@ class NotFoundException : IllegalArgumentException {
 
     constructor(
         errorCode: String,
-        vararg args: Any?
+        vararg args: Any?,
     ) : super(MessageSourceAccessor.getMessage(errorCode, args)) {
         this.code = errorCode
     }
@@ -28,7 +28,7 @@ class NotFoundException : IllegalArgumentException {
     constructor(
         code: String,
         cause: Throwable?,
-        vararg args: Any?
+        vararg args: Any?,
     ) : super(MessageSourceAccessor.getMessage(code, args), cause) {
         this.code = code
     }

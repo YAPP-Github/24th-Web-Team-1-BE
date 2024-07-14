@@ -1,26 +1,25 @@
 package com.few.api.web.filter
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.servlet.Filter
 import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletRequest
 import jakarta.servlet.ServletResponse
 import jakarta.servlet.http.HttpServletRequest
 import org.apache.commons.lang3.RandomStringUtils
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
 
 @Component
 class MDCFilter(private val mapper: ObjectMapper) : Filter {
-    private val log: Logger = LoggerFactory.getLogger(MDCFilter::class.java)
+    private val log = KotlinLogging.logger {}
 
     override fun doFilter(
         request: ServletRequest?,
         response: ServletResponse?,
-        chain: FilterChain?
+        chain: FilterChain?,
     ) {
         val requestStartTime = System.currentTimeMillis()
         val traceId = RandomStringUtils.randomAlphanumeric(10)
@@ -38,7 +37,7 @@ class MDCFilter(private val mapper: ObjectMapper) : Filter {
         val requestEndTime = System.currentTimeMillis()
         val elapsedTime = requestEndTime - requestStartTime
         MDC.put("ElapsedTime", elapsedTime.toString() + "ms")
-        log.info("{}", mapper.writeValueAsString(MDC.getCopyOfContextMap()))
+        log.info { mapper.writeValueAsString(MDC.getCopyOfContextMap()) }
         MDC.clear()
     }
 }

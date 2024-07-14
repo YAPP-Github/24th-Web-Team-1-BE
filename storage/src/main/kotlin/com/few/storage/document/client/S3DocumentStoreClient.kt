@@ -5,15 +5,14 @@ import com.few.storage.document.client.dto.DocumentGetPreSignedObjectUrlArgs
 import com.few.storage.document.client.dto.DocumentPutObjectArgs
 import com.few.storage.document.client.dto.DocumentWriteResponse
 import com.few.storage.document.client.dto.toS3Args
-import com.few.storage.image.client.dto.toS3Args
-import org.slf4j.LoggerFactory
+import io.github.oshai.kotlinlogging.KotlinLogging
 
 class S3DocumentStoreClient(
     private val s3client: AmazonS3Client,
-    private val region: String
+    private val region: String,
 ) : DocumentStoreClient {
 
-    private val log = LoggerFactory.getLogger(S3DocumentStoreClient::class.java)
+    private val log = KotlinLogging.logger {}
 
     override fun getPreSignedObjectUrl(args: DocumentGetPreSignedObjectUrlArgs): String? {
         args.toS3Args()
@@ -24,9 +23,9 @@ class S3DocumentStoreClient(
                             return url.toString()
                         }
                 } catch (e: Exception) {
-                    log.debug("Failed to get presigned url for object: ${args.imagePath}")
-                    log.warn(e.message)
-                    log.warn(e.stackTraceToString())
+                    log.debug { "Failed to get presigned url for object: ${args.imagePath}" }
+                    log.warn { e.message }
+                    log.warn { e.stackTraceToString() }
                     return null
                 }
             }
@@ -46,9 +45,9 @@ class S3DocumentStoreClient(
                         )
                     }
                 } catch (e: Exception) {
-                    log.debug("Failed to put object: ${args.imagePath}")
-                    log.warn(e.message)
-                    log.warn(e.stackTraceToString())
+                    log.debug { "Failed to put object: ${args.imagePath}" }
+                    log.warn { e.message }
+                    log.warn { e.stackTraceToString() }
                     return null
                 }
             }

@@ -11,7 +11,7 @@ data class AddArticleUseCaseIn(
     /** Article IFO */
     val contentType: String,
     val contentSource: String,
-    val problems: List<ProblemDetail>
+    val problems: List<ProblemDetail>,
 
 )
 
@@ -19,10 +19,10 @@ data class ProblemDetail(
     val title: String,
     val contents: List<ProblemContentDetail>,
     val answer: String,
-    val explanation: String
+    val explanation: String,
 )
 
 data class ProblemContentDetail(
     val number: Long,
-    val content: String
+    val content: String,
 )

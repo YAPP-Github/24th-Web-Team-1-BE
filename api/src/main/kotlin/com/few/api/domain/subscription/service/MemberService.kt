@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class MemberService(
-    private val memberDao: MemberDao
+    private val memberDao: MemberDao,
 ) {
 
     fun readMemberId(dto: ReadMemberIdInDto): MemberIdOutDto? {

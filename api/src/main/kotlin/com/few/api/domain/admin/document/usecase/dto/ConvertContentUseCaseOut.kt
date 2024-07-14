@@ -4,5 +4,5 @@ import java.net.URL
 
 data class ConvertContentUseCaseOut(
     val content: String,
-    val originDownLoadUrl: URL
+    val originDownLoadUrl: URL,
 )

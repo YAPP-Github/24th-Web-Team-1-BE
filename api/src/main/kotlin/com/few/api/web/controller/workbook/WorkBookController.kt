@@ -18,14 +18,14 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping(value = ["/api/v1/workbooks"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class WorkBookController(
-    private val readWorkbookUseCase: ReadWorkbookUseCase
+    private val readWorkbookUseCase: ReadWorkbookUseCase,
 ) {
 
     @GetMapping("/{workbookId}")
     fun readWorkBook(
         @PathVariable(value = "workbookId")
         @Min(value = 1, message = "{min.id}")
-        workbookId: Long
+        workbookId: Long,
     ): ApiResponse<ApiResponse.SuccessBody<ReadWorkBookResponse>> {
         val useCaseOut = ReadWorkbookUseCaseIn(workbookId).let { useCaseIn ->
             readWorkbookUseCase.execute(useCaseIn)

@@ -11,10 +11,10 @@ data class ReadArticleResponse(
     val content: String,
     val problemIds: List<Long>,
     val category: String,
-    val createdAt: LocalDateTime
+    val createdAt: LocalDateTime,
 ) {
     constructor(
-        useCaseOut: ReadArticleUseCaseOut
+        useCaseOut: ReadArticleUseCaseOut,
     ) : this(
         id = useCaseOut.id,
         writer = WriterInfo(
@@ -33,5 +33,5 @@ data class ReadArticleResponse(
 data class WriterInfo(
     val id: Long,
     val name: String,
-    val url: URL
+    val url: URL,
 )

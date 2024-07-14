@@ -1,10 +1,10 @@
 package com.few.api.repo.dao.problem.support
 
 data class Contents(
-    val contents: List<Content>
+    val contents: List<Content>,
 )
 
 data class Content(
     val number: Long,
-    val content: String
+    val content: String,
 )

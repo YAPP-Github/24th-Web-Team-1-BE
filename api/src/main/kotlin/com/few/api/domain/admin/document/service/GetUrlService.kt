@@ -18,7 +18,7 @@ interface GetUrlService {
 @Profile("local")
 @Service
 class GetLocalUrlService(
-    private val services: Map<String, GetPreSignedObjectUrlService>
+    private val services: Map<String, GetPreSignedObjectUrlService>,
 ) : GetUrlService {
     override fun execute(query: GetUrlInDto): GetUrlOutDto {
         val service = services.keys.stream().filter { key ->
@@ -38,7 +38,7 @@ class GetLocalUrlService(
 @Profile("!local")
 @Service
 class GetCdnUrlService(
-    private val cdnProperty: CdnProperty
+    private val cdnProperty: CdnProperty,
 ) : GetUrlService {
     override fun execute(query: GetUrlInDto): GetUrlOutDto {
         return GetUrlOutDto(URL(cdnProperty.url + "/" + query.`object`))

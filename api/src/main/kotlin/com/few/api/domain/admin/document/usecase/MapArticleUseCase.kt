@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Component
 class MapArticleUseCase(
-    private val workbookDao: WorkbookDao
+    private val workbookDao: WorkbookDao,
 ) {
     @Transactional
     fun execute(useCaseIn: MapArticleUseCaseIn) {

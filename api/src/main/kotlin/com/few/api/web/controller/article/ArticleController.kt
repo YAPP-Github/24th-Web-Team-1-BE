@@ -18,14 +18,14 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping(value = ["/api/v1/articles"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class ArticleController(
-    private val readArticleUseCase: ReadArticleUseCase
+    private val readArticleUseCase: ReadArticleUseCase,
 ) {
 
     @GetMapping("/{articleId}")
     fun readArticle(
         @PathVariable(value = "articleId")
         @Min(value = 1, message = "{min.id}")
-        articleId: Long
+        articleId: Long,
     ): ApiResponse<ApiResponse.SuccessBody<ReadArticleResponse>> {
         val useCaseOut = ReadArticleUseCaseIn(articleId).let { useCaseIn: ReadArticleUseCaseIn ->
             readArticleUseCase.execute(useCaseIn)

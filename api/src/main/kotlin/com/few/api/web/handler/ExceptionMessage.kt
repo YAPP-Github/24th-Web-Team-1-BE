@@ -9,5 +9,5 @@ enum class ExceptionMessage(val code: String, val message: String) {
     RESOURCE_DELETED("resource.deleted", "요청에 대한 응답을 찾을 수 없어요."),
     ACCESS_DENIED("access.denied", "접근 권한이 없어요."),
     REQUEST_INVALID_FORMAT("request.%s.invalid", "잘못된 요청입니다."),
-    REQUEST_INVALID("request.invalid", "잘못된 요청입니다.")
+    REQUEST_INVALID("request.invalid", "잘못된 요청입니다."),
 }

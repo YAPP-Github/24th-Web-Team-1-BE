@@ -9,7 +9,7 @@ data class SendArticleEmailArgs(
     override val subject: String,
     override val template: String,
     override val content: Content,
-    override val properties: String = ""
+    override val properties: String = "",
 ) : SendMailArgs<Content, String>
 
 data class Content(
@@ -22,5 +22,5 @@ data class Content(
     val writerLink: URL,
     val articleContent: String,
     val problemLink: URL,
-    val unsubscribeLink: URL
+    val unsubscribeLink: URL,
 )

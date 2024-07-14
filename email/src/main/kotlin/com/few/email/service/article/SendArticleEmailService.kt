@@ -14,7 +14,7 @@ import java.util.*
 class SendArticleEmailService(
     mailProperties: MailProperties,
     emailSender: JavaMailSender,
-    private val templateEngine: TemplateEngine
+    private val templateEngine: TemplateEngine,
 ) : SendEmailSender<SendArticleEmailArgs>(mailProperties, emailSender) {
 
     override fun getHtml(args: SendArticleEmailArgs): String {

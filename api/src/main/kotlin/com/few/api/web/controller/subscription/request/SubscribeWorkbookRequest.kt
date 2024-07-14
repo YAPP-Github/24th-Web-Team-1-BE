@@ -6,5 +6,5 @@ import jakarta.validation.constraints.NotBlank
 data class SubscribeWorkbookRequest(
     @field:NotBlank(message = "{email.notblank}")
     @field:Email(message = "{email.invalid}")
-    val email: String
+    val email: String,
 )

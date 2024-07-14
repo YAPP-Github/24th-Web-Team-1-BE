@@ -12,5 +12,5 @@ enum class MessageCode(val code: String, val value: String) {
     RESOURCE_UPDATED("resource.updated", "수정되었습니다."),
 
     /** 생성 메시지 코드  */
-    RESOURCE_CREATED("resource.created", "새로 생성되었습니다.")
+    RESOURCE_CREATED("resource.created", "새로 생성되었습니다."),
 }

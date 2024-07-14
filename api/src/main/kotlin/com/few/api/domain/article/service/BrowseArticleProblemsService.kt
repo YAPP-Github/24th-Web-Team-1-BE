@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class BrowseArticleProblemsService(
-    private val problemDao: ProblemDao
+    private val problemDao: ProblemDao,
 ) {
 
     fun execute(query: BrowseArticleProblemIdsInDto): BrowseArticleProblemsOutDto {

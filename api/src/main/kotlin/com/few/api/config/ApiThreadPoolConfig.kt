@@ -1,7 +1,7 @@
 package com.few.api.config
 
 import com.few.api.config.properties.ThreadPoolProperties
-import org.apache.juli.logging.LogFactory
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -10,7 +10,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 @Configuration
 class ApiThreadPoolConfig {
 
-    private val log = LogFactory.getLog(ApiThreadPoolConfig::class.java)
+    private val log = KotlinLogging.logger {}
 
     companion object {
         const val DISCORD_HOOK_EVENT_POOL = "discord-task-"
@@ -32,7 +32,7 @@ class ApiThreadPoolConfig {
         setAwaitTerminationSeconds(properties.getAwaitTerminationSeconds())
         setThreadNamePrefix("discordHookThreadPool-")
         setRejectedExecutionHandler { r, _ ->
-            log.warn("Discord Hook Event Task Rejected: $r")
+            log.warn { "Discord Hook Event Task Rejected: $r" }
         }
         initialize()
     }

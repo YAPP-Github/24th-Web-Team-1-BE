@@ -113,6 +113,9 @@ subprojects {
 
         /** swagger */
         swaggerUI("org.webjars:swagger-ui:${DependencyVersion.SWAGGER_UI}")
+
+        /** Kotlin Logger **/
+        implementation("io.github.oshai:kotlin-logging-jvm:${DependencyVersion.KOTLIN_LOGGING}")
     }
 
     /** copy data migration */

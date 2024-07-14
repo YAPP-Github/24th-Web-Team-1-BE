@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory
 
 class S3ImageStoreClient(
     private val s3client: AmazonS3Client,
-    private val region: String
+    private val region: String,
 ) : ImageStoreClient {
 
     val log: Logger = LoggerFactory.getLogger(S3ImageStoreClient::class.java)

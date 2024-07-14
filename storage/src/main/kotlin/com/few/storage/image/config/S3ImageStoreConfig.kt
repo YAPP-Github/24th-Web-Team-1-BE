@@ -14,7 +14,7 @@ import org.springframework.context.event.ContextRefreshedEvent
 @Configuration
 class S3ImageStoreConfig(
     @Value("\${image.store.bucket-name}") val bucket: String,
-    @Value("\${storage.region}") val region: String
+    @Value("\${storage.region}") val region: String,
 ) : ApplicationListener<ContextRefreshedEvent> {
 
     var log: Logger = LoggerFactory.getLogger(S3ImageStoreConfig::class.java)

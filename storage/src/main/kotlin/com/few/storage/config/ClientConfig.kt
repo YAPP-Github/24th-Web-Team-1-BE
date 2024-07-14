@@ -14,7 +14,7 @@ class ClientConfig(
     @Value("\${storage.url}") val url: String,
     @Value("\${storage.access-key}") val accessKey: String,
     @Value("\${storage.secret-key}") val secretKey: String,
-    @Value("\${storage.region}") val region: String
+    @Value("\${storage.region}") val region: String,
 ) {
 
     @Bean

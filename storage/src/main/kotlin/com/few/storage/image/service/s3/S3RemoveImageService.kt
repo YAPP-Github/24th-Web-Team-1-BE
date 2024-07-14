@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 @Service
 class S3RemoveImageService(
     @Value("\${image.store.bucket-name}") val bucket: String,
-    private val imageStoreClient: ImageStoreClient
+    private val imageStoreClient: ImageStoreClient,
 ) : RemoveImageService {
     override fun execute(image: String): Boolean {
         ImageArgsGenerator.remove(bucket, image).let { args ->

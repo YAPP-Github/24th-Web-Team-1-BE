@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory
 
 class S3DocumentStoreClient(
     private val s3client: AmazonS3Client,
-    private val region: String
+    private val region: String,
 ) : DocumentStoreClient {
 
     private val log = LoggerFactory.getLogger(S3DocumentStoreClient::class.java)

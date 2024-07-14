@@ -8,6 +8,7 @@ import com.few.api.repo.dao.subscription.SubscriptionDao
 import com.few.api.repo.dao.subscription.record.WorkbookSubscriptionStatus
 import io.mockk.*
 import io.mockk.junit5.MockKExtension
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.extension.ExtendWith
@@ -79,5 +80,36 @@ class SubscribeWorkbookUseCaseTest {
         verify(exactly = 1) { subscriptionDao.countWorkbookMappedArticles(any()) }
         verify(exactly = 1) { subscriptionDao.reSubscribeWorkbookSubscription(any()) }
         verify(exactly = 1) { applicationEventPublisher.publishEvent(event) }
+    }
+
+    @Test
+    fun `이미 구독하고 있을 경우 예외가 발생한다`() {
+        // given
+        val workbookId = 1L
+        val useCaseIn = SubscribeWorkbookUseCaseIn(workbookId = workbookId, email = "test@test.com")
+        val day = 2 // 현재 유저가 구독 취소 전 마지막으로 읽은 day 값
+        val lastDay = 3 // 워크북 고유 정보 (워크북이 구성된 day 값)
+        val serviceOutDto = MemberIdOutDto(memberId = 1L)
+        val subscriptionStatusRecord = WorkbookSubscriptionStatus(workbookId = workbookId, isActiveSub = true, day)
+        val event = WorkbookSubscriptionEvent(workbookId)
+
+        every { memberService.readMemberId(any()) } returns null
+        every { memberService.insertMember(any()) } returns serviceOutDto
+        every { subscriptionDao.selectTopWorkbookSubscriptionStatus(any()) } returns subscriptionStatusRecord
+        every { subscriptionDao.countWorkbookMappedArticles(any()) } returns lastDay
+        every { subscriptionDao.reSubscribeWorkbookSubscription(any()) } just Runs
+        every { applicationEventPublisher.publishEvent(event) } answers {
+            println("Mocking applicationEventPublisher.publishEvent(any()) was called")
+        }
+
+        // when
+        Assertions.assertThrows(Exception::class.java) { useCase.execute(useCaseIn) }
+
+        // then
+        verify(exactly = 1) { memberService.insertMember(any()) }
+        verify(exactly = 0) { subscriptionDao.insertWorkbookSubscription(any()) }
+        verify(exactly = 0) { subscriptionDao.countWorkbookMappedArticles(any()) }
+        verify(exactly = 0) { subscriptionDao.reSubscribeWorkbookSubscription(any()) }
+        verify(exactly = 0) { applicationEventPublisher.publishEvent(event) }
     }
 }

@@ -1,6 +1,7 @@
 package com.few.api.repo.datasource
 
 import com.few.api.repo.config.ApiRepoConfig
+import com.zaxxer.hikari.HikariDataSource
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.context.annotation.Bean
@@ -18,9 +19,9 @@ class DataSourceConfig {
     }
 
     @Bean(name = [API_DATASOURCE])
-    @ConfigurationProperties(prefix = "spring.datasource")
+    @ConfigurationProperties(prefix = "spring.datasource.hikari")
     fun apiDataSource(): DataSource {
-        return DataSourceBuilder.create().build()
+        return DataSourceBuilder.create().type(HikariDataSource::class.java).build()
     }
 
     @Bean(name = [API_TX])

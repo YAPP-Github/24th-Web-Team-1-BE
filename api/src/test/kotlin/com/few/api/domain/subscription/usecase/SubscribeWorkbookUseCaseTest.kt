@@ -21,19 +21,18 @@ class SubscribeWorkbookUseCaseTest : BehaviorSpec({
     lateinit var memberService: MemberService
     lateinit var applicationEventPublisher: ApplicationEventPublisher
     lateinit var useCase: SubscribeWorkbookUseCase
+    val workbookId = 1L
+    val useCaseIn = SubscribeWorkbookUseCaseIn(workbookId = workbookId, email = "test@test.com")
+
+    beforeContainer {
+        subscriptionDao = mockk<SubscriptionDao>()
+        memberService = mockk<MemberService>()
+        applicationEventPublisher = mockk<ApplicationEventPublisher>()
+        useCase = SubscribeWorkbookUseCase(subscriptionDao, memberService, applicationEventPublisher)
+    }
 
     given("구독 요청이 온 상황에서") {
-
-        beforeContainer {
-            subscriptionDao = mockk<SubscriptionDao>()
-            memberService = mockk<MemberService>()
-            applicationEventPublisher = mockk<ApplicationEventPublisher>()
-            useCase = SubscribeWorkbookUseCase(subscriptionDao, memberService, applicationEventPublisher)
-        }
-
         `when`("subscriptionStatus가 null일 경우") {
-            val workbookId = 1L
-            val useCaseIn = SubscribeWorkbookUseCaseIn(workbookId = workbookId, email = "test@test.com")
             val serviceOutDto = MemberIdOutDto(memberId = 1L)
             val event = WorkbookSubscriptionEvent(workbookId)
 
@@ -57,8 +56,6 @@ class SubscribeWorkbookUseCaseTest : BehaviorSpec({
         }
 
         `when`("구독을 취소한 경우") {
-            val workbookId = 1L
-            val useCaseIn = SubscribeWorkbookUseCaseIn(workbookId = workbookId, email = "test@test.com")
             val day = 2
             val lastDay = 3
             val serviceOutDto = MemberIdOutDto(memberId = 1L)
@@ -86,8 +83,6 @@ class SubscribeWorkbookUseCaseTest : BehaviorSpec({
         }
 
         `when`("이미 구독하고 있을 경우") {
-            val workbookId = 1L
-            val useCaseIn = SubscribeWorkbookUseCaseIn(workbookId = workbookId, email = "test@test.com")
             val day = 2
             val lastDay = 3
             val serviceOutDto = MemberIdOutDto(memberId = 1L)

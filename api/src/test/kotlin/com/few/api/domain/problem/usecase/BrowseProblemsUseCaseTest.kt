@@ -13,15 +13,14 @@ class BrowseProblemsUseCaseTest : BehaviorSpec({
 
     lateinit var problemDao: ProblemDao
     lateinit var useCase: BrowseProblemsUseCase
-    lateinit var useCaseIn: BrowseProblemsUseCaseIn
+    val useCaseIn = BrowseProblemsUseCaseIn(articleId = 1L)
+
+    beforeContainer {
+        problemDao = mockk<ProblemDao>()
+        useCase = BrowseProblemsUseCase(problemDao)
+    }
 
     given("특정 아티클에 대한") {
-        beforeContainer {
-            problemDao = mockk<ProblemDao>()
-            useCase = BrowseProblemsUseCase(problemDao)
-            useCaseIn = BrowseProblemsUseCaseIn(articleId = 1L)
-        }
-
         `when`("문제가 존재할 경우") {
             val problemIdsRecord = ProblemIdsRecord(listOf(1, 2, 3))
             every { problemDao.selectProblemsByArticleId(any()) } returns problemIdsRecord

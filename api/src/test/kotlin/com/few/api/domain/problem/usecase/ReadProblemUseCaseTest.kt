@@ -17,16 +17,15 @@ class ReadProblemUseCaseTest : BehaviorSpec({
     lateinit var problemDao: ProblemDao
     lateinit var contentsJsonMapper: ContentsJsonMapper
     lateinit var useCase: ReadProblemUseCase
-    lateinit var useCaseIn: ReadProblemUseCaseIn
+    val useCaseIn = ReadProblemUseCaseIn(problemId = 1L)
+
+    beforeContainer {
+        problemDao = mockk<ProblemDao>()
+        contentsJsonMapper = mockk<ContentsJsonMapper>()
+        useCase = ReadProblemUseCase(problemDao, contentsJsonMapper)
+    }
 
     given("문제를 조회할 상황에서") {
-        beforeContainer {
-            problemDao = mockk<ProblemDao>()
-            contentsJsonMapper = mockk<ContentsJsonMapper>()
-            useCase = ReadProblemUseCase(problemDao, contentsJsonMapper)
-            useCaseIn = ReadProblemUseCaseIn(problemId = 1L)
-        }
-
         `when`("문제가 존재할 경우") {
             val problemRecord = SelectProblemRecord(id = 1L, title = "title", contents = "{}")
             val contents = Contents(

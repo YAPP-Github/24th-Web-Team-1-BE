@@ -24,14 +24,14 @@ class ReadArticleUseCaseTest : BehaviorSpec({
     lateinit var useCase: ReadArticleUseCase
     val useCaseIn = ReadArticleUseCaseIn(articleId = 1L)
 
-    given("아티클 조회 요청이 온 상황에서") {
-        beforeContainer {
-            articleDao = mockk<ArticleDao>()
-            readArticleWriterRecordService = mockk<ReadArticleWriterRecordService>()
-            browseArticleProblemsService = mockk<BrowseArticleProblemsService>()
-            useCase = ReadArticleUseCase(articleDao, readArticleWriterRecordService, browseArticleProblemsService)
-        }
+    beforeContainer {
+        articleDao = mockk<ArticleDao>()
+        readArticleWriterRecordService = mockk<ReadArticleWriterRecordService>()
+        browseArticleProblemsService = mockk<BrowseArticleProblemsService>()
+        useCase = ReadArticleUseCase(articleDao, readArticleWriterRecordService, browseArticleProblemsService)
+    }
 
+    given("아티클 조회 요청이 온 상황에서") {
         `when`("아티클과 작가가 존재할 경우") {
             val record = SelectArticleRecord(
                 articleId = 1L,

@@ -23,14 +23,14 @@ class ReadWorkbookUseCaseTest : BehaviorSpec({
     lateinit var useCase: ReadWorkbookUseCase
     val useCaseIn = ReadWorkbookUseCaseIn(workbookId = 1L)
 
-    given("워크북 조회 요청이 온 상황에서") {
-        beforeContainer {
-            workbookDao = mockk<WorkbookDao>()
-            workbookArticleService = mockk<WorkbookArticleService>()
-            workbookMemberService = mockk<WorkbookMemberService>()
-            useCase = ReadWorkbookUseCase(workbookDao, workbookArticleService, workbookMemberService)
-        }
+    beforeContainer {
+        workbookDao = mockk<WorkbookDao>()
+        workbookArticleService = mockk<WorkbookArticleService>()
+        workbookMemberService = mockk<WorkbookMemberService>()
+        useCase = ReadWorkbookUseCase(workbookDao, workbookArticleService, workbookMemberService)
+    }
 
+    given("워크북 조회 요청이 온 상황에서") {
         `when`("워크북과 작가가 존재할 경우") {
             every { workbookDao.selectWorkBook(any()) } returns SelectWorkBookRecord(
                 id = 1L,

@@ -17,14 +17,13 @@ class CheckProblemUseCaseTest : BehaviorSpec({
     lateinit var submitHistoryDao: SubmitHistoryDao
     lateinit var useCase: CheckProblemUseCase
 
+    beforeContainer {
+        problemDao = mockk<ProblemDao>()
+        submitHistoryDao = mockk<SubmitHistoryDao>()
+        useCase = CheckProblemUseCase(problemDao, submitHistoryDao)
+    }
+
     given("문제 정답 확인 요청이 온 상황에서") {
-
-        beforeContainer {
-            problemDao = mockk<ProblemDao>()
-            submitHistoryDao = mockk<SubmitHistoryDao>()
-            useCase = CheckProblemUseCase(problemDao, submitHistoryDao)
-        }
-
         `when`("제출 값과 문제 정답이 같을 경우") {
             val submissionVal = "1"
             val answer = submissionVal

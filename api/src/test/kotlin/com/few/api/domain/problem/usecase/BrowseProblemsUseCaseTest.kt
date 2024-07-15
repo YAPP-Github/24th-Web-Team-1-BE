@@ -3,46 +3,44 @@ package com.few.api.domain.problem.usecase
 import com.few.api.domain.problem.usecase.dto.BrowseProblemsUseCaseIn
 import com.few.api.repo.dao.problem.ProblemDao
 import com.few.api.repo.dao.problem.record.ProblemIdsRecord
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.BehaviorSpec
 import io.mockk.every
-import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
 
-import org.junit.jupiter.api.extension.ExtendWith
+class BrowseProblemsUseCaseTest : BehaviorSpec({
 
-@ExtendWith(MockKExtension::class)
-class BrowseProblemsUseCaseTest {
+    lateinit var problemDao: ProblemDao
+    lateinit var useCase: BrowseProblemsUseCase
+    lateinit var useCaseIn: BrowseProblemsUseCaseIn
 
-    val problemDao: ProblemDao = mockk<ProblemDao>()
+    given("특정 아티클에 대한") {
+        beforeContainer {
+            problemDao = mockk<ProblemDao>()
+            useCase = BrowseProblemsUseCase(problemDao)
+            useCaseIn = BrowseProblemsUseCaseIn(articleId = 1L)
+        }
 
-    val useCase = BrowseProblemsUseCase(problemDao)
+        `when`("문제가 존재할 경우") {
+            val problemIdsRecord = ProblemIdsRecord(listOf(1, 2, 3))
+            every { problemDao.selectProblemsByArticleId(any()) } returns problemIdsRecord
 
-    @Test
-    fun `특정 아티클에 문제가 존재할 경우 문제번호가 정상적으로 조회된다`() {
-        // given
-        val useCaseIn = BrowseProblemsUseCaseIn(articleId = 1L)
-        val problemIdsRecord = ProblemIdsRecord(listOf(1, 2, 3))
+            then("문제번호가 정상적으로 조회된다") {
+                useCase.execute(useCaseIn)
 
-        every { problemDao.selectProblemsByArticleId(any()) } returns problemIdsRecord
+                verify(exactly = 1) { problemDao.selectProblemsByArticleId(any()) }
+            }
+        }
 
-        // when
-        useCase.execute(useCaseIn)
+        `when`("문제가 존재하지 않을 경우") {
+            every { problemDao.selectProblemsByArticleId(any()) } returns null
 
-        // then
-        verify(exactly = 1) { problemDao.selectProblemsByArticleId(any()) }
+            then("예외가 발생한다") {
+                shouldThrow<Exception> { useCase.execute(useCaseIn) }
+
+                verify(exactly = 1) { problemDao.selectProblemsByArticleId(any()) }
+            }
+        }
     }
-
-    @Test
-    fun `특정 아티클에 문제가 존재하지 않을 경우 예외가 발생한다`() {
-        // given
-        val useCaseIn = BrowseProblemsUseCaseIn(articleId = 1L)
-
-        every { problemDao.selectProblemsByArticleId(any()) } returns null
-
-        // when / then
-        Assertions.assertThrows(Exception::class.java) { useCase.execute(useCaseIn) }
-        verify(exactly = 1) { problemDao.selectProblemsByArticleId(any()) }
-    }
-}
+})

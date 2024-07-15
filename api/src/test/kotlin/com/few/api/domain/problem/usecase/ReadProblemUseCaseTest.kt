@@ -6,57 +6,55 @@ import com.few.api.repo.dao.problem.record.SelectProblemRecord
 import com.few.api.repo.dao.problem.support.Content
 import com.few.api.repo.dao.problem.support.Contents
 import com.few.api.repo.dao.problem.support.ContentsJsonMapper
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.BehaviorSpec
 import io.mockk.every
-import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
 
-import org.junit.jupiter.api.extension.ExtendWith
+class ReadProblemUseCaseTest : BehaviorSpec({
 
-@ExtendWith(MockKExtension::class)
-class ReadProblemUseCaseTest {
+    lateinit var problemDao: ProblemDao
+    lateinit var contentsJsonMapper: ContentsJsonMapper
+    lateinit var useCase: ReadProblemUseCase
+    lateinit var useCaseIn: ReadProblemUseCaseIn
 
-    val problemDao: ProblemDao = mockk<ProblemDao>()
+    given("문제를 조회할 상황에서") {
+        beforeContainer {
+            problemDao = mockk<ProblemDao>()
+            contentsJsonMapper = mockk<ContentsJsonMapper>()
+            useCase = ReadProblemUseCase(problemDao, contentsJsonMapper)
+            useCaseIn = ReadProblemUseCaseIn(problemId = 1L)
+        }
 
-    val contentsJsonMapper: ContentsJsonMapper = mockk<ContentsJsonMapper>()
-
-    val useCase = ReadProblemUseCase(problemDao, contentsJsonMapper)
-
-    @Test
-    fun `문제ID로 문제를 조회힌다`() {
-        // given
-        val useCaseIn = ReadProblemUseCaseIn(problemId = 1L)
-        val problemRecord = SelectProblemRecord(id = 1L, title = "title", contents = "{}")
-        val contents = Contents(
-            listOf(
-                Content(number = 1, content = "{}"),
-                Content(number = 2, content = "{}")
+        `when`("문제가 존재할 경우") {
+            val problemRecord = SelectProblemRecord(id = 1L, title = "title", contents = "{}")
+            val contents = Contents(
+                listOf(
+                    Content(number = 1, content = "{}"),
+                    Content(number = 2, content = "{}")
+                )
             )
-        )
 
-        every { problemDao.selectProblemContents(any()) } returns problemRecord
-        every { contentsJsonMapper.toObject(any()) } returns contents
+            every { problemDao.selectProblemContents(any()) } returns problemRecord
+            every { contentsJsonMapper.toObject(any()) } returns contents
 
-        // when
-        useCase.execute(useCaseIn)
+            then("정상적으로 실행되어야 한다") {
+                useCase.execute(useCaseIn)
 
-        // then
-        verify(exactly = 1) { problemDao.selectProblemContents(any()) }
-        verify(exactly = 1) { contentsJsonMapper.toObject(any()) }
+                verify(exactly = 1) { problemDao.selectProblemContents(any()) }
+                verify(exactly = 1) { contentsJsonMapper.toObject(any()) }
+            }
+        }
+
+        `when`("문제가 존재하지 않을 경우") {
+            every { problemDao.selectProblemContents(any()) } returns null
+
+            then("예외가 발생해야 한다") {
+                shouldThrow<Exception> { useCase.execute(useCaseIn) }
+
+                verify(exactly = 1) { problemDao.selectProblemContents(any()) }
+            }
+        }
     }
-
-    @Test
-    fun `문제가 존재하지 않을 경우 예외가 발생한다`() {
-        // given
-        val useCaseIn = ReadProblemUseCaseIn(problemId = 1L)
-
-        every { problemDao.selectProblemContents(any()) } returns null
-
-        // when, then
-        Assertions.assertThrows(Exception::class.java) { useCase.execute(useCaseIn) }
-
-        verify(exactly = 1) { problemDao.selectProblemContents(any()) }
-    }
-}
+})

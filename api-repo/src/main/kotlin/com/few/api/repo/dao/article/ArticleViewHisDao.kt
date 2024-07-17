@@ -1,6 +1,7 @@
 package com.few.api.repo.dao.article
 
 import com.few.api.repo.dao.article.command.ArticleViewHisCommand
+import com.few.api.repo.dao.article.query.ArticleViewHisCountQuery
 import jooq.jooq_dsl.tables.ArticleViewHis
 import org.jooq.DSLContext
 import org.springframework.stereotype.Repository
@@ -10,14 +11,21 @@ class ArticleViewHisDao(
     private val dslContext: DSLContext,
 ) {
 
-    fun insertArticleViewHis(query: ArticleViewHisCommand) {
+    fun insertArticleViewHis(command: ArticleViewHisCommand) {
         dslContext.insertInto(
             ArticleViewHis.ARTICLE_VIEW_HIS,
             ArticleViewHis.ARTICLE_VIEW_HIS.ARTICLE_MST_ID,
             ArticleViewHis.ARTICLE_VIEW_HIS.MEMBER_ID
         ).values(
-            query.articleId,
-            query.memberId
+            command.articleId,
+            command.memberId
         ).execute()
+    }
+
+    fun selectArticleViews(query: ArticleViewHisCountQuery): Long {
+        return dslContext.selectCount()
+            .from(ArticleViewHis.ARTICLE_VIEW_HIS)
+            .where(ArticleViewHis.ARTICLE_VIEW_HIS.ARTICLE_MST_ID.eq(query.articleId))
+            .fetchOne(0, Long::class.java) ?: 0L
     }
 }

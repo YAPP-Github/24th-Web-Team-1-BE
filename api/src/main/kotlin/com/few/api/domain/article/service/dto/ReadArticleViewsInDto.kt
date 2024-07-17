@@ -1,6 +1,5 @@
 package com.few.api.domain.article.service.dto
 
-data class ArticleViewHisInDto(
+data class ReadArticleViewsInDto(
     val articleId: Long,
-    val memberId: Long,
 )

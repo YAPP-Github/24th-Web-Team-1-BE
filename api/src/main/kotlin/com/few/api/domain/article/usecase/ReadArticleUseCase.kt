@@ -6,8 +6,9 @@ import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseOut
 import com.few.api.domain.article.usecase.dto.WriterDetail
 import com.few.api.domain.article.service.BrowseArticleProblemsService
 import com.few.api.domain.article.service.ReadArticleWriterRecordService
-import com.few.api.domain.article.service.dto.ArticleViewHisInDto
+import com.few.api.domain.article.service.dto.AddArticleViewHisInDto
 import com.few.api.domain.article.service.dto.BrowseArticleProblemIdsInDto
+import com.few.api.domain.article.service.dto.ReadArticleViewsInDto
 import com.few.api.domain.article.service.dto.ReadWriterRecordInDto
 import com.few.api.exception.common.NotFoundException
 import com.few.api.repo.dao.article.ArticleDao
@@ -38,7 +39,8 @@ class ReadArticleUseCase(
             browseArticleProblemsService.execute(query)
         }
 
-        articleViewHisService.addArticleViewHis(ArticleViewHisInDto(useCaseIn.articleId, useCaseIn.memberId))
+        articleViewHisService.addArticleViewHis(AddArticleViewHisInDto(useCaseIn.articleId, useCaseIn.memberId))
+        val views = articleViewHisService.readArticleViews(ReadArticleViewsInDto(useCaseIn.articleId))
 
         return ReadArticleUseCaseOut(
             id = articleRecord.articleId,
@@ -51,7 +53,8 @@ class ReadArticleUseCase(
             content = articleRecord.content,
             problemIds = problemIds.problemIds,
             category = CategoryType.convertToDisplayName(articleRecord.category),
-            createdAt = articleRecord.createdAt
+            createdAt = articleRecord.createdAt,
+            views = views
         )
     }
 }

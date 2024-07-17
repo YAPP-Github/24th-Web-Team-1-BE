@@ -8,3 +8,6 @@ CREATE TABLE ARTICLE_VIEW_HIS
     deleted_at     TIMESTAMP NULL DEFAULT NULL,
     PRIMARY KEY (id)
 );
+
+-- [인덱스 추가] --
+CREATE INDEX article_view_his_idx1 ON PROBLEM (article_mst_id);

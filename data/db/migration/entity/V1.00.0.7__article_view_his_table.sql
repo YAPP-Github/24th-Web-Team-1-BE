@@ -10,4 +10,4 @@ CREATE TABLE ARTICLE_VIEW_HIS
 );
 
 -- [인덱스 추가] --
-CREATE INDEX article_view_his_idx1 ON PROBLEM (article_mst_id);
+CREATE INDEX article_view_his_idx1 ON ARTICLE_VIEW_HIS (article_mst_id);

@@ -1,10 +1,12 @@
 package com.few.api.domain.article.usecase
 
+import com.few.api.domain.article.service.ArticleViewHisService
 import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseIn
 import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseOut
 import com.few.api.domain.article.usecase.dto.WriterDetail
 import com.few.api.domain.article.service.BrowseArticleProblemsService
 import com.few.api.domain.article.service.ReadArticleWriterRecordService
+import com.few.api.domain.article.service.dto.ArticleViewHisInDto
 import com.few.api.domain.article.service.dto.BrowseArticleProblemIdsInDto
 import com.few.api.domain.article.service.dto.ReadWriterRecordInDto
 import com.few.api.exception.common.NotFoundException
@@ -19,6 +21,7 @@ class ReadArticleUseCase(
     private val articleDao: ArticleDao,
     private val readArticleWriterRecordService: ReadArticleWriterRecordService,
     private val browseArticleProblemsService: BrowseArticleProblemsService,
+    private val articleViewHisService: ArticleViewHisService,
 ) {
 
     @Transactional(readOnly = true)
@@ -34,6 +37,8 @@ class ReadArticleUseCase(
         val problemIds = BrowseArticleProblemIdsInDto(articleRecord.articleId).let { query: BrowseArticleProblemIdsInDto ->
             browseArticleProblemsService.execute(query)
         }
+
+        articleViewHisService.addArticleViewHis(ArticleViewHisInDto(useCaseIn.articleId, useCaseIn.memberId))
 
         return ReadArticleUseCaseOut(
             id = articleRecord.articleId,

@@ -1,12 +1,12 @@
 package com.few.api.domain.article.usecase
 
-import com.few.api.domain.article.service.ArticleViewHisService
 import com.few.api.domain.article.service.BrowseArticleProblemsService
 import com.few.api.domain.article.service.ReadArticleWriterRecordService
 import com.few.api.domain.article.service.dto.BrowseArticleProblemsOutDto
 import com.few.api.domain.article.service.dto.ReadWriterOutDto
 import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseIn
 import com.few.api.repo.dao.article.ArticleDao
+import com.few.api.repo.dao.article.ArticleViewHisDao
 import com.few.api.repo.dao.article.record.SelectArticleRecord
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
@@ -21,19 +21,19 @@ class ReadArticleUseCaseTest : BehaviorSpec({
     lateinit var readArticleWriterRecordService: ReadArticleWriterRecordService
     lateinit var browseArticleProblemsService: BrowseArticleProblemsService
     lateinit var useCase: ReadArticleUseCase
-    lateinit var articleViewHisService: ArticleViewHisService
+    lateinit var articleViewHisDao: ArticleViewHisDao
     val useCaseIn = ReadArticleUseCaseIn(articleId = 1L, memberId = 1L)
 
     beforeContainer {
         articleDao = mockk<ArticleDao>()
         readArticleWriterRecordService = mockk<ReadArticleWriterRecordService>()
         browseArticleProblemsService = mockk<BrowseArticleProblemsService>()
-        articleViewHisService = mockk<ArticleViewHisService>()
+        articleViewHisDao = mockk<ArticleViewHisDao>()
         useCase = ReadArticleUseCase(
             articleDao,
             readArticleWriterRecordService,
             browseArticleProblemsService,
-            articleViewHisService
+            articleViewHisDao
         )
     }
 
@@ -58,8 +58,8 @@ class ReadArticleUseCaseTest : BehaviorSpec({
             every { articleDao.selectArticleRecord(any()) } returns record
             every { readArticleWriterRecordService.execute(any()) } returns writerSvcOutDto
             every { browseArticleProblemsService.execute(any()) } returns probSvcOutDto
-            every { articleViewHisService.addArticleViewHis(any()) } just Runs
-            every { articleViewHisService.readArticleViews(any()) } returns 1L
+            every { articleViewHisDao.insertArticleViewHis(any()) } just Runs
+            every { articleViewHisDao.countArticleViews(any()) } returns 1L
 
             then("아티클이 정상 조회된다") {
                 useCase.execute(useCaseIn)

@@ -1,17 +1,17 @@
 package com.few.api.domain.article.usecase
 
-import com.few.api.domain.article.service.ArticleViewHisService
 import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseIn
 import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseOut
 import com.few.api.domain.article.usecase.dto.WriterDetail
 import com.few.api.domain.article.service.BrowseArticleProblemsService
 import com.few.api.domain.article.service.ReadArticleWriterRecordService
-import com.few.api.domain.article.service.dto.AddArticleViewHisInDto
 import com.few.api.domain.article.service.dto.BrowseArticleProblemIdsInDto
-import com.few.api.domain.article.service.dto.ReadArticleViewsInDto
 import com.few.api.domain.article.service.dto.ReadWriterRecordInDto
 import com.few.api.exception.common.NotFoundException
 import com.few.api.repo.dao.article.ArticleDao
+import com.few.api.repo.dao.article.ArticleViewHisDao
+import com.few.api.repo.dao.article.command.ArticleViewHisCommand
+import com.few.api.repo.dao.article.query.ArticleViewHisCountQuery
 import com.few.api.repo.dao.article.query.SelectArticleRecordQuery
 import com.few.data.common.code.CategoryType
 import org.springframework.stereotype.Component
@@ -22,7 +22,7 @@ class ReadArticleUseCase(
     private val articleDao: ArticleDao,
     private val readArticleWriterRecordService: ReadArticleWriterRecordService,
     private val browseArticleProblemsService: BrowseArticleProblemsService,
-    private val articleViewHisService: ArticleViewHisService,
+    private val articleViewHisDao: ArticleViewHisDao,
 ) {
 
     @Transactional(readOnly = true)
@@ -39,8 +39,8 @@ class ReadArticleUseCase(
             browseArticleProblemsService.execute(query)
         }
 
-        articleViewHisService.addArticleViewHis(AddArticleViewHisInDto(useCaseIn.articleId, useCaseIn.memberId))
-        val views = articleViewHisService.readArticleViews(ReadArticleViewsInDto(useCaseIn.articleId))
+        articleViewHisDao.insertArticleViewHis(ArticleViewHisCommand(useCaseIn.articleId, useCaseIn.memberId))
+        val views = articleViewHisDao.countArticleViews(ArticleViewHisCountQuery(useCaseIn.articleId))
 
         return ReadArticleUseCaseOut(
             id = articleRecord.articleId,

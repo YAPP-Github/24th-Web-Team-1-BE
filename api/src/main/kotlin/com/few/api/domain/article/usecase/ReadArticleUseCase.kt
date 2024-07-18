@@ -1,5 +1,6 @@
 package com.few.api.domain.article.usecase
 
+import com.few.api.config.DatabaseAccessThreadPoolConfig.Companion.DATABASE_ACCESS_POOL
 import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseIn
 import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseOut
 import com.few.api.domain.article.usecase.dto.WriterDetail
@@ -14,6 +15,8 @@ import com.few.api.repo.dao.article.command.ArticleViewHisCommand
 import com.few.api.repo.dao.article.query.ArticleViewHisCountQuery
 import com.few.api.repo.dao.article.query.SelectArticleRecordQuery
 import com.few.data.common.code.CategoryType
+import io.github.oshai.kotlinlogging.KotlinLogging
+import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
@@ -25,6 +28,8 @@ class ReadArticleUseCase(
     private val articleViewHisDao: ArticleViewHisDao,
 ) {
 
+    private val log = KotlinLogging.logger {}
+
     @Transactional(readOnly = true)
     fun execute(useCaseIn: ReadArticleUseCaseIn): ReadArticleUseCaseOut {
         val articleRecord = SelectArticleRecordQuery(useCaseIn.articleId).let { query: SelectArticleRecordQuery ->
@@ -35,12 +40,14 @@ class ReadArticleUseCase(
             readArticleWriterRecordService.execute(query) ?: throw NotFoundException("writer.notfound.id")
         }
 
-        val problemIds = BrowseArticleProblemIdsInDto(articleRecord.articleId).let { query: BrowseArticleProblemIdsInDto ->
-            browseArticleProblemsService.execute(query)
-        }
+        val problemIds =
+            BrowseArticleProblemIdsInDto(articleRecord.articleId).let { query: BrowseArticleProblemIdsInDto ->
+                browseArticleProblemsService.execute(query)
+            }
 
-        articleViewHisDao.insertArticleViewHis(ArticleViewHisCommand(useCaseIn.articleId, useCaseIn.memberId))
-        val views = articleViewHisDao.countArticleViews(ArticleViewHisCountQuery(useCaseIn.articleId)) ?: 0L
+        val views = (articleViewHisDao.countArticleViews(ArticleViewHisCountQuery(useCaseIn.articleId)) ?: 0L) + 1L
+
+        insertArticleViewHisAsync(useCaseIn.articleId, useCaseIn.memberId)
 
         return ReadArticleUseCaseOut(
             id = articleRecord.articleId,
@@ -56,5 +63,16 @@ class ReadArticleUseCase(
             createdAt = articleRecord.createdAt,
             views = views
         )
+    }
+
+    @Async(value = DATABASE_ACCESS_POOL)
+    @Transactional
+    fun insertArticleViewHisAsync(articleId: Long, memberId: Long) {
+        try {
+            articleViewHisDao.insertArticleViewHis(ArticleViewHisCommand(articleId, memberId))
+            log.debug { "Successfully inserted article view history for articleId: $articleId and memberId: $memberId" }
+        } catch (e: Exception) {
+            log.error { "Failed to insert article view history for articleId: $articleId and memberId: $memberId" }
+        }
     }
 }

@@ -27,7 +27,7 @@ class ArticleController(
         @Min(value = 1, message = "{min.id}")
         articleId: Long,
     ): ApiResponse<ApiResponse.SuccessBody<ReadArticleResponse>> {
-        val useCaseOut = ReadArticleUseCaseIn(articleId = articleId, memberId = 1L).let { useCaseIn: ReadArticleUseCaseIn ->
+        val useCaseOut = ReadArticleUseCaseIn(articleId = articleId, memberId = 0L).let { useCaseIn: ReadArticleUseCaseIn -> //TODO: membberId검토
             readArticleUseCase.execute(useCaseIn)
         }
 

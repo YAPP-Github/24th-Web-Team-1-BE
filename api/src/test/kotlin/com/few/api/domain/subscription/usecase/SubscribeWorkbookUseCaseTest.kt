@@ -6,6 +6,7 @@ import com.few.api.domain.subscription.service.dto.MemberIdOutDto
 import com.few.api.domain.subscription.usecase.dto.SubscribeWorkbookUseCaseIn
 import com.few.api.repo.dao.subscription.SubscriptionDao
 import com.few.api.repo.dao.subscription.record.WorkbookSubscriptionStatus
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.mockk.every
@@ -16,6 +17,7 @@ import io.mockk.Runs
 import org.springframework.context.ApplicationEventPublisher
 
 class SubscribeWorkbookUseCaseTest : BehaviorSpec({
+    val log = KotlinLogging.logger {}
 
     lateinit var subscriptionDao: SubscriptionDao
     lateinit var memberService: MemberService
@@ -41,7 +43,7 @@ class SubscribeWorkbookUseCaseTest : BehaviorSpec({
             every { subscriptionDao.selectTopWorkbookSubscriptionStatus(any()) } returns null
             every { subscriptionDao.insertWorkbookSubscription(any()) } just Runs
             every { applicationEventPublisher.publishEvent(event) } answers {
-                println("Mocking applicationEventPublisher.publishEvent(any()) was called")
+                log.debug { "Mocking applicationEventPublisher.publishEvent(any()) was called" }
             }
 
             then("신규 구독을 추가한다") {
@@ -68,7 +70,7 @@ class SubscribeWorkbookUseCaseTest : BehaviorSpec({
             every { subscriptionDao.countWorkbookMappedArticles(any()) } returns lastDay
             every { subscriptionDao.reSubscribeWorkbookSubscription(any()) } just Runs
             every { applicationEventPublisher.publishEvent(event) } answers {
-                println("Mocking applicationEventPublisher.publishEvent(any()) was called")
+                log.debug { "Mocking applicationEventPublisher.publishEvent(any()) was called" }
             }
 
             then("재구독한다") {
@@ -95,7 +97,7 @@ class SubscribeWorkbookUseCaseTest : BehaviorSpec({
             every { subscriptionDao.countWorkbookMappedArticles(any()) } returns lastDay
             every { subscriptionDao.reSubscribeWorkbookSubscription(any()) } just Runs
             every { applicationEventPublisher.publishEvent(event) } answers {
-                println("Mocking applicationEventPublisher.publishEvent(any()) was called")
+                log.debug { "Mocking applicationEventPublisher.publishEvent(any()) was called" }
             }
 
             then("예외가 발생한다") {

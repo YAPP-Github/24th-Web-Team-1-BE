@@ -1,6 +1,6 @@
 package com.few.api.domain.article.usecase
 
-import com.few.api.domain.article.event.ArticleViewHisAsyncEvent
+import com.few.api.domain.article.handler.ArticleViewHisAsyncHandler
 import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseIn
 import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseOut
 import com.few.api.domain.article.usecase.dto.WriterDetail
@@ -23,7 +23,7 @@ class ReadArticleUseCase(
     private val readArticleWriterRecordService: ReadArticleWriterRecordService,
     private val browseArticleProblemsService: BrowseArticleProblemsService,
     private val articleViewHisDao: ArticleViewHisDao,
-    private val articleViewHisAsyncEvent: ArticleViewHisAsyncEvent,
+    private val articleViewHisAsyncHandler: ArticleViewHisAsyncHandler,
 ) {
 
     @Transactional(readOnly = true)
@@ -43,7 +43,7 @@ class ReadArticleUseCase(
 
         val views = (articleViewHisDao.countArticleViews(ArticleViewHisCountQuery(useCaseIn.articleId)) ?: 0L) + 1L
 
-        articleViewHisAsyncEvent.addArticleViewHis(useCaseIn.articleId, useCaseIn.memberId)
+        articleViewHisAsyncHandler.addArticleViewHis(useCaseIn.articleId, useCaseIn.memberId)
 
         return ReadArticleUseCaseOut(
             id = articleRecord.articleId,

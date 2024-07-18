@@ -1,4 +1,4 @@
-package com.few.api.domain.article.event
+package com.few.api.domain.article.handler
 
 import com.few.api.config.DatabaseAccessThreadPoolConfig.Companion.DATABASE_ACCESS_POOL
 import com.few.api.repo.dao.article.ArticleViewHisDao
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
 @Component
-class ArticleViewHisAsyncEvent(
+class ArticleViewHisAsyncHandler(
     private val articleViewHisDao: ArticleViewHisDao,
 ) {
     private val log = KotlinLogging.logger {}

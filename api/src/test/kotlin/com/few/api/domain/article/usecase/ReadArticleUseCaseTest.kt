@@ -1,6 +1,6 @@
 package com.few.api.domain.article.usecase
 
-import com.few.api.domain.article.event.ArticleViewHisAsyncEvent
+import com.few.api.domain.article.handler.ArticleViewHisAsyncHandler
 import com.few.api.domain.article.service.BrowseArticleProblemsService
 import com.few.api.domain.article.service.ReadArticleWriterRecordService
 import com.few.api.domain.article.service.dto.BrowseArticleProblemsOutDto
@@ -25,7 +25,7 @@ class ReadArticleUseCaseTest : BehaviorSpec({
     lateinit var browseArticleProblemsService: BrowseArticleProblemsService
     lateinit var useCase: ReadArticleUseCase
     lateinit var articleViewHisDao: ArticleViewHisDao
-    lateinit var articleViewHisAsyncEvent: ArticleViewHisAsyncEvent
+    lateinit var articleViewHisAsyncHandler: ArticleViewHisAsyncHandler
     val useCaseIn = ReadArticleUseCaseIn(articleId = 1L, memberId = 1L)
 
     beforeContainer {
@@ -33,13 +33,13 @@ class ReadArticleUseCaseTest : BehaviorSpec({
         readArticleWriterRecordService = mockk<ReadArticleWriterRecordService>()
         browseArticleProblemsService = mockk<BrowseArticleProblemsService>()
         articleViewHisDao = mockk<ArticleViewHisDao>()
-        articleViewHisAsyncEvent = mockk<ArticleViewHisAsyncEvent>()
+        articleViewHisAsyncHandler = mockk<ArticleViewHisAsyncHandler>()
         useCase = ReadArticleUseCase(
             articleDao,
             readArticleWriterRecordService,
             browseArticleProblemsService,
             articleViewHisDao,
-            articleViewHisAsyncEvent
+            articleViewHisAsyncHandler
         )
     }
 
@@ -65,7 +65,7 @@ class ReadArticleUseCaseTest : BehaviorSpec({
             every { readArticleWriterRecordService.execute(any()) } returns writerSvcOutDto
             every { browseArticleProblemsService.execute(any()) } returns probSvcOutDto
             every { articleViewHisDao.countArticleViews(any()) } returns 1L
-            every { articleViewHisAsyncEvent.addArticleViewHis(any(), any()) } answers {
+            every { articleViewHisAsyncHandler.addArticleViewHis(any(), any()) } answers {
                 log.debug { "Inserting article view history asynchronously" }
             }
 
@@ -76,7 +76,7 @@ class ReadArticleUseCaseTest : BehaviorSpec({
                 verify(exactly = 1) { readArticleWriterRecordService.execute(any()) }
                 verify(exactly = 1) { browseArticleProblemsService.execute(any()) }
                 verify(exactly = 1) { articleViewHisDao.countArticleViews(any()) }
-                verify(exactly = 1) { articleViewHisAsyncEvent.addArticleViewHis(any(), any()) }
+                verify(exactly = 1) { articleViewHisAsyncHandler.addArticleViewHis(any(), any()) }
             }
         }
 

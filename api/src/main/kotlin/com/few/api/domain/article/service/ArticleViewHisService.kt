@@ -18,7 +18,7 @@ class ArticleViewHisService(
     }
 
     fun readArticleViews(inDto: ReadArticleViewsInDto): Long {
-        return articleViewHisDao.selectArticleViews(
+        return articleViewHisDao.countArticleViews(
             ArticleViewHisCountQuery(inDto.articleId)
         )
     }

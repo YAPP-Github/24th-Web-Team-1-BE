@@ -17,7 +17,7 @@
         BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI',
         'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic',
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
-        background-color: #ffffff;
+      background-color: #ffffff;
     "
 >
 <table
@@ -25,7 +25,12 @@
     width="100%"
     cellpadding="0"
     cellspacing="0"
-    style="max-width: 480px; width: 100%; background-color: #ffffff; color : #000000"
+    style="
+        max-width: 480px;
+        width: 100%;
+        background-color: #ffffff;
+        color: #000000;
+      "
 >
     <tr>
         <td style="padding: 30px 20px">
@@ -35,7 +40,7 @@
                         <img
                             src="https://eehhqckznniu25210545.cdn.ntruss.com/images/2024-07-05/B4RRKVh8aEHCHBTS.png"
                             alt="few_logo"
-                            style="display: block; margin: 0 auto"
+                            style="display: block; margin: 0 auto; max-width: 480px"
                         />
                     </td>
                 </tr>
@@ -125,27 +130,26 @@
                 </tr>
                 <tr>
                     <td colspan="1" style="padding-top: 20px">
-                  <span
-                      style="
-                      color: #a5a5a5;
-                      font-size: 16px;
-                      font-weight: 500;
-                      line-height: normal;
-                    "
-                  >작가</span
-                  >
+                <span
+                    style="
+                    color: #a5a5a5;
+                    font-size: 16px;
+                    font-weight: 500;
+                    line-height: normal;
+                  "
+                >작가</span
+                >
                         <span
                             style="
-                      color: #484848;
-                      font-size: 16px;
-                      margin-left: 8px;
-                      font-weight: 700;
-                      line-height: normal;
-                    "
+                    color: #484848;
+                    font-size: 16px;
+                    margin-left: 8px;
+                    font-weight: 700;
+                    line-height: normal;
+                  "
                             id="writer-name"
                             th:text="${writerName}"
-                        ></span
-                        >
+                        ></span>
                         <a
                             th:href="${writerLink}"
                             id="writer-link"

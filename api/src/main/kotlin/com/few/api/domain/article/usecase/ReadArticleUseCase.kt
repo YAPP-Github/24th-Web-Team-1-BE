@@ -40,7 +40,7 @@ class ReadArticleUseCase(
         }
 
         articleViewHisDao.insertArticleViewHis(ArticleViewHisCommand(useCaseIn.articleId, useCaseIn.memberId))
-        val views = articleViewHisDao.countArticleViews(ArticleViewHisCountQuery(useCaseIn.articleId))
+        val views = articleViewHisDao.countArticleViews(ArticleViewHisCountQuery(useCaseIn.articleId)) ?: 0L
 
         return ReadArticleUseCaseOut(
             id = articleRecord.articleId,

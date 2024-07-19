@@ -132,12 +132,12 @@ subprojects {
     }
 
     /** copy data migration before compile kotlin */
-    tasks.getByName("compileKotlin") {
+    tasks.compileKotlin {
         dependsOn("copyDataMigrationAll")
     }
 
     /** jooq codegen after copy data migration */
-    tasks.getByName("jooqCodegen") {
+    tasks.jooqCodegen {
         dependsOn("copyDataMigrationAll")
     }
 

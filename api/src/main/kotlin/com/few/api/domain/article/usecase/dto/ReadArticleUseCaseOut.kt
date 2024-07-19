@@ -11,6 +11,7 @@ data class ReadArticleUseCaseOut(
     val problemIds: List<Long>,
     val category: String,
     val createdAt: LocalDateTime,
+    val views: Long,
 )
 
 data class WriterDetail(

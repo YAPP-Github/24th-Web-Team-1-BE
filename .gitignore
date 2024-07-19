@@ -95,3 +95,10 @@ Footer
 *.log
 *.tmp
 
+# DB schema migration path (except data module)
+data/src/main/resources/**/*.sql
+api/**/*.sql
+api-repo/**/*.sql
+batch/**/*.sql
+email/**/*.sql
+storage/**/*.sql

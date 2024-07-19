@@ -12,9 +12,9 @@ import jooq.jooq_dsl.tables.Problem
 import org.jooq.DSLContext
 import org.jooq.JSON
 import org.jooq.impl.DSL
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Repository
 
-@Component
+@Repository
 class ProblemDao(
     private val dslContext: DSLContext,
     private val contentsJsonMapper: ContentsJsonMapper,

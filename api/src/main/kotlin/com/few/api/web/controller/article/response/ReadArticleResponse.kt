@@ -12,6 +12,7 @@ data class ReadArticleResponse(
     val problemIds: List<Long>,
     val category: String,
     val createdAt: LocalDateTime,
+    val views: Long,
 ) {
     constructor(
         useCaseOut: ReadArticleUseCaseOut,
@@ -26,7 +27,8 @@ data class ReadArticleResponse(
         content = useCaseOut.content,
         problemIds = useCaseOut.problemIds,
         category = useCaseOut.category,
-        createdAt = useCaseOut.createdAt
+        createdAt = useCaseOut.createdAt,
+        views = useCaseOut.views
     )
 }
 

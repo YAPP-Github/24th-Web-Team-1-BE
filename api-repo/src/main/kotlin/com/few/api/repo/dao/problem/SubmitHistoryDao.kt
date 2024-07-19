@@ -3,9 +3,9 @@ package com.few.api.repo.dao.problem
 import com.few.api.repo.dao.problem.command.InsertSubmitHistoryCommand
 import jooq.jooq_dsl.Tables.SUBMIT_HISTORY
 import org.jooq.DSLContext
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Repository
 
-@Component
+@Repository
 class SubmitHistoryDao(
     private val dslContext: DSLContext,
 ) {

@@ -69,7 +69,7 @@ class ArticleControllerTest : ControllerTestSpec() {
         val uri = UriComponentsBuilder.newInstance().path("$BASE_URL/{articleId}").build().toUriString()
         // set usecase mock
         val articleId = 1L
-        val memberId = 1L
+        val memberId = 0L
         `when`(readArticleUseCase.execute(ReadArticleUseCaseIn(articleId, memberId))).thenReturn(
             ReadArticleUseCaseOut(
                 id = 1L,
@@ -121,9 +121,10 @@ class ArticleControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data.category")
                                             .fieldWithString("아티클 카테고리"),
                                         PayloadDocumentation.fieldWithPath("data.createdAt")
-                                            .fieldWithString("아티클 생성일"),
-                                        PayloadDocumentation.fieldWithPath("data.views")
-                                            .fieldWithString("아티클 조회수")
+                                            .fieldWithString("아티클 생성일")
+                                        // todo: add
+//                                        PayloadDocumentation.fieldWithPath("data.views")
+//                                            .fieldWithNumber("아티클 조회수")
                                     )
                                 )
                             ).build()

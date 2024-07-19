@@ -121,10 +121,9 @@ class ArticleControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data.category")
                                             .fieldWithString("아티클 카테고리"),
                                         PayloadDocumentation.fieldWithPath("data.createdAt")
-                                            .fieldWithString("아티클 생성일")
-                                        // todo: add
-//                                        PayloadDocumentation.fieldWithPath("data.views")
-//                                            .fieldWithNumber("아티클 조회수")
+                                            .fieldWithString("아티클 생성일"),
+                                        PayloadDocumentation.fieldWithPath("data.views")
+                                            .fieldWithNumber("아티클 조회수")
                                     )
                                 )
                             ).build()

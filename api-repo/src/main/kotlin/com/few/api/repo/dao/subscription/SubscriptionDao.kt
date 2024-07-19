@@ -10,10 +10,10 @@ import com.few.api.repo.dao.subscription.record.CountAllSubscriptionStatusRecord
 import jooq.jooq_dsl.Tables.MAPPING_WORKBOOK_ARTICLE
 import jooq.jooq_dsl.Tables.SUBSCRIPTION
 import org.jooq.DSLContext
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 
-@Component
+@Repository
 class SubscriptionDao(
     private val dslContext: DSLContext,
 ) {

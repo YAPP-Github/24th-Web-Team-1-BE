@@ -1,5 +1,6 @@
 package com.few.api.domain.article.usecase
 
+import com.few.api.domain.article.handler.ArticleViewHisAsyncHandler
 import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseIn
 import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseOut
 import com.few.api.domain.article.usecase.dto.WriterDetail
@@ -9,6 +10,8 @@ import com.few.api.domain.article.service.dto.BrowseArticleProblemIdsInDto
 import com.few.api.domain.article.service.dto.ReadWriterRecordInDto
 import com.few.api.exception.common.NotFoundException
 import com.few.api.repo.dao.article.ArticleDao
+import com.few.api.repo.dao.article.ArticleViewHisDao
+import com.few.api.repo.dao.article.query.ArticleViewHisCountQuery
 import com.few.api.repo.dao.article.query.SelectArticleRecordQuery
 import com.few.data.common.code.CategoryType
 import org.springframework.stereotype.Component
@@ -19,6 +22,8 @@ class ReadArticleUseCase(
     private val articleDao: ArticleDao,
     private val readArticleWriterRecordService: ReadArticleWriterRecordService,
     private val browseArticleProblemsService: BrowseArticleProblemsService,
+    private val articleViewHisDao: ArticleViewHisDao,
+    private val articleViewHisAsyncHandler: ArticleViewHisAsyncHandler,
 ) {
 
     @Transactional(readOnly = true)
@@ -31,9 +36,14 @@ class ReadArticleUseCase(
             readArticleWriterRecordService.execute(query) ?: throw NotFoundException("writer.notfound.id")
         }
 
-        val problemIds = BrowseArticleProblemIdsInDto(articleRecord.articleId).let { query: BrowseArticleProblemIdsInDto ->
-            browseArticleProblemsService.execute(query)
-        }
+        val problemIds =
+            BrowseArticleProblemIdsInDto(articleRecord.articleId).let { query: BrowseArticleProblemIdsInDto ->
+                browseArticleProblemsService.execute(query)
+            }
+
+        val views = (articleViewHisDao.countArticleViews(ArticleViewHisCountQuery(useCaseIn.articleId)) ?: 0L) + 1L
+
+        articleViewHisAsyncHandler.addArticleViewHis(useCaseIn.articleId, useCaseIn.memberId)
 
         return ReadArticleUseCaseOut(
             id = articleRecord.articleId,
@@ -46,7 +56,8 @@ class ReadArticleUseCase(
             content = articleRecord.content,
             problemIds = problemIds.problemIds,
             category = CategoryType.convertToDisplayName(articleRecord.category),
-            createdAt = articleRecord.createdAt
+            createdAt = articleRecord.createdAt,
+            views = views
         )
     }
 }

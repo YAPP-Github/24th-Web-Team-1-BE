@@ -65,7 +65,7 @@ class ReadArticleUseCaseTest : BehaviorSpec({
             every { readArticleWriterRecordService.execute(any()) } returns writerSvcOutDto
             every { browseArticleProblemsService.execute(any()) } returns probSvcOutDto
             every { articleViewCountHandler.browseArticleViewCount(any()) } returns 1L
-            every { articleViewHisAsyncHandler.addArticleViewHis(any(), any()) } answers {
+            every { articleViewHisAsyncHandler.addArticleViewHis(any(), any(), any()) } answers {
                 log.debug { "Inserting article view history asynchronously" }
             }
 
@@ -76,7 +76,7 @@ class ReadArticleUseCaseTest : BehaviorSpec({
                 verify(exactly = 1) { readArticleWriterRecordService.execute(any()) }
                 verify(exactly = 1) { browseArticleProblemsService.execute(any()) }
                 verify(exactly = 1) { articleViewCountHandler.browseArticleViewCount(any()) }
-                verify(exactly = 1) { articleViewHisAsyncHandler.addArticleViewHis(any(), any()) }
+                verify(exactly = 1) { articleViewHisAsyncHandler.addArticleViewHis(any(), any(), any()) }
             }
         }
 

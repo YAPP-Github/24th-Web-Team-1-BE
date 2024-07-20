@@ -10,8 +10,8 @@ import com.few.api.domain.article.service.dto.BrowseArticleProblemIdsInDto
 import com.few.api.domain.article.service.dto.ReadWriterRecordInDto
 import com.few.api.exception.common.NotFoundException
 import com.few.api.repo.dao.article.ArticleDao
-import com.few.api.repo.dao.article.ArticleViewHisDao
-import com.few.api.repo.dao.article.query.ArticleViewHisCountQuery
+import com.few.api.repo.dao.article.ArticleViewCountDao
+import com.few.api.repo.dao.article.command.ArticleViewCountCommand
 import com.few.api.repo.dao.article.query.SelectArticleRecordQuery
 import com.few.data.common.code.CategoryType
 import org.springframework.stereotype.Component
@@ -22,8 +22,8 @@ class ReadArticleUseCase(
     private val articleDao: ArticleDao,
     private val readArticleWriterRecordService: ReadArticleWriterRecordService,
     private val browseArticleProblemsService: BrowseArticleProblemsService,
-    private val articleViewHisDao: ArticleViewHisDao,
     private val articleViewHisAsyncHandler: ArticleViewHisAsyncHandler,
+    private val articleViewCountDao: ArticleViewCountDao,
 ) {
 
     @Transactional(readOnly = true)
@@ -41,7 +41,7 @@ class ReadArticleUseCase(
                 browseArticleProblemsService.execute(query)
             }
 
-        val views = (articleViewHisDao.countArticleViews(ArticleViewHisCountQuery(useCaseIn.articleId)) ?: 0L) + 1L
+        val views = (articleViewCountDao.selectArticleViewCount(ArticleViewCountCommand(useCaseIn.articleId)) ?: 0L) + 1L
 
         articleViewHisAsyncHandler.addArticleViewHis(useCaseIn.articleId, useCaseIn.memberId)
 

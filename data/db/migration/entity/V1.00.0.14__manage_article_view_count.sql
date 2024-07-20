@@ -3,6 +3,7 @@ CREATE TABLE ARTICLE_VIEW_COUNT
 (
     article_id BIGINT NOT NULL,
     view_count BIGINT NOT NULL,
+    deleted_at TIMESTAMP NULL DEFAULT NULL,
     CONSTRAINT article_view_count_pk PRIMARY KEY (article_id)
 );
 

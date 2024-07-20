@@ -5,6 +5,7 @@ import com.few.api.repo.dao.article.ArticleViewCountDao
 import com.few.api.repo.dao.article.ArticleViewHisDao
 import com.few.api.repo.dao.article.command.ArticleViewHisCommand
 import com.few.api.repo.dao.article.query.ArticleViewCountQuery
+import com.few.data.common.code.CategoryType
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
@@ -19,12 +20,12 @@ class ArticleViewHisAsyncHandler(
 
     @Async(value = DATABASE_ACCESS_POOL)
     @Transactional
-    fun addArticleViewHis(articleId: Long, memberId: Long) {
+    fun addArticleViewHis(articleId: Long, memberId: Long, categoryType: CategoryType?) {
         try {
             articleViewHisDao.insertArticleViewHis(ArticleViewHisCommand(articleId, memberId))
             log.debug { "Successfully inserted article view history for articleId: $articleId and memberId: $memberId" }
 
-            articleViewCountDao.upsertArticleViewCount(ArticleViewCountQuery(articleId))
+            articleViewCountDao.upsertArticleViewCount(ArticleViewCountQuery(articleId, categoryType))
             log.debug { "Successfully upserted article view count for articleId: $articleId and memberId: $memberId" }
         } catch (e: Exception) {
             log.error {

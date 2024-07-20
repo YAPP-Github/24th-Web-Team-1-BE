@@ -42,7 +42,11 @@ class ReadArticleUseCase(
 
         // ARTICLE VIEW HIS에 저장하기 전에 먼저 VIEW COUNT 조회하는 순서 변경 금지
         val views = articleViewCountHandler.browseArticleViewCount(useCaseIn.articleId)
-        articleViewHisAsyncHandler.addArticleViewHis(useCaseIn.articleId, useCaseIn.memberId)
+        articleViewHisAsyncHandler.addArticleViewHis(
+            useCaseIn.articleId,
+            useCaseIn.memberId,
+            CategoryType.fromCode(articleRecord.category)
+        )
 
         return ReadArticleUseCaseOut(
             id = articleRecord.articleId,

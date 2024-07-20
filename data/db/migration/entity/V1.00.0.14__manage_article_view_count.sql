@@ -9,4 +9,4 @@ CREATE TABLE ARTICLE_VIEW_COUNT
 
 -- 조회수 순으로 아티클 조회시 사용하기 위한 인덱스
 -- ex. SELECT * FROM ARTICLE_VIEW_COUNT ORDER BY view_count;
-CREATE INDEX article_view_count_idx ON ARTICLE_VIEW_COUNT (view_count);
+CREATE INDEX article_view_count_desc_idx1 ON ARTICLE_VIEW_COUNT(view_count DESC);

@@ -1,5 +1,6 @@
 package com.few.api.domain.article.usecase
 
+import com.few.api.domain.article.handler.ArticleViewCountHandler
 import com.few.api.domain.article.handler.ArticleViewHisAsyncHandler
 import com.few.api.domain.article.service.BrowseArticleProblemsService
 import com.few.api.domain.article.service.ReadArticleWriterRecordService
@@ -7,7 +8,6 @@ import com.few.api.domain.article.service.dto.BrowseArticleProblemsOutDto
 import com.few.api.domain.article.service.dto.ReadWriterOutDto
 import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseIn
 import com.few.api.repo.dao.article.ArticleDao
-import com.few.api.repo.dao.article.ArticleViewCountDao
 import com.few.api.repo.dao.article.record.SelectArticleRecord
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.kotest.assertions.throwables.shouldThrow
@@ -25,7 +25,7 @@ class ReadArticleUseCaseTest : BehaviorSpec({
     lateinit var browseArticleProblemsService: BrowseArticleProblemsService
     lateinit var useCase: ReadArticleUseCase
     lateinit var articleViewHisAsyncHandler: ArticleViewHisAsyncHandler
-    lateinit var articleViewCountDao: ArticleViewCountDao
+    lateinit var articleViewCountHandler: ArticleViewCountHandler
     val useCaseIn = ReadArticleUseCaseIn(articleId = 1L, memberId = 1L)
 
     beforeContainer {
@@ -33,13 +33,13 @@ class ReadArticleUseCaseTest : BehaviorSpec({
         readArticleWriterRecordService = mockk<ReadArticleWriterRecordService>()
         browseArticleProblemsService = mockk<BrowseArticleProblemsService>()
         articleViewHisAsyncHandler = mockk<ArticleViewHisAsyncHandler>()
-        articleViewCountDao = mockk<ArticleViewCountDao>()
+        articleViewCountHandler = mockk<ArticleViewCountHandler>()
         useCase = ReadArticleUseCase(
             articleDao,
             readArticleWriterRecordService,
             browseArticleProblemsService,
             articleViewHisAsyncHandler,
-            articleViewCountDao
+            articleViewCountHandler
         )
     }
 
@@ -64,7 +64,7 @@ class ReadArticleUseCaseTest : BehaviorSpec({
             every { articleDao.selectArticleRecord(any()) } returns record
             every { readArticleWriterRecordService.execute(any()) } returns writerSvcOutDto
             every { browseArticleProblemsService.execute(any()) } returns probSvcOutDto
-            every { articleViewCountDao.selectArticleViewCount(any()) } returns 1L
+            every { articleViewCountHandler.browseArticleViewCount(any()) } returns 1L
             every { articleViewHisAsyncHandler.addArticleViewHis(any(), any()) } answers {
                 log.debug { "Inserting article view history asynchronously" }
             }
@@ -75,7 +75,7 @@ class ReadArticleUseCaseTest : BehaviorSpec({
                 verify(exactly = 1) { articleDao.selectArticleRecord(any()) }
                 verify(exactly = 1) { readArticleWriterRecordService.execute(any()) }
                 verify(exactly = 1) { browseArticleProblemsService.execute(any()) }
-                verify(exactly = 1) { articleViewCountDao.selectArticleViewCount(any()) }
+                verify(exactly = 1) { articleViewCountHandler.browseArticleViewCount(any()) }
                 verify(exactly = 1) { articleViewHisAsyncHandler.addArticleViewHis(any(), any()) }
             }
         }

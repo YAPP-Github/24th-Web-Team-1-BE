@@ -8,9 +8,6 @@ class LocalCacheEventLogger : CacheEventListener<Any, Any> {
     private val log = KotlinLogging.logger {}
 
     override fun onEvent(event: CacheEvent<out Any, out Any>) {
-        log.debug {
-            "Cache event: ${event.type} for item with key: ${event.key}. " +
-                "Old value: ${event.oldValue}, New value: ${event.newValue}"
-        }
+        log.debug { "Local Cache event: ${event.type} for item with key: ${event.key}. " }
     }
 }

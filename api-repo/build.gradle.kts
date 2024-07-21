@@ -21,4 +21,8 @@ dependencies {
     /** test container */
     implementation(platform("org.testcontainers:testcontainers-bom:${DependencyVersion.TEST_CONTAINER}"))
     testImplementation("org.testcontainers:mysql")
+
+    /** Local Cache **/
+    implementation("org.ehcache:ehcache:${DependencyVersion.EHCACHE}")
+    implementation("org.springframework.boot:spring-boot-starter-cache")
 }

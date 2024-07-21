@@ -20,7 +20,7 @@ class ArticleViewHisAsyncHandler(
 
     @Async(value = DATABASE_ACCESS_POOL)
     @Transactional
-    fun addArticleViewHis(articleId: Long, memberId: Long, categoryType: CategoryType?) {
+    fun addArticleViewHis(articleId: Long, memberId: Long, categoryType: CategoryType) {
         try {
             articleViewHisDao.insertArticleViewHis(ArticleViewHisCommand(articleId, memberId))
             log.debug { "Successfully inserted article view history for articleId: $articleId and memberId: $memberId" }

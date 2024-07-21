@@ -2,7 +2,7 @@ package com.few.api.repo.dao.article
 
 import com.few.api.repo.dao.article.command.ArticleViewCountCommand
 import com.few.api.repo.dao.article.query.ArticleViewCountQuery
-import jooq.jooq_dsl.Tables.ARTICLE_VIEW_COUNT
+import jooq.jooq_dsl.tables.ArticleViewCount.ARTICLE_VIEW_COUNT
 import org.jooq.DSLContext
 import org.springframework.stereotype.Repository
 

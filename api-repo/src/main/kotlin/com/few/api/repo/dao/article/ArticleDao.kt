@@ -11,12 +11,15 @@ import jooq.jooq_dsl.tables.ArticleIfo
 import jooq.jooq_dsl.tables.ArticleMst
 import jooq.jooq_dsl.tables.MappingWorkbookArticle
 import org.jooq.DSLContext
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Repository
 
 @Repository
 class ArticleDao(
     private val dslContext: DSLContext,
 ) {
+
+    @Cacheable(cacheNames = ["selectArticleRecordCache"], key = "#query.articleId")
     fun selectArticleRecord(query: SelectArticleRecordQuery): SelectArticleRecord? {
         val articleId = query.articleId
 

@@ -1,5 +1,6 @@
 package com.few.api.domain.article.usecase
 
+import com.few.api.domain.article.handler.ArticleViewCountHandler
 import com.few.api.domain.article.handler.ArticleViewHisAsyncHandler
 import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseIn
 import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseOut
@@ -10,8 +11,6 @@ import com.few.api.domain.article.service.dto.BrowseArticleProblemIdsInDto
 import com.few.api.domain.article.service.dto.ReadWriterRecordInDto
 import com.few.api.exception.common.NotFoundException
 import com.few.api.repo.dao.article.ArticleDao
-import com.few.api.repo.dao.article.ArticleViewHisDao
-import com.few.api.repo.dao.article.query.ArticleViewHisCountQuery
 import com.few.api.repo.dao.article.query.SelectArticleRecordQuery
 import com.few.data.common.code.CategoryType
 import org.springframework.stereotype.Component
@@ -22,8 +21,8 @@ class ReadArticleUseCase(
     private val articleDao: ArticleDao,
     private val readArticleWriterRecordService: ReadArticleWriterRecordService,
     private val browseArticleProblemsService: BrowseArticleProblemsService,
-    private val articleViewHisDao: ArticleViewHisDao,
     private val articleViewHisAsyncHandler: ArticleViewHisAsyncHandler,
+    private val articleViewCountHandler: ArticleViewCountHandler,
 ) {
 
     @Transactional(readOnly = true)
@@ -41,9 +40,13 @@ class ReadArticleUseCase(
                 browseArticleProblemsService.execute(query)
             }
 
-        val views = (articleViewHisDao.countArticleViews(ArticleViewHisCountQuery(useCaseIn.articleId)) ?: 0L) + 1L
-
-        articleViewHisAsyncHandler.addArticleViewHis(useCaseIn.articleId, useCaseIn.memberId)
+        // ARTICLE VIEW HIS에 저장하기 전에 먼저 VIEW COUNT 조회하는 순서 변경 금지
+        val views = articleViewCountHandler.browseArticleViewCount(useCaseIn.articleId)
+        articleViewHisAsyncHandler.addArticleViewHis(
+            useCaseIn.articleId,
+            useCaseIn.memberId,
+            CategoryType.fromCode(articleRecord.category) ?: throw NotFoundException("article.invalid.category")
+        )
 
         return ReadArticleUseCaseOut(
             id = articleRecord.articleId,

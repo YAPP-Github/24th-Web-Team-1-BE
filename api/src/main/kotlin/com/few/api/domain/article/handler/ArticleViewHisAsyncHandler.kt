@@ -21,14 +21,16 @@ class ArticleViewHisAsyncHandler(
     @Async(value = DATABASE_ACCESS_POOL)
     @Transactional
     fun addArticleViewHis(articleId: Long, memberId: Long, categoryType: CategoryType) {
-        try {
-            articleViewHisDao.insertArticleViewHis(ArticleViewHisCommand(articleId, memberId))
-            log.debug { "Successfully inserted article view history for articleId: $articleId and memberId: $memberId" }
+        runCatching {
+            articleViewHisDao.insertArticleViewHis(ArticleViewHisCommand(articleId, memberId)).also {
+                log.debug { "Successfully inserted article view history for articleId: $articleId and memberId: $memberId" }
+            }
 
-            articleViewCountDao.upsertArticleViewCount(ArticleViewCountQuery(articleId, categoryType))
-            log.debug { "Successfully upserted article view count for articleId: $articleId and memberId: $memberId" }
-        } catch (e: Exception) {
-            log.error {
+            articleViewCountDao.upsertArticleViewCount(ArticleViewCountQuery(articleId, categoryType)).also {
+                log.debug { "Successfully upserted article view count for articleId: $articleId and categoryType: $categoryType" }
+            }
+        }.onFailure { e ->
+            log.error(e) {
                 "Failed insertion article view history and upsertion article view count " +
                     "for articleId: $articleId and memberId: $memberId"
             }

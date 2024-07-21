@@ -1,5 +1,6 @@
 package com.few.api.repo.dao.article.record
 
+import java.io.Serializable
 import java.net.URL
 import java.time.LocalDateTime
 
@@ -11,4 +12,4 @@ data class SelectArticleRecord(
     val category: Byte,
     val content: String,
     val createdAt: LocalDateTime,
-)
+) : Serializable

@@ -7,6 +7,7 @@ tasks.getByName("jar") {
 }
 
 dependencies {
+    /** starter */
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 }

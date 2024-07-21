@@ -94,13 +94,6 @@ subprojects {
         implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-        /** jooq */
-        implementation("org.springframework.boot:spring-boot-starter-jooq")
-        implementation("org.jooq:jooq:${DependencyVersion.JOOQ}")
-        implementation("org.jooq:jooq-meta:${DependencyVersion.JOOQ}")
-        implementation("org.jooq:jooq-codegen:${DependencyVersion.JOOQ}")
-        jooqCodegen("org.jooq:jooq-meta-extensions:${DependencyVersion.JOOQ}")
-
         /** test **/
         testImplementation("org.springframework.boot:spring-boot-starter-test")
         testImplementation("io.mockk:mockk:${DependencyVersion.MOCKK}")
@@ -110,9 +103,6 @@ subprojects {
         testImplementation("io.kotest:kotest-assertions-core:${DependencyVersion.KOTEST}")
         testImplementation("io.kotest.extensions:kotest-extensions-spring:${DependencyVersion.KOTEST_EXTENSION}")
         testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${DependencyVersion.COROUTINE_TEST}")
-
-        /** swagger */
-        swaggerUI("org.webjars:swagger-ui:${DependencyVersion.SWAGGER_UI}")
 
         /** Kotlin Logger **/
         implementation("io.github.oshai:kotlin-logging-jvm:${DependencyVersion.KOTLIN_LOGGING}")
@@ -135,14 +125,20 @@ subprojects {
         }
     }
 
+    /** do all copy data migration */
+    tasks.register("copyDataMigrationAll") {
+        dependsOn(":api-repo:copyDataMigration")
+        dependsOn(":batch:copyDataMigration")
+    }
+
     /** copy data migration before compile kotlin */
-    tasks.getByName("compileKotlin") {
-        dependsOn("copyDataMigration")
+    tasks.compileKotlin {
+        dependsOn("copyDataMigrationAll")
     }
 
     /** jooq codegen after copy data migration */
-    tasks.getByName("jooqCodegen") {
-        dependsOn("copyDataMigration")
+    tasks.jooqCodegen {
+        dependsOn("copyDataMigrationAll")
     }
 
     jooq {
@@ -219,7 +215,6 @@ subprojects {
 
 /** do all jooq codegen */
 tasks.register("jooqCodegenAll") {
-    dependsOn(":api:jooqCodegen")
     dependsOn(":api-repo:jooqCodegen")
     dependsOn(":batch:jooqCodegen")
 }

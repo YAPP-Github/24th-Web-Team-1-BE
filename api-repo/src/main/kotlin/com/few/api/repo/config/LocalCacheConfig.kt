@@ -8,13 +8,12 @@ import org.ehcache.config.units.EntryUnit
 import org.ehcache.event.EventType
 import org.ehcache.impl.config.event.DefaultCacheEventListenerConfiguration
 import org.ehcache.jsr107.Eh107Configuration
+import org.ehcache.jsr107.EhcacheCachingProvider
 import org.springframework.cache.CacheManager
 import org.springframework.cache.annotation.EnableCaching
 import org.springframework.cache.jcache.JCacheCacheManager
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import javax.cache.Caching
-import javax.cache.spi.CachingProvider
 
 @Configuration
 @EnableCaching
@@ -22,14 +21,8 @@ class LocalCacheConfig {
     private val log = KotlinLogging.logger {}
 
     companion object {
-        const val LOCAL_CP = "localCacheProvider"
         const val LOCAL_CM = "localCacheManager"
         const val SELECT_ARTICLE_RECORD_CACHE = "selectArticleRecordCache"
-    }
-
-    @Bean(LOCAL_CP)
-    fun localCacheProvider(): CachingProvider {
-        return Caching.getCachingProvider()
     }
 
     @Bean(LOCAL_CM)
@@ -43,7 +36,7 @@ class LocalCacheConfig {
             ),
             LocalCacheEventLogger::class.java
         )
-        val cacheManager = localCacheProvider().cacheManager
+        val cacheManager = EhcacheCachingProvider().cacheManager
 
         val cacheConfigurationBuilder = CacheConfigurationBuilder.newCacheConfigurationBuilder(
             Any::class.java,

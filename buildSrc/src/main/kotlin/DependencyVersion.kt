@@ -44,4 +44,7 @@ object DependencyVersion {
 
     /** Logger **/
     const val KOTLIN_LOGGING = "7.0.0"
+
+    /** Local Cache **/
+    const val EHCACHE = "3.10.0"
 }

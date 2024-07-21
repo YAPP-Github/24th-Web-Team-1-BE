@@ -7,14 +7,12 @@ tasks.getByName("jar") {
 }
 
 dependencies {
-    // minio - local
-    implementation("io.minio:minio:${DependencyVersion.MINIO}")
-    // s3
+    /** aws - s3 */
     implementation("com.amazonaws:aws-java-sdk-s3:${DependencyVersion.AWS_SDK}")
 
-    // commonmark - markdown to html
+    /** commonmark - markdown to html */
     implementation("org.commonmark:commonmark:${DependencyVersion.COMMONMARK}")
 
-    // jsoup
+    /** jsoup - html parser */
     implementation("org.jsoup:jsoup:1.15.3")
 }

@@ -1,5 +1,7 @@
 package com.few.api.repo.dao.article
 
+import com.few.api.repo.config.LocalCacheConfig.Companion.LOCAL_CM
+import com.few.api.repo.config.LocalCacheConfig.Companion.SELECT_ARTICLE_RECORD_CACHE
 import com.few.api.repo.dao.article.command.InsertFullArticleRecordCommand
 import com.few.api.repo.dao.article.query.SelectArticleRecordQuery
 import com.few.api.repo.dao.article.query.SelectWorkBookArticleRecordQuery
@@ -11,12 +13,15 @@ import jooq.jooq_dsl.tables.ArticleIfo
 import jooq.jooq_dsl.tables.ArticleMst
 import jooq.jooq_dsl.tables.MappingWorkbookArticle
 import org.jooq.DSLContext
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Repository
 
 @Repository
 class ArticleDao(
     private val dslContext: DSLContext,
 ) {
+
+    @Cacheable(key = "#query.articleId", cacheManager = LOCAL_CM, cacheNames = [SELECT_ARTICLE_RECORD_CACHE])
     fun selectArticleRecord(query: SelectArticleRecordQuery): SelectArticleRecord? {
         val articleId = query.articleId
 

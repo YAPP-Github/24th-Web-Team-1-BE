@@ -18,6 +18,7 @@ class ArticleViewCountDao(
             .set(ARTICLE_VIEW_COUNT.CATEGORY_CD, query.categoryType.code)
             .onDuplicateKeyUpdate()
             .set(ARTICLE_VIEW_COUNT.VIEW_COUNT, ARTICLE_VIEW_COUNT.VIEW_COUNT.plus(1))
+            .execute()
     }
 
     fun selectArticleViewCount(command: ArticleViewCountCommand): Long? {

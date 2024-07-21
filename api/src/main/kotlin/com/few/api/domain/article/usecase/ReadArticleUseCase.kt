@@ -45,7 +45,7 @@ class ReadArticleUseCase(
         articleViewHisAsyncHandler.addArticleViewHis(
             useCaseIn.articleId,
             useCaseIn.memberId,
-            CategoryType.fromCode(articleRecord.category) ?: throw RuntimeException("invalid article")
+            CategoryType.fromCode(articleRecord.category) ?: throw NotFoundException("article.invalid.category")
         )
 
         return ReadArticleUseCaseOut(

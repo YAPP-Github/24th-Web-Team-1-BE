@@ -14,14 +14,6 @@ class WorkBookCacheManager(
 
     private var selectWorkBookCache: Cache<Any, Any> = cacheManager.getCache(SELECT_WORKBOOK_RECORD_CACHE)?.nativeCache as Cache<Any, Any>
 
-    fun getAllSelectWorkBookKeys(): List<Long> {
-        val keys = mutableListOf<Long>()
-        selectWorkBookCache.iterator().forEach {
-            keys.add(it.key as Long)
-        }
-        return keys
-    }
-
     fun getAllSelectWorkBookValues(): List<SelectWorkBookRecord> {
         val values = mutableListOf<SelectWorkBookRecord>()
         selectWorkBookCache.iterator().forEach {

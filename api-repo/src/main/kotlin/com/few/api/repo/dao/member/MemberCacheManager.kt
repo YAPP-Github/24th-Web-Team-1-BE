@@ -14,14 +14,6 @@ class MemberCacheManager(
 
     private var selectWriterCache: Cache<Any, Any> = cacheManager.getCache(SELECT_WRITER_CACHE)?.nativeCache as Cache<Any, Any>
 
-    fun getAllWriterKeys(): List<Long> {
-        val keys = mutableListOf<Long>()
-        selectWriterCache.iterator().forEach {
-            keys.add(it.key as Long)
-        }
-        return keys
-    }
-
     fun getAllWriterValues(): List<WriterRecord> {
         val values = mutableListOf<WriterRecord>()
         selectWriterCache.iterator().forEach {

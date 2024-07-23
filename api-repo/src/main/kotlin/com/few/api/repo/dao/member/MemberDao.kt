@@ -44,13 +44,11 @@ class MemberDao(
      * 조회 이후에는 cache에 저장한다.
      */
     fun selectWriters(query: SelectWritersQuery): List<WriterRecord> {
-        val notCachedId = cacheManager.getAllWriterKeys().let { keys ->
-            query.writerIds.filter {
-                it !in keys
-            }
-        }.distinct()
+        val cachedValues = cacheManager.getAllWriterValues().filter { it.writerId in query.writerIds }
+        val cachedId = cachedValues.map { it.writerId }
+        val notCachedId = query.writerIds.filter { it !in cachedId }
 
-        dslContext.select(
+        val fetchedValue = dslContext.select(
             Member.MEMBER.ID.`as`(WriterRecord::writerId.name),
             DSL.jsonGetAttributeAsText(Member.MEMBER.DESCRIPTION, "name")
                 .`as`(WriterRecord::name.name),
@@ -63,9 +61,10 @@ class MemberDao(
             .orderBy(Member.MEMBER.ID.asc())
             .fetchInto(WriterRecord::class.java).let {
                 cacheManager.addSelectWorkBookCache(it)
+                return@let it
             }
 
-        return cacheManager.getAllWriterValues(query.writerIds)
+        return cachedValues + fetchedValue
     }
 
     fun selectMemberByEmail(query: SelectMemberByEmailQuery): MemberIdRecord? {

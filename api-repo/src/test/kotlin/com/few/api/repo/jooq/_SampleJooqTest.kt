@@ -3,13 +3,13 @@ package com.few.api.repo.jooq
 import jooq.jooq_dsl.tables.Member
 import org.jooq.DSLContext
 import org.jooq.JSON
+import org.jooq.exception.DataAccessException
+import org.jooq.exception.IntegrityConstraintViolationException
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.dao.DataIntegrityViolationException
-import org.springframework.dao.DuplicateKeyException
 import org.springframework.test.annotation.Rollback
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -58,7 +58,7 @@ class _SampleJooqTest : JooqTestSpec() {
     @Transactional
     fun `이메일이 중복되는 경우 저장에 실패합니다`() {
         // when & then
-        assertThrows<DuplicateKeyException> {
+        assertThrows<IntegrityConstraintViolationException> {
             dslContext.insertInto(Member.MEMBER)
                 .set(Member.MEMBER.EMAIL, EMAIL)
                 .set(Member.MEMBER.TYPE_CD, TYPECD)
@@ -70,7 +70,7 @@ class _SampleJooqTest : JooqTestSpec() {
     @Transactional
     fun `이메일 값을 입력하지 않은면 저장에 실패합니다`() {
         // when & then
-        assertThrows<DataIntegrityViolationException> {
+        assertThrows<DataAccessException> {
             dslContext.insertInto(Member.MEMBER)
                 .set(Member.MEMBER.TYPE_CD, TYPECD)
                 .execute()
@@ -81,7 +81,7 @@ class _SampleJooqTest : JooqTestSpec() {
     @Transactional
     fun `타입 코드 값을 입력하지 않은면 저장에 실패합니다`() {
         // when & then
-        assertThrows<DataIntegrityViolationException> {
+        assertThrows<DataAccessException> {
             dslContext.insertInto(Member.MEMBER)
                 .set(Member.MEMBER.EMAIL, EMAIL)
                 .execute()

@@ -1,0 +1,48 @@
+package com.few.api.repo.dao.member
+
+import com.few.api.repo.config.LocalCacheConfig.Companion.SELECT_WRITER_CACHE
+import com.few.api.repo.dao.member.record.WriterRecord
+import org.springframework.cache.CacheManager
+import org.springframework.stereotype.Service
+import javax.cache.Cache
+
+@Suppress("UNCHECKED_CAST")
+@Service
+class MemberCacheManager(
+    private val cacheManager: CacheManager,
+) {
+
+    private var selectWriterCache: Cache<Any, Any> = cacheManager.getCache(SELECT_WRITER_CACHE)?.nativeCache as Cache<Any, Any>
+
+    fun getAllWriterKeys(): List<Long> {
+        val keys = mutableListOf<Long>()
+        selectWriterCache.iterator().forEach {
+            keys.add(it.key as Long)
+        }
+        return keys
+    }
+
+    fun getAllWriterValues(): List<WriterRecord> {
+        val values = mutableListOf<WriterRecord>()
+        selectWriterCache.iterator().forEach {
+            values.add(it.value as WriterRecord)
+        }
+        return values
+    }
+
+    fun getAllWriterValues(keys: List<Long>): List<WriterRecord> {
+        val values = mutableListOf<WriterRecord>()
+        keys.forEach {
+            selectWriterCache.get(it)?.let { value ->
+                values.add(value as WriterRecord)
+            }
+        }
+        return values
+    }
+
+    fun addSelectWorkBookCache(records: List<WriterRecord>) {
+        records.forEach {
+            selectWriterCache.put(it.writerId, it)
+        }
+    }
+}

@@ -16,8 +16,9 @@ class PerformanceListener : ExecuteListener {
 
     override fun executeEnd(ctx: ExecuteContext) {
         super.executeEnd(ctx)
-        if (watch!!.split() > 5000000000L) {
-            log.warn { "Slow Query Detected: ${ctx.query()}" }
+        if (watch!!.split() > 5000000000L) { // 5 seconds
+            log.warn { "Slow Query Detected: \n${ctx.query()}" }
+            throw SlowQueryException("Slow Query Detected", ctx.query().toString())
         }
     }
 }

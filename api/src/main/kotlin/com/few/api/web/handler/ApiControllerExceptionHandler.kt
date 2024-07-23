@@ -1,9 +1,12 @@
 package com.few.api.web.handler
 
+import com.few.api.client.repo.RepoClient
+import com.few.api.client.repo.dto.RepoAlterArgs
 import com.few.api.exception.common.ExternalIntegrationException
 import com.few.api.exception.common.InsertException
 import com.few.api.exception.common.NotFoundException
 import com.few.api.exception.subscribe.SubscribeIllegalArgumentException
+import com.few.api.repo.common.SlowQueryException
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
 import jakarta.servlet.http.HttpServletRequest
@@ -25,7 +28,24 @@ import java.nio.file.AccessDeniedException
 @RestControllerAdvice
 class ApiControllerExceptionHandler(
     private val loggingHandler: LoggingHandler,
+    private val repoClient: RepoClient,
 ) {
+
+    @ExceptionHandler(SlowQueryException::class)
+    fun handleSlowQueryException(
+        ex: SlowQueryException,
+        request: HttpServletRequest,
+    ): ApiResponse<ApiResponse.FailureBody> {
+        RepoAlterArgs(
+            exception = ex,
+            requestURL = request.requestURI,
+            query = ex.slowQuery
+        ).let { repoClient.announceRepoAlter(it) }
+        return ApiResponseGenerator.fail(
+            ExceptionMessage.FAIL.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+        )
+    }
 
     @ExceptionHandler(ExternalIntegrationException::class, InsertException::class, NotFoundException::class)
     fun handleCommonException(

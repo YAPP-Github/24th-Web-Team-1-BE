@@ -40,25 +40,36 @@ class LocalCacheConfig {
         )
         val cacheManager = EhcacheCachingProvider().cacheManager
 
-        val cacheConfigurationBuilder = CacheConfigurationBuilder.newCacheConfigurationBuilder(
+        val cache10ConfigurationBuilder = CacheConfigurationBuilder.newCacheConfigurationBuilder(
             Any::class.java,
             Any::class.java,
             ResourcePoolsBuilder.newResourcePoolsBuilder()
-                .heap(50, EntryUnit.ENTRIES)
+                .heap(10, EntryUnit.ENTRIES)
+        )
+            .withService(cacheEventListenerConfigurationConfig)
+            .build()
+
+        val cache5ConfigurationBuilder = CacheConfigurationBuilder.newCacheConfigurationBuilder(
+            Any::class.java,
+            Any::class.java,
+            ResourcePoolsBuilder.newResourcePoolsBuilder()
+                .heap(5, EntryUnit.ENTRIES)
         )
             .withService(cacheEventListenerConfigurationConfig)
             .build()
 
         val selectArticleRecordCacheConfig: javax.cache.configuration.Configuration<Any, Any> =
-            Eh107Configuration.fromEhcacheCacheConfiguration(cacheConfigurationBuilder)
+            Eh107Configuration.fromEhcacheCacheConfiguration(cache10ConfigurationBuilder)
         val selectWorkBookRecordCacheConfig: javax.cache.configuration.Configuration<Any, Any> =
-            Eh107Configuration.fromEhcacheCacheConfiguration(cacheConfigurationBuilder)
-        val selectWritersCacheConfig: javax.cache.configuration.Configuration<Any, Any> =
-            Eh107Configuration.fromEhcacheCacheConfiguration(cacheConfigurationBuilder)
+            Eh107Configuration.fromEhcacheCacheConfiguration(cache10ConfigurationBuilder)
+
+        val selectWriterCacheConfig: javax.cache.configuration.Configuration<Any, Any> =
+            Eh107Configuration.fromEhcacheCacheConfiguration(cache5ConfigurationBuilder)
+
         runCatching {
             cacheManager.createCache(SELECT_ARTICLE_RECORD_CACHE, selectArticleRecordCacheConfig)
             cacheManager.createCache(SELECT_WORKBOOK_RECORD_CACHE, selectWorkBookRecordCacheConfig)
-            cacheManager.createCache(SELECT_WRITER_CACHE, selectWritersCacheConfig)
+            cacheManager.createCache(SELECT_WRITER_CACHE, selectWriterCacheConfig)
         }.onFailure {
             log.error(it) { "Failed to create cache" }
         }

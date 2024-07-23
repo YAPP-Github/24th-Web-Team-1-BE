@@ -23,6 +23,7 @@ class LocalCacheConfig {
     companion object {
         const val LOCAL_CM = "localCacheManager"
         const val SELECT_ARTICLE_RECORD_CACHE = "selectArticleRecordCache"
+        const val SELECT_WORKBOOK_RECORD_CACHE = "selectWorkBookRecordCache"
     }
 
     @Bean(LOCAL_CM)
@@ -49,8 +50,11 @@ class LocalCacheConfig {
 
         val selectArticleRecordCacheConfig: javax.cache.configuration.Configuration<Any, Any> =
             Eh107Configuration.fromEhcacheCacheConfiguration(cacheConfigurationBuilder)
+        val selectWorkBookRecordCacheConfig: javax.cache.configuration.Configuration<Any, Any> =
+            Eh107Configuration.fromEhcacheCacheConfiguration(cacheConfigurationBuilder)
         runCatching {
             cacheManager.createCache(SELECT_ARTICLE_RECORD_CACHE, selectArticleRecordCacheConfig)
+            cacheManager.createCache(SELECT_WORKBOOK_RECORD_CACHE, selectWorkBookRecordCacheConfig)
         }.onFailure {
             log.error(it) { "Failed to create cache" }
         }

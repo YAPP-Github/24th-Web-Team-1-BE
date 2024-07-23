@@ -23,7 +23,7 @@ class RepoClient(
             embedsList.add(
                 Embed(
                     title = "Exception",
-                    description = it.exception.toString()
+                    description = "Slow Query Detected"
                 )
             )
             it.requestURL.let { requestURL ->

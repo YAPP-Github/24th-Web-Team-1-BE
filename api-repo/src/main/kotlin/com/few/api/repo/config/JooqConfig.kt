@@ -8,6 +8,7 @@ import org.jooq.impl.DataSourceConnectionProvider
 import org.jooq.impl.DefaultConfiguration
 import org.jooq.impl.DefaultDSLContext
 import org.jooq.impl.DefaultExecuteListenerProvider
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import javax.sql.DataSource
@@ -15,6 +16,7 @@ import javax.sql.DataSource
 @Configuration
 class JooqConfig(
     private val dataSource: DataSource,
+    private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
     @Bean
     fun dsl(): DefaultDSLContext {
@@ -26,7 +28,7 @@ class JooqConfig(
         val jooqConfiguration = DefaultConfiguration()
         jooqConfiguration.set(connectionProvider())
         jooqConfiguration.set(DefaultExecuteListenerProvider(exceptionTransformer()))
-        jooqConfiguration.set(NativeSQLLogger(), PerformanceListener())
+        jooqConfiguration.set(NativeSQLLogger(), PerformanceListener(applicationEventPublisher))
         jooqConfiguration.set(SQLDialect.MYSQL)
         return jooqConfiguration
     }

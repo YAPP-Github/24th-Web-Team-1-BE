@@ -20,7 +20,11 @@ class ProblemDao(
     private val contentsJsonMapper: ContentsJsonMapper,
 ) {
     fun selectProblemContents(query: SelectProblemQuery): SelectProblemRecord? {
-        return dslContext.select(
+        return selectProblemContentsQuery(query)
+            .fetchOneInto(SelectProblemRecord::class.java)
+    }
+    fun selectProblemContentsQuery(query: SelectProblemQuery) =
+        dslContext.select(
             Problem.PROBLEM.ID.`as`(SelectProblemRecord::id.name),
             Problem.PROBLEM.TITLE.`as`(SelectProblemRecord::title.name),
             DSL.field("JSON_UNQUOTE({0})", String::class.java, Problem.PROBLEM.CONTENTS)
@@ -29,11 +33,14 @@ class ProblemDao(
             .from(Problem.PROBLEM)
             .where(Problem.PROBLEM.ID.eq(query.problemId))
             .and(Problem.PROBLEM.DELETED_AT.isNull)
-            .fetchOneInto(SelectProblemRecord::class.java)
-    }
 
     fun selectProblemAnswer(query: SelectProblemAnswerQuery): SelectProblemAnswerRecord? {
-        return dslContext.select(
+        return selectProblemAnswerQuery(query)
+            .fetchOneInto(SelectProblemAnswerRecord::class.java)
+    }
+
+    fun selectProblemAnswerQuery(query: SelectProblemAnswerQuery) =
+        dslContext.select(
             Problem.PROBLEM.ID.`as`(SelectProblemAnswerRecord::id.name),
             Problem.PROBLEM.ANSWER.`as`(SelectProblemAnswerRecord::answer.name),
             Problem.PROBLEM.EXPLANATION.`as`(SelectProblemAnswerRecord::explanation.name)
@@ -41,20 +48,18 @@ class ProblemDao(
             .from(Problem.PROBLEM)
             .where(Problem.PROBLEM.ID.eq(query.problemId))
             .and(Problem.PROBLEM.DELETED_AT.isNull)
-            .fetchOneInto(SelectProblemAnswerRecord::class.java)
-    }
 
     fun selectProblemsByArticleId(query: SelectProblemsByArticleIdQuery): ProblemIdsRecord? {
-        val articleId = query.articleId
-
-        return dslContext.select()
-            .from(Problem.PROBLEM)
-            .where(Problem.PROBLEM.ARTICLE_ID.eq(articleId))
-            .and(Problem.PROBLEM.DELETED_AT.isNull)
+        return selectProblemsByArticleIdQuery(query)
             .fetch()
             .map { it[Problem.PROBLEM.ID] }
             .let { ProblemIdsRecord(it) }
     }
+
+    fun selectProblemsByArticleIdQuery(query: SelectProblemsByArticleIdQuery) = dslContext.select()
+        .from(Problem.PROBLEM)
+        .where(Problem.PROBLEM.ARTICLE_ID.eq(query.articleId))
+        .and(Problem.PROBLEM.DELETED_AT.isNull)
 
     fun insertProblems(command: List<InsertProblemsCommand>) {
         dslContext.batch(

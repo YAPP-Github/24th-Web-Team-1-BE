@@ -23,9 +23,12 @@ class ArticleViewHisDao(
     }
 
     fun countArticleViews(query: ArticleViewHisCountQuery): Long? {
-        return dslContext.selectCount()
-            .from(ArticleViewHis.ARTICLE_VIEW_HIS)
-            .where(ArticleViewHis.ARTICLE_VIEW_HIS.ARTICLE_MST_ID.eq(query.articleId))
+        return countArticleViewsQuery(query)
             .fetchOne(0, Long::class.java)
     }
+
+    fun countArticleViewsQuery(query: ArticleViewHisCountQuery) =
+        dslContext.selectCount()
+            .from(ArticleViewHis.ARTICLE_VIEW_HIS)
+            .where(ArticleViewHis.ARTICLE_VIEW_HIS.ARTICLE_MST_ID.eq(query.articleId)).query
 }

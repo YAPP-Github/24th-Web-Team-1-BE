@@ -15,7 +15,12 @@ class WorkbookDao(
     private val dslContext: DSLContext,
 ) {
     fun selectWorkBook(query: SelectWorkBookRecordQuery): SelectWorkBookRecord? {
-        return dslContext.select(
+        return selectWorkBookQuery(query)
+            .fetchOneInto(SelectWorkBookRecord::class.java)
+    }
+
+    fun selectWorkBookQuery(query: SelectWorkBookRecordQuery) =
+        dslContext.select(
             Workbook.WORKBOOK.ID.`as`(SelectWorkBookRecord::id.name),
             Workbook.WORKBOOK.TITLE.`as`(SelectWorkBookRecord::title.name),
             Workbook.WORKBOOK.MAIN_IMAGE_URL.`as`(SelectWorkBookRecord::mainImageUrl.name),
@@ -26,8 +31,6 @@ class WorkbookDao(
             .from(Workbook.WORKBOOK)
             .where(Workbook.WORKBOOK.ID.eq(query.id))
             .and(Workbook.WORKBOOK.DELETED_AT.isNull)
-            .fetchOneInto(SelectWorkBookRecord::class.java)
-    }
 
     fun insertWorkBook(command: InsertWorkBookCommand): Long? {
         return dslContext.insertInto(Workbook.WORKBOOK)

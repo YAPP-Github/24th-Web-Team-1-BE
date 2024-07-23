@@ -18,24 +18,30 @@ class MemberDao(
 ) {
 
     fun selectWriter(query: SelectWriterQuery): WriterRecord? {
-        val writerId = query.writerId
-
-        return dslContext.select(
-            Member.MEMBER.ID.`as`(WriterRecord::writerId.name),
-            DSL.jsonGetAttributeAsText(Member.MEMBER.DESCRIPTION, "name").`as`(WriterRecord::name.name),
-            DSL.jsonGetAttribute(Member.MEMBER.DESCRIPTION, "url").`as`(WriterRecord::url.name)
-        )
-            .from(Member.MEMBER)
-            .where(Member.MEMBER.ID.eq(writerId))
-            .and(Member.MEMBER.TYPE_CD.eq(MemberType.WRITER.code))
-            .and(Member.MEMBER.DELETED_AT.isNull)
+        return selectWriterQuery(query)
             .fetchOneInto(WriterRecord::class.java)
     }
 
+    fun selectWriterQuery(query: SelectWriterQuery) = dslContext.select(
+        Member.MEMBER.ID.`as`(WriterRecord::writerId.name),
+        DSL.jsonGetAttributeAsText(Member.MEMBER.DESCRIPTION, "name").`as`(WriterRecord::name.name),
+        DSL.jsonGetAttribute(Member.MEMBER.DESCRIPTION, "url").`as`(WriterRecord::url.name)
+    )
+        .from(Member.MEMBER)
+        .where(Member.MEMBER.ID.eq(query.writerId))
+        .and(Member.MEMBER.TYPE_CD.eq(MemberType.WRITER.code))
+        .and(Member.MEMBER.DELETED_AT.isNull)
+
     fun selectWriters(query: SelectWritersQuery): List<WriterRecord> {
-        return dslContext.select(
+        return selectWritersQuery(query)
+            .fetchInto(WriterRecord::class.java)
+    }
+
+    fun selectWritersQuery(query: SelectWritersQuery) =
+        dslContext.select(
             Member.MEMBER.ID.`as`(WriterRecord::writerId.name),
-            DSL.jsonGetAttributeAsText(Member.MEMBER.DESCRIPTION, "name").`as`(WriterRecord::name.name),
+            DSL.jsonGetAttributeAsText(Member.MEMBER.DESCRIPTION, "name")
+                .`as`(WriterRecord::name.name),
             DSL.jsonGetAttribute(Member.MEMBER.DESCRIPTION, "url").`as`(WriterRecord::url.name)
         )
             .from(Member.MEMBER)
@@ -43,20 +49,18 @@ class MemberDao(
             .and(Member.MEMBER.TYPE_CD.eq(MemberType.WRITER.code))
             .and(Member.MEMBER.DELETED_AT.isNull)
             .orderBy(Member.MEMBER.ID.asc())
-            .fetchInto(WriterRecord::class.java)
-    }
 
     fun selectMemberByEmail(query: SelectMemberByEmailQuery): MemberIdRecord? {
-        val email = query.email
-
-        return dslContext.select(
-            Member.MEMBER.ID.`as`(MemberIdRecord::memberId.name)
-        )
-            .from(Member.MEMBER)
-            .where(Member.MEMBER.EMAIL.eq(email))
-            .and(Member.MEMBER.DELETED_AT.isNull)
+        return selectMemberByEmailQuery(query)
             .fetchOneInto(MemberIdRecord::class.java)
     }
+
+    fun selectMemberByEmailQuery(query: SelectMemberByEmailQuery) = dslContext.select(
+        Member.MEMBER.ID.`as`(MemberIdRecord::memberId.name)
+    )
+        .from(Member.MEMBER)
+        .where(Member.MEMBER.EMAIL.eq(query.email))
+        .and(Member.MEMBER.DELETED_AT.isNull)
 
     fun insertMember(command: InsertMemberCommand): Long? {
         val result = dslContext.insertInto(Member.MEMBER)

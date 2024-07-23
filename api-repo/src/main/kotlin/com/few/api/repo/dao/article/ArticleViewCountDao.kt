@@ -22,11 +22,13 @@ class ArticleViewCountDao(
     }
 
     fun selectArticleViewCount(command: ArticleViewCountCommand): Long? {
-        return dslContext.select(
-            ARTICLE_VIEW_COUNT.VIEW_COUNT
-        ).from(ARTICLE_VIEW_COUNT)
-            .where(ARTICLE_VIEW_COUNT.ARTICLE_ID.eq(command.articleId))
-            .and(ARTICLE_VIEW_COUNT.DELETED_AT.isNull)
-            .fetchOneInto(Long::class.java)
+        return selectArticleViewCountQuery(command).fetchOneInto(Long::class.java)
     }
+
+    fun selectArticleViewCountQuery(command: ArticleViewCountCommand) = dslContext.select(
+        ARTICLE_VIEW_COUNT.VIEW_COUNT
+    ).from(ARTICLE_VIEW_COUNT)
+        .where(ARTICLE_VIEW_COUNT.ARTICLE_ID.eq(command.articleId))
+        .and(ARTICLE_VIEW_COUNT.DELETED_AT.isNull)
+        .query
 }

@@ -34,9 +34,22 @@ class ArticleController(
             readArticleUseCase.execute(useCaseIn)
         }
 
-        return ReadArticleResponse(useCaseOut).let {
-            ApiResponseGenerator.success(it, HttpStatus.OK)
-        }
+        val response = ReadArticleResponse(
+            id = useCaseOut.id,
+            title = useCaseOut.title,
+            writer = WriterInfo(
+                useCaseOut.writer.id,
+                useCaseOut.writer.name,
+                useCaseOut.writer.url
+            ),
+            content = useCaseOut.content,
+            problemIds = useCaseOut.problemIds,
+            category = useCaseOut.category,
+            createdAt = useCaseOut.createdAt,
+            views = useCaseOut.views
+        )
+
+        return ApiResponseGenerator.success(response, HttpStatus.OK)
     }
 
     @GetMapping

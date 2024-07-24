@@ -127,7 +127,7 @@ class ArticleControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data.views")
                                             .fieldWithNumber("아티클 조회수"),
                                         PayloadDocumentation.fieldWithPath("data.includedWorkbooks")
-                                            .fieldWithNumber("아티클이 포함된 학습지 정보(해당 API에서 사용되지 않음)")
+                                            .fieldWithObject("아티클이 포함된 학습지 정보(해당 API에서 사용되지 않음)")
                                     )
                                 )
                             ).build()
@@ -213,7 +213,7 @@ class ArticleControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data.articles.views")
                                             .fieldWithNumber("아티클 조회수"),
                                         PayloadDocumentation.fieldWithPath("data.articles.includedWorkbooks")
-                                            .fieldWithNumber("아티클이 포함된 학습지 정보")
+                                            .fieldWithObject("아티클이 포함된 학습지 정보")
                                     )
                                 )
                             ).build()

@@ -137,12 +137,12 @@ class ArticleControllerTest : ControllerTestSpec() {
     }
 
     @Test
-    @DisplayName("[GET] /api/v1/articles?prevArticleId={prevArticleId}}")
+    @DisplayName("[GET] /api/v1/articles?prevArticleId={prevArticleId}")
     fun readArticles() {
         // given
         val api = "ReadArticles"
         val uri = UriComponentsBuilder.newInstance()
-            .path("$BASE_URL}")
+            .path("$BASE_URL")
             .queryParam("prevArticleId", 1L)
             .build()
             .toUriString()

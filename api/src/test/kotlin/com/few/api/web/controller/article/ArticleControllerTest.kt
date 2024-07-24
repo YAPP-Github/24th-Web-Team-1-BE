@@ -125,7 +125,9 @@ class ArticleControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data.createdAt")
                                             .fieldWithString("아티클 생성일"),
                                         PayloadDocumentation.fieldWithPath("data.views")
-                                            .fieldWithNumber("아티클 조회수")
+                                            .fieldWithNumber("아티클 조회수"),
+                                        PayloadDocumentation.fieldWithPath("data.includedWorkbooks")
+                                            .fieldWithNumber("아티클이 포함된 학습지 정보(해당 API에서 사용되지 않음)")
                                     )
                                 )
                             ).build()

@@ -12,7 +12,7 @@ data class ReadArticleUseCaseOut(
     val category: String,
     val createdAt: LocalDateTime,
     val views: Long,
-    val includedWorkbooks: List<WorkbookDetail>? = null,
+    val includedWorkbooks: List<WorkbookDetail> = emptyList(),
 )
 
 data class WriterDetail(

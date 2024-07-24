@@ -128,9 +128,9 @@ class ArticleControllerTest : ControllerTestSpec() {
                                             .fieldWithNumber("아티클 조회수"),
                                         PayloadDocumentation.fieldWithPath("data.includedWorkbooks")
                                             .fieldWithArray("아티클이 포함된 학습지 정보(해당 API에서 사용되지 않음)"),
-                                        PayloadDocumentation.fieldWithPath("data.includedWorkbooks.id")
+                                        PayloadDocumentation.fieldWithPath("data.includedWorkbooks[].id")
                                             .fieldWithNumber("아티클이 포함된 학습지 정보(학습지ID)(해당 API에서 사용되지 않음)"),
-                                        PayloadDocumentation.fieldWithPath("data.includedWorkbooks.title")
+                                        PayloadDocumentation.fieldWithPath("data.includedWorkbooks[].title")
                                             .fieldWithString("아티클이 포함된 학습지 정보(학습지 제목)(해당 API에서 사용되지 않음)")
                                     )
                                 )
@@ -193,7 +193,9 @@ class ArticleControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data")
                                             .fieldWithObject("data"),
                                         PayloadDocumentation.fieldWithPath("data.isLast")
-                                            .fieldWithNumber("마지막 스크롤 유무"),
+                                            .fieldWithBoolean("마지막 스크롤 유무"),
+                                        PayloadDocumentation.fieldWithPath("data.articles")
+                                            .fieldWithArray("아티클 목록"),
                                         PayloadDocumentation.fieldWithPath("data.articles.id")
                                             .fieldWithNumber("아티클 Id"),
                                         PayloadDocumentation.fieldWithPath("data.articles.writer")
@@ -218,9 +220,9 @@ class ArticleControllerTest : ControllerTestSpec() {
                                             .fieldWithNumber("아티클 조회수"),
                                         PayloadDocumentation.fieldWithPath("data.articles.includedWorkbooks")
                                             .fieldWithArray("아티클이 포함된 학습지 정보"),
-                                        PayloadDocumentation.fieldWithPath("data.articles.includedWorkbooks.id")
+                                        PayloadDocumentation.fieldWithPath("data.articles.includedWorkbooks[].id")
                                             .fieldWithNumber("아티클이 포함된 학습지 정보(학습지ID)"),
-                                        PayloadDocumentation.fieldWithPath("data.articles.includedWorkbooks.title")
+                                        PayloadDocumentation.fieldWithPath("data.articles.includedWorkbooks[].title")
                                             .fieldWithString("아티클이 포함된 학습지 정보(학습지 제목)")
                                     )
                                 )

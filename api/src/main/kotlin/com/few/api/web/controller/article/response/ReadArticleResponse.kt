@@ -12,7 +12,7 @@ data class ReadArticleResponse(
     val category: String,
     val createdAt: LocalDateTime,
     val views: Long,
-    val includedWorkbooks: List<WorkbookInfo> = emptyList(),
+    val includedWorkbooks: List<WorkbookInfo>? = null,
 )
 
 data class WriterInfo(

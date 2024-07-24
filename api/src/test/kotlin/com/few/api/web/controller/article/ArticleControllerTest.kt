@@ -129,9 +129,9 @@ class ArticleControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data.includedWorkbooks")
                                             .fieldWithArray("아티클이 포함된 학습지 정보(해당 API에서 사용되지 않음)"),
                                         PayloadDocumentation.fieldWithPath("data.includedWorkbooks.id")
-                                            .fieldWithArray("아티클이 포함된 학습지 정보(학습지ID)(해당 API에서 사용되지 않음)"),
+                                            .fieldWithNumber("아티클이 포함된 학습지 정보(학습지ID)(해당 API에서 사용되지 않음)"),
                                         PayloadDocumentation.fieldWithPath("data.includedWorkbooks.title")
-                                            .fieldWithArray("아티클이 포함된 학습지 정보(학습지 제목)(해당 API에서 사용되지 않음)")
+                                            .fieldWithString("아티클이 포함된 학습지 정보(학습지 제목)(해당 API에서 사용되지 않음)")
                                     )
                                 )
                             ).build()
@@ -219,9 +219,9 @@ class ArticleControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data.articles.includedWorkbooks")
                                             .fieldWithArray("아티클이 포함된 학습지 정보"),
                                         PayloadDocumentation.fieldWithPath("data.articles.includedWorkbooks.id")
-                                            .fieldWithArray("아티클이 포함된 학습지 정보(학습지ID)"),
+                                            .fieldWithNumber("아티클이 포함된 학습지 정보(학습지ID)"),
                                         PayloadDocumentation.fieldWithPath("data.articles.includedWorkbooks.title")
-                                            .fieldWithArray("아티클이 포함된 학습지 정보(학습지 제목)")
+                                            .fieldWithString("아티클이 포함된 학습지 정보(학습지 제목)")
                                     )
                                 )
                             ).build()

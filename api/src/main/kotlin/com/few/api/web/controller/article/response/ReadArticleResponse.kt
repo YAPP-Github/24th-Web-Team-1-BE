@@ -13,6 +13,7 @@ data class ReadArticleResponse(
     val category: String,
     val createdAt: LocalDateTime,
     val views: Long,
+    val includedWorkbooks: List<WorkbookInfo>,
 ) {
     constructor(
         useCaseOut: ReadArticleUseCaseOut,
@@ -28,7 +29,8 @@ data class ReadArticleResponse(
         problemIds = useCaseOut.problemIds,
         category = useCaseOut.category,
         createdAt = useCaseOut.createdAt,
-        views = useCaseOut.views
+        views = useCaseOut.views,
+        includedWorkbooks = emptyList()
     )
 }
 
@@ -36,4 +38,9 @@ data class WriterInfo(
     val id: Long,
     val name: String,
     val url: URL,
+)
+
+data class WorkbookInfo(
+    val id: Long,
+    val title: String,
 )

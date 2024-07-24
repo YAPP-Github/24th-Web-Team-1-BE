@@ -2,23 +2,26 @@ package com.few.api.web.controller.article
 
 import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseIn
 import com.few.api.domain.article.usecase.ReadArticleUseCase
+import com.few.api.domain.article.usecase.ReadArticlesUseCase
+import com.few.api.domain.article.usecase.dto.ReadArticlesUseCaseIn
 import com.few.api.web.controller.article.response.ReadArticleResponse
+import com.few.api.web.controller.article.response.ReadArticlesResponse
+import com.few.api.web.controller.article.response.WorkbookInfo
+import com.few.api.web.controller.article.response.WriterInfo
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
 import jakarta.validation.constraints.Min
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @Validated
 @RestController
 @RequestMapping(value = ["/api/v1/articles"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class ArticleController(
     private val readArticleUseCase: ReadArticleUseCase,
+    private val readArticlesUseCase: ReadArticlesUseCase,
 ) {
 
     @GetMapping("/{articleId}")
@@ -34,5 +37,42 @@ class ArticleController(
         return ReadArticleResponse(useCaseOut).let {
             ApiResponseGenerator.success(it, HttpStatus.OK)
         }
+    }
+
+    @GetMapping
+    fun readArticles(
+        @RequestParam(
+            required = false,
+            defaultValue = "0"
+        ) prevArticleId: Long,
+    ): ApiResponse<ApiResponse.SuccessBody<ReadArticlesResponse>> {
+        val useCaseOut = readArticlesUseCase.execute(ReadArticlesUseCaseIn(prevArticleId))
+
+        val articles: List<ReadArticleResponse> = useCaseOut.articles.map { a ->
+            ReadArticleResponse(
+                id = a.id,
+                title = a.title,
+                writer = WriterInfo(
+                    a.writer.id,
+                    a.writer.name,
+                    a.writer.url
+                ),
+                content = a.content,
+                problemIds = a.problemIds,
+                category = a.category,
+                createdAt = a.createdAt,
+                views = a.views,
+                includedWorkbooks = a.includedWorkbooks.map { w ->
+                    WorkbookInfo(
+                        id = w.id,
+                        title = w.title
+                    )
+                }
+            )
+        }.toList()
+
+        val response = ReadArticlesResponse(articles, articles.size != 10) // TODO refactor 'isLast'
+
+        return ApiResponseGenerator.success(response, HttpStatus.OK)
     }
 }

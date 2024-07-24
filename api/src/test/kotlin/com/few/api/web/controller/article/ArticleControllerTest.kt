@@ -196,33 +196,33 @@ class ArticleControllerTest : ControllerTestSpec() {
                                             .fieldWithBoolean("마지막 스크롤 유무"),
                                         PayloadDocumentation.fieldWithPath("data.articles")
                                             .fieldWithArray("아티클 목록"),
-                                        PayloadDocumentation.fieldWithPath("data.articles.id")
+                                        PayloadDocumentation.fieldWithPath("data.articles[].id")
                                             .fieldWithNumber("아티클 Id"),
-                                        PayloadDocumentation.fieldWithPath("data.articles.writer")
+                                        PayloadDocumentation.fieldWithPath("data.articles[].writer")
                                             .fieldWithObject("아티클 작가"),
-                                        PayloadDocumentation.fieldWithPath("data.articles.writer.id")
+                                        PayloadDocumentation.fieldWithPath("data.articles[].writer.id")
                                             .fieldWithNumber("아티클 작가 Id"),
-                                        PayloadDocumentation.fieldWithPath("data.articles.writer.name")
+                                        PayloadDocumentation.fieldWithPath("data.articles[].writer.name")
                                             .fieldWithString("아티클 작가 이름"),
-                                        PayloadDocumentation.fieldWithPath("data.articles.writer.url")
+                                        PayloadDocumentation.fieldWithPath("data.articles[].writer.url")
                                             .fieldWithString("아티클 작가 링크"),
-                                        PayloadDocumentation.fieldWithPath("data.articles.title")
+                                        PayloadDocumentation.fieldWithPath("data.articles[].title")
                                             .fieldWithString("아티클 제목"),
-                                        PayloadDocumentation.fieldWithPath("data.articles.content")
+                                        PayloadDocumentation.fieldWithPath("data.articles[].content")
                                             .fieldWithString("아티클 내용"),
-                                        PayloadDocumentation.fieldWithPath("data.articles.problemIds")
+                                        PayloadDocumentation.fieldWithPath("data.articles[].problemIds")
                                             .fieldWithArray("아티클 문제 목록"),
-                                        PayloadDocumentation.fieldWithPath("data.articles.category")
+                                        PayloadDocumentation.fieldWithPath("data.articles[].category")
                                             .fieldWithString("아티클 카테고리"),
-                                        PayloadDocumentation.fieldWithPath("data.articles.createdAt")
+                                        PayloadDocumentation.fieldWithPath("data.articles[].createdAt")
                                             .fieldWithString("아티클 생성일"),
-                                        PayloadDocumentation.fieldWithPath("data.articles.views")
+                                        PayloadDocumentation.fieldWithPath("data.articles[].views")
                                             .fieldWithNumber("아티클 조회수"),
-                                        PayloadDocumentation.fieldWithPath("data.articles.includedWorkbooks")
+                                        PayloadDocumentation.fieldWithPath("data.articles[].includedWorkbooks")
                                             .fieldWithArray("아티클이 포함된 학습지 정보"),
-                                        PayloadDocumentation.fieldWithPath("data.articles.includedWorkbooks[].id")
+                                        PayloadDocumentation.fieldWithPath("data.articles[].includedWorkbooks[].id")
                                             .fieldWithNumber("아티클이 포함된 학습지 정보(학습지ID)"),
-                                        PayloadDocumentation.fieldWithPath("data.articles.includedWorkbooks[].title")
+                                        PayloadDocumentation.fieldWithPath("data.articles[].includedWorkbooks[].title")
                                             .fieldWithString("아티클이 포함된 학습지 정보(학습지 제목)")
                                     )
                                 )

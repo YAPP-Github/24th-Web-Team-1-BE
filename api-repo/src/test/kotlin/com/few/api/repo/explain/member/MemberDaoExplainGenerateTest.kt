@@ -7,6 +7,7 @@ import com.few.api.repo.dao.member.query.SelectWriterQuery
 import com.few.api.repo.dao.member.query.SelectWritersQuery
 import com.few.api.repo.dao.member.support.WriterDescription
 import com.few.api.repo.dao.member.support.WriterDescriptionJsonMapper
+import com.few.api.repo.explain.InsertUpdateExplainGenerator
 import com.few.api.repo.explain.ResultGenerator
 import com.few.api.repo.jooq.JooqTestSpec
 import com.few.data.common.code.MemberType
@@ -14,7 +15,6 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import jooq.jooq_dsl.tables.Member
 import org.jooq.DSLContext
 import org.jooq.JSON
-import org.jooq.impl.DSL
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -107,13 +107,7 @@ class MemberDaoExplainGenerateTest : JooqTestSpec() {
             memberDao.insertMemberCommand(it)
         }
 
-        var sql = command.sql
-        val bindValues = command.bindValues
-        sql = bindValues.foldIndexed(sql) { index, acc, value ->
-            acc.replaceFirst("?", "\"$value\"")
-        }
-
-        val explain = dslContext.explain(DSL.query(sql)).toString()
+        val explain = InsertUpdateExplainGenerator.execute(dslContext, command.sql, command.bindValues)
 
         ResultGenerator.execute(command, explain, "insertMemberCommandExplain")
     }

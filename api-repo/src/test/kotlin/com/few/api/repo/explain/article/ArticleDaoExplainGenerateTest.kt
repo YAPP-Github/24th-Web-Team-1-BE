@@ -5,6 +5,7 @@ import com.few.api.repo.dao.article.command.InsertFullArticleRecordCommand
 import com.few.api.repo.dao.article.query.SelectArticleRecordQuery
 import com.few.api.repo.dao.article.query.SelectWorkBookArticleRecordQuery
 import com.few.api.repo.dao.article.query.SelectWorkbookMappedArticleRecordsQuery
+import com.few.api.repo.explain.InsertUpdateExplainGenerator
 import com.few.api.repo.explain.ResultGenerator
 import com.few.api.repo.jooq.JooqTestSpec
 import com.few.data.common.code.CategoryType
@@ -13,7 +14,6 @@ import jooq.jooq_dsl.tables.ArticleIfo
 import jooq.jooq_dsl.tables.ArticleMst
 import jooq.jooq_dsl.tables.MappingWorkbookArticle
 import org.jooq.DSLContext
-import org.jooq.impl.DSL
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -101,13 +101,7 @@ class ArticleDaoExplainGenerateTest : JooqTestSpec() {
             articleDao.insertArticleMstCommand(it)
         }
 
-        var sql = command.sql
-        val bindValues = command.bindValues
-        sql = bindValues.foldIndexed(sql) { index, acc, value ->
-            acc.replaceFirst("?", "\"$value\"")
-        }
-
-        val explain = dslContext.explain(DSL.query(sql)).toString()
+        val explain = InsertUpdateExplainGenerator.execute(dslContext, command.sql, command.bindValues)
 
         ResultGenerator.execute(command, explain, "insertArticleMstCommandExplain")
     }
@@ -124,13 +118,7 @@ class ArticleDaoExplainGenerateTest : JooqTestSpec() {
             articleDao.insertArticleIfoCommand(1L, it)
         }
 
-        var sql = command.sql
-        val bindValues = command.bindValues
-        sql = bindValues.foldIndexed(sql) { index, acc, value ->
-            acc.replaceFirst("?", "\"$value\"")
-        }
-
-        val explain = dslContext.explain(DSL.query(sql)).toString()
+        val explain = InsertUpdateExplainGenerator.execute(dslContext, command.sql, command.bindValues)
 
         ResultGenerator.execute(command, explain, "insertArticleIfoCommandExplain")
     }

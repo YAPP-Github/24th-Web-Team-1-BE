@@ -3,12 +3,12 @@ package com.few.api.repo.explain.article
 import com.few.api.repo.dao.article.ArticleViewHisDao
 import com.few.api.repo.dao.article.command.ArticleViewHisCommand
 import com.few.api.repo.dao.article.query.ArticleViewHisCountQuery
+import com.few.api.repo.explain.InsertUpdateExplainGenerator
 import com.few.api.repo.explain.ResultGenerator
 import com.few.api.repo.jooq.JooqTestSpec
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jooq.jooq_dsl.tables.*
 import org.jooq.DSLContext
-import org.jooq.impl.DSL
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -55,13 +55,7 @@ class ArticleViewHisDaoExplainGenerateTest : JooqTestSpec() {
             articleViewHisDao.insertArticleViewHisCommand(it)
         }
 
-        var sql = command.sql
-        val bindValues = command.bindValues
-        sql = bindValues.foldIndexed(sql) { index, acc, value ->
-            acc.replaceFirst("?", "\"$value\"")
-        }
-
-        val explain = dslContext.explain(DSL.query(sql)).toString()
+        val explain = InsertUpdateExplainGenerator.execute(dslContext, command.sql, command.bindValues)
 
         ResultGenerator.execute(command, explain, "insertArticleViewHisCommandExplain")
     }

@@ -45,8 +45,8 @@ class MemberDao(
      */
     fun selectWriters(query: SelectWritersQuery): List<WriterRecord> {
         val cachedValues = cacheManager.getAllWriterValues().filter { it.writerId in query.writerIds }
-        val cachedId = cachedValues.map { it.writerId }
-        val notCachedId = query.writerIds.filter { it !in cachedId }
+        val cachedIdS = cachedValues.map { it.writerId }
+        val notCachedIds = query.writerIds.filter { it !in cachedIdS }
 
         val fetchedValue = dslContext.select(
             Member.MEMBER.ID.`as`(WriterRecord::writerId.name),
@@ -55,7 +55,7 @@ class MemberDao(
             DSL.jsonGetAttribute(Member.MEMBER.DESCRIPTION, "url").`as`(WriterRecord::url.name)
         )
             .from(Member.MEMBER)
-            .where(Member.MEMBER.ID.`in`(notCachedId))
+            .where(Member.MEMBER.ID.`in`(notCachedIds))
             .and(Member.MEMBER.TYPE_CD.eq(MemberType.WRITER.code))
             .and(Member.MEMBER.DELETED_AT.isNull)
             .orderBy(Member.MEMBER.ID.asc())

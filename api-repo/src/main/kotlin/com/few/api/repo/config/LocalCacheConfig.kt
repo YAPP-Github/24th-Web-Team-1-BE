@@ -40,7 +40,7 @@ class LocalCacheConfig {
         )
         val cacheManager = EhcacheCachingProvider().cacheManager
 
-        val cache10ConfigurationBuilder = CacheConfigurationBuilder.newCacheConfigurationBuilder(
+        val cache10Configuration = CacheConfigurationBuilder.newCacheConfigurationBuilder(
             Any::class.java,
             Any::class.java,
             ResourcePoolsBuilder.newResourcePoolsBuilder()
@@ -49,7 +49,7 @@ class LocalCacheConfig {
             .withService(cacheEventListenerConfigurationConfig)
             .build()
 
-        val cache5ConfigurationBuilder = CacheConfigurationBuilder.newCacheConfigurationBuilder(
+        val cache5Configuration = CacheConfigurationBuilder.newCacheConfigurationBuilder(
             Any::class.java,
             Any::class.java,
             ResourcePoolsBuilder.newResourcePoolsBuilder()
@@ -59,12 +59,12 @@ class LocalCacheConfig {
             .build()
 
         val selectArticleRecordCacheConfig: javax.cache.configuration.Configuration<Any, Any> =
-            Eh107Configuration.fromEhcacheCacheConfiguration(cache10ConfigurationBuilder)
+            Eh107Configuration.fromEhcacheCacheConfiguration(cache10Configuration)
         val selectWorkBookRecordCacheConfig: javax.cache.configuration.Configuration<Any, Any> =
-            Eh107Configuration.fromEhcacheCacheConfiguration(cache10ConfigurationBuilder)
+            Eh107Configuration.fromEhcacheCacheConfiguration(cache10Configuration)
 
         val selectWriterCacheConfig: javax.cache.configuration.Configuration<Any, Any> =
-            Eh107Configuration.fromEhcacheCacheConfiguration(cache5ConfigurationBuilder)
+            Eh107Configuration.fromEhcacheCacheConfiguration(cache5Configuration)
 
         runCatching {
             cacheManager.createCache(SELECT_ARTICLE_RECORD_CACHE, selectArticleRecordCacheConfig)

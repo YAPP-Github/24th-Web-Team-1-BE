@@ -1,6 +1,9 @@
 package com.few.api.repo.explain.problem
 
 import com.few.api.repo.dao.problem.ProblemDao
+import com.few.api.repo.dao.problem.SubmitHistoryDao
+import com.few.api.repo.dao.problem.command.InsertProblemsCommand
+import com.few.api.repo.dao.problem.command.InsertSubmitHistoryCommand
 import com.few.api.repo.dao.problem.query.SelectProblemAnswerQuery
 import com.few.api.repo.dao.problem.query.SelectProblemQuery
 import com.few.api.repo.dao.problem.query.SelectProblemsByArticleIdQuery
@@ -13,6 +16,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import jooq.jooq_dsl.tables.*
 import org.jooq.DSLContext
 import org.jooq.JSON
+import org.jooq.impl.DSL
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -28,6 +32,9 @@ class ProblemDaoExplainGenerateTest : JooqTestSpec() {
 
     @Autowired
     private lateinit var problemDao: ProblemDao
+
+    @Autowired
+    private lateinit var submitHistoryDao: SubmitHistoryDao
 
     @Autowired
     private lateinit var contentsJsonMapper: ContentsJsonMapper
@@ -64,7 +71,7 @@ class ProblemDaoExplainGenerateTest : JooqTestSpec() {
 
         val explain = dslContext.explain(query).toString()
 
-        ResultGenerator.execute(query, explain, "selectProblemContentsQuery")
+        ResultGenerator.execute(query, explain, "selectProblemContentsQueryExplain")
     }
 
     @Test
@@ -75,7 +82,7 @@ class ProblemDaoExplainGenerateTest : JooqTestSpec() {
 
         val explain = dslContext.explain(query).toString()
 
-        ResultGenerator.execute(query, explain, "selectProblemAnswerQuery")
+        ResultGenerator.execute(query, explain, "selectProblemAnswerQueryExplain")
     }
 
     @Test
@@ -86,6 +93,57 @@ class ProblemDaoExplainGenerateTest : JooqTestSpec() {
 
         val explain = dslContext.explain(query).toString()
 
-        ResultGenerator.execute(query, explain, "selectProblemsByArticleIdQuery")
+        ResultGenerator.execute(query, explain, "selectProblemsByArticleIdQueryExplain")
+    }
+
+    @Test
+    fun insertProblemCommandExplain() {
+        val command = InsertProblemsCommand(
+            articleId = 1L,
+            createrId = 1,
+            title = "problem title",
+            contents = Contents(
+                listOf(
+                    Content(1, "content1"),
+                    Content(2, "content2")
+                )
+            ),
+            answer = "1",
+            explanation = "explanation"
+        ).let {
+            problemDao.insertProblemCommand(it)
+        }
+
+        var sql = command.sql
+        val bindValues = command.bindValues
+        sql = bindValues.foldIndexed(sql) { index, acc, value ->
+            acc.replaceFirst("?", "\"$value\"")
+        }
+
+        val explain = dslContext.explain(DSL.query(sql)).toString()
+
+        ResultGenerator.execute(command, explain, "insertProblemCommandExplain")
+    }
+
+    @Test
+    fun insertSubmitCommandExplain() {
+        val command = InsertSubmitHistoryCommand(
+            memberId = 1L,
+            problemId = 1L,
+            submitAns = "1",
+            isSolved = true
+        ).let {
+            submitHistoryDao.insertSubmitCommand(it)
+        }
+
+        var sql = command.sql
+        val bindValues = command.bindValues
+        sql = bindValues.foldIndexed(sql) { index, acc, value ->
+            acc.replaceFirst("?", "\"$value\"")
+        }
+
+        val explain = dslContext.explain(DSL.query(sql)).toString()
+
+        ResultGenerator.execute(command, explain, "insertSubmitCommandExplain")
     }
 }

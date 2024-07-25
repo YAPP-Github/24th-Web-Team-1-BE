@@ -1,6 +1,7 @@
 package com.few.api.repo.explain.member
 
 import com.few.api.repo.dao.member.MemberDao
+import com.few.api.repo.dao.member.command.InsertMemberCommand
 import com.few.api.repo.dao.member.query.SelectMemberByEmailQuery
 import com.few.api.repo.dao.member.query.SelectWriterQuery
 import com.few.api.repo.dao.member.query.SelectWritersQuery
@@ -13,6 +14,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import jooq.jooq_dsl.tables.Member
 import org.jooq.DSLContext
 import org.jooq.JSON
+import org.jooq.impl.DSL
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -93,6 +95,26 @@ class MemberDaoExplainGenerateTest : JooqTestSpec() {
 
         val explain = dslContext.explain(query).toString()
 
-        ResultGenerator.execute(query, explain, "selectMemberByEmailQueryExplain")
+        ResultGenerator.execute(query, explain, "selectMemberByEmailQueryExplainExplain")
+    }
+
+    @Test
+    fun insertMemberCommandExplain() {
+        val command = InsertMemberCommand(
+            email = "test100@gmail.com",
+            memberType = MemberType.NORMAL
+        ).let {
+            memberDao.insertMemberCommand(it)
+        }
+
+        var sql = command.sql
+        val bindValues = command.bindValues
+        sql = bindValues.foldIndexed(sql) { index, acc, value ->
+            acc.replaceFirst("?", "\"$value\"")
+        }
+
+        val explain = dslContext.explain(DSL.query(sql)).toString()
+
+        ResultGenerator.execute(command, explain, "insertMemberCommandExplain")
     }
 }

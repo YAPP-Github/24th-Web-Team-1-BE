@@ -12,14 +12,17 @@ class ArticleViewCountDao(
 ) {
 
     fun upsertArticleViewCount(query: ArticleViewCountQuery) {
+        upsertArticleViewCountQuery(query)
+            .execute()
+    }
+
+    fun upsertArticleViewCountQuery(query: ArticleViewCountQuery) =
         dslContext.insertInto(ARTICLE_VIEW_COUNT)
             .set(ARTICLE_VIEW_COUNT.ARTICLE_ID, query.articleId)
             .set(ARTICLE_VIEW_COUNT.VIEW_COUNT, 1)
             .set(ARTICLE_VIEW_COUNT.CATEGORY_CD, query.categoryType.code)
             .onDuplicateKeyUpdate()
             .set(ARTICLE_VIEW_COUNT.VIEW_COUNT, ARTICLE_VIEW_COUNT.VIEW_COUNT.plus(1))
-            .execute()
-    }
 
     fun selectArticleViewCount(command: ArticleViewCountCommand): Long? {
         return selectArticleViewCountQuery(command).fetchOneInto(Long::class.java)

@@ -33,15 +33,18 @@ class WorkbookDao(
             .and(Workbook.WORKBOOK.DELETED_AT.isNull)
 
     fun insertWorkBook(command: InsertWorkBookCommand): Long? {
-        return dslContext.insertInto(Workbook.WORKBOOK)
-            .set(Workbook.WORKBOOK.TITLE, command.title)
-            .set(Workbook.WORKBOOK.MAIN_IMAGE_URL, command.mainImageUrl.toString())
-            .set(Workbook.WORKBOOK.CATEGORY_CD, CategoryType.convertToCode(command.category))
-            .set(Workbook.WORKBOOK.DESCRIPTION, command.description)
+        return insertWorkBookCommand(command)
             .returning(Workbook.WORKBOOK.ID)
             .fetchOne()
             ?.id
     }
+
+    fun insertWorkBookCommand(command: InsertWorkBookCommand) =
+        dslContext.insertInto(Workbook.WORKBOOK)
+            .set(Workbook.WORKBOOK.TITLE, command.title)
+            .set(Workbook.WORKBOOK.MAIN_IMAGE_URL, command.mainImageUrl.toString())
+            .set(Workbook.WORKBOOK.CATEGORY_CD, CategoryType.convertToCode(command.category))
+            .set(Workbook.WORKBOOK.DESCRIPTION, command.description)
 
     fun mapWorkBookToArticle(command: MapWorkBookToArticleCommand) {
         dslContext.insertInto(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE)

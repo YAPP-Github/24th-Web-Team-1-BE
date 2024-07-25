@@ -64,14 +64,17 @@ class ProblemDao(
     fun insertProblems(command: List<InsertProblemsCommand>) {
         dslContext.batch(
             command.map {
-                dslContext.insertInto(Problem.PROBLEM)
-                    .set(Problem.PROBLEM.ARTICLE_ID, it.articleId)
-                    .set(Problem.PROBLEM.CREATOR_ID, it.createrId)
-                    .set(Problem.PROBLEM.TITLE, it.title)
-                    .set(Problem.PROBLEM.CONTENTS, JSON.valueOf(contentsJsonMapper.toJson(it.contents)))
-                    .set(Problem.PROBLEM.ANSWER, it.answer)
-                    .set(Problem.PROBLEM.EXPLANATION, it.explanation)
+                insertProblemCommand(it)
             }
         ).execute()
     }
+
+    fun insertProblemCommand(it: InsertProblemsCommand) =
+        dslContext.insertInto(Problem.PROBLEM)
+            .set(Problem.PROBLEM.ARTICLE_ID, it.articleId)
+            .set(Problem.PROBLEM.CREATOR_ID, it.createrId)
+            .set(Problem.PROBLEM.TITLE, it.title)
+            .set(Problem.PROBLEM.CONTENTS, JSON.valueOf(contentsJsonMapper.toJson(it.contents)))
+            .set(Problem.PROBLEM.ANSWER, it.answer)
+            .set(Problem.PROBLEM.EXPLANATION, it.explanation)
 }

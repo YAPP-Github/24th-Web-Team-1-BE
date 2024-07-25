@@ -1,6 +1,8 @@
 package com.few.api.repo.explain.subscription
 
 import com.few.api.repo.dao.subscription.SubscriptionDao
+import com.few.api.repo.dao.subscription.command.InsertWorkbookSubscriptionCommand
+import com.few.api.repo.dao.subscription.command.UpdateDeletedAtInAllSubscriptionCommand
 import com.few.api.repo.dao.subscription.query.CountWorkbookMappedArticlesQuery
 import com.few.api.repo.dao.subscription.query.SelectAllWorkbookSubscriptionStatusNotConsiderDeletedAtQuery
 import com.few.api.repo.explain.ResultGenerator
@@ -8,6 +10,7 @@ import com.few.api.repo.jooq.JooqTestSpec
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jooq.jooq_dsl.tables.*
 import org.jooq.DSLContext
+import org.jooq.impl.DSL
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -53,7 +56,7 @@ class SubscriptionDaoExplainGenerateTest : JooqTestSpec() {
 
         val explain = dslContext.explain(query).toString()
 
-        ResultGenerator.execute(query, explain, "selectTopWorkbookSubscriptionStatusQuery")
+        ResultGenerator.execute(query, explain, "selectTopWorkbookSubscriptionStatusQueryExplain")
     }
 
     @Test
@@ -66,6 +69,46 @@ class SubscriptionDaoExplainGenerateTest : JooqTestSpec() {
 
         val explain = dslContext.explain(query).toString()
 
-        ResultGenerator.execute(query, explain, "countWorkbookMappedArticlesQuery")
+        ResultGenerator.execute(query, explain, "countWorkbookMappedArticlesQueryExplain")
+    }
+
+    @Test
+    fun insertWorkbookSubscriptionCommandExplain() {
+        val command = InsertWorkbookSubscriptionCommand(
+            memberId = 1L,
+            workbookId = 1L
+        ).let {
+            subscriptionDao.insertWorkbookSubscriptionCommand(it)
+        }
+
+        var sql = command.sql
+        val bindValues = command.bindValues
+        sql = bindValues.foldIndexed(sql) { index, acc, value ->
+            acc.replaceFirst("?", "\"$value\"")
+        }
+
+        val explain = dslContext.explain(DSL.query(sql)).toString()
+
+        ResultGenerator.execute(command, explain, "insertWorkbookSubscriptionCommandExplain")
+    }
+
+    @Test
+    fun updateDeletedAtInAllSubscriptionCommandExplain() {
+        val command = UpdateDeletedAtInAllSubscriptionCommand(
+            memberId = 1L,
+            opinion = "test"
+        ).let {
+            subscriptionDao.updateDeletedAtInAllSubscriptionCommand(it)
+        }
+
+        var sql = command.sql
+        val bindValues = command.bindValues
+        sql = bindValues.foldIndexed(sql) { index, acc, value ->
+            acc.replaceFirst("?", "\"$value\"")
+        }
+
+        val explain = dslContext.explain(DSL.query(sql)).toString()
+
+        ResultGenerator.execute(command, explain, "updateDeletedAtInAllSubscriptionCommandExplain")
     }
 }

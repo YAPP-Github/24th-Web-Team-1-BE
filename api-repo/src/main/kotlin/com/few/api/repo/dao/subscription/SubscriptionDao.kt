@@ -19,12 +19,15 @@ class SubscriptionDao(
 ) {
 
     fun insertWorkbookSubscription(command: InsertWorkbookSubscriptionCommand) {
-        dslContext.insertInto(SUBSCRIPTION)
-            .set(SUBSCRIPTION.MEMBER_ID, command.memberId)
-            .set(SUBSCRIPTION.TARGET_WORKBOOK_ID, command.workbookId)
+        insertWorkbookSubscriptionCommand(command)
             .returning(SUBSCRIPTION.ID)
             .fetchOne()
     }
+
+    fun insertWorkbookSubscriptionCommand(command: InsertWorkbookSubscriptionCommand) =
+        dslContext.insertInto(SUBSCRIPTION)
+            .set(SUBSCRIPTION.MEMBER_ID, command.memberId)
+            .set(SUBSCRIPTION.TARGET_WORKBOOK_ID, command.workbookId)
 
     fun reSubscribeWorkbookSubscription(command: InsertWorkbookSubscriptionCommand) {
         dslContext.update(SUBSCRIPTION)
@@ -62,12 +65,15 @@ class SubscriptionDao(
             .limit(1)
 
     fun updateDeletedAtInAllSubscription(command: UpdateDeletedAtInAllSubscriptionCommand) {
+        updateDeletedAtInAllSubscriptionCommand(command)
+            .execute()
+    }
+
+    fun updateDeletedAtInAllSubscriptionCommand(command: UpdateDeletedAtInAllSubscriptionCommand) =
         dslContext.update(SUBSCRIPTION)
             .set(SUBSCRIPTION.DELETED_AT, LocalDateTime.now())
             .set(SUBSCRIPTION.UNSUBS_OPINION, command.opinion) // TODO: opinion row 마다 중복 해결
             .where(SUBSCRIPTION.MEMBER_ID.eq(command.memberId))
-            .execute()
-    }
 
     fun countWorkbookMappedArticles(query: CountWorkbookMappedArticlesQuery): Int? {
         return countWorkbookMappedArticlesQuery(query)

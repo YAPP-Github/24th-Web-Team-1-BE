@@ -1,6 +1,7 @@
 package com.few.api.repo.explain.article
 
 import com.few.api.repo.dao.article.ArticleDao
+import com.few.api.repo.dao.article.command.InsertFullArticleRecordCommand
 import com.few.api.repo.dao.article.query.SelectArticleRecordQuery
 import com.few.api.repo.dao.article.query.SelectWorkBookArticleRecordQuery
 import com.few.api.repo.dao.article.query.SelectWorkbookMappedArticleRecordsQuery
@@ -12,10 +13,12 @@ import jooq.jooq_dsl.tables.ArticleIfo
 import jooq.jooq_dsl.tables.ArticleMst
 import jooq.jooq_dsl.tables.MappingWorkbookArticle
 import org.jooq.DSLContext
+import org.jooq.impl.DSL
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import java.net.URL
 
 @Tag("explain")
 class ArticleDaoExplainGenerateTest : JooqTestSpec() {
@@ -84,5 +87,51 @@ class ArticleDaoExplainGenerateTest : JooqTestSpec() {
         val explain = dslContext.explain(query).toString()
 
         ResultGenerator.execute(query, explain, "selectWorkbookMappedArticleRecordsQueryExplain")
+    }
+
+    @Test
+    fun insertArticleMstCommandExplain() {
+        val command = InsertFullArticleRecordCommand(
+            100L,
+            URL("http://localhost:8080/image1.jpg"),
+            "this is title1",
+            CategoryType.fromCode(0)!!.code,
+            "this is content1"
+        ).let {
+            articleDao.insertArticleMstCommand(it)
+        }
+
+        var sql = command.sql
+        val bindValues = command.bindValues
+        sql = bindValues.foldIndexed(sql) { index, acc, value ->
+            acc.replaceFirst("?", "\"$value\"")
+        }
+
+        val explain = dslContext.explain(DSL.query(sql)).toString()
+
+        ResultGenerator.execute(command, explain, "insertArticleMstCommandExplain")
+    }
+
+    @Test
+    fun insertArticleIfoCommandExplain() {
+        val command = InsertFullArticleRecordCommand(
+            100L,
+            URL("http://localhost:8080/image1.jpg"),
+            "this is title1",
+            CategoryType.fromCode(0)!!.code,
+            "this is content1"
+        ).let {
+            articleDao.insertArticleIfoCommand(1L, it)
+        }
+
+        var sql = command.sql
+        val bindValues = command.bindValues
+        sql = bindValues.foldIndexed(sql) { index, acc, value ->
+            acc.replaceFirst("?", "\"$value\"")
+        }
+
+        val explain = dslContext.explain(DSL.query(sql)).toString()
+
+        ResultGenerator.execute(command, explain, "insertArticleIfoCommandExplain")
     }
 }

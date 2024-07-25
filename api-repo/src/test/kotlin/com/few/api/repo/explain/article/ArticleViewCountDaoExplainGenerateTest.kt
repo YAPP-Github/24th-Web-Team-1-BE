@@ -2,12 +2,14 @@ package com.few.api.repo.explain.article
 
 import com.few.api.repo.dao.article.ArticleViewCountDao
 import com.few.api.repo.dao.article.command.ArticleViewCountCommand
+import com.few.api.repo.dao.article.query.ArticleViewCountQuery
 import com.few.api.repo.explain.ResultGenerator
 import com.few.api.repo.jooq.JooqTestSpec
 import com.few.data.common.code.CategoryType
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jooq.jooq_dsl.tables.ArticleViewCount
 import org.jooq.DSLContext
+import org.jooq.impl.DSL
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -44,5 +46,25 @@ class ArticleViewCountDaoExplainGenerateTest : JooqTestSpec() {
 
         val explain = dslContext.explain(query).toString()
         ResultGenerator.execute(query, explain, "selectArticleViewCountQueryExplain")
+    }
+
+    @Test
+    fun upsertArticleViewCountQueryExplain() {
+        val command = ArticleViewCountQuery(
+            articleId = 1L,
+            categoryType = CategoryType.fromCode(0)!!
+        ).let {
+            articleViewCountDao.upsertArticleViewCountQuery(it)
+        }
+
+        var sql = command.sql
+        val bindValues = command.bindValues
+        sql = bindValues.foldIndexed(sql) { index, acc, value ->
+            acc.replaceFirst("?", "\"$value\"")
+        }
+
+        val explain = dslContext.explain(DSL.query(sql)).toString()
+
+        ResultGenerator.execute(command, explain, "upsertArticleViewCountQueryExplain")
     }
 }

@@ -63,12 +63,15 @@ class MemberDao(
         .and(Member.MEMBER.DELETED_AT.isNull)
 
     fun insertMember(command: InsertMemberCommand): Long? {
-        val result = dslContext.insertInto(Member.MEMBER)
-            .set(Member.MEMBER.EMAIL, command.email)
-            .set(Member.MEMBER.TYPE_CD, command.memberType.code)
+        val result = insertMemberCommand(command)
             .returning(Member.MEMBER.ID)
             .fetchOne()
 
         return result?.getValue(Member.MEMBER.ID)
     }
+
+    fun insertMemberCommand(command: InsertMemberCommand) =
+        dslContext.insertInto(Member.MEMBER)
+            .set(Member.MEMBER.EMAIL, command.email)
+            .set(Member.MEMBER.TYPE_CD, command.memberType.code)
 }

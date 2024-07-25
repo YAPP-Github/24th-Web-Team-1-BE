@@ -12,6 +12,10 @@ class ArticleViewHisDao(
 ) {
 
     fun insertArticleViewHis(command: ArticleViewHisCommand) {
+        insertArticleViewHisCommand(command).execute()
+    }
+
+    fun insertArticleViewHisCommand(command: ArticleViewHisCommand) =
         dslContext.insertInto(
             ArticleViewHis.ARTICLE_VIEW_HIS,
             ArticleViewHis.ARTICLE_VIEW_HIS.ARTICLE_MST_ID,
@@ -19,8 +23,7 @@ class ArticleViewHisDao(
         ).values(
             command.articleId,
             command.memberId
-        ).execute()
-    }
+        )
 
     fun countArticleViews(query: ArticleViewHisCountQuery): Long? {
         return countArticleViewsQuery(query)

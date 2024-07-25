@@ -11,6 +11,9 @@ import com.few.api.domain.subscription.usecase.dto.SubscribeWorkbookUseCaseIn
 import com.few.api.domain.subscription.usecase.dto.UnsubscribeAllUseCaseIn
 import com.few.api.domain.subscription.usecase.dto.UnsubscribeWorkbookUseCaseIn
 import com.few.api.web.controller.subscription.request.UnsubscribeAllRequest
+import com.few.api.web.controller.subscription.response.SubscribeWorkbookInfo
+import com.few.api.web.controller.subscription.response.SubscribeWorkbooksResponse
+import com.few.api.web.support.ViewCategory
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Min
 import org.springframework.http.HttpStatus
@@ -26,6 +29,40 @@ class SubscriptionController(
     private val unsubscribeWorkbookUseCase: UnsubscribeWorkbookUseCase,
     private val unsubscribeAllUseCase: UnsubscribeAllUseCase,
 ) {
+
+    // todo add auth
+    @GetMapping("/subscriptions/workbooks")
+    fun subscribeWorkbooks(
+        @RequestParam(
+            value = "view",
+            required = false
+        ) view: ViewCategory? = ViewCategory.MAIN_CARD,
+    ): ApiResponse<ApiResponse.SuccessBody<SubscribeWorkbooksResponse>> {
+        SubscribeWorkbooksResponse(
+            listOf(
+                SubscribeWorkbookInfo(
+                    id = 1,
+                    status = "ACTIVE",
+                    totalDay = 10,
+                    currentDay = 1,
+                    rank = 0,
+                    totalSubscriber = 100,
+                    articleInfo = "{}"
+                ),
+                SubscribeWorkbookInfo(
+                    id = 2,
+                    status = "DONE",
+                    totalDay = 10,
+                    currentDay = 10,
+                    rank = 22,
+                    totalSubscriber = 100,
+                    articleInfo = "{}"
+                )
+            )
+        ).let {
+            return ApiResponseGenerator.success(it, HttpStatus.OK)
+        }
+    }
 
     @PostMapping("/workbooks/{workbookId}/subs")
     fun subscribeWorkbook(

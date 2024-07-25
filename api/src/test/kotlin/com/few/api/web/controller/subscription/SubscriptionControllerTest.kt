@@ -7,9 +7,6 @@ import com.epages.restdocs.apispec.Schema
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
-import com.few.api.web.controller.helper.toIdentifier
-import com.few.api.web.controller.helper.toRequestSchema
-import com.few.api.web.controller.helper.toResponseSchema
 import com.few.api.web.controller.subscription.request.SubscribeWorkbookRequest
 import com.few.api.web.controller.subscription.request.UnsubscribeWorkbookRequest
 import com.few.api.domain.subscription.usecase.SubscribeWorkbookUseCase
@@ -18,6 +15,8 @@ import com.few.api.domain.subscription.usecase.UnsubscribeWorkbookUseCase
 import com.few.api.domain.subscription.usecase.dto.SubscribeWorkbookUseCaseIn
 import com.few.api.domain.subscription.usecase.dto.UnsubscribeAllUseCaseIn
 import com.few.api.domain.subscription.usecase.dto.UnsubscribeWorkbookUseCaseIn
+import com.few.api.web.controller.helper.*
+import com.few.api.web.support.ViewCategory
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -28,6 +27,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.restdocs.RestDocumentationContextProvider
+import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.util.UriComponentsBuilder
@@ -67,6 +67,64 @@ class SubscriptionControllerTest : ControllerTestSpec() {
             .configureClient()
             .filter(WebTestClientRestDocumentation.documentationConfiguration(restDocumentation))
             .build()
+    }
+
+    @Test
+    @DisplayName("[GET] /api/v1/subscriptions/workbooks")
+    fun subscribeWorkbooks() {
+        // given
+        val api = "SubscribeWorkBooks"
+        val view = ViewCategory.MAIN_CARD
+        val uri = UriComponentsBuilder.newInstance()
+            .path("$BASE_URL/subscriptions/workbooks")
+            .queryParam("view", view)
+            .build()
+            .toUriString()
+
+        // when
+        this.webTestClient.get()
+            .uri(uri)
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange().expectStatus().is2xxSuccessful()
+            .expectBody().consumeWith(
+                WebTestClientRestDocumentation.document(
+                    api.toIdentifier(),
+                    ResourceDocumentation.resource(
+                        ResourceSnippetParameters.builder()
+                            .description("구독한 학습지 정보 목록을 조회합니다.")
+                            .summary(api.toIdentifier())
+                            .privateResource(false)
+                            .deprecated(false)
+                            .tag(TAG)
+                            .responseSchema(Schema.schema(api.toResponseSchema()))
+                            .responseFields(
+                                *Description.describe(
+                                    arrayOf(
+                                        PayloadDocumentation.fieldWithPath("data")
+                                            .fieldWithObject("data"),
+                                        PayloadDocumentation.fieldWithPath("data.workbooks")
+                                            .fieldWithArray("학습지 목록"),
+                                        PayloadDocumentation.fieldWithPath("data.workbooks[].id")
+                                            .fieldWithNumber("학습지 Id"),
+                                        PayloadDocumentation.fieldWithPath("data.workbooks[].status")
+                                            .fieldWithString("구독 상태"),
+                                        PayloadDocumentation.fieldWithPath("data.workbooks[].totalDay")
+                                            .fieldWithNumber("총 일수"),
+                                        PayloadDocumentation.fieldWithPath("data.workbooks[].currentDay")
+                                            .fieldWithNumber("현재 일수"),
+                                        PayloadDocumentation.fieldWithPath("data.workbooks[].rank")
+                                            .fieldWithNumber("순위"),
+                                        PayloadDocumentation.fieldWithPath("data.workbooks[].totalSubscriber")
+                                            .fieldWithNumber("전체 구독자 수"),
+                                        PayloadDocumentation.fieldWithPath("data.workbooks[].articleInfo")
+                                            .fieldWithString("학습지 정보(Json 타입)")
+                                    )
+                                )
+                            )
+                            .build()
+                    )
+                )
+            )
     }
 
     @Test

@@ -71,9 +71,9 @@ class SubscriptionControllerTest : ControllerTestSpec() {
 
     @Test
     @DisplayName("[GET] /api/v1/subscriptions/workbooks")
-    fun subscribeWorkbooks() {
+    fun browseSubscribeWorkbooks() {
         // given
-        val api = "SubscribeWorkBooks"
+        val api = "BrowseSubscribeWorkBooks"
         val view = ViewCategory.MAIN_CARD
         val uri = UriComponentsBuilder.newInstance()
             .path("$BASE_URL/subscriptions/workbooks")

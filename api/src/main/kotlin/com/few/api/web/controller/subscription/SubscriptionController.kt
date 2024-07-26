@@ -32,7 +32,7 @@ class SubscriptionController(
 
     // todo add auth
     @GetMapping("/subscriptions/workbooks")
-    fun subscribeWorkbooks(
+    fun browseSubscribeWorkbooks(
         @RequestParam(
             value = "view",
             required = false

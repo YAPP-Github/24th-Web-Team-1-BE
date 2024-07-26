@@ -1,7 +1,7 @@
 package com.few.api.web.support
 
 /**
- * BatchCategoryType is origin from CategoryType in few-data module.
+ * WorkBookCategory is origin from CategoryType in few-data module.
  * @see com.few.data.common.code.CategoryType
  */
 enum class WorkBookCategory(val code: Byte, val parameterName: String, val displayName: String) {

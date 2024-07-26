@@ -29,6 +29,19 @@ class WorkBookController(
     private val readWorkbookUseCase: ReadWorkbookUseCase,
 ) {
 
+    @GetMapping("/categories")
+    fun browseWorkBookCategories(): ApiResponse<ApiResponse.SuccessBody<List<Map<String, String>>>> {
+        return ApiResponseGenerator.success(
+            WorkBookCategory.entries.map {
+                mapOf(
+                    "parameterName" to it.parameterName,
+                    "displayName" to it.displayName
+                )
+            },
+            HttpStatus.OK
+        )
+    }
+
     @GetMapping
     fun browseWorkBooks(
         @RequestParam(value = "category", required = false)

@@ -72,6 +72,48 @@ class WorkBookControllerTest : ControllerTestSpec() {
     }
 
     @Test
+    @DisplayName("[GET] /api/v1/workbooks/categories")
+    fun browseWorkBookCategories() {
+        // given
+        val api = "BrowseWorkBookCategories"
+        val uri = UriComponentsBuilder.newInstance()
+            .path("$BASE_URL/categories")
+            .build()
+            .toUriString()
+
+        // when
+        mockMvc.perform(
+            get(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+            status().is2xxSuccessful
+        ).andDo(
+            document(
+                api.toIdentifier(),
+                resource(
+                    ResourceSnippetParameters.builder()
+                        .summary(api.toIdentifier())
+                        .description("학습지 카테고리 목록을 조회합니다.")
+                        .tag(TAG)
+                        .responseSchema(Schema.schema(api.toResponseSchema()))
+                        .responseFields(
+                            *Description.describe(
+                                arrayOf(
+                                    PayloadDocumentation.fieldWithPath("data[]")
+                                        .fieldWithArray("카테고리 정보"),
+                                    PayloadDocumentation.fieldWithPath("data[].parameterName")
+                                        .fieldWithString("카테고리 파라미터 이름"),
+                                    PayloadDocumentation.fieldWithPath("data[].displayName")
+                                        .fieldWithString("카테고리 표시 이름")
+                                )
+                            )
+                        ).build()
+                )
+            )
+        )
+    }
+
+    @Test
     @DisplayName("[GET] /api/v1/workbooks")
     fun browseWorkBooks() {
         // given

@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.web.filter.OncePerRequestFilter
 import java.io.IOException
-import java.time.LocalDateTime
 
 class TokenInvalidExceptionHandlerFilter : OncePerRequestFilter() {
     companion object {
@@ -29,31 +28,17 @@ class TokenInvalidExceptionHandlerFilter : OncePerRequestFilter() {
     private fun setError(response: HttpServletResponse, e: Exception) {
         response.status = HttpServletResponse.SC_FORBIDDEN
         response.contentType = CONTENT_TYPE
-        val errorResponse = ErrorResponse(LocalDateTime.now())
+        val errorResponse = ErrorResponse()
         response.writer.write(errorResponse.toString())
     }
 
-    private class ErrorResponse(
-        private val timestamp: LocalDateTime? = null,
-    ) {
+    private class ErrorResponse {
 
         companion object {
-            private const val code = "fail.authentication"
             private const val message = "인증이 필요해요."
         }
         override fun toString(): String {
-            return (
-                "{" +
-                    "\"code\" : \"" +
-                    code +
-                    "\"" +
-                    ", \"message\" : \"" +
-                    message +
-                    "\"" +
-                    ", \"timestamp\" : \"" +
-                    timestamp +
-                    "\"}"
-                )
+            return "{ message: \"$message\" }"
         }
     }
 }

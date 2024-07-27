@@ -4,10 +4,7 @@ import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseIn
 import com.few.api.domain.article.usecase.ReadArticleUseCase
 import com.few.api.domain.article.usecase.ReadArticlesUseCase
 import com.few.api.domain.article.usecase.dto.ReadArticlesUseCaseIn
-import com.few.api.web.controller.article.response.ReadArticleResponse
-import com.few.api.web.controller.article.response.ReadArticlesResponse
-import com.few.api.web.controller.article.response.WorkbookInfo
-import com.few.api.web.controller.article.response.WriterInfo
+import com.few.api.web.controller.article.response.*
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
 import jakarta.validation.constraints.Min
@@ -30,7 +27,10 @@ class ArticleController(
         @Min(value = 1, message = "{min.id}")
         articleId: Long,
     ): ApiResponse<ApiResponse.SuccessBody<ReadArticleResponse>> {
-        val useCaseOut = ReadArticleUseCaseIn(articleId = articleId, memberId = 0L).let { useCaseIn: ReadArticleUseCaseIn -> //TODO: membberId검토
+        val useCaseOut = ReadArticleUseCaseIn(
+            articleId = articleId,
+            memberId = 0L
+        ).let { useCaseIn: ReadArticleUseCaseIn -> //TODO: membberId검토
             readArticleUseCase.execute(useCaseIn)
         }
 
@@ -58,8 +58,12 @@ class ArticleController(
             required = false,
             defaultValue = "0"
         ) prevArticleId: Long,
+        @RequestParam(
+            required = false,
+            defaultValue = "-1"
+        ) categoryCd: Byte,
     ): ApiResponse<ApiResponse.SuccessBody<ReadArticlesResponse>> {
-        val useCaseOut = readArticlesUseCase.execute(ReadArticlesUseCaseIn(prevArticleId))
+        val useCaseOut = readArticlesUseCase.execute(ReadArticlesUseCaseIn(prevArticleId, categoryCd))
 
         val articles: List<ReadArticleResponse> = useCaseOut.articles.map { a ->
             ReadArticleResponse(

@@ -6,7 +6,6 @@ CREATE TABLE ARTICLE_MAIN_CARD
     main_image_url     varchar(255) NOT NULL,
     category_cd        TINYINT      NOT NULL,
     created_at         timestamp    NOT NULL,
-    content            TEXT         NOT NULL,
     member_id          BIGINT       NOT NULL,
     email              varchar(255) NOT NULL,
     member_type_cd     tinyint      NOT NULL,

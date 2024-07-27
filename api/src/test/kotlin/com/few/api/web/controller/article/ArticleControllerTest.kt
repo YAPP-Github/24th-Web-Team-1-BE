@@ -137,18 +137,20 @@ class ArticleControllerTest : ControllerTestSpec() {
     }
 
     @Test
-    @DisplayName("[GET] /api/v1/articles?prevArticleId={prevArticleId}")
+    @DisplayName("[GET] /api/v1/articles?prevArticleId={optional}?categoryCd={optional}")
     fun readArticles() {
         // given
         val api = "ReadArticles"
         val uri = UriComponentsBuilder.newInstance()
             .path("$BASE_URL")
             .queryParam("prevArticleId", 1L)
+            .queryParam("categoryCd", -1L)
             .build()
             .toUriString()
         // set usecase mock
         val prevArticleId = 1L
-        `when`(readArticlesUseCase.execute(ReadArticlesUseCaseIn(prevArticleId))).thenReturn(
+        val categoryCd: Byte = -1
+        `when`(readArticlesUseCase.execute(ReadArticlesUseCaseIn(prevArticleId, categoryCd))).thenReturn(
             ReadArticlesUseCaseOut(
                 listOf(
                     ReadArticleUseCaseOut(
@@ -183,6 +185,7 @@ class ArticleControllerTest : ControllerTestSpec() {
                             .summary(api.toIdentifier()).privateResource(false).deprecated(false)
                             .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))
                             .queryParameters(parameterWithName("prevArticleId").description("이전까지 조회한 아티클 Id"))
+                            .queryParameters(parameterWithName("categoryCd").description("아티클 카테고리 코드"))
                             .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
                                 *Description.describe(
                                     arrayOf(

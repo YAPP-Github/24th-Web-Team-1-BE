@@ -11,5 +11,5 @@ CREATE TABLE ARTICLE_MAIN_CARD
     member_type_cd     tinyint      NOT NULL,
     member_description JSON         NOT NULL,
     workbook_titles    JSON         NOT NULL,
-    CONSTRAINT article_main_card_pk PRIMARY KEY (article_id)
+    CONSTRAINT article_main_card_pk PRIMARY KEY (id)
 );

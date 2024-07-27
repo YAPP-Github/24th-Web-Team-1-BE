@@ -7,6 +7,7 @@ import com.few.api.domain.article.usecase.dto.ReadArticlesUseCaseIn
 import com.few.api.web.controller.article.response.*
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
+import com.few.data.common.code.CategoryType
 import jakarta.validation.constraints.Min
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -91,5 +92,18 @@ class ArticleController(
         val response = ReadArticlesResponse(articles, articles.size != 10) // TODO refactor 'isLast'
 
         return ApiResponseGenerator.success(response, HttpStatus.OK)
+    }
+
+    @GetMapping("/categories")
+    fun browseArticleCategories(): ApiResponse<ApiResponse.SuccessBody<Map<String, Any>>> {
+        return ApiResponseGenerator.success(
+            mapOf(
+                "categories" to
+                    CategoryType.entries.map {
+                        CodeAndNameResponse(it.code, it.name)
+                    }.toList()
+            ),
+            HttpStatus.OK
+        )
     }
 }

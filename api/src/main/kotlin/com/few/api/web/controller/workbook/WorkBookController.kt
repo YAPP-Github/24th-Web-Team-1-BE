@@ -3,7 +3,7 @@ package com.few.api.web.controller.workbook
 import com.few.api.domain.workbook.usecase.dto.ReadWorkbookUseCaseIn
 import com.few.api.domain.workbook.usecase.ReadWorkbookUseCase
 import com.few.api.web.support.WorkBookCategory
-import com.few.api.web.controller.workbook.response.BrowseWorkBooksInfo
+import com.few.api.web.controller.workbook.response.BrowseWorkBookInfo
 import com.few.api.web.controller.workbook.response.BrowseWorkBooksResponse
 import com.few.api.web.controller.workbook.response.ReadWorkBookResponse
 import com.few.api.web.controller.workbook.response.WriterInfo
@@ -30,14 +30,16 @@ class WorkBookController(
 ) {
 
     @GetMapping("/categories")
-    fun browseWorkBookCategories(): ApiResponse<ApiResponse.SuccessBody<List<Map<String, String>>>> {
+    fun browseWorkBookCategories(): ApiResponse<ApiResponse.SuccessBody<Map<String, Any>>> {
         return ApiResponseGenerator.success(
-            WorkBookCategory.entries.map {
-                mapOf(
-                    "parameterName" to it.parameterName,
-                    "displayName" to it.displayName
-                )
-            },
+            mapOf(
+                "categories" to WorkBookCategory.entries.map {
+                    mapOf(
+                        "code" to it.code,
+                        "name" to it.displayName
+                    )
+                }
+            ),
             HttpStatus.OK
         )
     }
@@ -45,11 +47,11 @@ class WorkBookController(
     @GetMapping
     fun browseWorkBooks(
         @RequestParam(value = "category", required = false)
-        category: WorkBookCategory? = WorkBookCategory.All,
+        category: WorkBookCategory?,
     ): ApiResponse<ApiResponse.SuccessBody<BrowseWorkBooksResponse>> {
         BrowseWorkBooksResponse(
             listOf(
-                BrowseWorkBooksInfo(
+                BrowseWorkBookInfo(
                     id = 1,
                     mainImageUrl = URL("https://example.com"),
                     title = "title1",
@@ -65,7 +67,7 @@ class WorkBookController(
                     ),
                     subscriberCount = 1
                 ),
-                BrowseWorkBooksInfo(
+                BrowseWorkBookInfo(
                     id = 2,
                     mainImageUrl = URL("https://example.com"),
                     title = "title2",

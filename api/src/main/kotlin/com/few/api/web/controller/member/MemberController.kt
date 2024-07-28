@@ -23,7 +23,7 @@ class MemberController {
         @RequestBody request: SaveMemberRequest,
     ): ApiResponse<ApiResponse.SuccessBody<SaveMemberResponse>> {
         SaveMemberResponse(
-            sendAuth = true
+            isSendAuth = true
         ).let {
             return ApiResponseGenerator.success(it, HttpStatus.OK)
         }

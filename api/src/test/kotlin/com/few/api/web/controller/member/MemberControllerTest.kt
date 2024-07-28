@@ -82,7 +82,7 @@ class MemberControllerTest : ControllerTestSpec() {
                                     arrayOf(
                                         PayloadDocumentation.fieldWithPath("data")
                                             .fieldWithObject("data"),
-                                        PayloadDocumentation.fieldWithPath("data.sendAuth")
+                                        PayloadDocumentation.fieldWithPath("data.isSendAuth")
                                             .fieldWithBoolean("이메일 인증 전송 여부")
                                     )
                                 )
@@ -128,6 +128,14 @@ class MemberControllerTest : ControllerTestSpec() {
                             .deprecated(false)
                             .tag(TAG)
                             .requestSchema(Schema.schema(api.toRequestSchema()))
+                            .queryParameters(
+                                ResourceDocumentation.parameterWithName("id")
+                                    .description("아이디"),
+                                ResourceDocumentation.parameterWithName("at")
+                                    .description("액세스 토큰 만료 시간"),
+                                ResourceDocumentation.parameterWithName("rt")
+                                    .description("리프레시 토큰 만료 시간")
+                            )
                             .responseSchema(Schema.schema(api.toResponseSchema()))
                             .responseFields(
                                 *Description.describe(

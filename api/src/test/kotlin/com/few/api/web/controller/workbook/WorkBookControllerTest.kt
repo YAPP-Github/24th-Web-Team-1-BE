@@ -99,12 +99,14 @@ class WorkBookControllerTest : ControllerTestSpec() {
                         .responseFields(
                             *Description.describe(
                                 arrayOf(
-                                    PayloadDocumentation.fieldWithPath("data[]")
-                                        .fieldWithArray("카테고리 정보"),
-                                    PayloadDocumentation.fieldWithPath("data[].parameterName")
-                                        .fieldWithString("카테고리 파라미터 이름"),
-                                    PayloadDocumentation.fieldWithPath("data[].displayName")
-                                        .fieldWithString("카테고리 표시 이름")
+                                    PayloadDocumentation.fieldWithPath("data")
+                                        .fieldWithObject("data"),
+                                    PayloadDocumentation.fieldWithPath("data.categories[]")
+                                        .fieldWithArray("카테고리 목록"),
+                                    PayloadDocumentation.fieldWithPath("data.categories[].code")
+                                        .fieldWithNumber("카테고리 코드"),
+                                    PayloadDocumentation.fieldWithPath("data.categories[].name")
+                                        .fieldWithString("카테고리 이름")
                                 )
                             )
                         ).build()
@@ -120,7 +122,7 @@ class WorkBookControllerTest : ControllerTestSpec() {
         val api = "BrowseWorkBooks"
         val uri = UriComponentsBuilder.newInstance()
             .path(BASE_URL)
-            .queryParam("category", WorkBookCategory.All.parameterName)
+            .queryParam("category", WorkBookCategory.ECONOMY.code)
             .build()
             .toUriString()
 

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 
 import java.net.URL
 
-class WriterDescriptionJsonMapperTest {
+class CommonJsonMapperTest {
 
     private var writerDescriptionJsonMapper: WriterDescriptionJsonMapper = WriterDescriptionJsonMapper(ObjectMapper())
 

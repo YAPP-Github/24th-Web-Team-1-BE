@@ -100,7 +100,7 @@ class ArticleController(
             mapOf(
                 "categories" to
                     CategoryType.entries.map {
-                        CodeAndNameResponse(it.code, it.name)
+                        CodeAndNameResponse(it.code, it.displayName)
                     }.toList()
             ),
             HttpStatus.OK

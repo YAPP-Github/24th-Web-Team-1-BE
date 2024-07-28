@@ -59,9 +59,10 @@ class ArticleViewCountDao(
         .where(field("RankedRows.article_id").eq(query.articleId))
         .query
 
-    fun selectArticlesOrderByViews(query: SelectArticlesOrderByViewsQuery): List<SelectArticleViewsRecord> {
+    fun selectArticlesOrderByViews(query: SelectArticlesOrderByViewsQuery): Set<SelectArticleViewsRecord> {
         return selectArticlesOrderByViewsQuery(query)
             .fetchInto(SelectArticleViewsRecord::class.java)
+            .toSet()
     }
 
     fun selectArticlesOrderByViewsQuery(query: SelectArticlesOrderByViewsQuery): SelectQuery<Record2<Long, Long>> {

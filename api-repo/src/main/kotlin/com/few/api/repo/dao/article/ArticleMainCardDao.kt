@@ -64,8 +64,8 @@ class ArticleMainCardDao(
             a.CREATED_AT.`as`(ArticleMainCardRecord::createdAt.name),
             m.ID.`as`(ArticleMainCardRecord::writerId.name),
             m.EMAIL.`as`(ArticleMainCardRecord::writerEmail.name),
-            jsonValue(ARTICLE_MAIN_CARD.WRITER_DESCRIPTION, "\$.name").`as`(ArticleMainCardRecord::writerName.name),
-            jsonValue(ARTICLE_MAIN_CARD.WRITER_DESCRIPTION, "\$.url").`as`(ArticleMainCardRecord::writerImgUrl.name),
+            jsonValue(m.DESCRIPTION, "\$.name").`as`(ArticleMainCardRecord::writerName.name),
+            jsonValue(m.DESCRIPTION, "\$.url").`as`(ArticleMainCardRecord::writerImgUrl.name),
             jsonArrayAgg(
                 jsonObject(
                     key("title").value(w.TITLE),

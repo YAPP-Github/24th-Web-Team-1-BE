@@ -4,7 +4,6 @@ import com.few.api.repo.dao.member.MemberDao
 import com.few.api.repo.dao.member.command.InsertMemberCommand
 import com.few.api.repo.dao.member.query.SelectMemberByEmailQuery
 import com.few.api.repo.dao.member.query.SelectWriterQuery
-import com.few.api.repo.dao.member.query.SelectWritersQuery
 import com.few.api.repo.dao.member.support.WriterDescription
 import com.few.api.repo.dao.member.support.WriterDescriptionJsonMapper
 import com.few.api.repo.explain.InsertUpdateExplainGenerator
@@ -78,7 +77,7 @@ class MemberDaoExplainGenerateTest : JooqTestSpec() {
 
     @Test
     fun selectWritersQueryExplain() {
-        val query = SelectWritersQuery(listOf(2, 3)).let {
+        val query = listOf(2L, 3L).let {
             memberDao.selectWritersQuery(it)
         }
 

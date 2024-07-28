@@ -48,17 +48,7 @@ class MemberDao(
         val cachedIdS = cachedValues.map { it.writerId }
         val notCachedIds = query.writerIds.filter { it !in cachedIdS }
 
-        val fetchedValue = dslContext.select(
-            Member.MEMBER.ID.`as`(WriterRecord::writerId.name),
-            DSL.jsonGetAttributeAsText(Member.MEMBER.DESCRIPTION, "name")
-                .`as`(WriterRecord::name.name),
-            DSL.jsonGetAttribute(Member.MEMBER.DESCRIPTION, "url").`as`(WriterRecord::url.name)
-        )
-            .from(Member.MEMBER)
-            .where(Member.MEMBER.ID.`in`(notCachedIds))
-            .and(Member.MEMBER.TYPE_CD.eq(MemberType.WRITER.code))
-            .and(Member.MEMBER.DELETED_AT.isNull)
-            .orderBy(Member.MEMBER.ID.asc())
+        val fetchedValue = selectWritersQuery(notCachedIds)
             .fetchInto(WriterRecord::class.java).let {
                 cacheManager.addSelectWorkBookCache(it)
                 return@let it
@@ -66,6 +56,18 @@ class MemberDao(
 
         return cachedValues + fetchedValue
     }
+
+    fun selectWritersQuery(notCachedIds: List<Long>) = dslContext.select(
+        Member.MEMBER.ID.`as`(WriterRecord::writerId.name),
+        DSL.jsonGetAttributeAsText(Member.MEMBER.DESCRIPTION, "name")
+            .`as`(WriterRecord::name.name),
+        DSL.jsonGetAttribute(Member.MEMBER.DESCRIPTION, "url").`as`(WriterRecord::url.name)
+    )
+        .from(Member.MEMBER)
+        .where(Member.MEMBER.ID.`in`(notCachedIds))
+        .and(Member.MEMBER.TYPE_CD.eq(MemberType.WRITER.code))
+        .and(Member.MEMBER.DELETED_AT.isNull)
+        .orderBy(Member.MEMBER.ID.asc())
 
     fun selectMemberByEmail(query: SelectMemberByEmailQuery): MemberIdRecord? {
         return selectMemberByEmailQuery(query)

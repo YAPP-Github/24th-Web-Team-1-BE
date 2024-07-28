@@ -89,7 +89,7 @@ class ArticleController(
             )
         }.toList()
 
-        val response = ReadArticlesResponse(articles, articles.size != 10) // TODO refactor 'isLast'
+        val response = ReadArticlesResponse(articles, useCaseOut.isLast)
 
         return ApiResponseGenerator.success(response, HttpStatus.OK)
     }

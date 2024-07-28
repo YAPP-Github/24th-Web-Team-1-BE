@@ -2,7 +2,6 @@ package com.few.api.domain.article.usecase
 
 import com.few.api.domain.article.usecase.dto.ReadArticlesUseCaseIn
 import com.few.api.domain.article.usecase.dto.ReadArticlesUseCaseOut
-import com.few.api.repo.dao.article.ArticleDao
 import com.few.api.repo.dao.article.ArticleViewCountDao
 import com.few.api.repo.dao.article.query.SelectArticlesOrderByViewsQuery
 import com.few.api.repo.dao.article.query.SelectRankByViewsQuery
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional
 
 @Component
 class ReadArticlesUseCase(
-    private val articleDao: ArticleDao,
     private val articleViewCountDao: ArticleViewCountDao,
 ) {
 
@@ -38,6 +36,6 @@ class ReadArticlesUseCase(
         // 2. 조회한 10개의 아티클 아이디를 기반으로 로컬 캐시에 있는지 조회
         // 3. 로컬캐시에 없으면 ARTICLE_MAIN_CARD 테이블에서 데이터가 있는지 조회
         // 4. ARTICLE_MAIN_CARD 테이블에도 없으면 조인 진행 후 ARTICLE_MAIN_CARD 테이블 및 캐시에 넣기
-        return ReadArticlesUseCaseOut(emptyList()) // TODO: impl
+        return ReadArticlesUseCaseOut(emptyList(), articleViewsRecords.size != 10) // TODO: impl
     }
 }

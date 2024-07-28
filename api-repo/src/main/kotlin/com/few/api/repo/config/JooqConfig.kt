@@ -7,10 +7,10 @@ import org.jooq.SQLDialect
 import org.jooq.impl.DataSourceConnectionProvider
 import org.jooq.impl.DefaultConfiguration
 import org.jooq.impl.DefaultDSLContext
-import org.jooq.impl.DefaultExecuteListenerProvider
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator
 import javax.sql.DataSource
 
 @Configuration
@@ -27,8 +27,9 @@ class JooqConfig(
     fun configuration(): DefaultConfiguration {
         val jooqConfiguration = DefaultConfiguration()
         jooqConfiguration.set(connectionProvider())
-        jooqConfiguration.set(DefaultExecuteListenerProvider(exceptionTransformer()))
-        jooqConfiguration.set(NativeSQLLogger(), PerformanceListener(applicationEventPublisher))
+        val translator =
+            SQLErrorCodeSQLExceptionTranslator(SQLDialect.MYSQL.name)
+        jooqConfiguration.set(ExceptionTranslator(translator), NativeSQLLogger(), PerformanceListener(applicationEventPublisher))
         jooqConfiguration.set(SQLDialect.MYSQL)
         return jooqConfiguration
     }
@@ -36,10 +37,5 @@ class JooqConfig(
     @Bean
     fun connectionProvider(): DataSourceConnectionProvider {
         return DataSourceConnectionProvider(dataSource)
-    }
-
-    @Bean
-    fun exceptionTransformer(): ExceptionTranslator {
-        return ExceptionTranslator()
     }
 }

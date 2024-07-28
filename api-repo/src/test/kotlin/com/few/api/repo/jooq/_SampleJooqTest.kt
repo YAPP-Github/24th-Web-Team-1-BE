@@ -4,7 +4,6 @@ import jooq.jooq_dsl.tables.Member
 import org.jooq.DSLContext
 import org.jooq.JSON
 import org.jooq.exception.DataAccessException
-import org.jooq.exception.IntegrityConstraintViolationException
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -58,7 +57,7 @@ class _SampleJooqTest : JooqTestSpec() {
     @Transactional
     fun `이메일이 중복되는 경우 저장에 실패합니다`() {
         // when & then
-        assertThrows<IntegrityConstraintViolationException> {
+        assertThrows<DataAccessException> {
             dslContext.insertInto(Member.MEMBER)
                 .set(Member.MEMBER.EMAIL, EMAIL)
                 .set(Member.MEMBER.TYPE_CD, TYPECD)

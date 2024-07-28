@@ -171,7 +171,8 @@ class ArticleControllerTest : ControllerTestSpec() {
                             WorkbookDetail(2L, "인모스트 경제레터")
                         )
                     )
-                )
+                ),
+                true
             )
         )
 
@@ -223,6 +224,44 @@ class ArticleControllerTest : ControllerTestSpec() {
                                             .fieldWithNumber("아티클이 포함된 학습지 정보(학습지ID)"),
                                         PayloadDocumentation.fieldWithPath("data.articles[].includedWorkbooks[].title")
                                             .fieldWithString("아티클이 포함된 학습지 정보(학습지 제목)")
+                                    )
+                                )
+                            ).build()
+                    )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("[GET] /api/v1/articles/categories")
+    fun browseArticleCategories() {
+        // given
+        val api = "browseArticleCategories"
+        val uri = UriComponentsBuilder.newInstance()
+            .path("$BASE_URL/categories")
+            .build()
+            .toUriString()
+
+        // when, then
+        this.webTestClient.get().uri(uri).accept(MediaType.APPLICATION_JSON)
+            .exchange().expectStatus().isOk().expectBody().consumeWith(
+                WebTestClientRestDocumentation.document(
+                    api.toIdentifier(),
+                    ResourceDocumentation.resource(
+                        ResourceSnippetParameters.builder().description("아티클 카테고리 code, name 조회")
+                            .summary(api.toIdentifier()).privateResource(false).deprecated(false)
+                            .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))
+                            .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
+                                *Description.describe(
+                                    arrayOf(
+                                        PayloadDocumentation.fieldWithPath("data")
+                                            .fieldWithObject("data"),
+                                        PayloadDocumentation.fieldWithPath("data.categories")
+                                            .fieldWithObject("카테고리 목록"),
+                                        PayloadDocumentation.fieldWithPath("data.categories[].code")
+                                            .fieldWithNumber("카테고리 code"),
+                                        PayloadDocumentation.fieldWithPath("data.categories[].name")
+                                            .fieldWithString("카테고리 name")
                                     )
                                 )
                             ).build()

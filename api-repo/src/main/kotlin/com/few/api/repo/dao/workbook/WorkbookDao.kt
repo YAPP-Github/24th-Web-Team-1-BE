@@ -1,5 +1,7 @@
 package com.few.api.repo.dao.workbook
 
+import com.few.api.repo.config.LocalCacheConfig
+import com.few.api.repo.config.LocalCacheConfig.Companion.LOCAL_CM
 import com.few.api.repo.dao.workbook.command.InsertWorkBookCommand
 import com.few.api.repo.dao.workbook.command.MapWorkBookToArticleCommand
 import com.few.api.repo.dao.workbook.query.SelectWorkBookRecordQuery
@@ -8,12 +10,14 @@ import com.few.data.common.code.CategoryType
 import jooq.jooq_dsl.tables.MappingWorkbookArticle
 import jooq.jooq_dsl.tables.Workbook
 import org.jooq.DSLContext
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Repository
 
 @Repository
 class WorkbookDao(
     private val dslContext: DSLContext,
 ) {
+    @Cacheable(key = "#query.id", cacheManager = LOCAL_CM, cacheNames = [LocalCacheConfig.SELECT_WORKBOOK_RECORD_CACHE])
     fun selectWorkBook(query: SelectWorkBookRecordQuery): SelectWorkBookRecord? {
         return selectWorkBookQuery(query)
             .fetchOneInto(SelectWorkBookRecord::class.java)

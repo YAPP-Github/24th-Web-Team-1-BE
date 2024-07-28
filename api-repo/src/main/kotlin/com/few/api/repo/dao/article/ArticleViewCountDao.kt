@@ -66,19 +66,18 @@ class ArticleViewCountDao(
     }
 
     fun selectArticlesOrderByViewsQuery(query: SelectArticlesOrderByViewsQuery): SelectQuery<Record2<Long, Long>> {
+        val articleViewCountOffsetTb = select()
+            .from(ARTICLE_VIEW_COUNT)
+            .where(ARTICLE_VIEW_COUNT.DELETED_AT.isNull)
+            .orderBy(ARTICLE_VIEW_COUNT.VIEW_COUNT.desc())
+            .limit(query.offset, Long.MAX_VALUE)
+            .asTable("article_view_count_offset_tb")
+
         val sql = dslContext.select(
-            ARTICLE_VIEW_COUNT.ARTICLE_ID.`as`(SelectArticleViewsRecord::articleId.name),
-            ARTICLE_VIEW_COUNT.VIEW_COUNT.`as`(SelectArticleViewsRecord::views.name)
+            articleViewCountOffsetTb.field(ARTICLE_VIEW_COUNT.ARTICLE_ID.`as`(SelectArticleViewsRecord::articleId.name)),
+            articleViewCountOffsetTb.field(ARTICLE_VIEW_COUNT.VIEW_COUNT.`as`(SelectArticleViewsRecord::views.name))
         )
-            .from(
-                // 주의: offset 만큼 우선 잘라낸 뒤 category를 필터링 해야 함
-                select()
-                    .from(ARTICLE_VIEW_COUNT)
-                    .where(ARTICLE_VIEW_COUNT.DELETED_AT.isNull)
-                    .orderBy(ARTICLE_VIEW_COUNT.VIEW_COUNT.desc())
-                    .limit(query.offset, Long.MAX_VALUE) // Use Long.MAX_VALUE for the maximum possible value
-                    .asTable("article_view_count_offset_tb")
-            )
+            .from(articleViewCountOffsetTb)
 
         if (query.category != null) {
             sql.where(field("article_view_count_offset_tb.category_cd").eq(query.category.code))

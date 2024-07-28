@@ -27,6 +27,13 @@ class ArticleViewCountDao(
             .execute()
     }
 
+    fun insertArticleViewCountToZero(query: ArticleViewCountQuery) = insertArticleViewCountToZeroQuery(query).execute()
+
+    fun insertArticleViewCountToZeroQuery(query: ArticleViewCountQuery) = dslContext.insertInto(ARTICLE_VIEW_COUNT)
+        .set(ARTICLE_VIEW_COUNT.ARTICLE_ID, query.articleId)
+        .set(ARTICLE_VIEW_COUNT.VIEW_COUNT, 0)
+        .set(ARTICLE_VIEW_COUNT.CATEGORY_CD, query.categoryType.code)
+
     fun selectArticleViewCount(command: ArticleViewCountCommand): Long? {
         return dslContext.select(
             ARTICLE_VIEW_COUNT.VIEW_COUNT

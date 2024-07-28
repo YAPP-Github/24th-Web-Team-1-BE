@@ -23,19 +23,19 @@ class MemberDao(
 
     @Cacheable(key = "#query.writerId", cacheManager = LOCAL_CM, cacheNames = [SELECT_WRITER_CACHE])
     fun selectWriter(query: SelectWriterQuery): WriterRecord? {
-        val writerId = query.writerId
-
-        return dslContext.select(
-            Member.MEMBER.ID.`as`(WriterRecord::writerId.name),
-            DSL.jsonGetAttributeAsText(Member.MEMBER.DESCRIPTION, "name").`as`(WriterRecord::name.name),
-            DSL.jsonGetAttribute(Member.MEMBER.DESCRIPTION, "url").`as`(WriterRecord::url.name)
-        )
-            .from(Member.MEMBER)
-            .where(Member.MEMBER.ID.eq(writerId))
-            .and(Member.MEMBER.TYPE_CD.eq(MemberType.WRITER.code))
-            .and(Member.MEMBER.DELETED_AT.isNull)
+        return selectWriterQuery(query)
             .fetchOneInto(WriterRecord::class.java)
     }
+
+    fun selectWriterQuery(query: SelectWriterQuery) = dslContext.select(
+        Member.MEMBER.ID.`as`(WriterRecord::writerId.name),
+        DSL.jsonGetAttributeAsText(Member.MEMBER.DESCRIPTION, "name").`as`(WriterRecord::name.name),
+        DSL.jsonGetAttribute(Member.MEMBER.DESCRIPTION, "url").`as`(WriterRecord::url.name)
+    )
+        .from(Member.MEMBER)
+        .where(Member.MEMBER.ID.eq(query.writerId))
+        .and(Member.MEMBER.TYPE_CD.eq(MemberType.WRITER.code))
+        .and(Member.MEMBER.DELETED_AT.isNull)
 
     /**
      * 작가 목록 조회 쿼리
@@ -48,17 +48,7 @@ class MemberDao(
         val cachedIdS = cachedValues.map { it.writerId }
         val notCachedIds = query.writerIds.filter { it !in cachedIdS }
 
-        val fetchedValue = dslContext.select(
-            Member.MEMBER.ID.`as`(WriterRecord::writerId.name),
-            DSL.jsonGetAttributeAsText(Member.MEMBER.DESCRIPTION, "name")
-                .`as`(WriterRecord::name.name),
-            DSL.jsonGetAttribute(Member.MEMBER.DESCRIPTION, "url").`as`(WriterRecord::url.name)
-        )
-            .from(Member.MEMBER)
-            .where(Member.MEMBER.ID.`in`(notCachedIds))
-            .and(Member.MEMBER.TYPE_CD.eq(MemberType.WRITER.code))
-            .and(Member.MEMBER.DELETED_AT.isNull)
-            .orderBy(Member.MEMBER.ID.asc())
+        val fetchedValue = selectWritersQuery(notCachedIds)
             .fetchInto(WriterRecord::class.java).let {
                 cacheManager.addSelectWorkBookCache(it)
                 return@let it
@@ -67,25 +57,40 @@ class MemberDao(
         return cachedValues + fetchedValue
     }
 
-    fun selectMemberByEmail(query: SelectMemberByEmailQuery): MemberIdRecord? {
-        val email = query.email
+    fun selectWritersQuery(notCachedIds: List<Long>) = dslContext.select(
+        Member.MEMBER.ID.`as`(WriterRecord::writerId.name),
+        DSL.jsonGetAttributeAsText(Member.MEMBER.DESCRIPTION, "name")
+            .`as`(WriterRecord::name.name),
+        DSL.jsonGetAttribute(Member.MEMBER.DESCRIPTION, "url").`as`(WriterRecord::url.name)
+    )
+        .from(Member.MEMBER)
+        .where(Member.MEMBER.ID.`in`(notCachedIds))
+        .and(Member.MEMBER.TYPE_CD.eq(MemberType.WRITER.code))
+        .and(Member.MEMBER.DELETED_AT.isNull)
+        .orderBy(Member.MEMBER.ID.asc())
 
-        return dslContext.select(
-            Member.MEMBER.ID.`as`(MemberIdRecord::memberId.name)
-        )
-            .from(Member.MEMBER)
-            .where(Member.MEMBER.EMAIL.eq(email))
-            .and(Member.MEMBER.DELETED_AT.isNull)
+    fun selectMemberByEmail(query: SelectMemberByEmailQuery): MemberIdRecord? {
+        return selectMemberByEmailQuery(query)
             .fetchOneInto(MemberIdRecord::class.java)
     }
 
+    fun selectMemberByEmailQuery(query: SelectMemberByEmailQuery) = dslContext.select(
+        Member.MEMBER.ID.`as`(MemberIdRecord::memberId.name)
+    )
+        .from(Member.MEMBER)
+        .where(Member.MEMBER.EMAIL.eq(query.email))
+        .and(Member.MEMBER.DELETED_AT.isNull)
+
     fun insertMember(command: InsertMemberCommand): Long? {
-        val result = dslContext.insertInto(Member.MEMBER)
-            .set(Member.MEMBER.EMAIL, command.email)
-            .set(Member.MEMBER.TYPE_CD, command.memberType.code)
+        val result = insertMemberCommand(command)
             .returning(Member.MEMBER.ID)
             .fetchOne()
 
         return result?.getValue(Member.MEMBER.ID)
     }
+
+    fun insertMemberCommand(command: InsertMemberCommand) =
+        dslContext.insertInto(Member.MEMBER)
+            .set(Member.MEMBER.EMAIL, command.email)
+            .set(Member.MEMBER.TYPE_CD, command.memberType.code)
 }

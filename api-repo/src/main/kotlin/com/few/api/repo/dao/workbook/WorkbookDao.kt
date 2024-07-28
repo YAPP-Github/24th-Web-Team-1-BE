@@ -19,7 +19,12 @@ class WorkbookDao(
 ) {
     @Cacheable(key = "#query.id", cacheManager = LOCAL_CM, cacheNames = [LocalCacheConfig.SELECT_WORKBOOK_RECORD_CACHE])
     fun selectWorkBook(query: SelectWorkBookRecordQuery): SelectWorkBookRecord? {
-        return dslContext.select(
+        return selectWorkBookQuery(query)
+            .fetchOneInto(SelectWorkBookRecord::class.java)
+    }
+
+    fun selectWorkBookQuery(query: SelectWorkBookRecordQuery) =
+        dslContext.select(
             Workbook.WORKBOOK.ID.`as`(SelectWorkBookRecord::id.name),
             Workbook.WORKBOOK.TITLE.`as`(SelectWorkBookRecord::title.name),
             Workbook.WORKBOOK.MAIN_IMAGE_URL.`as`(SelectWorkBookRecord::mainImageUrl.name),
@@ -30,19 +35,20 @@ class WorkbookDao(
             .from(Workbook.WORKBOOK)
             .where(Workbook.WORKBOOK.ID.eq(query.id))
             .and(Workbook.WORKBOOK.DELETED_AT.isNull)
-            .fetchOneInto(SelectWorkBookRecord::class.java)
-    }
 
     fun insertWorkBook(command: InsertWorkBookCommand): Long? {
-        return dslContext.insertInto(Workbook.WORKBOOK)
-            .set(Workbook.WORKBOOK.TITLE, command.title)
-            .set(Workbook.WORKBOOK.MAIN_IMAGE_URL, command.mainImageUrl.toString())
-            .set(Workbook.WORKBOOK.CATEGORY_CD, CategoryType.convertToCode(command.category))
-            .set(Workbook.WORKBOOK.DESCRIPTION, command.description)
+        return insertWorkBookCommand(command)
             .returning(Workbook.WORKBOOK.ID)
             .fetchOne()
             ?.id
     }
+
+    fun insertWorkBookCommand(command: InsertWorkBookCommand) =
+        dslContext.insertInto(Workbook.WORKBOOK)
+            .set(Workbook.WORKBOOK.TITLE, command.title)
+            .set(Workbook.WORKBOOK.MAIN_IMAGE_URL, command.mainImageUrl.toString())
+            .set(Workbook.WORKBOOK.CATEGORY_CD, CategoryType.convertToCode(command.category))
+            .set(Workbook.WORKBOOK.DESCRIPTION, command.description)
 
     fun mapWorkBookToArticle(command: MapWorkBookToArticleCommand) {
         dslContext.insertInto(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE)

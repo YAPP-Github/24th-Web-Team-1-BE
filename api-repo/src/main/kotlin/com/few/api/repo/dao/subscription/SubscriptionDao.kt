@@ -19,12 +19,15 @@ class SubscriptionDao(
 ) {
 
     fun insertWorkbookSubscription(command: InsertWorkbookSubscriptionCommand) {
-        dslContext.insertInto(SUBSCRIPTION)
-            .set(SUBSCRIPTION.MEMBER_ID, command.memberId)
-            .set(SUBSCRIPTION.TARGET_WORKBOOK_ID, command.workbookId)
+        insertWorkbookSubscriptionCommand(command)
             .returning(SUBSCRIPTION.ID)
             .fetchOne()
     }
+
+    fun insertWorkbookSubscriptionCommand(command: InsertWorkbookSubscriptionCommand) =
+        dslContext.insertInto(SUBSCRIPTION)
+            .set(SUBSCRIPTION.MEMBER_ID, command.memberId)
+            .set(SUBSCRIPTION.TARGET_WORKBOOK_ID, command.workbookId)
 
     fun reSubscribeWorkbookSubscription(command: InsertWorkbookSubscriptionCommand) {
         dslContext.update(SUBSCRIPTION)
@@ -45,7 +48,12 @@ class SubscriptionDao(
     }
 
     fun selectTopWorkbookSubscriptionStatus(query: SelectAllWorkbookSubscriptionStatusNotConsiderDeletedAtQuery): WorkbookSubscriptionStatus? {
-        return dslContext.select(
+        return selectTopWorkbookSubscriptionStatusQuery(query)
+            .fetchOneInto(WorkbookSubscriptionStatus::class.java)
+    }
+
+    fun selectTopWorkbookSubscriptionStatusQuery(query: SelectAllWorkbookSubscriptionStatusNotConsiderDeletedAtQuery) =
+        dslContext.select(
             SUBSCRIPTION.TARGET_WORKBOOK_ID.`as`(WorkbookSubscriptionStatus::workbookId.name),
             SUBSCRIPTION.DELETED_AT.isNull.`as`(WorkbookSubscriptionStatus::isActiveSub.name),
             SUBSCRIPTION.PROGRESS.add(1).`as`(WorkbookSubscriptionStatus::day.name)
@@ -55,23 +63,27 @@ class SubscriptionDao(
             .and(SUBSCRIPTION.TARGET_WORKBOOK_ID.eq(query.workbookId))
             .orderBy(SUBSCRIPTION.CREATED_AT.desc())
             .limit(1)
-            .fetchOneInto(WorkbookSubscriptionStatus::class.java)
-    }
 
     fun updateDeletedAtInAllSubscription(command: UpdateDeletedAtInAllSubscriptionCommand) {
+        updateDeletedAtInAllSubscriptionCommand(command)
+            .execute()
+    }
+
+    fun updateDeletedAtInAllSubscriptionCommand(command: UpdateDeletedAtInAllSubscriptionCommand) =
         dslContext.update(SUBSCRIPTION)
             .set(SUBSCRIPTION.DELETED_AT, LocalDateTime.now())
             .set(SUBSCRIPTION.UNSUBS_OPINION, command.opinion) // TODO: opinion row 마다 중복 해결
             .where(SUBSCRIPTION.MEMBER_ID.eq(command.memberId))
-            .execute()
-    }
 
     fun countWorkbookMappedArticles(query: CountWorkbookMappedArticlesQuery): Int? {
-        return dslContext.selectCount()
-            .from(MAPPING_WORKBOOK_ARTICLE)
-            .where(MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.eq(query.workbookId))
+        return countWorkbookMappedArticlesQuery(query)
             .fetchOne(0, Int::class.java)
     }
+
+    fun countWorkbookMappedArticlesQuery(query: CountWorkbookMappedArticlesQuery) =
+        dslContext.selectCount()
+            .from(MAPPING_WORKBOOK_ARTICLE)
+            .where(MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.eq(query.workbookId))
 
     fun countAllSubscriptionStatus(): CountAllSubscriptionStatusRecord {
         val total = dslContext.selectCount()

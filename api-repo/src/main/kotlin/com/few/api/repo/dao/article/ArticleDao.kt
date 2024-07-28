@@ -6,6 +6,7 @@ import com.few.api.repo.dao.article.command.InsertFullArticleRecordCommand
 import com.few.api.repo.dao.article.query.SelectArticleRecordQuery
 import com.few.api.repo.dao.article.query.SelectWorkBookArticleRecordQuery
 import com.few.api.repo.dao.article.query.SelectWorkbookMappedArticleRecordsQuery
+import com.few.api.repo.dao.article.record.SelectArticleContentsRecord
 import com.few.api.repo.dao.article.record.SelectArticleRecord
 import com.few.api.repo.dao.article.record.SelectWorkBookArticleRecord
 import com.few.api.repo.dao.article.record.SelectWorkBookMappedArticleRecord
@@ -108,4 +109,15 @@ class ArticleDao(
 
         return mstId.getValue(ArticleMst.ARTICLE_MST.ID)
     }
+
+    fun selectArticleContents(articleIds: Set<Long>): List<SelectArticleContentsRecord> =
+        selectArticleContentsQuery(articleIds)
+            .fetchInto(SelectArticleContentsRecord::class.java)
+
+    fun selectArticleContentsQuery(articleIds: Set<Long>) = dslContext.select(
+        ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID.`as`(SelectArticleContentsRecord::articleId.name),
+        ArticleIfo.ARTICLE_IFO.CONTENT.`as`(SelectArticleContentsRecord::content.name)
+    ).from(ArticleIfo.ARTICLE_IFO)
+        .where(ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID.`in`(articleIds))
+        .and(ArticleIfo.ARTICLE_IFO.DELETED_AT.isNull)
 }

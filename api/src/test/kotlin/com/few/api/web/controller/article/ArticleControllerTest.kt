@@ -125,9 +125,7 @@ class ArticleControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data.createdAt")
                                             .fieldWithString("아티클 생성일"),
                                         PayloadDocumentation.fieldWithPath("data.views")
-                                            .fieldWithNumber("아티클 조회수"),
-                                        PayloadDocumentation.fieldWithPath("data.includedWorkbooks")
-                                            .fieldWithArray("아티클이 포함된 학습지 정보(해당 API에서 사용되지 않음)")
+                                            .fieldWithNumber("아티클 조회수")
                                     )
                                 )
                             ).build()
@@ -165,11 +163,7 @@ class ArticleControllerTest : ControllerTestSpec() {
                         problemIds = listOf(1L, 2L, 3L),
                         category = "경제",
                         createdAt = LocalDateTime.now(),
-                        views = 1L,
-                        includedWorkbooks = listOf(
-                            WorkbookDetail(1L, "사소한 것들의 역사"),
-                            WorkbookDetail(2L, "인모스트 경제레터")
-                        )
+                        views = 1L
                     )
                 ),
                 true
@@ -217,13 +211,7 @@ class ArticleControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data.articles[].createdAt")
                                             .fieldWithString("아티클 생성일"),
                                         PayloadDocumentation.fieldWithPath("data.articles[].views")
-                                            .fieldWithNumber("아티클 조회수"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].includedWorkbooks")
-                                            .fieldWithArray("아티클이 포함된 학습지 정보"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].includedWorkbooks[].id")
-                                            .fieldWithNumber("아티클이 포함된 학습지 정보(학습지ID)"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].includedWorkbooks[].title")
-                                            .fieldWithString("아티클이 포함된 학습지 정보(학습지 제목)")
+                                            .fieldWithNumber("아티클 조회수")
                                     )
                                 )
                             ).build()

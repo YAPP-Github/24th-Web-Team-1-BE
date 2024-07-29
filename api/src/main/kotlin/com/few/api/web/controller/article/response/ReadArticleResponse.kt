@@ -14,16 +14,10 @@ data class ReadArticleResponse(
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     val createdAt: LocalDateTime,
     val views: Long,
-    val includedWorkbooks: List<WorkbookInfo> = emptyList(),
 )
 
 data class WriterInfo(
     val id: Long,
     val name: String,
     val url: URL,
-)
-
-data class WorkbookInfo(
-    val id: Long,
-    val title: String,
 )

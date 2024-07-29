@@ -79,13 +79,7 @@ class ArticleController(
                 problemIds = a.problemIds,
                 category = a.category,
                 createdAt = a.createdAt,
-                views = a.views,
-                includedWorkbooks = a.includedWorkbooks.map { w ->
-                    WorkbookInfo(
-                        id = w.id,
-                        title = w.title
-                    )
-                }
+                views = a.views
             )
         }.toList()
 

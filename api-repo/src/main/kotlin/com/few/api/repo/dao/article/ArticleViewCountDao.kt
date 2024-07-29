@@ -54,14 +54,17 @@ class ArticleViewCountDao(
     }
 
     fun selectRankByViewsQuery(query: SelectRankByViewsQuery) = dslContext
-        .select(field("offset"))
+        .select(field("row_rank_tb.offset", Long::class.java))
         .from(
-            dslContext.select(
-                ARTICLE_VIEW_COUNT.ARTICLE_ID,
-                rowNumber().over(orderBy(ARTICLE_VIEW_COUNT.VIEW_COUNT.desc())).`as`("offset")
-            ).from(ARTICLE_VIEW_COUNT.`as`("RankedRows"))
+            dslContext
+                .select(
+                    ARTICLE_VIEW_COUNT.ARTICLE_ID,
+                    rowNumber().over(orderBy(ARTICLE_VIEW_COUNT.VIEW_COUNT.desc())).`as`("offset")
+                )
+                .from(ARTICLE_VIEW_COUNT)
+                .asTable("row_rank_tb")
         )
-        .where(field("RankedRows.article_id").eq(query.articleId))
+        .where(field("row_rank_tb.${ARTICLE_VIEW_COUNT.ARTICLE_ID.name}")!!.eq(query.articleId))
         .query
 
     fun selectArticlesOrderByViews(query: SelectArticlesOrderByViewsQuery): Set<SelectArticleViewsRecord> {

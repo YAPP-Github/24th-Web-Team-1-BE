@@ -6,11 +6,9 @@ import com.epages.restdocs.apispec.ResourceDocumentation.resource
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.few.api.domain.workbook.usecase.dto.ArticleDetail
-import com.few.api.domain.workbook.usecase.dto.ReadWorkbookUseCaseIn
-import com.few.api.domain.workbook.usecase.dto.ReadWorkbookUseCaseOut
-import com.few.api.domain.workbook.usecase.dto.WriterDetail
+import com.few.api.domain.workbook.usecase.BrowseWorkbooksUseCase
 import com.few.api.domain.workbook.usecase.ReadWorkbookUseCase
+import com.few.api.domain.workbook.usecase.dto.*
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
@@ -52,6 +50,9 @@ class WorkBookControllerTest : ControllerTestSpec() {
 
     @MockBean
     private lateinit var readWorkbookUseCase: ReadWorkbookUseCase
+
+    @MockBean
+    private lateinit var browseWorkBooksUseCase: BrowseWorkbooksUseCase
 
     companion object {
         private val BASE_URL = "/api/v1/workbooks"
@@ -127,6 +128,26 @@ class WorkBookControllerTest : ControllerTestSpec() {
             .toUriString()
 
         // set usecase mock
+        `when`(browseWorkBooksUseCase.execute(BrowseWorkbooksUseCaseIn(WorkBookCategory.ECONOMY))).thenReturn(
+            BrowseWorkbooksUseCaseOut(
+                workbooks = listOf(
+                    BrowseWorkBookDetail(
+                        id = 1L,
+                        mainImageUrl = URL("http://localhost:8080/api/v1/workbooks/1/image"),
+                        title = "재태크, 투자 필수 용어 모음집",
+                        description = "사회 초년생부터, 직장인, 은퇴자까지 모두가 알아야 할 기본적인 재태크, 투자 필수 용어 모음집 입니다.",
+                        category = CategoryType.fromCode(0)!!.name,
+                        createdAt = LocalDateTime.now(),
+                        writerDetails = listOf(
+                            WriterDetail(1L, "안나포", URL("http://localhost:8080/api/v1/users/1")),
+                            WriterDetail(2L, "퓨퓨", URL("http://localhost:8080/api/v1/users/2")),
+                            WriterDetail(3L, "프레소", URL("http://localhost:8080/api/v1/users/3"))
+                        ),
+                        subscriptionCount = 100
+                    )
+                )
+            )
+        )
 
         // when
         mockMvc.perform(
@@ -144,7 +165,7 @@ class WorkBookControllerTest : ControllerTestSpec() {
                         .tag(TAG)
                         .requestSchema(Schema.schema(api.toRequestSchema()))
                         .queryParameters(
-                            parameterWithName("category").description("학습지 카테고리")
+                            parameterWithName("category").description("학습지 카테고리").optional()
                         )
                         .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
                             *Description.describe(

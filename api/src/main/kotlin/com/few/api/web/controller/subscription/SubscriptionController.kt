@@ -1,5 +1,6 @@
 package com.few.api.web.controller.subscription
 
+import com.few.api.domain.subscription.usecase.BrowseSubscribeWorkbooksUseCase
 import com.few.api.web.controller.subscription.request.SubscribeWorkbookRequest
 import com.few.api.web.controller.subscription.request.UnsubscribeWorkbookRequest
 import com.few.api.web.support.ApiResponse
@@ -7,6 +8,7 @@ import com.few.api.web.support.ApiResponseGenerator
 import com.few.api.domain.subscription.usecase.SubscribeWorkbookUseCase
 import com.few.api.domain.subscription.usecase.UnsubscribeAllUseCase
 import com.few.api.domain.subscription.usecase.UnsubscribeWorkbookUseCase
+import com.few.api.domain.subscription.usecase.dto.BrowseSubscribeWorkbooksUseCaseIn
 import com.few.api.domain.subscription.usecase.dto.SubscribeWorkbookUseCaseIn
 import com.few.api.domain.subscription.usecase.dto.UnsubscribeAllUseCaseIn
 import com.few.api.domain.subscription.usecase.dto.UnsubscribeWorkbookUseCaseIn
@@ -28,6 +30,7 @@ class SubscriptionController(
     private val subscribeWorkbookUseCase: SubscribeWorkbookUseCase,
     private val unsubscribeWorkbookUseCase: UnsubscribeWorkbookUseCase,
     private val unsubscribeAllUseCase: UnsubscribeAllUseCase,
+    private val browseSubscribeWorkbooksUseCase: BrowseSubscribeWorkbooksUseCase,
 ) {
 
     // todo add auth
@@ -38,29 +41,26 @@ class SubscriptionController(
             required = false
         ) view: ViewCategory? = ViewCategory.MAIN_CARD,
     ): ApiResponse<ApiResponse.SuccessBody<SubscribeWorkbooksResponse>> {
-        SubscribeWorkbooksResponse(
-            listOf(
+        // todo fix memberId
+        val memberId = 1L
+        val useCaseOut = BrowseSubscribeWorkbooksUseCaseIn(memberId).let {
+            browseSubscribeWorkbooksUseCase.execute(it)
+        }
+
+        return SubscribeWorkbooksResponse(
+            workbooks = useCaseOut.workbooks.map {
                 SubscribeWorkbookInfo(
-                    id = 1,
-                    status = "ACTIVE",
-                    totalDay = 10,
-                    currentDay = 1,
-                    rank = 0,
-                    totalSubscriber = 100,
-                    articleInfo = "{}"
-                ),
-                SubscribeWorkbookInfo(
-                    id = 2,
-                    status = "DONE",
-                    totalDay = 10,
-                    currentDay = 10,
-                    rank = 22,
-                    totalSubscriber = 100,
-                    articleInfo = "{}"
+                    id = it.workbookId,
+                    currentDay = it.currentDay,
+                    totalDay = it.totalDay,
+                    status = it.isActiveSub.name,
+                    rank = it.rank,
+                    totalSubscriber = it.totalSubscriber,
+                    articleInfo = it.articleInfo
                 )
-            )
+            }
         ).let {
-            return ApiResponseGenerator.success(it, HttpStatus.OK)
+            ApiResponseGenerator.success(it, HttpStatus.OK)
         }
     }
 

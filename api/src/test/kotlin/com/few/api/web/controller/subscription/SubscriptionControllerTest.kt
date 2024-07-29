@@ -5,6 +5,7 @@ import com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.few.api.domain.subscription.usecase.BrowseSubscribeWorkbooksUseCase
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.subscription.request.SubscribeWorkbookRequest
@@ -12,15 +13,15 @@ import com.few.api.web.controller.subscription.request.UnsubscribeWorkbookReques
 import com.few.api.domain.subscription.usecase.SubscribeWorkbookUseCase
 import com.few.api.domain.subscription.usecase.UnsubscribeAllUseCase
 import com.few.api.domain.subscription.usecase.UnsubscribeWorkbookUseCase
-import com.few.api.domain.subscription.usecase.dto.SubscribeWorkbookUseCaseIn
-import com.few.api.domain.subscription.usecase.dto.UnsubscribeAllUseCaseIn
-import com.few.api.domain.subscription.usecase.dto.UnsubscribeWorkbookUseCaseIn
+import com.few.api.domain.subscription.usecase.dto.*
 import com.few.api.web.controller.helper.*
 import com.few.api.web.support.ViewCategory
+import com.few.api.web.support.WorkBookStatus
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.doNothing
+import org.mockito.Mockito.doReturn
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
@@ -51,6 +52,9 @@ class SubscriptionControllerTest : ControllerTestSpec() {
     @MockBean
     private lateinit var unsubscribeAllUseCase: UnsubscribeAllUseCase
 
+    @MockBean
+    private lateinit var browseSubscribeWorkbooksUseCase: BrowseSubscribeWorkbooksUseCase
+
     companion object {
         private val BASE_URL = "/api/v1/"
         private val TAG = "WorkbookSubscriptionController"
@@ -80,6 +84,43 @@ class SubscriptionControllerTest : ControllerTestSpec() {
             .queryParam("view", view)
             .build()
             .toUriString()
+
+        // set usecase mock
+        val memberId = 1L
+        val useCaseIn = BrowseSubscribeWorkbooksUseCaseIn(memberId)
+        val useCaseOut = BrowseSubscribeWorkbooksUseCaseOut(
+            workbooks = listOf(
+                SubscribeWorkbookDetail(
+                    workbookId = 1L,
+                    isActiveSub = WorkBookStatus.ACTIVE,
+                    currentDay = 1,
+                    totalDay = 3,
+                    rank = 0,
+                    totalSubscriber = 100,
+                    articleInfo = "{}"
+                ),
+                SubscribeWorkbookDetail(
+                    workbookId = 2L,
+                    isActiveSub = WorkBookStatus.ACTIVE,
+                    currentDay = 2,
+                    totalDay = 3,
+                    rank = 0,
+                    totalSubscriber = 1,
+                    articleInfo = "{}"
+                ),
+                SubscribeWorkbookDetail(
+                    workbookId = 3L,
+                    isActiveSub = WorkBookStatus.DONE,
+                    currentDay = 3,
+                    totalDay = 3,
+                    rank = 0,
+                    totalSubscriber = 2,
+                    articleInfo = "{}"
+                )
+            )
+        )
+
+        doReturn(useCaseOut).`when`(browseSubscribeWorkbooksUseCase).execute(useCaseIn)
 
         // when
         this.webTestClient.get()

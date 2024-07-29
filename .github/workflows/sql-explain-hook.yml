@@ -1,0 +1,41 @@
+name: Sql Explain Hook
+
+on:
+    pull_request:
+        branches: ["main"]
+    workflow_dispatch:
+
+env:
+    DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+
+
+jobs:
+    sql-explain-hook:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Set up JDK 17
+              uses: actions/setup-java@v3
+              with:
+                  java-version: "17"
+                  distribution: "temurin"
+
+            - name: Jooq Code Generation
+              run: |
+                  ./gradlew --info jooqCodegenAll
+
+            - name: Generate Explain Docs
+              run: |
+                  ./gradlew --info api-repo:generateExplainDocs
+
+            - name: Zip Explain Docs
+              run: |
+                  mv ./api-repo/src/test/resources/explain ./explain
+                  zip explain-docs.zip ./explain/*
+
+            - name: Upload Explain Docs
+              run: |
+                  curl \
+                    -F 'payload_json={"username": "GitHubAction", "content": "Check the PR here: [PR #${{ github.event.pull_request.number }}](https://github.com/YAPP-Github/24th-Web-Team-1-BE/pull/${{ github.event.pull_request.number }})"}' \
+                    -F "file1=@explain-docs.zip" \
+                    $DISCORD_WEBHOOK

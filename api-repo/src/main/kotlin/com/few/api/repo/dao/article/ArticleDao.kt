@@ -13,7 +13,7 @@ import com.few.api.repo.dao.article.record.SelectWorkBookMappedArticleRecord
 import jooq.jooq_dsl.tables.ArticleIfo
 import jooq.jooq_dsl.tables.ArticleMst
 import jooq.jooq_dsl.tables.MappingWorkbookArticle
-import org.jooq.DSLContext
+import org.jooq.*
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Repository
 
@@ -24,56 +24,32 @@ class ArticleDao(
 
     @Cacheable(key = "#query.articleId", cacheManager = LOCAL_CM, cacheNames = [SELECT_ARTICLE_RECORD_CACHE])
     fun selectArticleRecord(query: SelectArticleRecordQuery): SelectArticleRecord? {
-        val articleId = query.articleId
-
-        return dslContext.select(
-            ArticleMst.ARTICLE_MST.ID.`as`(SelectArticleRecord::articleId.name),
-            ArticleMst.ARTICLE_MST.MEMBER_ID.`as`(SelectArticleRecord::writerId.name),
-            ArticleMst.ARTICLE_MST.MAIN_IMAGE_URL.`as`(SelectArticleRecord::mainImageURL.name),
-            ArticleMst.ARTICLE_MST.TITLE.`as`(SelectArticleRecord::title.name),
-            ArticleMst.ARTICLE_MST.CATEGORY_CD.`as`(SelectArticleRecord::category.name),
-            ArticleIfo.ARTICLE_IFO.CONTENT.`as`(SelectArticleRecord::content.name),
-            ArticleMst.ARTICLE_MST.CREATED_AT.`as`(SelectArticleRecord::createdAt.name)
-        ).from(ArticleMst.ARTICLE_MST)
-            .join(ArticleIfo.ARTICLE_IFO)
-            .on(ArticleMst.ARTICLE_MST.ID.eq(ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID))
-            .where(ArticleMst.ARTICLE_MST.ID.eq(articleId))
-            .and(ArticleMst.ARTICLE_MST.DELETED_AT.isNull)
+        return selectArticleRecordQuery(query)
             .fetchOneInto(SelectArticleRecord::class.java)
     }
 
+    fun selectArticleRecordQuery(query: SelectArticleRecordQuery) = dslContext.select(
+        ArticleMst.ARTICLE_MST.ID.`as`(SelectArticleRecord::articleId.name),
+        ArticleMst.ARTICLE_MST.MEMBER_ID.`as`(SelectArticleRecord::writerId.name),
+        ArticleMst.ARTICLE_MST.MAIN_IMAGE_URL.`as`(SelectArticleRecord::mainImageURL.name),
+        ArticleMst.ARTICLE_MST.TITLE.`as`(SelectArticleRecord::title.name),
+        ArticleMst.ARTICLE_MST.CATEGORY_CD.`as`(SelectArticleRecord::category.name),
+        ArticleIfo.ARTICLE_IFO.CONTENT.`as`(SelectArticleRecord::content.name),
+        ArticleMst.ARTICLE_MST.CREATED_AT.`as`(SelectArticleRecord::createdAt.name)
+    ).from(ArticleMst.ARTICLE_MST)
+        .join(ArticleIfo.ARTICLE_IFO)
+        .on(ArticleMst.ARTICLE_MST.ID.eq(ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID))
+        .where(ArticleMst.ARTICLE_MST.ID.eq(query.articleId))
+        .and(ArticleMst.ARTICLE_MST.DELETED_AT.isNull)
+        .query
+
     fun selectWorkBookArticleRecord(query: SelectWorkBookArticleRecordQuery): SelectWorkBookArticleRecord? {
-        val articleMst = ArticleMst.ARTICLE_MST
-        val articleIfo = ArticleIfo.ARTICLE_IFO
-        val mappingWorkbookArticle = MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE
-
-        val articleId = query.articleId
-        val workbookId = query.workbookId
-
-        return dslContext.select(
-            articleMst.ID.`as`(SelectWorkBookArticleRecord::articleId.name),
-            articleMst.MEMBER_ID.`as`(SelectWorkBookArticleRecord::writerId.name),
-            articleMst.MAIN_IMAGE_URL.`as`(SelectWorkBookArticleRecord::mainImageURL.name),
-            articleMst.TITLE.`as`(SelectWorkBookArticleRecord::title.name),
-            articleMst.CATEGORY_CD.`as`(SelectWorkBookArticleRecord::category.name),
-            articleIfo.CONTENT.`as`(SelectWorkBookArticleRecord::content.name),
-            articleMst.CREATED_AT.`as`(SelectWorkBookArticleRecord::createdAt.name),
-            mappingWorkbookArticle.DAY_COL.`as`(SelectWorkBookArticleRecord::day.name)
-        ).from(articleMst)
-            .join(articleIfo)
-            .on(articleMst.ID.eq(articleIfo.ARTICLE_MST_ID))
-            .join(mappingWorkbookArticle)
-            .on(mappingWorkbookArticle.WORKBOOK_ID.eq(workbookId))
-            .and(mappingWorkbookArticle.ARTICLE_ID.eq(articleMst.ID))
-            .where(articleMst.ID.eq(articleId))
-            .and(articleMst.DELETED_AT.isNull)
+        return selectWorkBookArticleRecordQuery(query)
             .fetchOneInto(SelectWorkBookArticleRecord::class.java)
     }
 
-    fun selectWorkbookMappedArticleRecords(query: SelectWorkbookMappedArticleRecordsQuery): List<SelectWorkBookMappedArticleRecord> {
-        val workbookId = query.workbookId
-
-        return dslContext.select(
+    fun selectWorkBookArticleRecordQuery(query: SelectWorkBookArticleRecordQuery) =
+        dslContext.select(
             ArticleMst.ARTICLE_MST.ID.`as`(SelectWorkBookArticleRecord::articleId.name),
             ArticleMst.ARTICLE_MST.MEMBER_ID.`as`(SelectWorkBookArticleRecord::writerId.name),
             ArticleMst.ARTICLE_MST.MAIN_IMAGE_URL.`as`(SelectWorkBookArticleRecord::mainImageURL.name),
@@ -82,33 +58,61 @@ class ArticleDao(
             ArticleIfo.ARTICLE_IFO.CONTENT.`as`(SelectWorkBookArticleRecord::content.name),
             ArticleMst.ARTICLE_MST.CREATED_AT.`as`(SelectWorkBookArticleRecord::createdAt.name),
             MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.DAY_COL.`as`(SelectWorkBookArticleRecord::day.name)
-        )
-            .from(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE)
-            .leftJoin(ArticleMst.ARTICLE_MST)
-            .on(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.ARTICLE_ID.eq(ArticleMst.ARTICLE_MST.ID))
+        ).from(ArticleMst.ARTICLE_MST)
             .join(ArticleIfo.ARTICLE_IFO)
             .on(ArticleMst.ARTICLE_MST.ID.eq(ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID))
-            .where(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.eq(workbookId))
+            .join(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE)
+            .on(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.eq(query.workbookId))
+            .and(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.ARTICLE_ID.eq(ArticleMst.ARTICLE_MST.ID))
+            .where(ArticleMst.ARTICLE_MST.ID.eq(query.articleId))
             .and(ArticleMst.ARTICLE_MST.DELETED_AT.isNull)
+            .query
+
+    fun selectWorkbookMappedArticleRecords(query: SelectWorkbookMappedArticleRecordsQuery): List<SelectWorkBookMappedArticleRecord> {
+        return selectWorkbookMappedArticleRecordsQuery(query)
             .fetchInto(SelectWorkBookMappedArticleRecord::class.java)
     }
 
+    fun selectWorkbookMappedArticleRecordsQuery(query: SelectWorkbookMappedArticleRecordsQuery) = dslContext.select(
+        ArticleMst.ARTICLE_MST.ID.`as`(SelectWorkBookArticleRecord::articleId.name),
+        ArticleMst.ARTICLE_MST.MEMBER_ID.`as`(SelectWorkBookArticleRecord::writerId.name),
+        ArticleMst.ARTICLE_MST.MAIN_IMAGE_URL.`as`(SelectWorkBookArticleRecord::mainImageURL.name),
+        ArticleMst.ARTICLE_MST.TITLE.`as`(SelectWorkBookArticleRecord::title.name),
+        ArticleMst.ARTICLE_MST.CATEGORY_CD.`as`(SelectWorkBookArticleRecord::category.name),
+        ArticleIfo.ARTICLE_IFO.CONTENT.`as`(SelectWorkBookArticleRecord::content.name),
+        ArticleMst.ARTICLE_MST.CREATED_AT.`as`(SelectWorkBookArticleRecord::createdAt.name),
+        MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.DAY_COL.`as`(SelectWorkBookArticleRecord::day.name)
+    )
+        .from(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE)
+        .leftJoin(ArticleMst.ARTICLE_MST)
+        .on(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.ARTICLE_ID.eq(ArticleMst.ARTICLE_MST.ID))
+        .join(ArticleIfo.ARTICLE_IFO)
+        .on(ArticleMst.ARTICLE_MST.ID.eq(ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID))
+        .where(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.eq(query.workbookId))
+        .and(ArticleMst.ARTICLE_MST.DELETED_AT.isNull)
+        .query
+
     fun insertFullArticleRecord(command: InsertFullArticleRecordCommand): Long {
-        val mstId = dslContext.insertInto(ArticleMst.ARTICLE_MST)
+        val mstId = insertArticleMstCommand(command)
+            .returning(ArticleMst.ARTICLE_MST.ID)
+            .fetchOne()
+        insertArticleIfoCommand(mstId!!.getValue(ArticleMst.ARTICLE_MST.ID), command).execute()
+        return mstId.getValue(ArticleMst.ARTICLE_MST.ID)
+    }
+
+    fun insertArticleIfoCommand(
+        mstId: Long,
+        command: InsertFullArticleRecordCommand,
+    ) = dslContext.insertInto(ArticleIfo.ARTICLE_IFO)
+        .set(ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID, mstId)
+        .set(ArticleIfo.ARTICLE_IFO.CONTENT, command.content)
+
+    fun insertArticleMstCommand(command: InsertFullArticleRecordCommand) =
+        dslContext.insertInto(ArticleMst.ARTICLE_MST)
             .set(ArticleMst.ARTICLE_MST.MEMBER_ID, command.writerId)
             .set(ArticleMst.ARTICLE_MST.MAIN_IMAGE_URL, command.mainImageURL.toString())
             .set(ArticleMst.ARTICLE_MST.TITLE, command.title)
             .set(ArticleMst.ARTICLE_MST.CATEGORY_CD, command.category)
-            .returning(ArticleMst.ARTICLE_MST.ID)
-            .fetchOne()
-
-        dslContext.insertInto(ArticleIfo.ARTICLE_IFO)
-            .set(ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID, mstId!!.getValue(ArticleMst.ARTICLE_MST.ID))
-            .set(ArticleIfo.ARTICLE_IFO.CONTENT, command.content)
-            .execute()
-
-        return mstId.getValue(ArticleMst.ARTICLE_MST.ID)
-    }
 
     fun selectArticleContents(articleIds: Set<Long>): List<SelectArticleContentsRecord> =
         selectArticleContentsQuery(articleIds)

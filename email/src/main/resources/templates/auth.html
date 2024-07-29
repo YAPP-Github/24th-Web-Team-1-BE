@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="KR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"
+    />
+    <title>FEW</title>
+    <link
+      rel="stylesheet"
+      as="style"
+      crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
+    />
+    <style>
+      * {
+        font-family: 'Pretendard Variable', Pretendard, -apple-system,
+          BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI',
+          'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic',
+          'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+      }
+    </style>
+    <style>
+      .h1-bold {
+        font-family: 'Pretendard Variable';
+        font-size: 28px;
+        line-height: 42px;
+        font-weight: 700;
+      }
+      .h2-bold {
+        font-family: 'Pretendard Variable';
+        font-size: 24px;
+        line-height: 33.6px;
+        font-weight: 700;
+      }
+      .h3-bold {
+        font-family: 'Pretendard Variable';
+        font-size: 18px;
+        line-height: 27px;
+        font-weight: 700;
+      }
+      .body1-medium {
+        font-family: 'Pretendard Variable';
+        font-size: 17px;
+        line-height: 28.05px;
+        font-weight: 500;
+      }
+      .body1-regular {
+        font-family: 'Pretendard Variable';
+        font-size: 17px;
+        line-height: 28.05px;
+        font-weight: 400;
+      }
+      .body2-bold {
+        font-family: 'Pretendard Variable';
+        font-size: 15px;
+        line-height: 24.75px;
+        font-weight: 700;
+      }
+      .body2-medium {
+        font-family: 'Pretendard Variable';
+        font-size: 15px;
+        line-height: 24.75px;
+        font-weight: 500;
+      }
+      .body2-regular {
+        font-family: 'Pretendard Variable';
+        font-size: 15px;
+        line-height: 24.75px;
+        font-weight: 400;
+      }
+      .body3-medium {
+        font-family: 'Pretendard Variable';
+        font-size: 14px;
+        line-height: 21px;
+        font-weight: 500;
+      }
+      .sub1-bold {
+        font-family: 'Pretendard Variable';
+        font-size: 20px;
+        line-height: 28px;
+        font-weight: 700;
+      }
+      .sub1-semibold {
+        font-family: 'Pretendard Variable';
+        font-size: 20px;
+        line-height: 28px;
+        font-weight: 600; /* semibold */
+      }
+      .sub2-bold {
+        font-family: 'Pretendard Variable';
+        font-size: 16px;
+        line-height: 25.44px;
+        font-weight: 700;
+      }
+      .sub2-medium {
+        font-family: 'Pretendard Variable';
+        font-size: 16px;
+        line-height: 25.44px;
+        font-weight: 500;
+      }
+      .sub3-500 {
+        font-family: 'Pretendard Variable';
+        font-size: 12px;
+        line-height: 18px;
+        font-weight: 500;
+      }
+      .reference-li {
+        font-family: 'Pretendard Variable';
+        font-size: 12px;
+        line-height: 18px;
+        font-weight: 500;
+      }
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .article-img {
+        max-height: 260px !important;
+        object-fit: contain;
+      }
+    </style>
+  </head>
+  <body
+    style="
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      min-height: 100dvh;
+      width: 100%;
+      max-width: 480px;
+    "
+  >
+    <main style="display: flex; height: auto; width: 100%">
+      <div
+        style="
+          margin: 30px 20px 30px 20px;
+          display: flex;
+          width: 100%;
+          height: 100%;
+          flex-direction: column;
+          justify-content: space-between;
+          
+        "
+      >
+        <section
+          style="
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 38px;
+          "
+        >
+          <div style="display: flex; flex-direction: column; gap: 12px">
+            <img
+              src="https://eehhqckznniu25210545.cdn.ntruss.com/images/2024-07-29/jOXdIxPjqmY7rHc5.png"
+              alt="few_logo"
+            />
+          </div>
+
+          <div style="display: flex; flex-direction: column; width: 100%; gap: 24px;">
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 40px;
+              "
+            >
+              <header>
+                <h2
+                  class="h2-bold"
+                  style="color: black"
+                  
+                >few에 가입해주셔서 감사합니다.</h2>
+              </header>
+            </div>
+            <article style="display: flex; flex-direction: column; align-items: start; gap: 2px">
+              <span class="body2-regular" style="color: #484848 ">가입하신 이메일 주소를 확인해주세요.</span>
+              <span class="body2-medium" style="color: #0166B3" id="email" th:text="${email}"></span>
+            </article>
+          </div>
+        </section>
+        <section
+          style="
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            margin-top: 45px;
+            margin-bottom: 58px;
+          "
+        >
+          
+          <a
+            id="article-to-problem"
+            class="body3-medium"
+            style="
+              display: flex;
+              height: 20px;
+              text-decoration: none;
+              padding: 17px 0px 18px 0px;
+              justify-content: center;
+              align-items: center;
+              color: #ffffff;
+              background-color: #264932;
+            "
+            th:href="${confirmLink}"
+            target="_blank"
+          >
+            네, 이메일 주소가 맞습니다.
+          </a>
+        </section>
+        <footer
+          style="
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            justify-content: center;
+            gap: 5px;
+            width: 100%;
+            margin-bottom: 30px;
+          "
+        >
+          <span class="sub3-500">*본 메일은 발신 전용 메일로 회신을 받을 수 없습니다.</span>
+        </footer>
+      </div>
+    </main>
+  </body>
+</html>

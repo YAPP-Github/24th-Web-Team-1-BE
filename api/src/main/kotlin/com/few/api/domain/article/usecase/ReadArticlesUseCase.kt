@@ -105,8 +105,18 @@ class ReadArticlesUseCase(
                 // views 값이 null일 경우 0으로 간주
                 val views1 = a1.views ?: 0
                 val views2 = a2.views ?: 0
-                // 내림차순 정렬
-                views2.compareTo(views1)
+
+                // views 내림차순 정렬
+                val viewComparison = views2.compareTo(views1)
+
+                if (viewComparison != 0) {
+                    viewComparison
+                } else {
+                    // views가 같을 경우 articleId 내림차순 정렬(최신글)
+                    val articleId1 = a1.articleId
+                    val articleId2 = a2.articleId
+                    articleId2.compareTo(articleId1)
+                }
             }
         )
 

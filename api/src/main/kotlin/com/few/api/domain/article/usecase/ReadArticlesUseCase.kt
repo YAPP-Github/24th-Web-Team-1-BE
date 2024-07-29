@@ -23,7 +23,7 @@ class ReadArticlesUseCase(
     private val articleDao: ArticleDao,
 ) {
 
-    @Transactional(readOnly = true) // TODO: readOnly 점검
+    @Transactional // TODO: read only로 할 수 있도록 점검
     fun execute(useCaseIn: ReadArticlesUseCaseIn): ReadArticlesUseCaseOut {
         // 1. 아티클 조회수에서 마지막 읽은 아티클아이디, 카테고리를 기반으로 조회수 상위 10개를 가져옴
         val offset = if (useCaseIn.prevArticleId <= 0) {

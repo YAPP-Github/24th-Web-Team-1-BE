@@ -65,13 +65,13 @@ class ReadArticlesUseCase(
 
             existInArticleMainCardRecords = (existInArticleMainCardRecords + joinedArticleMainCardRecords).toSet()
 
-            // 아티클 컨텐츠 조회
-            val selectArticleContentsRecords: List<SelectArticleContentsRecord> =
-                articleDao.selectArticleContents(existInArticleMainCardRecords.map { it.articleId }.toSet())
-            setContentsToRecords(selectArticleContentsRecords, existInArticleMainCardRecords)
-
             // TODO: 결과를 로컬 캐시에 저장
         }
+
+        // 아티클 컨텐츠 조회
+        val selectArticleContentsRecords: List<SelectArticleContentsRecord> =
+            articleDao.selectArticleContents(existInArticleMainCardRecords.map { it.articleId }.toSet())
+        setContentsToRecords(selectArticleContentsRecords, existInArticleMainCardRecords)
 
         val sortedArticles = updateAndSortArticleViews(existInArticleMainCardRecords, articleViewsRecords)
 

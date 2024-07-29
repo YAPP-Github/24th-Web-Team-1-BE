@@ -92,10 +92,12 @@ class ArticleController(
     fun browseArticleCategories(): ApiResponse<ApiResponse.SuccessBody<Map<String, Any>>> {
         return ApiResponseGenerator.success(
             mapOf(
-                "categories" to
-                    CategoryType.entries.map {
-                        CodeAndNameResponse(it.code, it.displayName)
-                    }.toList()
+                "categories" to CategoryType.entries.map {
+                    mapOf(
+                        "code" to it.code,
+                        "name" to it.displayName
+                    )
+                }
             ),
             HttpStatus.OK
         )

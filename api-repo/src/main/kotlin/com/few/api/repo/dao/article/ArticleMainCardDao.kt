@@ -32,8 +32,8 @@ class ArticleMainCardDao(
         ARTICLE_MAIN_CARD.CREATED_AT.`as`(ArticleMainCardRecord::createdAt.name),
         ARTICLE_MAIN_CARD.WRITER_ID.`as`(ArticleMainCardRecord::writerId.name),
         ARTICLE_MAIN_CARD.WRITER_EMAIL.`as`(ArticleMainCardRecord::writerEmail.name),
-        jsonGetAttributeAsText(ARTICLE_MAIN_CARD.WRITER_DESCRIPTION, "\$.name").`as`(ArticleMainCardRecord::writerName.name),
-        jsonGetAttribute(ARTICLE_MAIN_CARD.WRITER_DESCRIPTION, "\$.url").`as`(ArticleMainCardRecord::writerImgUrl.name)
+        jsonGetAttributeAsText(ARTICLE_MAIN_CARD.WRITER_DESCRIPTION, "name").`as`(ArticleMainCardRecord::writerName.name),
+        jsonGetAttribute(ARTICLE_MAIN_CARD.WRITER_DESCRIPTION, "url").`as`(ArticleMainCardRecord::writerImgUrl.name)
     ).from(ARTICLE_MAIN_CARD)
         .where(ARTICLE_MAIN_CARD.ID.`in`(articleIds))
         .query
@@ -59,8 +59,8 @@ class ArticleMainCardDao(
             a.CREATED_AT.`as`(ArticleMainCardRecord::createdAt.name),
             m.ID.`as`(ArticleMainCardRecord::writerId.name),
             m.EMAIL.`as`(ArticleMainCardRecord::writerEmail.name),
-            jsonGetAttributeAsText(m.DESCRIPTION, "\$.name").`as`(ArticleMainCardRecord::writerName.name),
-            jsonGetAttribute(m.DESCRIPTION, "\$.url").`as`(ArticleMainCardRecord::writerImgUrl.name)
+            jsonGetAttributeAsText(m.DESCRIPTION, "name").`as`(ArticleMainCardRecord::writerName.name),
+            jsonGetAttribute(m.DESCRIPTION, "url").`as`(ArticleMainCardRecord::writerImgUrl.name)
         )
             .from(a)
             .join(m).on(a.MEMBER_ID.eq(m.ID)).and(a.DELETED_AT.isNull).and(m.DELETED_AT.isNull)

@@ -19,33 +19,38 @@ class TokenGenerator(
         private const val MEMBER_ID_CLAIM_KEY = "memberId"
         private const val MEMBER_ROLE_CLAIM_KEY = "memberRole"
     }
-
     fun generateAuthToken(memberId: Long?, memberRoles: List<Roles>): AuthToken {
-        return AuthToken(generateAccessToken(memberId, memberRoles), generateRefreshToken(memberId, memberRoles))
+        return AuthToken(generateAccessToken(memberId, memberRoles, accessTokenValidTime), generateRefreshToken(memberId, memberRoles, refreshTokenValidTime))
     }
 
-    fun generateAccessToken(memberId: Long?, memberRoles: List<Roles>): String {
+    fun generateAuthToken(memberId: Long?, memberRoles: List<Roles>, accessTokenValidTime: Long?, refreshTokenValidTime: Long?): AuthToken {
+        return AuthToken(generateAccessToken(memberId, memberRoles, accessTokenValidTime), generateRefreshToken(memberId, memberRoles, refreshTokenValidTime))
+    }
+
+    fun generateAccessToken(memberId: Long?, memberRoles: List<Roles>, accessTokenValidTime: Long?): String {
         val now = Date()
         val roles = convertToStringList(memberRoles)
+        val acValidTime = accessTokenValidTime ?: this.accessTokenValidTime
         return Jwts.builder()
             .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
             .claim(MEMBER_ID_CLAIM_KEY, memberId)
             .claim(MEMBER_ROLE_CLAIM_KEY, roles.toString())
             .setIssuedAt(now)
-            .setExpiration(Date(now.time + accessTokenValidTime))
+            .setExpiration(Date(now.time + acValidTime))
             .signWith(Keys.hmacShaKeyFor(secretKey.toByteArray()))
             .compact()
     }
 
-    fun generateRefreshToken(memberId: Long?, memberRoles: List<Roles>): String {
+    fun generateRefreshToken(memberId: Long?, memberRoles: List<Roles>, refreshTokenValidTime: Long?): String {
         val now = Date()
         val roles = convertToStringList(memberRoles)
+        val rfValidTime = refreshTokenValidTime ?: this.refreshTokenValidTime
         return Jwts.builder()
             .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
             .claim(MEMBER_ID_CLAIM_KEY, memberId)
             .claim(MEMBER_ROLE_CLAIM_KEY, roles.toString())
             .setIssuedAt(now)
-            .setExpiration(Date(now.time + refreshTokenValidTime))
+            .setExpiration(Date(now.time + rfValidTime))
             .signWith(Keys.hmacShaKeyFor(secretKey.toByteArray()))
             .compact()
     }

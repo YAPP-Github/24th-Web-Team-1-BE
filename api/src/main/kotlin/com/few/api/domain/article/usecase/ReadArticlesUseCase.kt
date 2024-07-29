@@ -89,13 +89,7 @@ class ReadArticlesUseCase(
                 category = CategoryType.fromCode(a.categoryCd)?.displayName
                     ?: throw NotFoundException("article.invalid.category"),
                 createdAt = a.createdAt,
-                views = a.views,
-                includedWorkbooks = a.workbooks.map { w ->
-                    WorkbookDetail(
-                        id = w.id,
-                        title = w.title
-                    )
-                }.toList()
+                views = a.views
             )
         }.toList()
 
@@ -120,7 +114,8 @@ class ReadArticlesUseCase(
 
         articleRecords.forEach { article ->
             val updatedViews = viewsMap[article.articleId] ?: 0
-            sortedSet.add(article.copy(views = updatedViews))
+            article.views = updatedViews
+            sortedSet.add(article)
         }
 
         return sortedSet

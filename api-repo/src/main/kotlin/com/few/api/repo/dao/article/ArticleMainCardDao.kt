@@ -5,9 +5,7 @@ import jooq.jooq_dsl.tables.MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE
 import jooq.jooq_dsl.tables.Member.MEMBER
 import jooq.jooq_dsl.tables.Workbook.WORKBOOK
 import com.few.api.repo.dao.article.record.ArticleMainCardRecord
-import com.few.api.repo.dao.article.record.WorkbookRecord
 import com.few.api.repo.dao.article.support.CommonJsonMapper
-import com.few.api.repo.dao.article.support.WorkbookJsonMapper
 import jooq.jooq_dsl.tables.ArticleMainCard.ARTICLE_MAIN_CARD
 import org.jooq.*
 import org.jooq.impl.DSL.*
@@ -17,7 +15,6 @@ import java.time.LocalDateTime
 @Repository
 class ArticleMainCardDao(
     private val dslContext: DSLContext,
-    private val workbookJsonMapper: WorkbookJsonMapper,
     private val commonJsonMapper: CommonJsonMapper,
 ) {
 
@@ -35,10 +32,8 @@ class ArticleMainCardDao(
         ARTICLE_MAIN_CARD.CREATED_AT.`as`(ArticleMainCardRecord::createdAt.name),
         ARTICLE_MAIN_CARD.WRITER_ID.`as`(ArticleMainCardRecord::writerId.name),
         ARTICLE_MAIN_CARD.WRITER_EMAIL.`as`(ArticleMainCardRecord::writerEmail.name),
-        jsonValue(ARTICLE_MAIN_CARD.WRITER_DESCRIPTION, "\$.name").`as`(ArticleMainCardRecord::writerName.name),
-        jsonValue(ARTICLE_MAIN_CARD.WRITER_DESCRIPTION, "\$.url").`as`(ArticleMainCardRecord::writerImgUrl.name),
-        ARTICLE_MAIN_CARD.WORKBOOK_LIST.convertFrom { jsonArray -> workbookJsonMapper.toObject(jsonArray.data()) }
-            .`as`(ArticleMainCardRecord::workbooks.name)
+        jsonGetAttributeAsText(ARTICLE_MAIN_CARD.WRITER_DESCRIPTION, "\$.name").`as`(ArticleMainCardRecord::writerName.name),
+        jsonGetAttribute(ARTICLE_MAIN_CARD.WRITER_DESCRIPTION, "\$.url").`as`(ArticleMainCardRecord::writerImgUrl.name)
     ).from(ARTICLE_MAIN_CARD)
         .where(ARTICLE_MAIN_CARD.ID.`in`(articleIds))
         .query
@@ -50,7 +45,7 @@ class ArticleMainCardDao(
     }
 
     private fun selectByArticleMstAndMemberAndMappingWorkbookArticleAndWorkbookQuery(articleIds: Set<Long>):
-        SelectQuery<Record10<Long, String, String, Byte, LocalDateTime, Long, String, JSON, JSON, List<WorkbookRecord>>> {
+        SelectQuery<Record9<Long, String, String, Byte, LocalDateTime, Long, String, String, JSON>> {
         val a = ARTICLE_MST.`as`("a")
         val m = MEMBER.`as`("m")
         val mwa = MAPPING_WORKBOOK_ARTICLE.`as`("mwa")
@@ -64,15 +59,8 @@ class ArticleMainCardDao(
             a.CREATED_AT.`as`(ArticleMainCardRecord::createdAt.name),
             m.ID.`as`(ArticleMainCardRecord::writerId.name),
             m.EMAIL.`as`(ArticleMainCardRecord::writerEmail.name),
-            jsonValue(m.DESCRIPTION, "\$.name").`as`(ArticleMainCardRecord::writerName.name),
-            jsonValue(m.DESCRIPTION, "\$.url").`as`(ArticleMainCardRecord::writerImgUrl.name),
-            jsonArrayAgg(
-                jsonObject(
-                    key("title").value(w.TITLE),
-                    key("id").value(w.ID)
-                )
-            ).convertFrom { jsonArray -> workbookJsonMapper.toObject(jsonArray.data()) }
-                .`as`(ArticleMainCardRecord::workbooks.name)
+            jsonGetAttributeAsText(m.DESCRIPTION, "\$.name").`as`(ArticleMainCardRecord::writerName.name),
+            jsonGetAttribute(m.DESCRIPTION, "\$.url").`as`(ArticleMainCardRecord::writerImgUrl.name)
         )
             .from(a)
             .join(m).on(a.MEMBER_ID.eq(m.ID)).and(a.DELETED_AT.isNull).and(m.DELETED_AT.isNull)
@@ -90,8 +78,7 @@ class ArticleMainCardDao(
     }
 
     fun insertArticleMainCardsBulkQuery(commands: Set<ArticleMainCardRecord>):
-        InsertValuesStep9<jooq.jooq_dsl.tables.records.ArticleMainCardRecord,
-            Long, String, String, Byte, LocalDateTime, Long, String, JSON, JSON> {
+        InsertValuesStep8<jooq.jooq_dsl.tables.records.ArticleMainCardRecord, Long, String, String, Byte, LocalDateTime, Long, String, JSON> {
         val insertStep = dslContext.insertInto(
             ARTICLE_MAIN_CARD,
             ARTICLE_MAIN_CARD.ID,
@@ -101,8 +88,7 @@ class ArticleMainCardDao(
             ARTICLE_MAIN_CARD.CREATED_AT,
             ARTICLE_MAIN_CARD.WRITER_ID,
             ARTICLE_MAIN_CARD.WRITER_EMAIL,
-            ARTICLE_MAIN_CARD.WRITER_DESCRIPTION,
-            ARTICLE_MAIN_CARD.WORKBOOK_LIST
+            ARTICLE_MAIN_CARD.WRITER_DESCRIPTION
         )
 
         for (command in commands) {
@@ -121,8 +107,7 @@ class ArticleMainCardDao(
                             "url" to command.writerImgUrl
                         )
                     )
-                ),
-                JSON.valueOf(workbookJsonMapper.toJsonStr(command.workbooks))
+                )
             )
         }
 

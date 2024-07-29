@@ -13,16 +13,14 @@ data class ArticleMainCardRecord(
     val writerEmail: String,
     val writerName: String,
     val writerImgUrl: URL,
-    val workbooks: List<WorkbookRecord>,
-    var views: Long,
 ) {
     var content: String = ""
         set(value) {
             field = value
         }
-}
 
-data class WorkbookRecord(
-    val id: Long,
-    val title: String,
-)
+    var views: Long = 0L
+        set(value) {
+            field = value
+        }
+}

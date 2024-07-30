@@ -29,3 +29,15 @@ dependencies {
     implementation("org.ehcache:ehcache:${DependencyVersion.EHCACHE}")
     implementation("org.springframework.boot:spring-boot-starter-cache")
 }
+
+tasks {
+    test {
+        useJUnitPlatform()
+    }
+
+    register<Test>("generateExplainDocs") {
+        useJUnitPlatform {
+            includeTags("explain")
+        }
+    }
+}

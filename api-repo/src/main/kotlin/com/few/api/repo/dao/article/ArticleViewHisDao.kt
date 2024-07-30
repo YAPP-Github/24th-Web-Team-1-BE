@@ -12,6 +12,10 @@ class ArticleViewHisDao(
 ) {
 
     fun insertArticleViewHis(command: ArticleViewHisCommand) {
+        insertArticleViewHisCommand(command).execute()
+    }
+
+    fun insertArticleViewHisCommand(command: ArticleViewHisCommand) =
         dslContext.insertInto(
             ArticleViewHis.ARTICLE_VIEW_HIS,
             ArticleViewHis.ARTICLE_VIEW_HIS.ARTICLE_MST_ID,
@@ -19,13 +23,15 @@ class ArticleViewHisDao(
         ).values(
             command.articleId,
             command.memberId
-        ).execute()
-    }
+        )
 
     fun countArticleViews(query: ArticleViewHisCountQuery): Long? {
-        return dslContext.selectCount()
-            .from(ArticleViewHis.ARTICLE_VIEW_HIS)
-            .where(ArticleViewHis.ARTICLE_VIEW_HIS.ARTICLE_MST_ID.eq(query.articleId))
+        return countArticleViewsQuery(query)
             .fetchOne(0, Long::class.java)
     }
+
+    fun countArticleViewsQuery(query: ArticleViewHisCountQuery) =
+        dslContext.selectCount()
+            .from(ArticleViewHis.ARTICLE_VIEW_HIS)
+            .where(ArticleViewHis.ARTICLE_VIEW_HIS.ARTICLE_MST_ID.eq(query.articleId)).query
 }

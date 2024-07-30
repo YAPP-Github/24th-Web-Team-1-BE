@@ -1,6 +1,11 @@
 package com.few.api.web.controller.member
 
+import com.few.api.domain.member.usecase.SaveMemberUseCase
+import com.few.api.domain.member.usecase.TokenUseCase
+import com.few.api.domain.member.usecase.dto.SaveMemberUseCaseIn
+import com.few.api.domain.member.usecase.dto.TokenUseCaseIn
 import com.few.api.web.controller.member.request.SaveMemberRequest
+import com.few.api.web.controller.member.request.TokenRequest
 import com.few.api.web.controller.member.response.SaveMemberResponse
 import com.few.api.web.controller.member.response.TokenResponse
 import com.few.api.web.support.ApiResponse
@@ -17,13 +22,22 @@ import org.springframework.web.bind.annotation.RestController
 @Validated
 @RestController
 @RequestMapping(value = ["/api/v1/members"], produces = [MediaType.APPLICATION_JSON_VALUE])
-class MemberController {
+class MemberController(
+    private val saveMemberUseCase: SaveMemberUseCase,
+    private val tokenUseCase: TokenUseCase,
+) {
     @PostMapping
     fun saveMember(
         @RequestBody request: SaveMemberRequest,
     ): ApiResponse<ApiResponse.SuccessBody<SaveMemberResponse>> {
+        val useCaseOut = SaveMemberUseCaseIn(
+            email = request.email
+        ).let {
+            saveMemberUseCase.execute(it)
+        }
+
         SaveMemberResponse(
-            isSendAuth = true
+            isSendAuth = useCaseOut.isSendAuthEmail
         ).let {
             return ApiResponseGenerator.success(it, HttpStatus.OK)
         }
@@ -31,14 +45,24 @@ class MemberController {
 
     @PostMapping("/token")
     fun token(
-        @RequestParam(value = "id", required = true) id: String,
-        @RequestParam(value = "at", required = false) at: Long,
-        @RequestParam(value = "rt", required = false) rt: Long,
+        @RequestParam(value = "auth_token", required = false) token: String?,
+        @RequestParam(value = "at", required = false) at: Long?,
+        @RequestParam(value = "rt", required = false) rt: Long?,
+        @RequestBody request: TokenRequest?,
     ): ApiResponse<ApiResponse.SuccessBody<TokenResponse>> {
+        val useCaseOut = TokenUseCaseIn(
+            token = token,
+            at = at,
+            rt = rt,
+            refreshToken = request?.refreshToken
+        ).let {
+            tokenUseCase.execute(it)
+        }
+
         TokenResponse(
-            accessToken = "accessToken",
-            refreshToken = "refreshToken",
-            isLogin = true
+            accessToken = useCaseOut.accessToken,
+            refreshToken = useCaseOut.refreshToken,
+            isLogin = useCaseOut.isLogin
         ).let {
             return ApiResponseGenerator.success(it, HttpStatus.OK)
         }

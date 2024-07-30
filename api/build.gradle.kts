@@ -18,13 +18,6 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-impl:${DependencyVersion.JWT}")
     implementation("io.jsonwebtoken:jjwt-jackson:${DependencyVersion.JWT}")
 
-    /** jooq */
-    implementation("org.springframework.boot:spring-boot-starter-jooq")
-    implementation("org.jooq:jooq:${DependencyVersion.JOOQ}")
-    implementation("org.jooq:jooq-meta:${DependencyVersion.JOOQ}")
-    implementation("org.jooq:jooq-codegen:${DependencyVersion.JOOQ}")
-    jooqCodegen("org.jooq:jooq-meta-extensions:${DependencyVersion.JOOQ}")
-
     /** swagger & restdocs */
     implementation("org.springdoc:springdoc-openapi-ui:${DependencyVersion.SPRINGDOC}")
     implementation("org.springframework.restdocs:spring-restdocs-webtestclient")

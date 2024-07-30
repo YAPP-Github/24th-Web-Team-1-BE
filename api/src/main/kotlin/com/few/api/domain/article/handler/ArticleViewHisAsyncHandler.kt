@@ -34,6 +34,6 @@ class ArticleViewHisAsyncHandler(
                 "Failed insertion article view history and upsertion article view count " +
                     "for articleId: $articleId and memberId: $memberId"
             }
-        }
+        }.getOrThrow()
     }
 }

@@ -2,6 +2,7 @@ package com.few.api.web.controller.workbook
 
 import com.epages.restdocs.apispec.ResourceDocumentation
 import com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName
+import com.epages.restdocs.apispec.ResourceDocumentation.resource
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -13,8 +14,9 @@ import com.few.api.domain.workbook.usecase.ReadWorkbookUseCase
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
+import com.few.api.web.support.WorkBookCategory
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
 import com.few.data.common.code.CategoryType
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -25,9 +27,12 @@ import org.springframework.http.MediaType
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.restdocs.RestDocumentationContextProvider
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URL
 import java.time.LocalDateTime
@@ -38,6 +43,9 @@ class WorkBookControllerTest : ControllerTestSpec() {
     private lateinit var objectMapper: ObjectMapper
 
     private lateinit var webTestClient: WebTestClient
+
+    @Autowired
+    private lateinit var mockMvc: MockMvc
 
     @Autowired
     private lateinit var workBookController: WorkBookController
@@ -61,6 +69,118 @@ class WorkBookControllerTest : ControllerTestSpec() {
             .configureClient()
             .filter(WebTestClientRestDocumentation.documentationConfiguration(restDocumentation))
             .build()
+    }
+
+    @Test
+    @DisplayName("[GET] /api/v1/workbooks/categories")
+    fun browseWorkBookCategories() {
+        // given
+        val api = "BrowseWorkBookCategories"
+        val uri = UriComponentsBuilder.newInstance()
+            .path("$BASE_URL/categories")
+            .build()
+            .toUriString()
+
+        // when
+        mockMvc.perform(
+            get(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+            status().is2xxSuccessful
+        ).andDo(
+            document(
+                api.toIdentifier(),
+                resource(
+                    ResourceSnippetParameters.builder()
+                        .summary(api.toIdentifier())
+                        .description("학습지 카테고리 목록을 조회합니다.")
+                        .tag(TAG)
+                        .responseSchema(Schema.schema(api.toResponseSchema()))
+                        .responseFields(
+                            *Description.describe(
+                                arrayOf(
+                                    PayloadDocumentation.fieldWithPath("data")
+                                        .fieldWithObject("data"),
+                                    PayloadDocumentation.fieldWithPath("data.categories[]")
+                                        .fieldWithArray("카테고리 목록"),
+                                    PayloadDocumentation.fieldWithPath("data.categories[].code")
+                                        .fieldWithNumber("카테고리 코드"),
+                                    PayloadDocumentation.fieldWithPath("data.categories[].name")
+                                        .fieldWithString("카테고리 이름")
+                                )
+                            )
+                        ).build()
+                )
+            )
+        )
+    }
+
+    @Test
+    @DisplayName("[GET] /api/v1/workbooks")
+    fun browseWorkBooks() {
+        // given
+        val api = "BrowseWorkBooks"
+        val uri = UriComponentsBuilder.newInstance()
+            .path(BASE_URL)
+            .queryParam("category", WorkBookCategory.ECONOMY.code)
+            .build()
+            .toUriString()
+
+        // set usecase mock
+
+        // when
+        mockMvc.perform(
+            get(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+            status().is2xxSuccessful
+        ).andDo(
+            document(
+                api.toIdentifier(),
+                resource(
+                    ResourceSnippetParameters.builder()
+                        .summary(api.toIdentifier())
+                        .description("학습지 목록을 조회합니다.")
+                        .tag(TAG)
+                        .requestSchema(Schema.schema(api.toRequestSchema()))
+                        .queryParameters(
+                            parameterWithName("category").description("학습지 카테고리")
+                        )
+                        .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
+                            *Description.describe(
+                                arrayOf(
+                                    PayloadDocumentation.fieldWithPath("data")
+                                        .fieldWithObject("data"),
+                                    PayloadDocumentation.fieldWithPath("data.workbooks[]")
+                                        .fieldWithArray("워크북 목록"),
+                                    PayloadDocumentation.fieldWithPath("data.workbooks[].id")
+                                        .fieldWithNumber("워크북 Id"),
+                                    PayloadDocumentation.fieldWithPath("data.workbooks[].mainImageUrl")
+                                        .fieldWithString("워크북 대표 이미지 Url"),
+                                    PayloadDocumentation.fieldWithPath("data.workbooks[].title")
+                                        .fieldWithString("워크북 제목"),
+                                    PayloadDocumentation.fieldWithPath("data.workbooks[].description")
+                                        .fieldWithString("워크북 개요"),
+                                    PayloadDocumentation.fieldWithPath("data.workbooks[].category")
+                                        .fieldWithString("워크북 카테고리"),
+                                    PayloadDocumentation.fieldWithPath("data.workbooks[].createdAt")
+                                        .fieldWithString("워크북 생성일시"),
+                                    PayloadDocumentation.fieldWithPath("data.workbooks[].writers[]")
+                                        .fieldWithArray("워크북 작가 목록"),
+                                    PayloadDocumentation.fieldWithPath("data.workbooks[].writers[].id")
+                                        .fieldWithNumber("워크북 작가 Id"),
+                                    PayloadDocumentation.fieldWithPath("data.workbooks[].writers[].name")
+                                        .fieldWithString("워크북 작가 이름"),
+                                    PayloadDocumentation.fieldWithPath("data.workbooks[].writers[].url")
+                                        .fieldWithString("워크북 작가 링크"),
+                                    PayloadDocumentation.fieldWithPath("data.workbooks[].subscriberCount")
+                                        .fieldWithNumber("워크북 구독자 수")
+                                )
+                            )
+                        ).build()
+                )
+            )
+        )
     }
 
     @Test

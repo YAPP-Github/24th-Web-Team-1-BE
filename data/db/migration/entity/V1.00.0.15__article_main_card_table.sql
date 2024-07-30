@@ -9,5 +9,6 @@ CREATE TABLE ARTICLE_MAIN_CARD
     writer_id          BIGINT        NOT NULL,
     writer_email       varchar(255)  NOT NULL,
     writer_description JSON          NOT NULL DEFAULT (JSON_OBJECT()),
+    workbooks          JSON          NOT NULL DEFAULT (JSON_OBJECT()),
     CONSTRAINT article_main_card_pk PRIMARY KEY (id)
 );

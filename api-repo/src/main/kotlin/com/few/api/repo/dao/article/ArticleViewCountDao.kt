@@ -8,7 +8,7 @@ import com.few.api.repo.dao.article.record.SelectArticleViewsRecord
 import jooq.jooq_dsl.tables.ArticleViewCount.ARTICLE_VIEW_COUNT
 import org.jooq.DSLContext
 import org.jooq.Record2
-import org.jooq.SelectQuery
+import org.jooq.SelectLimitPercentStep
 import org.jooq.impl.DSL.*
 import org.springframework.stereotype.Repository
 
@@ -73,7 +73,7 @@ class ArticleViewCountDao(
             .toSet()
     }
 
-    fun selectArticlesOrderByViewsQuery(query: SelectArticlesOrderByViewsQuery): SelectQuery<Record2<Long, Long>> {
+    fun selectArticlesOrderByViewsQuery(query: SelectArticlesOrderByViewsQuery): SelectLimitPercentStep<Record2<Any, Any>> {
         val articleViewCountOffsetTb = select()
             .from(ARTICLE_VIEW_COUNT)
             .where(ARTICLE_VIEW_COUNT.DELETED_AT.isNull)
@@ -81,16 +81,18 @@ class ArticleViewCountDao(
             .limit(query.offset, Long.MAX_VALUE)
             .asTable("article_view_count_offset_tb")
 
-        val sql = dslContext.select(
-            articleViewCountOffsetTb.field(ARTICLE_VIEW_COUNT.ARTICLE_ID.`as`(SelectArticleViewsRecord::articleId.name)),
-            articleViewCountOffsetTb.field(ARTICLE_VIEW_COUNT.VIEW_COUNT.`as`(SelectArticleViewsRecord::views.name))
+        val baseQuery = dslContext.select(
+            field("article_view_count_offset_tb.article_id").`as`(SelectArticleViewsRecord::articleId.name),
+            field("article_view_count_offset_tb.view_count").`as`(SelectArticleViewsRecord::views.name)
         )
             .from(articleViewCountOffsetTb)
 
-        if (query.category != null) {
-            sql.where(field("article_view_count_offset_tb.category_cd").eq(query.category.code))
-        }
-
-        return sql.limit(10).query
+        return if (query.category != null) {
+            baseQuery.where(field("article_view_count_offset_tb.category_cd").eq(query.category.code))
+                .limit(10)
+        } else {
+            baseQuery
+                .limit(10)
+        } // TODO: .query로 리턴하면 리턴 타입이 달라져 못받는 문제
     }
 }

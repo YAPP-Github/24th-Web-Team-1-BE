@@ -89,7 +89,10 @@ class ReadArticlesUseCase(
                 category = CategoryType.fromCode(a.categoryCd)?.displayName
                     ?: throw NotFoundException("article.invalid.category"),
                 createdAt = a.createdAt,
-                views = a.views
+                views = a.views,
+                workbooks = a.workbooks
+                    .filter { it.id != null && it.title != null }
+                    .map { WorkbookDetail(it.id, it.title) }
             )
         }.toList()
 

@@ -82,6 +82,16 @@ subprojects {
     allOpen {
     }
 
+    dependencyManagement {
+        dependencies {
+            /**
+             * spring boot starter jooq 3.2.5 default jooq version is 3.18.14.
+             * But jooq-codegen-gradle need over 3.19.0.
+             *  */
+            dependency("org.jooq:jooq:${DependencyVersion.JOOQ}")
+        }
+    }
+
     dependencies {
         /** spring starter */
         implementation("org.springframework.boot:spring-boot-starter-validation")

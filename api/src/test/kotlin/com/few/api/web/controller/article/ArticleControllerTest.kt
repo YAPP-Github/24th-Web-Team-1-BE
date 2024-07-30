@@ -125,7 +125,9 @@ class ArticleControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data.createdAt")
                                             .fieldWithString("아티클 생성일"),
                                         PayloadDocumentation.fieldWithPath("data.views")
-                                            .fieldWithNumber("아티클 조회수")
+                                            .fieldWithNumber("아티클 조회수"),
+                                        PayloadDocumentation.fieldWithPath("data.articles[].workbooks")
+                                            .fieldWithArray("아티클이 포함된 학습지 정보(해당 API에선 사용되지 않음)")
                                     )
                                 )
                             ).build()
@@ -211,7 +213,13 @@ class ArticleControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data.articles[].createdAt")
                                             .fieldWithString("아티클 생성일"),
                                         PayloadDocumentation.fieldWithPath("data.articles[].views")
-                                            .fieldWithNumber("아티클 조회수")
+                                            .fieldWithNumber("아티클 조회수"),
+                                        PayloadDocumentation.fieldWithPath("data.articles[].workbooks")
+                                            .fieldWithArray("아티클이 포함된 학습지 정보"),
+                                        PayloadDocumentation.fieldWithPath("data.articles[].workbooks[].id")
+                                            .fieldWithNumber("아티클이 포함된 학습지 정보(학습지ID)"),
+                                        PayloadDocumentation.fieldWithPath("data.articles[].workbooks[].title")
+                                            .fieldWithString("아티클이 포함된 학습지 정보(학습지 제목)")
                                     )
                                 )
                             ).build()

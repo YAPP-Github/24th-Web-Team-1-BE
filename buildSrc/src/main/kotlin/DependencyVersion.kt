@@ -11,6 +11,9 @@ object DependencyVersion {
     /** springDependencyManagementVersion */
     const val SPRING_DEPENDENCY_MANAGEMENT = "1.1.5"
 
+    /** jwt */
+    const val JWT = "0.11.5"
+
     /** flyway */
     const val FLYWAY = "9.16.0"
 

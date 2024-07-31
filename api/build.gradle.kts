@@ -195,7 +195,7 @@ tasks.register("buildEcsDockerImage") {
             workingDir(".")
             commandLine(
                 "docker",
-                "run",
+                "build",
                 "-t",
                 imageName,
                 "--build-arg",

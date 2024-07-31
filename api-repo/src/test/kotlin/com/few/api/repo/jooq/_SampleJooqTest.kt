@@ -55,15 +55,19 @@ class _SampleJooqTest : JooqTestSpec() {
     }
 
     @Test
-    @Transactional
     fun `이메일이 중복되는 경우 저장에 실패합니다`() {
         // when & then
         assertThrows<DuplicateKeyException> {
-            dslContext.insertInto(Member.MEMBER)
-                .set(Member.MEMBER.EMAIL, EMAIL)
-                .set(Member.MEMBER.TYPE_CD, TYPECD)
-                .execute()
+            insertMember()
         }
+    }
+
+    @Transactional
+    fun insertMember() {
+        dslContext.insertInto(Member.MEMBER)
+            .set(Member.MEMBER.EMAIL, EMAIL)
+            .set(Member.MEMBER.TYPE_CD, TYPECD)
+            .execute()
     }
 
     @Test

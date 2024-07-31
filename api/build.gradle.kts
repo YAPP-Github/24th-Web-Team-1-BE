@@ -10,7 +10,13 @@ dependencies {
 
     /** spring starter */
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+
+    /** jwt */
+    implementation("io.jsonwebtoken:jjwt-api:${DependencyVersion.JWT}")
+    implementation("io.jsonwebtoken:jjwt-impl:${DependencyVersion.JWT}")
+    implementation("io.jsonwebtoken:jjwt-jackson:${DependencyVersion.JWT}")
 
     /** swagger & restdocs */
     implementation("org.springdoc:springdoc-openapi-ui:${DependencyVersion.SPRINGDOC}")

@@ -34,6 +34,7 @@ class _SampleJooqTest : JooqTestSpec() {
             .set(Member.MEMBER.EMAIL, EMAIL)
             .set(Member.MEMBER.TYPE_CD, TYPECD)
             .execute()
+        dslContext.commit().execute()
         log.debug("===== finish setUp =====")
     }
 

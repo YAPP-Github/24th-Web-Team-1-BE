@@ -1,5 +1,6 @@
 package com.few.api.repo.jooq
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jooq.jooq_dsl.tables.Member
 import org.jooq.DSLContext
 import org.jooq.JSON
@@ -7,7 +8,6 @@ import org.jooq.exception.DataAccessException
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.test.annotation.Rollback
@@ -16,7 +16,7 @@ import java.time.LocalDateTime
 
 class _SampleJooqTest : JooqTestSpec() {
 
-    private val log: org.slf4j.Logger = LoggerFactory.getLogger(_SampleJooqTest::class.java)
+    private val log = KotlinLogging.logger {}
 
     @Autowired
     private lateinit var dslContext: DSLContext
@@ -28,13 +28,13 @@ class _SampleJooqTest : JooqTestSpec() {
 
     @BeforeEach
     fun setUp() {
-        log.debug("===== start setUp =====")
+        log.debug { "===== start setUp =====" }
         dslContext.deleteFrom(Member.MEMBER).execute()
         dslContext.insertInto(Member.MEMBER)
             .set(Member.MEMBER.EMAIL, EMAIL)
             .set(Member.MEMBER.TYPE_CD, TYPECD)
             .execute()
-        log.debug("===== finish setUp =====")
+        log.debug { "===== finish setUp =====" }
     }
 
     @Test

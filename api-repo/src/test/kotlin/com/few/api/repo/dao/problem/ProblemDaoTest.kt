@@ -5,17 +5,17 @@ import com.few.api.repo.dao.problem.support.Content
 import com.few.api.repo.dao.problem.support.Contents
 import com.few.api.repo.dao.problem.support.ContentsJsonMapper
 import com.few.api.repo.jooq.JooqTestSpec
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jooq.jooq_dsl.tables.Problem
 import org.jooq.DSLContext
 import org.jooq.JSON
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 
 class ProblemDaoTest : JooqTestSpec() {
-    private val log: org.slf4j.Logger = LoggerFactory.getLogger(ProblemDaoTest::class.java)
+    private val log = KotlinLogging.logger {}
 
     @Autowired
     private lateinit var dslContext: DSLContext
@@ -28,7 +28,7 @@ class ProblemDaoTest : JooqTestSpec() {
 
     @BeforeEach
     fun setUp() {
-        log.debug("===== start setUp =====")
+        log.debug { "===== start setUp =====" }
         dslContext.deleteFrom(Problem.PROBLEM).execute()
         val contents = Contents(
             listOf(
@@ -47,7 +47,7 @@ class ProblemDaoTest : JooqTestSpec() {
             .set(Problem.PROBLEM.EXPLANATION, "explanation")
             .set(Problem.PROBLEM.CREATOR_ID, 1)
             .execute()
-        log.debug("===== finish setUp =====")
+        log.debug { "===== finish setUp =====" }
     }
 
     @Test

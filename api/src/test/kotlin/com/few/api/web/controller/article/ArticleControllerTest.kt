@@ -126,7 +126,7 @@ class ArticleControllerTest : ControllerTestSpec() {
                                             .fieldWithString("아티클 생성일"),
                                         PayloadDocumentation.fieldWithPath("data.views")
                                             .fieldWithNumber("아티클 조회수"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].workbooks")
+                                        PayloadDocumentation.fieldWithPath("data.workbooks")
                                             .fieldWithArray("아티클이 포함된 학습지 정보(해당 API에선 사용되지 않음)")
                                     )
                                 )
@@ -141,15 +141,15 @@ class ArticleControllerTest : ControllerTestSpec() {
     fun readArticles() {
         // given
         val api = "ReadArticles"
+        val prevArticleId = 1L
+        val categoryCd: Byte = CategoryType.IT.code
         val uri = UriComponentsBuilder.newInstance()
             .path("$BASE_URL")
-            .queryParam("prevArticleId", 1L)
-            .queryParam("categoryCd", -1L)
+            .queryParam("prevArticleId", prevArticleId)
+            .queryParam("categoryCd", categoryCd)
             .build()
             .toUriString()
         // set usecase mock
-        val prevArticleId = 1L
-        val categoryCd: Byte = -1
         `when`(readArticlesUseCase.execute(ReadArticlesUseCaseIn(prevArticleId, categoryCd))).thenReturn(
             ReadArticlesUseCaseOut(
                 listOf(
@@ -162,10 +162,20 @@ class ArticleControllerTest : ControllerTestSpec() {
                         ),
                         title = "ETF(상장 지수 펀드)란? 모르면 손해라고?",
                         content = CategoryType.fromCode(0)!!.name,
-                        problemIds = listOf(1L, 2L, 3L),
-                        category = "경제",
+                        problemIds = emptyList(),
+                        category = CategoryType.IT.displayName,
                         createdAt = LocalDateTime.now(),
-                        views = 1L
+                        views = 9876543210L,
+                        workbooks = listOf(
+                            WorkbookDetail(
+                                id = 1,
+                                title = "워크북1 타이틀"
+                            ),
+                            WorkbookDetail(
+                                id = 2,
+                                title = "워크북2 타이틀"
+                            )
+                        )
                     )
                 ),
                 true
@@ -181,8 +191,10 @@ class ArticleControllerTest : ControllerTestSpec() {
                         ResourceSnippetParameters.builder().description("아티 목록 10개씩 조회(조회수 기반 정렬)")
                             .summary(api.toIdentifier()).privateResource(false).deprecated(false)
                             .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))
-                            .queryParameters(parameterWithName("prevArticleId").description("이전까지 조회한 아티클 Id"))
-                            .queryParameters(parameterWithName("categoryCd").description("아티클 카테고리 코드"))
+                            .queryParameters(
+                                parameterWithName("prevArticleId").description("이전까지 조회한 아티클 Id"),
+                                parameterWithName("categoryCd").description("아티클 카테고리 코드")
+                            )
                             .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
                                 *Description.describe(
                                     arrayOf(

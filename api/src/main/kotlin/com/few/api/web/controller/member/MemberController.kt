@@ -1,7 +1,9 @@
 package com.few.api.web.controller.member
 
+import com.few.api.domain.member.usecase.DeleteMemberUseCase
 import com.few.api.domain.member.usecase.SaveMemberUseCase
 import com.few.api.domain.member.usecase.TokenUseCase
+import com.few.api.domain.member.usecase.dto.DeleteMemberUseCaseIn
 import com.few.api.domain.member.usecase.dto.SaveMemberUseCaseIn
 import com.few.api.domain.member.usecase.dto.TokenUseCaseIn
 import com.few.api.web.controller.member.request.SaveMemberRequest
@@ -13,6 +15,7 @@ import com.few.api.web.support.ApiResponseGenerator
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -24,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping(value = ["/api/v1/members"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class MemberController(
     private val saveMemberUseCase: SaveMemberUseCase,
+    private val deleteMemberUseCase: DeleteMemberUseCase,
     private val tokenUseCase: TokenUseCase,
 ) {
     @PostMapping
@@ -41,6 +45,19 @@ class MemberController(
         ).let {
             return ApiResponseGenerator.success(it, HttpStatus.OK)
         }
+    }
+
+    // todo add controller test after security is implemented
+    @DeleteMapping()
+    fun deleteMember(): ApiResponse<ApiResponse.Success> {
+        val memberId = 1L // todo fix
+        val useCaseOut = DeleteMemberUseCaseIn(
+            memberId = memberId
+        ).let {
+            deleteMemberUseCase.execute(it)
+        }
+
+        return ApiResponseGenerator.success(HttpStatus.OK)
     }
 
     @PostMapping("/token")

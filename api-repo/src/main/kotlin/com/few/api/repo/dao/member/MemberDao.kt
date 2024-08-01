@@ -2,6 +2,7 @@ package com.few.api.repo.dao.member
 
 import com.few.api.repo.config.LocalCacheConfig.Companion.LOCAL_CM
 import com.few.api.repo.config.LocalCacheConfig.Companion.SELECT_WRITER_CACHE
+import com.few.api.repo.dao.member.command.DeleteMemberCommand
 import com.few.api.repo.dao.member.command.InsertMemberCommand
 import com.few.api.repo.dao.member.command.UpdateDeletedMemberTypeCommand
 import com.few.api.repo.dao.member.command.UpdateMemberTypeCommand
@@ -19,6 +20,7 @@ import org.jooq.DSLContext
 import org.jooq.impl.DSL
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Repository
+import java.time.LocalDateTime
 
 @Repository
 class MemberDao(
@@ -152,4 +154,15 @@ class MemberDao(
             .set(Member.MEMBER.TYPE_CD, command.memberType.code)
             .set(Member.MEMBER.DELETED_AT, DSL.`val`(null, Member.MEMBER.DELETED_AT.dataType))
             .where(Member.MEMBER.ID.eq(command.id))
+
+    fun deleteMember(command: DeleteMemberCommand) {
+        deleteMemberCommand(command)
+            .execute()
+    }
+
+    fun deleteMemberCommand(command: DeleteMemberCommand) =
+        dslContext.update(Member.MEMBER)
+            .set(Member.MEMBER.DELETED_AT, LocalDateTime.now())
+            .where(Member.MEMBER.ID.eq(command.memberId))
+            .and(Member.MEMBER.DELETED_AT.isNull)
 }

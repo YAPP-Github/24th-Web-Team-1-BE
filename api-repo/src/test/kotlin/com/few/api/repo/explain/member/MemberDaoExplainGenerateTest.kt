@@ -162,4 +162,18 @@ class MemberDaoExplainGenerateTest : JooqTestSpec() {
 
         ResultGenerator.execute(command, explain, "updateDeletedMemberTypeCommandExplain")
     }
+
+    @Test
+    fun deleteMemberCommandExplain() {
+        val command = UpdateDeletedMemberTypeCommand(
+            id = 1,
+            memberType = MemberType.WRITER
+        ).let {
+            memberDao.updateMemberTypeCommand(it)
+        }
+
+        val explain = InsertUpdateExplainGenerator.execute(dslContext, command.sql, command.bindValues)
+
+        ResultGenerator.execute(command, explain, "deleteMemberCommandExplain")
+    }
 }

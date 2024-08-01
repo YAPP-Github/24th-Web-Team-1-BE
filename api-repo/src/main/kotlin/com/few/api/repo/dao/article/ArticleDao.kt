@@ -3,6 +3,7 @@ package com.few.api.repo.dao.article
 import com.few.api.repo.config.LocalCacheConfig.Companion.LOCAL_CM
 import com.few.api.repo.config.LocalCacheConfig.Companion.SELECT_ARTICLE_RECORD_CACHE
 import com.few.api.repo.dao.article.command.InsertFullArticleRecordCommand
+import com.few.api.repo.dao.article.query.SelectArticleIdByWorkbookIdAndDayQuery
 import com.few.api.repo.dao.article.query.SelectArticleRecordQuery
 import com.few.api.repo.dao.article.query.SelectWorkBookArticleRecordQuery
 import com.few.api.repo.dao.article.query.SelectWorkbookMappedArticleRecordsQuery
@@ -112,4 +113,17 @@ class ArticleDao(
     ) = dslContext.insertInto(ArticleIfo.ARTICLE_IFO)
         .set(ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID, mstId)
         .set(ArticleIfo.ARTICLE_IFO.CONTENT, command.content)
+
+    fun selectArticleIdByWorkbookIdAndDay(query: SelectArticleIdByWorkbookIdAndDayQuery): Long? {
+        return selectArticleIdByWorkbookIdAndDayQuery(query)
+            .fetchOneInto(Long::class.java)
+    }
+
+    fun selectArticleIdByWorkbookIdAndDayQuery(query: SelectArticleIdByWorkbookIdAndDayQuery) =
+        dslContext.select(
+            MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.ARTICLE_ID
+        ).from(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE)
+            .where(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.eq(query.workbookId))
+            .and(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.DAY_COL.eq(query.day))
+            .query
 }

@@ -1,5 +1,7 @@
 package com.few.api.domain.subscription.usecase
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.few.api.domain.subscription.service.SubscriptionArticleService
 import com.few.api.domain.subscription.usecase.dto.BrowseSubscribeWorkbooksUseCaseIn
 import com.few.api.repo.dao.subscription.SubscriptionDao
 import com.few.api.repo.dao.subscription.record.MemberWorkbookSubscriptionStatusRecord
@@ -13,11 +15,15 @@ class BrowseSubscribeWorkbooksUseCaseTest : BehaviorSpec({
     val log = KotlinLogging.logger {}
 
     lateinit var subscriptionDao: SubscriptionDao
+    lateinit var subscriptionArticleService: SubscriptionArticleService
+    lateinit var objectMapper: ObjectMapper
     lateinit var useCase: BrowseSubscribeWorkbooksUseCase
 
     beforeContainer {
         subscriptionDao = mockk<SubscriptionDao>()
-        useCase = BrowseSubscribeWorkbooksUseCase(subscriptionDao)
+        subscriptionArticleService = mockk<SubscriptionArticleService>()
+        objectMapper = mockk<ObjectMapper>()
+        useCase = BrowseSubscribeWorkbooksUseCase(subscriptionDao, subscriptionArticleService, objectMapper)
     }
 
     given("사용자 구독 정보 조회 요청이 온 상황에서") {
@@ -36,6 +42,11 @@ class BrowseSubscribeWorkbooksUseCaseTest : BehaviorSpec({
                     totalDay = 3
                 )
             )
+
+            every {
+                subscriptionArticleService.readArticleIdByWorkbookIdAndDay(any())
+            } returns 1L andThen 2L
+
             every { subscriptionDao.countAllWorkbookSubscription(any()) } returns mapOf(
                 1L to 1,
                 2L to 2

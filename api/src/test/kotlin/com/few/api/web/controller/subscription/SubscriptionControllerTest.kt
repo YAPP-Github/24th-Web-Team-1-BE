@@ -97,7 +97,7 @@ class SubscriptionControllerTest : ControllerTestSpec() {
                     totalDay = 3,
                     rank = 0,
                     totalSubscriber = 100,
-                    articleInfo = "{}"
+                    articleInfo = "{\"articleId\":1}"
                 ),
                 SubscribeWorkbookDetail(
                     workbookId = 2L,
@@ -106,7 +106,7 @@ class SubscriptionControllerTest : ControllerTestSpec() {
                     totalDay = 3,
                     rank = 0,
                     totalSubscriber = 1,
-                    articleInfo = "{}"
+                    articleInfo = "{\"articleId\":5}"
                 ),
                 SubscribeWorkbookDetail(
                     workbookId = 3L,

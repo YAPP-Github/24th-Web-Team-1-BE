@@ -1,5 +1,8 @@
 package com.few.api.domain.subscription.usecase
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.few.api.domain.subscription.service.SubscriptionArticleService
+import com.few.api.domain.subscription.service.dto.ReadArticleIdByWorkbookIdAndDayDto
 import com.few.api.domain.subscription.usecase.dto.BrowseSubscribeWorkbooksUseCaseIn
 import com.few.api.domain.subscription.usecase.dto.BrowseSubscribeWorkbooksUseCaseOut
 import com.few.api.domain.subscription.usecase.dto.SubscribeWorkbookDetail
@@ -13,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional
 @Component
 class BrowseSubscribeWorkbooksUseCase(
     private val subscriptionDao: SubscriptionDao,
+    private val subscriptionArticleService: SubscriptionArticleService,
+    private val objectMapper: ObjectMapper,
 ) {
     @Transactional
     fun execute(useCaseIn: BrowseSubscribeWorkbooksUseCaseIn): BrowseSubscribeWorkbooksUseCaseOut {
@@ -20,6 +25,17 @@ class BrowseSubscribeWorkbooksUseCase(
             SelectAllMemberWorkbookSubscriptionStatusNotConsiderDeletedAtQuery(useCaseIn.memberId).let {
                 subscriptionDao.selectAllWorkbookSubscriptionStatus(it)
             }
+
+        /**
+         * key: workbookId
+         * value: workbook의 currentDay에 해당하는 articleId
+         */
+        val workbookSubscriptionCurrentArticleIdRecords = subscriptionRecords.associate { it ->
+            val articleId = ReadArticleIdByWorkbookIdAndDayDto(it.workbookId, it.currentDay).let {
+                subscriptionArticleService.readArticleIdByWorkbookIdAndDay(it)
+            } ?: throw IllegalArgumentException("articleId is null")
+            it.workbookId to articleId
+        }
 
         val subscriptionWorkbookIds = subscriptionRecords.map { it.workbookId }
         val workbookSubscriptionCountRecords =
@@ -43,7 +59,12 @@ class BrowseSubscribeWorkbooksUseCase(
                 isActiveSub = WorkBookStatus.fromStatus(it.isActiveSub),
                 currentDay = currentDay,
                 totalDay = it.totalDay,
-                totalSubscriber = workbookSubscriptionCountRecords[it.workbookId]?.toLong() ?: 0
+                totalSubscriber = workbookSubscriptionCountRecords[it.workbookId]?.toLong() ?: 0,
+                articleInfo = objectMapper.writeValueAsString(
+                    mapOf(
+                        "articleId" to workbookSubscriptionCurrentArticleIdRecords[it.workbookId]
+                    )
+                )
             )
         }.let {
             return BrowseSubscribeWorkbooksUseCaseOut(it)

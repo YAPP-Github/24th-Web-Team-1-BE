@@ -2,6 +2,7 @@ package com.few.api.repo.explain.article
 
 import com.few.api.repo.dao.article.ArticleDao
 import com.few.api.repo.dao.article.command.InsertFullArticleRecordCommand
+import com.few.api.repo.dao.article.query.SelectArticleIdByWorkbookIdAndDayQuery
 import com.few.api.repo.dao.article.query.SelectArticleRecordQuery
 import com.few.api.repo.dao.article.query.SelectWorkBookArticleRecordQuery
 import com.few.api.repo.dao.article.query.SelectWorkbookMappedArticleRecordsQuery
@@ -121,5 +122,16 @@ class ArticleDaoExplainGenerateTest : JooqTestSpec() {
         val explain = InsertUpdateExplainGenerator.execute(dslContext, command.sql, command.bindValues)
 
         ResultGenerator.execute(command, explain, "insertArticleIfoCommandExplain")
+    }
+
+    @Test
+    fun selectArticleIdByWorkbookIdAndDayQueryExplain() {
+        val query = SelectArticleIdByWorkbookIdAndDayQuery(1L, 1).let {
+            articleDao.selectArticleIdByWorkbookIdAndDayQuery(it)
+        }
+
+        val explain = dslContext.explain(query).toString()
+
+        ResultGenerator.execute(query, explain, "selectArticleIdByWorkbookIdAndDayQueryExplain")
     }
 }

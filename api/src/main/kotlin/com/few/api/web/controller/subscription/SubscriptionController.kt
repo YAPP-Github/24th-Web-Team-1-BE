@@ -42,7 +42,7 @@ class SubscriptionController(
         ) view: ViewCategory? = ViewCategory.MAIN_CARD,
     ): ApiResponse<ApiResponse.SuccessBody<SubscribeWorkbooksResponse>> {
         // todo fix memberId
-        val memberId = 1L
+        val memberId = 52L
         val useCaseOut = BrowseSubscribeWorkbooksUseCaseIn(memberId).let {
             browseSubscribeWorkbooksUseCase.execute(it)
         }

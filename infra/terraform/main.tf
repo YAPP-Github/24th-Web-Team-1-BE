@@ -4,18 +4,23 @@ terraform {
     organization = "few-org"
     hostname     = "app.terraform.io"
     workspaces {
-      name = "few-org-work"
+#      name = "few-org-work"
+      name = "few-aws-work"
     }
   }
 }
 
-# NCP Provider
-module "ncp" {
-  source       = "./ncp"
-  prefix       = var.prefix
-  region       = var.ncp_region
-  access_key   = var.ncp_access_key
-  secret_key   = var.ncp_secret_key
-  rds_username = var.ncp_rds_username
-  rds_password = var.ncp_rds_password
+# AWS
+module "aws" {
+    source                = "./aws"
+    iam_root_arn          = var.aws_root_arn
+    access_key            = var.aws_access_key
+    secret_key            = var.aws_secret_key
+    rds_username          = var.aws_rds_username
+    rds_password          = var.aws_rds_password
+    fe_origin             = var.fe_origin
+    domain_name           = var.domain_name
+    webhook_discord       = var.webhook_discord
+    email_username        = var.email_username
+    email_password        = var.email_password
 }

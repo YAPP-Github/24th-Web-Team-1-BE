@@ -1,13 +1,13 @@
 package com.few.batch
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.context.ApplicationContextInitializer
 import org.springframework.context.ConfigurableApplicationContext
 import org.testcontainers.containers.DockerComposeContainer
 import java.io.File
 
 class BatchTestContainerInitializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
-    private val log: org.slf4j.Logger =
-        org.slf4j.LoggerFactory.getLogger(BatchTestContainerInitializer::class.java)
+    private val log = KotlinLogging.logger {}
 
     companion object {
         private const val MYSQL = "mysql"
@@ -19,10 +19,10 @@ class BatchTestContainerInitializer : ApplicationContextInitializer<Configurable
     }
 
     override fun initialize(applicationContext: ConfigurableApplicationContext) {
-        log.debug("===== set up test containers =====")
+        log.debug { "===== set up test containers =====" }
 
         dockerCompose.start()
 
-        log.debug("===== success set up test containers =====")
+        log.debug { "===== success set up test containers =====" }
     }
 }

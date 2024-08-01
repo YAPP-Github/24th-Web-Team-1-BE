@@ -7,6 +7,7 @@ import com.few.api.repo.dao.article.query.SelectArticleIdByWorkbookIdAndDayQuery
 import com.few.api.repo.dao.article.query.SelectArticleRecordQuery
 import com.few.api.repo.dao.article.query.SelectWorkBookArticleRecordQuery
 import com.few.api.repo.dao.article.query.SelectWorkbookMappedArticleRecordsQuery
+import com.few.api.repo.dao.article.record.SelectArticleContentsRecord
 import com.few.api.repo.dao.article.record.SelectArticleRecord
 import com.few.api.repo.dao.article.record.SelectWorkBookArticleRecord
 import com.few.api.repo.dao.article.record.SelectWorkBookMappedArticleRecord
@@ -126,4 +127,15 @@ class ArticleDao(
             .where(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.eq(query.workbookId))
             .and(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.DAY_COL.eq(query.day))
             .query
+
+    fun selectArticleContents(articleIds: Set<Long>): List<SelectArticleContentsRecord> =
+        selectArticleContentsQuery(articleIds)
+            .fetchInto(SelectArticleContentsRecord::class.java)
+
+    fun selectArticleContentsQuery(articleIds: Set<Long>) = dslContext.select(
+        ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID.`as`(SelectArticleContentsRecord::articleId.name),
+        ArticleIfo.ARTICLE_IFO.CONTENT.`as`(SelectArticleContentsRecord::content.name)
+    ).from(ArticleIfo.ARTICLE_IFO)
+        .where(ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID.`in`(articleIds))
+        .and(ArticleIfo.ARTICLE_IFO.DELETED_AT.isNull)
 }

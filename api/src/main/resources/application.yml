@@ -5,11 +5,13 @@ spring:
     profiles:
         group:
             local:
+                - security-local
                 - client-local
                 - api-repo-local
                 - email-local
                 - storage-local
             prd:
+                - security-prd
                 - client-prd
                 - api-repo-prd
                 - email-prd

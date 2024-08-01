@@ -4,12 +4,10 @@ import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseIn
 import com.few.api.domain.article.usecase.ReadArticleUseCase
 import com.few.api.domain.article.usecase.ReadArticlesUseCase
 import com.few.api.domain.article.usecase.dto.ReadArticlesUseCaseIn
-import com.few.api.web.controller.article.response.ReadArticleResponse
-import com.few.api.web.controller.article.response.ReadArticlesResponse
-import com.few.api.web.controller.article.response.WorkbookInfo
-import com.few.api.web.controller.article.response.WriterInfo
+import com.few.api.web.controller.article.response.*
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
+import com.few.data.common.code.CategoryType
 import jakarta.validation.constraints.Min
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -30,7 +28,10 @@ class ArticleController(
         @Min(value = 1, message = "{min.id}")
         articleId: Long,
     ): ApiResponse<ApiResponse.SuccessBody<ReadArticleResponse>> {
-        val useCaseOut = ReadArticleUseCaseIn(articleId = articleId, memberId = 0L).let { useCaseIn: ReadArticleUseCaseIn -> //TODO: membberId검토
+        val useCaseOut = ReadArticleUseCaseIn(
+            articleId = articleId,
+            memberId = 0L
+        ).let { useCaseIn: ReadArticleUseCaseIn -> //TODO: membberId검토
             readArticleUseCase.execute(useCaseIn)
         }
 
@@ -58,8 +59,12 @@ class ArticleController(
             required = false,
             defaultValue = "0"
         ) prevArticleId: Long,
+        @RequestParam(
+            required = false,
+            defaultValue = "-1"
+        ) categoryCd: Byte,
     ): ApiResponse<ApiResponse.SuccessBody<ReadArticlesResponse>> {
-        val useCaseOut = readArticlesUseCase.execute(ReadArticlesUseCaseIn(prevArticleId))
+        val useCaseOut = readArticlesUseCase.execute(ReadArticlesUseCaseIn(prevArticleId, categoryCd))
 
         val articles: List<ReadArticleResponse> = useCaseOut.articles.map { a ->
             ReadArticleResponse(
@@ -75,17 +80,27 @@ class ArticleController(
                 category = a.category,
                 createdAt = a.createdAt,
                 views = a.views,
-                includedWorkbooks = a.includedWorkbooks.map { w ->
-                    WorkbookInfo(
-                        id = w.id,
-                        title = w.title
-                    )
-                }
+                workbooks = a.workbooks.map { WorkbookInfo(it.id, it.title) }
             )
         }.toList()
 
-        val response = ReadArticlesResponse(articles, articles.size != 10) // TODO refactor 'isLast'
+        val response = ReadArticlesResponse(articles, useCaseOut.isLast)
 
         return ApiResponseGenerator.success(response, HttpStatus.OK)
+    }
+
+    @GetMapping("/categories")
+    fun browseArticleCategories(): ApiResponse<ApiResponse.SuccessBody<Map<String, Any>>> {
+        return ApiResponseGenerator.success(
+            mapOf(
+                "categories" to CategoryType.entries.map {
+                    mapOf(
+                        "code" to it.code,
+                        "name" to it.displayName
+                    )
+                }
+            ),
+            HttpStatus.OK
+        )
     }
 }

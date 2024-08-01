@@ -10,14 +10,13 @@ dependencies {
 
     /** spring starter */
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
 
-    /** jooq */
-    implementation("org.springframework.boot:spring-boot-starter-jooq")
-    implementation("org.jooq:jooq:${DependencyVersion.JOOQ}")
-    implementation("org.jooq:jooq-meta:${DependencyVersion.JOOQ}")
-    implementation("org.jooq:jooq-codegen:${DependencyVersion.JOOQ}")
-    jooqCodegen("org.jooq:jooq-meta-extensions:${DependencyVersion.JOOQ}")
+    /** jwt */
+    implementation("io.jsonwebtoken:jjwt-api:${DependencyVersion.JWT}")
+    implementation("io.jsonwebtoken:jjwt-impl:${DependencyVersion.JWT}")
+    implementation("io.jsonwebtoken:jjwt-jackson:${DependencyVersion.JWT}")
 
     /** swagger & restdocs */
     implementation("org.springdoc:springdoc-openapi-ui:${DependencyVersion.SPRINGDOC}")
@@ -183,6 +182,25 @@ tasks.register("buildDockerImage") {
             commandLine(
                 "docker", "buildx", "build", "--platform=linux/amd64,linux/arm64", "-t",
                 "$imageName:$releaseVersion", "--build-arg", "RELEASE_VERSION=$releaseVersion", ".", "--push"
+            )
+        }
+    }
+}
+
+tasks.register("buildEcsDockerImage") {
+    dependsOn("bootJar")
+
+    doLast {
+        exec {
+            workingDir(".")
+            commandLine(
+                "docker",
+                "build",
+                "-t",
+                imageName,
+                "--build-arg",
+                "RELEASE_VERSION=$releaseVersion",
+                '.'
             )
         }
     }

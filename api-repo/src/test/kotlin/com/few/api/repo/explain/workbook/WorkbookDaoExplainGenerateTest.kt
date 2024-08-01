@@ -2,6 +2,7 @@ package com.few.api.repo.explain.workbook
 
 import com.few.api.repo.dao.workbook.WorkbookDao
 import com.few.api.repo.dao.workbook.command.InsertWorkBookCommand
+import com.few.api.repo.dao.workbook.query.BrowseWorkBookQueryWithSubscriptionCount
 import com.few.api.repo.dao.workbook.query.SelectWorkBookRecordQuery
 import com.few.api.repo.explain.InsertUpdateExplainGenerator
 import com.few.api.repo.explain.ResultGenerator
@@ -65,5 +66,27 @@ class WorkbookDaoExplainGenerateTest : JooqTestSpec() {
 
         val explain = InsertUpdateExplainGenerator.execute(dslContext, command.sql, command.bindValues)
         ResultGenerator.execute(command, explain, "insertWorkBookCommandExplain")
+    }
+
+    @Test
+    fun browseWorkBookQueryNoConditionQueryExplain() {
+        val query = BrowseWorkBookQueryWithSubscriptionCount(-1).let {
+            workbookDao.browseWorkBookQuery(it)
+        }
+
+        val explain = dslContext.explain(query).toString()
+
+        ResultGenerator.execute(query, explain, "browseWorkBookQueryNoConditionQuery")
+    }
+
+    @Test
+    fun browseWorkBookQueryCategoryConditionExplain() {
+        val query = BrowseWorkBookQueryWithSubscriptionCount(CategoryType.fromCode(0)!!.code).let {
+            workbookDao.browseWorkBookQuery(it)
+        }
+
+        val explain = dslContext.explain(query).toString()
+
+        ResultGenerator.execute(query, explain, "browseWorkBookQueryCategoryCondition")
     }
 }

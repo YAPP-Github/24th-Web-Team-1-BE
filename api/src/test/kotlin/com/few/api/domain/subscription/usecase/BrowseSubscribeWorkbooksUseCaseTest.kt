@@ -52,12 +52,15 @@ class BrowseSubscribeWorkbooksUseCaseTest : BehaviorSpec({
                 2L to 2
             )
 
+            every { objectMapper.writeValueAsString(any()) } returns "{\"articleId\":1}" andThen "{\"articleId\":2}"
+
             then("사용자의 구독 정보를 조회한다") {
                 val useCaseIn = BrowseSubscribeWorkbooksUseCaseIn(memberId = 1L)
                 useCase.execute(useCaseIn)
 
                 verify(exactly = 1) { subscriptionDao.selectAllWorkbookSubscriptionStatus(any()) }
                 verify(exactly = 1) { subscriptionDao.countAllWorkbookSubscription(any()) }
+                verify(exactly = 2) { objectMapper.writeValueAsString(any()) }
             }
         }
     }

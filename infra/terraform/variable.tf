@@ -7,21 +7,21 @@ variable "prefix" {
 variable "domain_name" {
   type        = string
   description = "The domain name for the Route 53 hosted zone"
-  default = "https://api.fewletter.site"
+  default     = "https://api.fewletter.site"
 }
 
 variable "ncp_access_key" {
   type        = string
   sensitive   = true
   description = "The access key for the IAM root user"
-  default = ""
+  default     = ""
 }
 
 variable "ncp_secret_key" {
   type        = string
   sensitive   = true
   description = "The secret key for the IAM root user"
-  default = ""
+  default     = ""
 }
 
 variable "ncp_region" {
@@ -43,9 +43,9 @@ variable "ncp_rds_password" {
 }
 
 variable "aws_root_arn" {
-    type        = string
-    sensitive   = true
-    description = "The ARN of the root account"
+  type        = string
+  sensitive   = true
+  description = "The ARN of the root account"
 }
 
 variable "aws_access_key" {

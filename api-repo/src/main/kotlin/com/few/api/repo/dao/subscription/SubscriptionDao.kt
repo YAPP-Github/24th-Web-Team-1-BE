@@ -3,13 +3,18 @@ package com.few.api.repo.dao.subscription
 import com.few.api.repo.dao.subscription.command.InsertWorkbookSubscriptionCommand
 import com.few.api.repo.dao.subscription.command.UpdateDeletedAtInAllSubscriptionCommand
 import com.few.api.repo.dao.subscription.command.UpdateDeletedAtInWorkbookSubscriptionCommand
+import com.few.api.repo.dao.subscription.query.CountAllWorkbooksSubscription
 import com.few.api.repo.dao.subscription.query.SelectAllWorkbookSubscriptionStatusNotConsiderDeletedAtQuery
 import com.few.api.repo.dao.subscription.record.WorkbookSubscriptionStatus
 import com.few.api.repo.dao.subscription.query.CountWorkbookMappedArticlesQuery
+import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookSubscriptionStatusNotConsiderDeletedAtQuery
 import com.few.api.repo.dao.subscription.record.CountAllSubscriptionStatusRecord
+import com.few.api.repo.dao.subscription.record.MemberWorkbookSubscriptionStatusRecord
 import jooq.jooq_dsl.Tables.MAPPING_WORKBOOK_ARTICLE
 import jooq.jooq_dsl.Tables.SUBSCRIPTION
+import jooq.jooq_dsl.tables.MappingWorkbookArticle
 import org.jooq.DSLContext
+import org.jooq.impl.DSL
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 
@@ -64,6 +69,26 @@ class SubscriptionDao(
             .orderBy(SUBSCRIPTION.CREATED_AT.desc())
             .limit(1)
 
+    fun selectAllWorkbookSubscriptionStatus(query: SelectAllMemberWorkbookSubscriptionStatusNotConsiderDeletedAtQuery): List<MemberWorkbookSubscriptionStatusRecord> {
+        return selectAllWorkbookSubscriptionStatusQuery(query)
+            .fetchInto(MemberWorkbookSubscriptionStatusRecord::class.java)
+    }
+
+    fun selectAllWorkbookSubscriptionStatusQuery(query: SelectAllMemberWorkbookSubscriptionStatusNotConsiderDeletedAtQuery) =
+        dslContext.select(
+            SUBSCRIPTION.TARGET_WORKBOOK_ID.`as`(MemberWorkbookSubscriptionStatusRecord::workbookId.name),
+            SUBSCRIPTION.DELETED_AT.isNull.`as`(MemberWorkbookSubscriptionStatusRecord::isActiveSub.name),
+            DSL.max(SUBSCRIPTION.PROGRESS).add(1).`as`(MemberWorkbookSubscriptionStatusRecord::currentDay.name),
+            DSL.max(MAPPING_WORKBOOK_ARTICLE.DAY_COL).`as`(MemberWorkbookSubscriptionStatusRecord::totalDay.name)
+        )
+            .from(SUBSCRIPTION)
+            .leftJoin(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE)
+            .on(SUBSCRIPTION.TARGET_WORKBOOK_ID.eq(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID))
+            .where(SUBSCRIPTION.MEMBER_ID.eq(query.memberId))
+            .and(SUBSCRIPTION.TARGET_MEMBER_ID.isNull)
+            .groupBy(SUBSCRIPTION.TARGET_WORKBOOK_ID, SUBSCRIPTION.DELETED_AT)
+            .query
+
     fun updateDeletedAtInAllSubscription(command: UpdateDeletedAtInAllSubscriptionCommand) {
         updateDeletedAtInAllSubscriptionCommand(command)
             .execute()
@@ -95,4 +120,22 @@ class SubscriptionDao(
             .fetchOne(0, Int::class.java)!!
         return CountAllSubscriptionStatusRecord(total.toLong(), active.toLong())
     }
+
+    /**
+     * key: workbookId
+     * value: workbook 구독 전체 기록 수
+     */
+    fun countAllWorkbookSubscription(query: CountAllWorkbooksSubscription): Map<Long, Int> {
+        return countAllWorkbookSubscriptionQuery()
+            .fetch()
+            .intoMap(SUBSCRIPTION.TARGET_WORKBOOK_ID, DSL.count(SUBSCRIPTION.TARGET_WORKBOOK_ID))
+    }
+
+    fun countAllWorkbookSubscriptionQuery() = dslContext.select(
+        SUBSCRIPTION.TARGET_WORKBOOK_ID,
+        DSL.count(SUBSCRIPTION.TARGET_WORKBOOK_ID)
+    )
+        .from(SUBSCRIPTION)
+        .groupBy(SUBSCRIPTION.TARGET_WORKBOOK_ID)
+        .query
 }

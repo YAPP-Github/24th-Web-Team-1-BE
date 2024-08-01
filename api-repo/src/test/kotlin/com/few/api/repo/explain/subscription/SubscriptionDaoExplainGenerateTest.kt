@@ -5,6 +5,7 @@ import com.few.api.repo.dao.subscription.command.InsertWorkbookSubscriptionComma
 import com.few.api.repo.dao.subscription.command.UpdateDeletedAtInAllSubscriptionCommand
 import com.few.api.repo.dao.subscription.query.CountWorkbookMappedArticlesQuery
 import com.few.api.repo.dao.subscription.query.SelectAllWorkbookSubscriptionStatusNotConsiderDeletedAtQuery
+import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookSubscriptionStatusNotConsiderDeletedAtQuery
 import com.few.api.repo.explain.InsertUpdateExplainGenerator
 import com.few.api.repo.explain.ResultGenerator
 import com.few.api.repo.jooq.JooqTestSpec
@@ -60,6 +61,17 @@ class SubscriptionDaoExplainGenerateTest : JooqTestSpec() {
     }
 
     @Test
+    fun selectAllTopWorkbookSubscriptionStatusQueryExplain() {
+        val query = SelectAllMemberWorkbookSubscriptionStatusNotConsiderDeletedAtQuery(memberId = 1L).let {
+            subscriptionDao.selectAllWorkbookSubscriptionStatusQuery(it)
+        }
+
+        val explain = dslContext.explain(query).toString()
+
+        ResultGenerator.execute(query, explain, "selectAllTopWorkbookSubscriptionStatusQueryExplain")
+    }
+
+    @Test
     fun countWorkbookMappedArticlesQueryExplain() {
         val query = CountWorkbookMappedArticlesQuery(
             workbookId = 1L
@@ -98,5 +110,14 @@ class SubscriptionDaoExplainGenerateTest : JooqTestSpec() {
         val explain = InsertUpdateExplainGenerator.execute(dslContext, command.sql, command.bindValues)
 
         ResultGenerator.execute(command, explain, "updateDeletedAtInAllSubscriptionCommandExplain")
+    }
+
+    @Test
+    fun countAllWorkbookSubscriptionQueryExplain() {
+        val query = subscriptionDao.countAllWorkbookSubscriptionQuery()
+
+        val explain = dslContext.explain(query).toString()
+
+        ResultGenerator.execute(query, explain, "countAllWorkbookSubscriptionQueryExplain")
     }
 }

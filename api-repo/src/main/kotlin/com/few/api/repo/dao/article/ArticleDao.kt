@@ -3,6 +3,7 @@ package com.few.api.repo.dao.article
 import com.few.api.repo.config.LocalCacheConfig.Companion.LOCAL_CM
 import com.few.api.repo.config.LocalCacheConfig.Companion.SELECT_ARTICLE_RECORD_CACHE
 import com.few.api.repo.dao.article.command.InsertFullArticleRecordCommand
+import com.few.api.repo.dao.article.query.SelectArticleIdByWorkbookIdAndDayQuery
 import com.few.api.repo.dao.article.query.SelectArticleRecordQuery
 import com.few.api.repo.dao.article.query.SelectWorkBookArticleRecordQuery
 import com.few.api.repo.dao.article.query.SelectWorkbookMappedArticleRecordsQuery
@@ -100,6 +101,13 @@ class ArticleDao(
         return mstId.getValue(ArticleMst.ARTICLE_MST.ID)
     }
 
+    fun insertArticleMstCommand(command: InsertFullArticleRecordCommand) =
+        dslContext.insertInto(ArticleMst.ARTICLE_MST)
+            .set(ArticleMst.ARTICLE_MST.MEMBER_ID, command.writerId)
+            .set(ArticleMst.ARTICLE_MST.MAIN_IMAGE_URL, command.mainImageURL.toString())
+            .set(ArticleMst.ARTICLE_MST.TITLE, command.title)
+            .set(ArticleMst.ARTICLE_MST.CATEGORY_CD, command.category)
+
     fun insertArticleIfoCommand(
         mstId: Long,
         command: InsertFullArticleRecordCommand,
@@ -107,12 +115,18 @@ class ArticleDao(
         .set(ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID, mstId)
         .set(ArticleIfo.ARTICLE_IFO.CONTENT, command.content)
 
-    fun insertArticleMstCommand(command: InsertFullArticleRecordCommand) =
-        dslContext.insertInto(ArticleMst.ARTICLE_MST)
-            .set(ArticleMst.ARTICLE_MST.MEMBER_ID, command.writerId)
-            .set(ArticleMst.ARTICLE_MST.MAIN_IMAGE_URL, command.mainImageURL.toString())
-            .set(ArticleMst.ARTICLE_MST.TITLE, command.title)
-            .set(ArticleMst.ARTICLE_MST.CATEGORY_CD, command.category)
+    fun selectArticleIdByWorkbookIdAndDay(query: SelectArticleIdByWorkbookIdAndDayQuery): Long? {
+        return selectArticleIdByWorkbookIdAndDayQuery(query)
+            .fetchOneInto(Long::class.java)
+    }
+
+    fun selectArticleIdByWorkbookIdAndDayQuery(query: SelectArticleIdByWorkbookIdAndDayQuery) =
+        dslContext.select(
+            MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.ARTICLE_ID
+        ).from(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE)
+            .where(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.eq(query.workbookId))
+            .and(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.DAY_COL.eq(query.day))
+            .query
 
     fun selectArticleContents(articleIds: Set<Long>): List<SelectArticleContentsRecord> =
         selectArticleContentsQuery(articleIds)

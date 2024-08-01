@@ -1,15 +1,13 @@
 package com.few.api.web.controller.workbook
 
+import com.few.api.domain.workbook.usecase.BrowseWorkbooksUseCase
 import com.few.api.domain.workbook.usecase.dto.ReadWorkbookUseCaseIn
 import com.few.api.domain.workbook.usecase.ReadWorkbookUseCase
+import com.few.api.domain.workbook.usecase.dto.BrowseWorkbooksUseCaseIn
+import com.few.api.web.controller.workbook.response.*
 import com.few.api.web.support.WorkBookCategory
-import com.few.api.web.controller.workbook.response.BrowseWorkBookInfo
-import com.few.api.web.controller.workbook.response.BrowseWorkBooksResponse
-import com.few.api.web.controller.workbook.response.ReadWorkBookResponse
-import com.few.api.web.controller.workbook.response.WriterInfo
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
-import com.few.data.common.code.CategoryType
 import jakarta.validation.constraints.Min
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -19,14 +17,13 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import java.net.URL
-import java.time.LocalDateTime
 
 @Validated
 @RestController
 @RequestMapping(value = ["/api/v1/workbooks"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class WorkBookController(
     private val readWorkbookUseCase: ReadWorkbookUseCase,
+    private val browseWorkBooksUseCase: BrowseWorkbooksUseCase,
 ) {
 
     @GetMapping("/categories")
@@ -49,43 +46,32 @@ class WorkBookController(
         @RequestParam(value = "category", required = false)
         category: WorkBookCategory?,
     ): ApiResponse<ApiResponse.SuccessBody<BrowseWorkBooksResponse>> {
+        val useCaseOut =
+            BrowseWorkbooksUseCaseIn(category ?: WorkBookCategory.All).let { useCaseIn ->
+                browseWorkBooksUseCase.execute(useCaseIn)
+            }
+
         BrowseWorkBooksResponse(
-            listOf(
+            useCaseOut.workbooks.map { workBookDetail ->
                 BrowseWorkBookInfo(
-                    id = 1,
-                    mainImageUrl = URL("https://example.com"),
-                    title = "title1",
-                    description = "description1",
-                    category = CategoryType.ECONOMY.displayName,
-                    createdAt = LocalDateTime.now(),
-                    writers = listOf(
+                    workBookDetail.id,
+                    workBookDetail.mainImageUrl,
+                    workBookDetail.title,
+                    workBookDetail.description,
+                    workBookDetail.category,
+                    workBookDetail.createdAt,
+                    workBookDetail.writerDetails.map { writerDetail ->
                         WriterInfo(
-                            id = 1,
-                            name = "name1",
-                            url = URL("https://example.com")
+                            writerDetail.id,
+                            writerDetail.name,
+                            writerDetail.url
                         )
-                    ),
-                    subscriberCount = 1
-                ),
-                BrowseWorkBookInfo(
-                    id = 2,
-                    mainImageUrl = URL("https://example.com"),
-                    title = "title2",
-                    description = "description2",
-                    category = CategoryType.ECONOMY.displayName,
-                    createdAt = LocalDateTime.now(),
-                    writers = listOf(
-                        WriterInfo(
-                            id = 2,
-                            name = "name2",
-                            url = URL("https://example.com")
-                        )
-                    ),
-                    subscriberCount = 2
+                    },
+                    workBookDetail.subscriptionCount
                 )
-            )
-        ).let {
-            return ApiResponseGenerator.success(it, HttpStatus.OK)
+            }
+        ).let { response ->
+            return ApiResponseGenerator.success(response, HttpStatus.OK)
         }
     }
 

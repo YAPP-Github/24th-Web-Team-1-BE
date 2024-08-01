@@ -3,12 +3,16 @@ package com.few.api.repo.dao.member
 import com.few.api.repo.config.LocalCacheConfig.Companion.LOCAL_CM
 import com.few.api.repo.config.LocalCacheConfig.Companion.SELECT_WRITER_CACHE
 import com.few.api.repo.dao.member.command.InsertMemberCommand
+import com.few.api.repo.dao.member.query.BrowseWorkbookWritersQuery
 import com.few.api.repo.dao.member.query.SelectMemberByEmailQuery
 import com.few.api.repo.dao.member.query.SelectWriterQuery
 import com.few.api.repo.dao.member.query.SelectWritersQuery
 import com.few.api.repo.dao.member.record.MemberIdRecord
 import com.few.api.repo.dao.member.record.WriterRecord
+import com.few.api.repo.dao.member.record.WriterRecordMappedWorkbook
 import com.few.data.common.code.MemberType
+import jooq.jooq_dsl.tables.ArticleMst
+import jooq.jooq_dsl.tables.MappingWorkbookArticle
 import jooq.jooq_dsl.tables.Member
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
@@ -68,6 +72,50 @@ class MemberDao(
         .and(Member.MEMBER.TYPE_CD.eq(MemberType.WRITER.code))
         .and(Member.MEMBER.DELETED_AT.isNull)
         .orderBy(Member.MEMBER.ID.asc())
+
+    fun selectWriters(query: BrowseWorkbookWritersQuery): List<WriterRecordMappedWorkbook> {
+        return selectWritersQuery(query)
+            .fetchInto(WriterRecordMappedWorkbook::class.java)
+    }
+
+    fun selectWritersQuery(query: BrowseWorkbookWritersQuery) =
+        /** workbookId를 기준으로 중복된 writer를 제거하기 위해 distinct를 사용한다. */
+        dslContext.selectDistinct(
+            DSL.field("article_mapping.${MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.name}")
+                .`as`(WriterRecordMappedWorkbook::workbookId.name)
+        ).select(
+            Member.MEMBER.ID.`as`(WriterRecordMappedWorkbook::writerId.name),
+            DSL.jsonGetAttributeAsText(Member.MEMBER.DESCRIPTION, "name")
+                .`as`(WriterRecordMappedWorkbook::name.name),
+            DSL.jsonGetAttribute(Member.MEMBER.DESCRIPTION, "url")
+                .`as`(WriterRecordMappedWorkbook::url.name)
+        )
+            .from(Member.MEMBER)
+            .join(
+                /** 조회 workbookId에 포함된 articleId 및 writerId를 조회하기 위해 article_mapping을 사용한다. */
+                dslContext.select(
+                    ArticleMst.ARTICLE_MST.MEMBER_ID.`as`(ArticleMst.ARTICLE_MST.MEMBER_ID.name),
+                    MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.`as`(
+                        MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.name
+                    )
+                )
+                    .from(ArticleMst.ARTICLE_MST)
+                    .join(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE)
+                    .on(ArticleMst.ARTICLE_MST.ID.eq(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.ARTICLE_ID))
+                    .where(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.`in`(query.workbookIds))
+                    .and(ArticleMst.ARTICLE_MST.DELETED_AT.isNull)
+                    .asTable("article_mapping")
+            )
+            .on(
+                Member.MEMBER.ID.eq(
+                    DSL.field(
+                        "article_mapping.${ArticleMst.ARTICLE_MST.MEMBER_ID.name}",
+                        Long::class.java
+                    )
+                )
+            )
+            .where(Member.MEMBER.TYPE_CD.eq(MemberType.WRITER.code))
+            .and(Member.MEMBER.DELETED_AT.isNull)
 
     fun selectMemberByEmail(query: SelectMemberByEmailQuery): MemberIdRecord? {
         return selectMemberByEmailQuery(query)

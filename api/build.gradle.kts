@@ -186,3 +186,22 @@ tasks.register("buildDockerImage") {
         }
     }
 }
+
+tasks.register("buildEcsDockerImage") {
+    dependsOn("bootJar")
+
+    doLast {
+        exec {
+            workingDir(".")
+            commandLine(
+                "docker",
+                "build",
+                "-t",
+                imageName,
+                "--build-arg",
+                "RELEASE_VERSION=$releaseVersion",
+                '.'
+            )
+        }
+    }
+}

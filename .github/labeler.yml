@@ -14,6 +14,12 @@ script:
   - changed-files:
       - any-glob-to-any-file: '**/scripts/**'
 
+# resource 폴더 하위에 있는 파일이 변경되거나, 브랜치 이름이 resource로 시작하면 resource 라벨을 붙인다.
+resource:
+    - changed-files:
+          - any-glob-to-any-file: '**/resource/**'
+    - head-branch: ['^resource', 'resource']
+
 # 브랜치 이름이 feat 또는 feature로 시작하면 feature 라벨을 붙인다.
 feature:
   - head-branch: ['^feat', 'feat', '^feature', 'feature']

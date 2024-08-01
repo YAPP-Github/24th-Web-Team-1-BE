@@ -8,6 +8,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 
 @Configuration
 class ClientConfig(
@@ -17,8 +18,9 @@ class ClientConfig(
     @Value("\${storage.region}") val region: String,
 ) {
 
+    @Profile("!prd")
     @Bean
-    fun s3StorageClient(): AmazonS3Client {
+    fun localS3StorageClient(): AmazonS3Client {
         val builder = AmazonS3ClientBuilder.standard()
             .withCredentials(
                 AWSStaticCredentialsProvider(
@@ -38,5 +40,22 @@ class ClientConfig(
         builder.build().let { client ->
             return client as AmazonS3Client
         }
+    }
+
+    @Profile("prd")
+    @Bean
+    fun prdS3StorageClient(): AmazonS3Client {
+        AmazonS3Client.builder()
+            .withRegion(region)
+            .withCredentials(
+                AWSStaticCredentialsProvider(
+                    BasicAWSCredentials(
+                        accessKey,
+                        secretKey
+                    )
+                )
+            ).build().let { client ->
+                return client as AmazonS3Client
+            }
     }
 }

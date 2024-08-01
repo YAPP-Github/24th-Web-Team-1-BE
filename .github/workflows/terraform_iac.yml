@@ -1,4 +1,4 @@
-name: NCP IaC
+name: Terraform IAC
 
 on:
   push:
@@ -35,9 +35,9 @@ jobs:
 
       - name: Terraform Plan
         working-directory: ${{ env.working-directory }}
-        run: terraform plan -var=ncp_access_key=${{ secrets.NCP_ACCESS_KEY_ID }} -var=ncp_secret_key=${{ secrets.NCP_SECRET_ACCESS_KEY }} -input=false
+        run: terraform plan -input=false -var 'aws_root_arn=${{ secrets.AWS_ROOT_ARN }}' -var 'aws_access_key=${{ secrets.AWS_ACCESS_KEY }}' -var 'aws_secret_key=${{ secrets.AWS_SECRET_KEY }}' -var 'aws_rds_password=${{ secrets.AWS_RDS_PASSWORD }}' -var 'fe_origin=${{ secrets.FE_ORIGIN }}' -var 'email_username=${{ secrets.EMAIL_USERNAME }}' -var 'email_password=${{ secrets.EMAIL_PASSWORD }}' -var 'webhook_discord=${{ secrets.WEBHOOK_DISCORD }}'
 
       - name: Terraform Apply
         working-directory: ${{ env.working-directory }}
         if: github.ref == 'refs/heads/infra/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve -var=ncp_access_key=${{ secrets.NCP_ACCESS_KEY_ID }} -var=ncp_secret_key=${{ secrets.NCP_SECRET_ACCESS_KEY }} -input=false
+        run: terraform apply -auto-approve -input=false -var 'aws_root_arn=${{ secrets.AWS_ROOT_ARN }}' -var 'aws_access_key=${{ secrets.AWS_ACCESS_KEY }}' -var 'aws_secret_key=${{ secrets.AWS_SECRET_KEY }}' -var 'aws_rds_password=${{ secrets.AWS_RDS_PASSWORD }}' -var 'fe_origin=${{ secrets.FE_ORIGIN }}' -var 'email_username=${{ secrets.EMAIL_USERNAME }}' -var 'email_password=${{ secrets.EMAIL_PASSWORD }}' -var 'webhook_discord=${{ secrets.WEBHOOK_DISCORD }}'

@@ -221,24 +221,23 @@ resource "aws_alb_listener" "http_alb_listener" {
   }
 }
 
-// todo: add https listener
-#resource "aws_alb_listener" "https_alb_listenser" {
-#  load_balancer_arn = aws_alb.alb.arn
-#  port              = 443
-#  protocol          = "HTTPS"
-#  ssl_policy        = "ELBSecurityPolicy-2016-08"
-#  certificate_arn   = aws_acm_certificate.cert.arn
-#
-#  default_action {
-#    type             = "forward"
-#    target_group_arn = aws_alb_target_group.alb_target_group.arn
-#  }
-#}
+resource "aws_alb_listener" "https_alb_listenser" {
+  load_balancer_arn = aws_alb.alb.arn
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = aws_acm_certificate.cert.arn
 
-#resource "aws_lb_listener_certificate" "https_listener_cert" {
-#  listener_arn    = aws_alb_listener.https_alb_listenser.arn
-#  certificate_arn = aws_acm_certificate.cert.arn
-#}
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_alb_target_group.alb_target_group.arn
+  }
+}
+
+resource "aws_lb_listener_certificate" "https_listener_cert" {
+  listener_arn    = aws_alb_listener.https_alb_listenser.arn
+  certificate_arn = aws_acm_certificate.cert.arn
+}
 
 # ECS Service
 resource "aws_ecs_service" "ecs_service" {

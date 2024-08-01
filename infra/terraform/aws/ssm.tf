@@ -236,5 +236,5 @@ resource "aws_ssm_parameter" "cdn_url" {
   name        = "/cdn/url"
   description = "CDN URL"
   type        = "SecureString"
-  value       = aws_cloudfront_distribution.s3_distribution.domain_name
+  value       = "https://${aws_cloudfront_distribution.s3_distribution.domain_name}"
 }

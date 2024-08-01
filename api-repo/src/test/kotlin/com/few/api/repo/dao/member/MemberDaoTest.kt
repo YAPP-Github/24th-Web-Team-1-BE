@@ -6,6 +6,7 @@ import com.few.api.repo.dao.member.support.WriterDescription
 import com.few.api.repo.dao.member.support.WriterDescriptionJsonMapper
 import com.few.api.repo.jooq.JooqTestSpec
 import com.few.data.common.code.MemberType
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jooq.jooq_dsl.tables.Member
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
@@ -13,7 +14,6 @@ import org.jooq.DSLContext
 import org.jooq.JSON
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import java.net.URL
@@ -21,8 +21,7 @@ import java.util.stream.LongStream
 import kotlin.streams.toList
 
 class MemberDaoTest : JooqTestSpec() {
-
-    private val log: org.slf4j.Logger = LoggerFactory.getLogger(MemberDaoTest::class.java)
+    private val log = KotlinLogging.logger {}
 
     @Autowired
     private lateinit var dslContext: DSLContext
@@ -35,7 +34,7 @@ class MemberDaoTest : JooqTestSpec() {
 
     @BeforeEach
     fun setUp() {
-        log.debug("===== start setUp =====")
+        log.debug { "===== start setUp =====" }
         dslContext.deleteFrom(Member.MEMBER).execute()
         dslContext.insertInto(Member.MEMBER)
             .set(Member.MEMBER.ID, 1)
@@ -53,7 +52,7 @@ class MemberDaoTest : JooqTestSpec() {
             .set(Member.MEMBER.TYPE_CD, MemberType.WRITER.code)
             .set(Member.MEMBER.DESCRIPTION, JSON.valueOf(writerDescription))
             .execute()
-        log.debug("===== finish setUp =====")
+        log.debug { "===== finish setUp =====" }
     }
 
     @Test

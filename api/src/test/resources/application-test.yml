@@ -1,7 +1,7 @@
 spring:
     datasource:
         hikari:
-            jdbcUrl: jdbc:mysql://localhost:13306/api?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+            jdbcUrl: jdbc:mysql://localhost:13306/api?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&allowMultiQueries=true
             username: root
             password: root
             driver-class-name: com.mysql.cj.jdbc.Driver
@@ -72,3 +72,19 @@ database:
         queue-capacity: 70
         wait-for-tasks-to-complete-on-shutdown: true
         await-termination-seconds: 60
+
+security:
+    jwt:
+        token:
+            validtime:
+                access: 31557600000
+                refresh: 31557600000
+            secretkey: jwtsecretKeyhastolonghowlongidontknow
+    cors:
+        path-patterns: "/**"
+        origin-patterns: "http://localhost:3000"
+        allowed-methods: "*"
+        allowed-headers: "*"
+        exposed-headers: "Set-Cookie, Authorization, Content-Type, X-Requested-With, Accept, Origin, Access-Control-Request-Method, Access-Control-Request-Headers, Access-Control-Allow-Origin, Access-Control-Allow-Credentials"
+        allow-credentials: true
+        max-age: 1800

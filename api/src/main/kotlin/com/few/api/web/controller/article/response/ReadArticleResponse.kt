@@ -1,5 +1,6 @@
 package com.few.api.web.controller.article.response
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import java.net.URL
 import java.time.LocalDateTime
 
@@ -10,9 +11,10 @@ data class ReadArticleResponse(
     val content: String,
     val problemIds: List<Long>,
     val category: String,
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     val createdAt: LocalDateTime,
     val views: Long,
-    val includedWorkbooks: List<WorkbookInfo> = emptyList(),
+    val workbooks: List<WorkbookInfo> = emptyList(),
 )
 
 data class WriterInfo(
@@ -22,6 +24,6 @@ data class WriterInfo(
 )
 
 data class WorkbookInfo(
-    val id: Long,
-    val title: String,
+    val id: Long?,
+    val title: String?,
 )

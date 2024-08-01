@@ -5,6 +5,7 @@ import com.few.api.repo.dao.article.query.SelectWorkBookArticleRecordQuery
 import com.few.api.repo.dao.article.query.SelectWorkbookMappedArticleRecordsQuery
 import com.few.api.repo.jooq.JooqTestSpec
 import com.few.data.common.code.CategoryType
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jooq.jooq_dsl.tables.ArticleIfo
 import jooq.jooq_dsl.tables.ArticleMst
 import jooq.jooq_dsl.tables.MappingWorkbookArticle
@@ -12,14 +13,13 @@ import org.jooq.DSLContext
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import java.net.URL
 
 class ArticleDaoTest : JooqTestSpec() {
 
-    private val log: org.slf4j.Logger = LoggerFactory.getLogger(ArticleDaoTest::class.java)
+    private val log = KotlinLogging.logger {}
 
     @Autowired
     private lateinit var dslContext: DSLContext
@@ -29,7 +29,7 @@ class ArticleDaoTest : JooqTestSpec() {
 
     @BeforeEach
     fun setUp() {
-        log.debug("===== start setUp =====")
+        log.debug { "===== start setUp =====" }
         dslContext.deleteFrom(ArticleMst.ARTICLE_MST).execute()
         dslContext.deleteFrom(ArticleIfo.ARTICLE_IFO).execute()
         dslContext.insertInto(ArticleMst.ARTICLE_MST)
@@ -43,7 +43,7 @@ class ArticleDaoTest : JooqTestSpec() {
             .set(ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID, 1L)
             .set(ArticleIfo.ARTICLE_IFO.CONTENT, "this is content1")
             .execute()
-        log.debug("===== finish setUp =====")
+        log.debug { "===== finish setUp =====" }
     }
 
     @Test
@@ -117,7 +117,7 @@ class ArticleDaoTest : JooqTestSpec() {
     }
 
     private fun setMappingWorkbookArticleData(count: Int) {
-        log.debug("===== start setMappingWorkbookArticleData =====")
+        log.debug { "===== start setMappingWorkbookArticleData =====" }
         dslContext.deleteFrom(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE).execute()
         for (i in 1..count) {
             setMappingWorkbookArticle(1L, i.toLong(), i)
@@ -126,7 +126,7 @@ class ArticleDaoTest : JooqTestSpec() {
             setArticleMST(i.toLong())
             setArticleInfo(i.toLong())
         }
-        log.debug("===== finish setMappingWorkbookArticleData =====")
+        log.debug { "===== finish setMappingWorkbookArticleData =====" }
     }
 
     private fun setMappingWorkbookArticle(workbookId: Long, articleId: Long, day: Int) {

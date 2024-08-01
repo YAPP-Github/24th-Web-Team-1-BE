@@ -34,6 +34,7 @@ class ApiThreadPoolConfig {
         setRejectedExecutionHandler { r, _ ->
             log.warn { "Discord Hook Event Task Rejected: $r" }
         }
+        setTaskDecorator(ClonedTaskDecorator())
         initialize()
     }
 }

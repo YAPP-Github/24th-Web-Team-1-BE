@@ -126,8 +126,8 @@ class ArticleControllerTest : ControllerTestSpec() {
                                             .fieldWithString("아티클 생성일"),
                                         PayloadDocumentation.fieldWithPath("data.views")
                                             .fieldWithNumber("아티클 조회수"),
-                                        PayloadDocumentation.fieldWithPath("data.includedWorkbooks")
-                                            .fieldWithArray("아티클이 포함된 학습지 정보(해당 API에서 사용되지 않음)")
+                                        PayloadDocumentation.fieldWithPath("data.workbooks")
+                                            .fieldWithArray("아티클이 포함된 학습지 정보(해당 API에선 사용되지 않음)")
                                     )
                                 )
                             ).build()
@@ -137,18 +137,20 @@ class ArticleControllerTest : ControllerTestSpec() {
     }
 
     @Test
-    @DisplayName("[GET] /api/v1/articles?prevArticleId={prevArticleId}")
+    @DisplayName("[GET] /api/v1/articles?prevArticleId={optional}?categoryCd={optional}")
     fun readArticles() {
         // given
         val api = "ReadArticles"
+        val prevArticleId = 1L
+        val categoryCd: Byte = CategoryType.IT.code
         val uri = UriComponentsBuilder.newInstance()
             .path("$BASE_URL")
-            .queryParam("prevArticleId", 1L)
+            .queryParam("prevArticleId", prevArticleId)
+            .queryParam("categoryCd", categoryCd)
             .build()
             .toUriString()
         // set usecase mock
-        val prevArticleId = 1L
-        `when`(readArticlesUseCase.execute(ReadArticlesUseCaseIn(prevArticleId))).thenReturn(
+        `when`(readArticlesUseCase.execute(ReadArticlesUseCaseIn(prevArticleId, categoryCd))).thenReturn(
             ReadArticlesUseCaseOut(
                 listOf(
                     ReadArticleUseCaseOut(
@@ -160,16 +162,23 @@ class ArticleControllerTest : ControllerTestSpec() {
                         ),
                         title = "ETF(상장 지수 펀드)란? 모르면 손해라고?",
                         content = CategoryType.fromCode(0)!!.name,
-                        problemIds = listOf(1L, 2L, 3L),
-                        category = "경제",
+                        problemIds = emptyList(),
+                        category = CategoryType.IT.displayName,
                         createdAt = LocalDateTime.now(),
-                        views = 1L,
-                        includedWorkbooks = listOf(
-                            WorkbookDetail(1L, "사소한 것들의 역사"),
-                            WorkbookDetail(2L, "인모스트 경제레터")
+                        views = 9876543210L,
+                        workbooks = listOf(
+                            WorkbookDetail(
+                                id = 1,
+                                title = "워크북1 타이틀"
+                            ),
+                            WorkbookDetail(
+                                id = 2,
+                                title = "워크북2 타이틀"
+                            )
                         )
                     )
-                )
+                ),
+                true
             )
         )
 
@@ -182,7 +191,10 @@ class ArticleControllerTest : ControllerTestSpec() {
                         ResourceSnippetParameters.builder().description("아티 목록 10개씩 조회(조회수 기반 정렬)")
                             .summary(api.toIdentifier()).privateResource(false).deprecated(false)
                             .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))
-                            .queryParameters(parameterWithName("prevArticleId").description("이전까지 조회한 아티클 Id"))
+                            .queryParameters(
+                                parameterWithName("prevArticleId").description("이전까지 조회한 아티클 Id"),
+                                parameterWithName("categoryCd").description("아티클 카테고리 코드")
+                            )
                             .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
                                 *Description.describe(
                                     arrayOf(
@@ -214,12 +226,50 @@ class ArticleControllerTest : ControllerTestSpec() {
                                             .fieldWithString("아티클 생성일"),
                                         PayloadDocumentation.fieldWithPath("data.articles[].views")
                                             .fieldWithNumber("아티클 조회수"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].includedWorkbooks")
+                                        PayloadDocumentation.fieldWithPath("data.articles[].workbooks")
                                             .fieldWithArray("아티클이 포함된 학습지 정보"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].includedWorkbooks[].id")
+                                        PayloadDocumentation.fieldWithPath("data.articles[].workbooks[].id")
                                             .fieldWithNumber("아티클이 포함된 학습지 정보(학습지ID)"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].includedWorkbooks[].title")
+                                        PayloadDocumentation.fieldWithPath("data.articles[].workbooks[].title")
                                             .fieldWithString("아티클이 포함된 학습지 정보(학습지 제목)")
+                                    )
+                                )
+                            ).build()
+                    )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("[GET] /api/v1/articles/categories")
+    fun browseArticleCategories() {
+        // given
+        val api = "browseArticleCategories"
+        val uri = UriComponentsBuilder.newInstance()
+            .path("$BASE_URL/categories")
+            .build()
+            .toUriString()
+
+        // when, then
+        this.webTestClient.get().uri(uri).accept(MediaType.APPLICATION_JSON)
+            .exchange().expectStatus().isOk().expectBody().consumeWith(
+                WebTestClientRestDocumentation.document(
+                    api.toIdentifier(),
+                    ResourceDocumentation.resource(
+                        ResourceSnippetParameters.builder().description("아티클 카테고리 code, name 조회")
+                            .summary(api.toIdentifier()).privateResource(false).deprecated(false)
+                            .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))
+                            .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
+                                *Description.describe(
+                                    arrayOf(
+                                        PayloadDocumentation.fieldWithPath("data")
+                                            .fieldWithObject("data"),
+                                        PayloadDocumentation.fieldWithPath("data.categories")
+                                            .fieldWithArray("카테고리 목록"),
+                                        PayloadDocumentation.fieldWithPath("data.categories[].code")
+                                            .fieldWithNumber("카테고리 code"),
+                                        PayloadDocumentation.fieldWithPath("data.categories[].name")
+                                            .fieldWithString("카테고리 name")
                                     )
                                 )
                             ).build()

@@ -8,7 +8,9 @@ import com.few.api.domain.admin.document.utils.ObjectPathGenerator
 import com.few.api.exception.common.ExternalIntegrationException
 import com.few.api.exception.common.NotFoundException
 import com.few.api.repo.dao.article.ArticleDao
+import com.few.api.repo.dao.article.ArticleViewCountDao
 import com.few.api.repo.dao.article.command.InsertFullArticleRecordCommand
+import com.few.api.repo.dao.article.query.ArticleViewCountQuery
 import com.few.api.repo.dao.document.DocumentDao
 import com.few.api.repo.dao.document.command.InsertDocumentIfoCommand
 import com.few.api.repo.dao.member.MemberDao
@@ -31,6 +33,7 @@ class AddArticleUseCase(
     private val memberDao: MemberDao,
     private val problemDao: ProblemDao,
     private val documentDao: DocumentDao,
+    private val articleViewCountDao: ArticleViewCountDao,
     private val convertDocumentService: ConvertDocumentService,
     private val putDocumentService: PutDocumentService,
     private val getUrlService: GetUrlService,
@@ -78,9 +81,11 @@ class AddArticleUseCase(
 
                 htmlSource
             }
+
             useCaseIn.contentType.lowercase(Locale.getDefault()) == "html" -> {
                 useCaseIn.contentSource
             }
+
             else -> {
                 throw IllegalArgumentException("Unsupported content type: ${useCaseIn.contentType}")
             }
@@ -115,6 +120,12 @@ class AddArticleUseCase(
         }.toList().let { commands ->
             problemDao.insertProblems(commands)
         }
+
+        ArticleViewCountQuery(
+            articleMstId,
+            CategoryType.fromCode(CategoryType.convertToCode(useCaseIn.category))
+                ?: throw NotFoundException("article.invalid.category")
+        ).let { articleViewCountDao.insertArticleViewCountToZero(it) }
 
         return AddArticleUseCaseOut(articleMstId)
     }

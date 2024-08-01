@@ -7,7 +7,7 @@ variable "prefix" {
 variable "domain_name" {
   type        = string
   description = "The domain name for the Route 53 hosted zone"
-  default     = "api.fewletter.site"
+  default     = "fewletter.site"
 }
 
 variable "ncp_access_key" {

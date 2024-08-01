@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration debug="true">
+    <property resource="application.yml"/>
+    <property name="TRACE_ID_CONSOLE_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %magenta([%thread]) %highlight([%-3level]) [%X{TraceId}] %logger{5} - %msg %n" />
+    <springProperty name="LOGS_ABSOLUTE_PATH" source="log.file.path"/>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${TRACE_ID_CONSOLE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <springProfile name="prd">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+        <logger name="com.few" level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+        <logger name="org.jooq" level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+        <logger name="org.springframework" level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="local">
+        <root level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+</configuration>

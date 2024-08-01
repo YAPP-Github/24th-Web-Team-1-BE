@@ -11,7 +11,7 @@ import com.few.api.repo.dao.member.query.SelectWriterQuery
 import com.few.api.repo.dao.member.query.SelectWritersQuery
 import com.few.api.repo.dao.member.record.MemberIdAndIsDeletedRecord
 import com.few.api.repo.dao.member.record.MemberIdRecord
-import com.few.api.repo.dao.member.record.MemberIdAndTypeRecord
+import com.few.api.repo.dao.member.record.MemberEmailAndTypeRecord
 import com.few.api.repo.dao.member.record.WriterRecord
 import com.few.data.common.code.MemberType
 import jooq.jooq_dsl.tables.Member
@@ -111,20 +111,20 @@ class MemberDao(
             .set(Member.MEMBER.EMAIL, command.email)
             .set(Member.MEMBER.TYPE_CD, command.memberType.code)
 
-    fun selectMemberIdAndType(memberId: Long): MemberIdAndTypeRecord? {
+    fun selectMemberEmailAndType(memberId: Long): MemberEmailAndTypeRecord? {
         return selectMemberIdAndTypeQuery(memberId)
             .fetchOne()
             ?.map {
-                MemberIdAndTypeRecord(
-                    memberId = it[MemberIdAndTypeRecord::memberId.name] as Long,
-                    memberType = MemberType.fromCode(it[MemberIdAndTypeRecord::memberType.name] as Byte)!!
+                MemberEmailAndTypeRecord(
+                    email = it[MemberEmailAndTypeRecord::email.name] as String,
+                    memberType = MemberType.fromCode(it[MemberEmailAndTypeRecord::memberType.name] as Byte)!!
                 )
             }
     }
 
     fun selectMemberIdAndTypeQuery(memberId: Long) = dslContext.select(
-        Member.MEMBER.ID.`as`(MemberIdAndTypeRecord::memberId.name),
-        Member.MEMBER.TYPE_CD.`as`(MemberIdAndTypeRecord::memberType.name)
+        Member.MEMBER.EMAIL.`as`(MemberEmailAndTypeRecord::email.name),
+        Member.MEMBER.TYPE_CD.`as`(MemberEmailAndTypeRecord::memberType.name)
     )
         .from(Member.MEMBER)
         .where(Member.MEMBER.ID.eq(memberId))

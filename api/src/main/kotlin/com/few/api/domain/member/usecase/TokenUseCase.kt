@@ -23,13 +23,17 @@ class TokenUseCase(
     @Transactional
     fun execute(useCaseIn: TokenUseCaseIn): TokenUseCaseOut {
         /** refreshToken이 요청에 포함되어 있으면 refreshToken을 통해 memberId를 추출하여 새로운 토큰을 발급 */
+        var _memberId: Long? = null
+        var _memberEmail: String? = null
         useCaseIn.refreshToken?.let { token ->
             runCatching {
                 /** refreshToken을 통해 memberId를 추출 */
-                tokenResolver.resolveId(token)
+                _memberId = tokenResolver.resolveId(token)
+                _memberEmail = tokenResolver.resolveEmail(token)
             }.onSuccess {
                 tokenGenerator.generateAuthToken(
-                    memberId = it,
+                    memberId = _memberId,
+                    memberEmail = _memberEmail,
                     memberRoles = listOf(Roles.ROLE_USER)
                 ).let { token ->
                     return TokenUseCaseOut(
@@ -50,19 +54,10 @@ class TokenUseCase(
             idEncryption.decrypt(it).toLong()
         } ?: throw IllegalStateException("Cannot Decrypt Id")
 
-        /** id가 요청에 포함되어 있으면 id를 통해 새로운 토큰을 발급 */
-        val token = tokenGenerator.generateAuthToken(
-            memberId = memberId,
-            memberRoles = listOf(Roles.ROLE_USER),
-            accessTokenValidTime = accessTokenValidTime,
-            refreshTokenValidTime = refreshTokenValidTime
-        )
-
-        // 요청에서 파람을 통해 로그인 혹은 회원가입인지 파악할 수 있으면 해당 로직 제거
-        val memberType = memberDao.selectMemberIdAndType(memberId)
+        val memberEmailAndTypeRecord = memberDao.selectMemberEmailAndType(memberId)
             ?: throw IllegalStateException("Member Not Found")
 
-        if (memberType.memberType == MemberType.PREAUTH) {
+        if (memberEmailAndTypeRecord.memberType == MemberType.PREAUTH) {
             UpdateMemberTypeCommand(
                 id = memberId,
                 memberType = MemberType.NORMAL
@@ -70,6 +65,15 @@ class TokenUseCase(
                 memberDao.updateMemberType(command)
             }
         }
+
+        /** id가 요청에 포함되어 있으면 id를 통해 새로운 토큰을 발급 */
+        val token = tokenGenerator.generateAuthToken(
+            memberId = memberId,
+            memberEmail = memberEmailAndTypeRecord.email,
+            memberRoles = listOf(Roles.ROLE_USER),
+            accessTokenValidTime = accessTokenValidTime,
+            refreshTokenValidTime = refreshTokenValidTime
+        )
 
         return TokenUseCaseOut(
             accessToken = token.accessToken,

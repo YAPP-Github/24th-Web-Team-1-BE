@@ -4,7 +4,7 @@ import com.few.api.config.crypto.IdEncryption
 import com.few.api.domain.member.usecase.dto.TokenUseCaseIn
 import com.few.api.repo.dao.member.MemberDao
 import com.few.api.repo.dao.member.command.UpdateMemberTypeCommand
-import com.few.api.repo.dao.member.record.MemberIdAndTypeRecord
+import com.few.api.repo.dao.member.record.MemberEmailAndTypeRecord
 import com.few.api.security.token.AuthToken
 import com.few.api.security.token.TokenGenerator
 import com.few.api.security.token.TokenResolver
@@ -32,7 +32,8 @@ class TokenUseCaseTest : BehaviorSpec({
     given("토큰 요청이 온 상황에서") {
         `when`("요청에 refreshToken이 포함되어 있는 경우") {
             every { tokenResolver.resolveId(any()) } returns 1L
-            every { tokenGenerator.generateAuthToken(any(), any()) } returns AuthToken(
+            every { tokenResolver.resolveEmail(any()) } returns "test@gmail.com"
+            every { tokenGenerator.generateAuthToken(any(), any(), any()) } returns AuthToken(
                 accessToken = "accessToken",
                 refreshToken = "refreshToken"
             )
@@ -46,18 +47,19 @@ class TokenUseCaseTest : BehaviorSpec({
                     )
                 )
                 verify(exactly = 1) { tokenResolver.resolveId(any()) }
-                verify(exactly = 1) { tokenGenerator.generateAuthToken(any(), any()) }
+                verify(exactly = 1) { tokenResolver.resolveEmail(any()) }
+                verify(exactly = 1) { tokenGenerator.generateAuthToken(any(), any(), any()) }
             }
         }
 
         `when`("요청에 로그인을 하려는 멤버의 token이 포함되어 있는 경우") {
             every { idEncryption.decrypt(any()) } returns "1"
-            every { tokenGenerator.generateAuthToken(any(), any(), any(), any()) } returns AuthToken(
+            every { tokenGenerator.generateAuthToken(any(), any(), any(), any(), any()) } returns AuthToken(
                 accessToken = "accessToken",
                 refreshToken = "refreshToken"
             )
-            every { memberDao.selectMemberIdAndType(any()) } returns MemberIdAndTypeRecord(
-                memberId = 1L,
+            every { memberDao.selectMemberEmailAndType(any()) } returns MemberEmailAndTypeRecord(
+                email = "test@gmail.com",
                 memberType = MemberType.NORMAL
             )
 
@@ -71,19 +73,27 @@ class TokenUseCaseTest : BehaviorSpec({
                     )
                 )
                 verify(exactly = 1) { idEncryption.decrypt(any()) }
-                verify(exactly = 1) { tokenGenerator.generateAuthToken(any(), any(), any(), any()) }
-                verify(exactly = 1) { memberDao.selectMemberIdAndType(any()) }
+                verify(exactly = 1) {
+                    tokenGenerator.generateAuthToken(
+                        any(),
+                        any(),
+                        any(),
+                        any(),
+                        any()
+                    )
+                }
+                verify(exactly = 1) { memberDao.selectMemberEmailAndType(any()) }
             }
         }
 
         `when`("요청에 회원가입을 완료 하려는 멤버의 token이 포함되어 있는 경우") {
             every { idEncryption.decrypt(any()) } returns "1"
-            every { tokenGenerator.generateAuthToken(any(), any(), any(), any()) } returns AuthToken(
+            every { tokenGenerator.generateAuthToken(any(), any(), any(), any(), any()) } returns AuthToken(
                 accessToken = "accessToken",
                 refreshToken = "refreshToken"
             )
-            every { memberDao.selectMemberIdAndType(any()) } returns MemberIdAndTypeRecord(
-                memberId = 1L,
+            every { memberDao.selectMemberEmailAndType(any()) } returns MemberEmailAndTypeRecord(
+                email = "test@gmail.com",
                 memberType = MemberType.PREAUTH
             )
 
@@ -99,8 +109,16 @@ class TokenUseCaseTest : BehaviorSpec({
                     )
                 )
                 verify(exactly = 1) { idEncryption.decrypt(any()) }
-                verify(exactly = 1) { tokenGenerator.generateAuthToken(any(), any(), any(), any()) }
-                verify(exactly = 1) { memberDao.selectMemberIdAndType(any()) }
+                verify(exactly = 1) {
+                    tokenGenerator.generateAuthToken(
+                        any(),
+                        any(),
+                        any(),
+                        any(),
+                        any()
+                    )
+                }
+                verify(exactly = 1) { memberDao.selectMemberEmailAndType(any()) }
                 verify(exactly = 1) { memberDao.updateMemberType(any(UpdateMemberTypeCommand::class)) }
             }
         }

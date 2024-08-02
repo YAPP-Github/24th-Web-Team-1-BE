@@ -151,7 +151,8 @@ class WebSecurityConfig(
                     AntPathRequestMatcher("/v3/api-docs/**", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/openapi3.yaml", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/reports/**", HttpMethod.GET.name()),
-                    AntPathRequestMatcher("/api/v1/**") // todo fix
+                    AntPathRequestMatcher("/api/v1/**"), // todo fix
+                    AntPathRequestMatcher("/batch/**") // todo fix
                 )
         }
     }

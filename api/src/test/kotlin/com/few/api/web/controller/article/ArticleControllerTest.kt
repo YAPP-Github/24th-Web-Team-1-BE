@@ -80,6 +80,7 @@ class ArticleControllerTest : ControllerTestSpec() {
                     name = "안나포",
                     url = URL("http://localhost:8080/api/v1/writers/1")
                 ),
+                mainImageUrl = URL("https://github.com/YAPP-Github/24th-Web-Team-1-BE/assets/102807742/0643d805-5f3a-4563-8c48-2a7d51795326"),
                 title = "ETF(상장 지수 펀드)란? 모르면 손해라고?",
                 content = CategoryType.fromCode(0)!!.name,
                 problemIds = listOf(1L, 2L, 3L),
@@ -114,6 +115,8 @@ class ArticleControllerTest : ControllerTestSpec() {
                                             .fieldWithString("아티클 작가 이름"),
                                         PayloadDocumentation.fieldWithPath("data.writer.url")
                                             .fieldWithString("아티클 작가 링크"),
+                                        PayloadDocumentation.fieldWithPath("data.mainImageUrl")
+                                            .fieldWithString("아티클 썸네일 이미지 링크"),
                                         PayloadDocumentation.fieldWithPath("data.title")
                                             .fieldWithString("아티클 제목"),
                                         PayloadDocumentation.fieldWithPath("data.content")
@@ -160,6 +163,7 @@ class ArticleControllerTest : ControllerTestSpec() {
                             name = "안나포",
                             url = URL("http://localhost:8080/api/v1/writers/1")
                         ),
+                        mainImageUrl = URL("https://github.com/YAPP-Github/24th-Web-Team-1-BE/assets/102807742/0643d805-5f3a-4563-8c48-2a7d51795326"),
                         title = "ETF(상장 지수 펀드)란? 모르면 손해라고?",
                         content = CategoryType.fromCode(0)!!.name,
                         problemIds = emptyList(),
@@ -214,6 +218,8 @@ class ArticleControllerTest : ControllerTestSpec() {
                                             .fieldWithString("아티클 작가 이름"),
                                         PayloadDocumentation.fieldWithPath("data.articles[].writer.url")
                                             .fieldWithString("아티클 작가 링크"),
+                                        PayloadDocumentation.fieldWithPath("data.articles[].mainImageUrl")
+                                            .fieldWithString("아티클 썸네일 이미지 링크"),
                                         PayloadDocumentation.fieldWithPath("data.articles[].title")
                                             .fieldWithString("아티클 제목"),
                                         PayloadDocumentation.fieldWithPath("data.articles[].content")

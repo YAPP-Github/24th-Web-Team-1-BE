@@ -83,6 +83,7 @@ class ReadArticlesUseCase(
                     name = a.writerName,
                     url = a.writerImgUrl
                 ),
+                mainImageUrl = a.mainImageUrl,
                 title = a.articleTitle,
                 content = a.content,
                 problemIds = emptyList(),

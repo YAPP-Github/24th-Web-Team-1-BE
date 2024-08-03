@@ -5,6 +5,7 @@ import com.few.api.repo.dao.article.query.ArticleViewCountQuery
 import com.few.api.repo.dao.article.query.SelectArticlesOrderByViewsQuery
 import com.few.api.repo.dao.article.query.SelectRankByViewsQuery
 import com.few.api.repo.dao.article.record.SelectArticleViewsRecord
+import com.few.data.common.code.CategoryType
 import jooq.jooq_dsl.tables.ArticleViewCount.ARTICLE_VIEW_COUNT
 import org.jooq.DSLContext
 import org.jooq.impl.DSL.*
@@ -76,15 +77,15 @@ class ArticleViewCountDao(
             field("article_view_count_offset_tb.article_id").`as`(SelectArticleViewsRecord::articleId.name),
             field("article_view_count_offset_tb.view_count").`as`(SelectArticleViewsRecord::views.name)
         ).from(
-            select()
+            dslContext.select()
                 .from(ARTICLE_VIEW_COUNT)
                 .where(ARTICLE_VIEW_COUNT.DELETED_AT.isNull)
                 .orderBy(ARTICLE_VIEW_COUNT.VIEW_COUNT.desc(), ARTICLE_VIEW_COUNT.ARTICLE_ID.desc())
                 .limit(query.offset, Long.MAX_VALUE)
                 .asTable("article_view_count_offset_tb")
         ).where(
-            when (query.category) {
-                (null) -> noCondition()
+            when {
+                (query.category == CategoryType.All) -> noCondition()
                 else -> field("article_view_count_offset_tb.category_cd").eq(query.category.code)
             }
         ).limit(11)

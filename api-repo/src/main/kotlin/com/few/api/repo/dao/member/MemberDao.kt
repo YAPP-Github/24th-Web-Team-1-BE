@@ -2,12 +2,18 @@ package com.few.api.repo.dao.member
 
 import com.few.api.repo.config.LocalCacheConfig.Companion.LOCAL_CM
 import com.few.api.repo.config.LocalCacheConfig.Companion.SELECT_WRITER_CACHE
+import com.few.api.repo.dao.member.command.DeleteMemberCommand
 import com.few.api.repo.dao.member.command.InsertMemberCommand
 import com.few.api.repo.dao.member.query.BrowseWorkbookWritersQuery
+import com.few.api.repo.dao.member.command.UpdateDeletedMemberTypeCommand
+import com.few.api.repo.dao.member.command.UpdateMemberTypeCommand
+import com.few.api.repo.dao.member.query.SelectMemberByEmailNotConsiderDeletedAtQuery
 import com.few.api.repo.dao.member.query.SelectMemberByEmailQuery
 import com.few.api.repo.dao.member.query.SelectWriterQuery
 import com.few.api.repo.dao.member.query.SelectWritersQuery
+import com.few.api.repo.dao.member.record.MemberIdAndIsDeletedRecord
 import com.few.api.repo.dao.member.record.MemberIdRecord
+import com.few.api.repo.dao.member.record.MemberEmailAndTypeRecord
 import com.few.api.repo.dao.member.record.WriterRecord
 import com.few.api.repo.dao.member.record.WriterRecordMappedWorkbook
 import com.few.data.common.code.MemberType
@@ -18,6 +24,7 @@ import org.jooq.DSLContext
 import org.jooq.impl.DSL
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Repository
+import java.time.LocalDateTime
 
 @Repository
 class MemberDao(
@@ -129,6 +136,18 @@ class MemberDao(
         .where(Member.MEMBER.EMAIL.eq(query.email))
         .and(Member.MEMBER.DELETED_AT.isNull)
 
+    fun selectMemberByEmail(query: SelectMemberByEmailNotConsiderDeletedAtQuery): MemberIdAndIsDeletedRecord? {
+        return selectMemberByEmailQuery(query)
+            .fetchOneInto(MemberIdAndIsDeletedRecord::class.java)
+    }
+
+    fun selectMemberByEmailQuery(query: SelectMemberByEmailNotConsiderDeletedAtQuery) = dslContext.select(
+        Member.MEMBER.ID.`as`(MemberIdAndIsDeletedRecord::memberId.name),
+        Member.MEMBER.DELETED_AT.isNotNull.`as`(MemberIdAndIsDeletedRecord::isDeleted.name)
+    )
+        .from(Member.MEMBER)
+        .where(Member.MEMBER.EMAIL.eq(query.email))
+
     fun insertMember(command: InsertMemberCommand): Long? {
         val result = insertMemberCommand(command)
             .returning(Member.MEMBER.ID)
@@ -141,4 +160,57 @@ class MemberDao(
         dslContext.insertInto(Member.MEMBER)
             .set(Member.MEMBER.EMAIL, command.email)
             .set(Member.MEMBER.TYPE_CD, command.memberType.code)
+
+    fun selectMemberEmailAndType(memberId: Long): MemberEmailAndTypeRecord? {
+        return selectMemberIdAndTypeQuery(memberId)
+            .fetchOne()
+            ?.map {
+                MemberEmailAndTypeRecord(
+                    email = it[MemberEmailAndTypeRecord::email.name] as String,
+                    memberType = MemberType.fromCode(it[MemberEmailAndTypeRecord::memberType.name] as Byte)!!
+                )
+            }
+    }
+
+    fun selectMemberIdAndTypeQuery(memberId: Long) = dslContext.select(
+        Member.MEMBER.EMAIL.`as`(MemberEmailAndTypeRecord::email.name),
+        Member.MEMBER.TYPE_CD.`as`(MemberEmailAndTypeRecord::memberType.name)
+    )
+        .from(Member.MEMBER)
+        .where(Member.MEMBER.ID.eq(memberId))
+        .and(Member.MEMBER.DELETED_AT.isNull)
+
+    fun updateMemberType(command: UpdateMemberTypeCommand) {
+        updateMemberTypeCommand(command).execute()
+    }
+
+    fun updateMemberTypeCommand(command: UpdateMemberTypeCommand) =
+        dslContext.update(Member.MEMBER)
+            .set(Member.MEMBER.TYPE_CD, command.memberType.code)
+            .where(Member.MEMBER.ID.eq(command.id))
+            .and(Member.MEMBER.DELETED_AT.isNull)
+
+    fun updateMemberType(command: UpdateDeletedMemberTypeCommand): Long? {
+        return updateMemberTypeCommand(command)
+            .returning(Member.MEMBER.ID)
+            .execute()
+            .toLong()
+    }
+
+    fun updateMemberTypeCommand(command: UpdateDeletedMemberTypeCommand) =
+        dslContext.update(Member.MEMBER)
+            .set(Member.MEMBER.TYPE_CD, command.memberType.code)
+            .set(Member.MEMBER.DELETED_AT, DSL.`val`(null, Member.MEMBER.DELETED_AT.dataType))
+            .where(Member.MEMBER.ID.eq(command.id))
+
+    fun deleteMember(command: DeleteMemberCommand) {
+        deleteMemberCommand(command)
+            .execute()
+    }
+
+    fun deleteMemberCommand(command: DeleteMemberCommand) =
+        dslContext.update(Member.MEMBER)
+            .set(Member.MEMBER.DELETED_AT, LocalDateTime.now())
+            .where(Member.MEMBER.ID.eq(command.memberId))
+            .and(Member.MEMBER.DELETED_AT.isNull)
 }

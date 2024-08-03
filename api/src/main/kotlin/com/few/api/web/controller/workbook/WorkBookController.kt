@@ -8,6 +8,7 @@ import com.few.api.web.controller.workbook.response.*
 import com.few.api.web.support.WorkBookCategory
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
+import com.few.api.web.support.ViewCategory
 import jakarta.validation.constraints.Min
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -45,9 +46,12 @@ class WorkBookController(
     fun browseWorkBooks(
         @RequestParam(value = "category", required = false)
         category: WorkBookCategory?,
+        @RequestParam(value = "view", required = false)
+        viewCategory: ViewCategory?,
     ): ApiResponse<ApiResponse.SuccessBody<BrowseWorkBooksResponse>> {
         val useCaseOut =
-            BrowseWorkbooksUseCaseIn(category ?: WorkBookCategory.All).let { useCaseIn ->
+            // todo fix memberId
+            BrowseWorkbooksUseCaseIn(category ?: WorkBookCategory.All, viewCategory, 1L).let { useCaseIn ->
                 browseWorkBooksUseCase.execute(useCaseIn)
             }
 

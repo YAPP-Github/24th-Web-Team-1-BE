@@ -2,6 +2,7 @@ package com.few.api.config
 
 import com.few.api.repo.config.ApiRepoConfig
 import com.few.batch.config.BatchConfig
+import com.few.email.config.MailConfig
 import com.few.storage.document.config.DocumentStorageConfig
 import com.few.storage.image.config.ImageStorageConfig
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
@@ -13,7 +14,13 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc
 
 @Configuration
 @ComponentScan(basePackages = [ApiConfig.BASE_PACKAGE])
-@Import(ApiRepoConfig::class, BatchConfig::class, ImageStorageConfig::class, DocumentStorageConfig::class)
+@Import(
+    ApiRepoConfig::class,
+    BatchConfig::class,
+    MailConfig::class,
+    ImageStorageConfig::class,
+    DocumentStorageConfig::class
+)
 @EnableWebMvc
 @EnableAsync
 @ConfigurationPropertiesScan(basePackages = [ApiConfig.BASE_PACKAGE])

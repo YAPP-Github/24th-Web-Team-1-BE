@@ -1,21 +1,47 @@
 package com.few.api.domain.workbook.usecase
 
 import com.few.api.domain.workbook.service.WorkbookMemberService
+import com.few.api.domain.workbook.service.WorkbookSubscribeService
+import com.few.api.domain.workbook.service.dto.BrowseMemberSubscribeWorkbooksInDto
 import com.few.api.domain.workbook.service.dto.BrowseWorkbookWriterRecordsInDto
 import com.few.api.domain.workbook.usecase.dto.BrowseWorkBookDetail
 import com.few.api.domain.workbook.usecase.dto.BrowseWorkbooksUseCaseIn
 import com.few.api.domain.workbook.usecase.dto.BrowseWorkbooksUseCaseOut
 import com.few.api.domain.workbook.usecase.dto.WriterDetail
+import com.few.api.domain.workbook.usecase.model.BasicWorkbookOrderDelegator
+import com.few.api.domain.workbook.usecase.model.AuthMainViewWorkbookOrderDelegator
+import com.few.api.domain.workbook.usecase.service.WorkbookOrderDelegatorExecutor
 import com.few.api.repo.dao.workbook.WorkbookDao
 import com.few.api.repo.dao.workbook.query.BrowseWorkBookQueryWithSubscriptionCount
+import com.few.api.web.support.ViewCategory
 import com.few.data.common.code.CategoryType
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+
+enum class WorkBookOrderStrategy {
+    BASIC,
+
+    /**
+     * 로그인 상태에서 메인 화면에 보여질 워크북을 정렬합니다.
+     * - view의 값이 MAIN_CARD이다.
+     * - memberId가 null이 아니다.
+     * */
+    MAIN_VIEW_AUTH,
+
+    /**
+     * 비로그인 상태에서 메인 화면에 보여질 워크북을 정렬합니다.
+     * - view의 값이 MAIN_CARD이다.
+     * - memberId가 null이다.
+     */
+    MAIN_VIEW_UNAUTH,
+}
 
 @Component
 class BrowseWorkbooksUseCase(
     private val workbookDao: WorkbookDao,
     private val workbookMemberService: WorkbookMemberService,
+    private val workbookSubscribeService: WorkbookSubscribeService,
+    private val workbookOrderDelegatorExecutor: WorkbookOrderDelegatorExecutor,
 ) {
 
     @Transactional
@@ -48,8 +74,30 @@ class BrowseWorkbooksUseCase(
             )
         }
 
+        val orderStrategy = when {
+            useCaseIn.viewCategory == ViewCategory.MAIN_CARD && useCaseIn.memberId != null -> WorkBookOrderStrategy.MAIN_VIEW_AUTH
+            useCaseIn.viewCategory == ViewCategory.MAIN_CARD && useCaseIn.memberId == null -> WorkBookOrderStrategy.MAIN_VIEW_UNAUTH
+            else -> WorkBookOrderStrategy.BASIC
+        }
+
+        val orderedWorkbooks = when (orderStrategy) {
+            WorkBookOrderStrategy.MAIN_VIEW_AUTH -> {
+                BrowseMemberSubscribeWorkbooksInDto(useCaseIn.memberId!!).let { dto ->
+                    workbookSubscribeService.browseMemberSubscribeWorkbooks(dto)
+                }.let { memberSubscribeWorkbooks ->
+                    AuthMainViewWorkbookOrderDelegator(workbookDetails, memberSubscribeWorkbooks)
+                }
+            }
+            WorkBookOrderStrategy.MAIN_VIEW_UNAUTH -> {
+                BasicWorkbookOrderDelegator(workbookDetails)
+            }
+            else -> BasicWorkbookOrderDelegator(workbookDetails)
+        }.let { delegator ->
+            workbookOrderDelegatorExecutor.execute(delegator)
+        }
+
         return BrowseWorkbooksUseCaseOut(
-            workbooks = workbookDetails
+            workbooks = orderedWorkbooks
         )
     }
 }

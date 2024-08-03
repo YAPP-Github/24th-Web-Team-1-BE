@@ -88,3 +88,9 @@ security:
         exposed-headers: "Set-Cookie, Authorization, Content-Type, X-Requested-With, Accept, Origin, Access-Control-Request-Method, Access-Control-Request-Headers, Access-Control-Allow-Origin, Access-Control-Allow-Credentials"
         allow-credentials: true
         max-age: 1800
+    encryption:
+        algorithm: AES
+        secretKey: encryptionsecret
+        transformation: AES/CBC/PKCS5Padding
+        keySize: 128
+        iv: AAAAAAAAAAAAAAAA

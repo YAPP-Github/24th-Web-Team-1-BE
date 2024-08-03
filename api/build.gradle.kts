@@ -6,6 +6,7 @@ dependencies {
     /** module */
     implementation(project(":api-repo"))
     implementation(project(":batch"))
+    implementation(project(":email"))
     implementation(project(":storage"))
 
     /** spring starter */

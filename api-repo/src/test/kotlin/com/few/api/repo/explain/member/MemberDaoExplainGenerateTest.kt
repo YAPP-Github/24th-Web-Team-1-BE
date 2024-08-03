@@ -2,7 +2,8 @@ package com.few.api.repo.explain.member
 
 import com.few.api.repo.dao.member.MemberDao
 import com.few.api.repo.dao.member.command.InsertMemberCommand
-import com.few.api.repo.dao.member.query.BrowseWorkbookWritersQuery
+import com.few.api.repo.dao.member.command.UpdateDeletedMemberTypeCommand
+import com.few.api.repo.dao.member.command.UpdateMemberTypeCommand
 import com.few.api.repo.dao.member.query.SelectMemberByEmailQuery
 import com.few.api.repo.dao.member.query.SelectWriterQuery
 import com.few.api.repo.dao.member.support.WriterDescription
@@ -77,17 +78,6 @@ class MemberDaoExplainGenerateTest : JooqTestSpec() {
     }
 
     @Test
-    fun selectWritersQueryByWorkbookIds() {
-        val query = BrowseWorkbookWritersQuery(listOf(1L, 2L)).let {
-            memberDao.selectWritersQuery(it)
-        }
-
-        val explain = dslContext.explain(query).toString()
-
-        ResultGenerator.execute(query, explain, "selectWritersQueryByWorkbookIds")
-    }
-
-    @Test
     fun selectWritersQueryExplain() {
         val query = listOf(2L, 3L).let {
             memberDao.selectWritersQuery(it)
@@ -110,6 +100,17 @@ class MemberDaoExplainGenerateTest : JooqTestSpec() {
     }
 
     @Test
+    fun selectMemberByEmailNotConsiderDeletedAtQueryExplain() {
+        val query = SelectMemberByEmailQuery("test@gmail.com").let {
+            memberDao.selectMemberByEmailQuery(it)
+        }
+
+        val explain = dslContext.explain(query).toString()
+
+        ResultGenerator.execute(query, explain, "selectMemberByEmailNotConsiderDeletedAtQueryExplain")
+    }
+
+    @Test
     fun insertMemberCommandExplain() {
         val command = InsertMemberCommand(
             email = "test100@gmail.com",
@@ -121,5 +122,58 @@ class MemberDaoExplainGenerateTest : JooqTestSpec() {
         val explain = InsertUpdateExplainGenerator.execute(dslContext, command.sql, command.bindValues)
 
         ResultGenerator.execute(command, explain, "insertMemberCommandExplain")
+    }
+
+    @Test
+    fun selectMemberIdAndTypeQueryExplain() {
+        val query = 1L.let {
+            memberDao.selectMemberIdAndTypeQuery(it)
+        }
+
+        val explain = dslContext.explain(query).toString()
+
+        ResultGenerator.execute(query, explain, "selectMemberIdAndTypeQueryExplain")
+    }
+
+    @Test
+    fun updateMemberTypeCommandExplain() {
+        val command = UpdateMemberTypeCommand(
+            id = 1,
+            memberType = MemberType.WRITER
+        ).let {
+            memberDao.updateMemberTypeCommand(it)
+        }
+
+        val explain = InsertUpdateExplainGenerator.execute(dslContext, command.sql, command.bindValues)
+
+        ResultGenerator.execute(command, explain, "updateMemberTypeCommandExplain")
+    }
+
+    @Test
+    fun updateDeletedMemberTypeCommandExplain() {
+        val command = UpdateDeletedMemberTypeCommand(
+            id = 1,
+            memberType = MemberType.WRITER
+        ).let {
+            memberDao.updateMemberTypeCommand(it)
+        }
+
+        val explain = InsertUpdateExplainGenerator.execute(dslContext, command.sql, command.bindValues)
+
+        ResultGenerator.execute(command, explain, "updateDeletedMemberTypeCommandExplain")
+    }
+
+    @Test
+    fun deleteMemberCommandExplain() {
+        val command = UpdateDeletedMemberTypeCommand(
+            id = 1,
+            memberType = MemberType.WRITER
+        ).let {
+            memberDao.updateMemberTypeCommand(it)
+        }
+
+        val explain = InsertUpdateExplainGenerator.execute(dslContext, command.sql, command.bindValues)
+
+        ResultGenerator.execute(command, explain, "deleteMemberCommandExplain")
     }
 }

@@ -4,6 +4,9 @@ import com.few.api.domain.workbook.service.dto.BrowseMemberSubscribeWorkbooksOut
 import com.few.api.domain.workbook.usecase.dto.BrowseWorkBookDetail
 
 class AuthMainViewWorkbookOrderDelegator(
+    /**
+     * @see com.few.api.repo.dao.workbook.WorkbookDao.browseWorkBookWithSubscriptionCount
+     */
     private val workbooks: List<BrowseWorkBookDetail>,
     private val memberSubscribeWorkbooks: List<BrowseMemberSubscribeWorkbooksOutDto>,
 ) : WorkbookOrderDelegator {

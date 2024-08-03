@@ -23,6 +23,6 @@ data class WriterDetail(
 )
 
 data class WorkbookDetail(
-    val id: Long?,
-    val title: String?,
+    val id: Long,
+    val title: String,
 )

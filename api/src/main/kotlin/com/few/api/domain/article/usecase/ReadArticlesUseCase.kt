@@ -93,7 +93,7 @@ class ReadArticlesUseCase(
                 views = a.views,
                 workbooks = a.workbooks
                     .filter { it.id != null && it.title != null }
-                    .map { WorkbookDetail(it.id, it.title) }
+                    .map { WorkbookDetail(it.id!!, it.title!!) }
             )
         }.toList()
 

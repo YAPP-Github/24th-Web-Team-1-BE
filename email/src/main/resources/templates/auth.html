@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="KR">
+<head>
+    <meta charset="UTF-8" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"
+    />
+    <title>FEW</title>
+    <link
+        rel="stylesheet"
+        as="style"
+        crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
+    />
+    <style>
+        * {
+            font-family: 'Pretendard Variable', Pretendard, -apple-system,
+            BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI',
+            'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic',
+            'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+        }
+        .h2-bold {
+            font-family: 'Pretendard Variable';
+            font-size: 24px;
+            line-height: 33.6px;
+            font-weight: 700;
+            margin: 0;
+        }
+        .body2-regular {
+            font-family: 'Pretendard Variable';
+            font-size: 15px;
+            line-height: 24.75px;
+            font-weight: 400;
+            margin: 0;
+        }
+        .body2-medium {
+            font-family: 'Pretendard Variable';
+            font-size: 15px;
+            line-height: 24.75px;
+            font-weight: 500;
+            margin: 0;
+        }
+        .body3-medium {
+            font-family: 'Pretendard Variable';
+            font-size: 14px;
+            line-height: 21px;
+            font-weight: 500;
+            margin: 0;
+        }
+        .sub3-500 {
+            font-family: 'Pretendard Variable';
+            font-size: 12px;
+            line-height: 18px;
+            font-weight: 500;
+            margin: 0;
+        }
+        table {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            border-collapse: collapse;
+            height: 100%;
+            text-align: left;
+        }
+        td {
+            padding: 0 20px;
+            vertical-align: top;
+        }
+        .spacer {
+            height: 10px;
+        }
+        .logo-spacer {
+            height: 38px;
+        }
+        .email-spacer {
+            height: 24px;
+        }
+        .cta-spacer {
+            height: 45px;
+        }
+        .footer-spacer {
+            height: 58px;
+        }
+    </style>
+</head>
+<body>
+<table>
+    <tr>
+        <td style="text-align: center;">
+            <img
+                src="https://d3ex4vlh373syu.cloudfront.net/images/2024-07-04/Wuw9u45G0Ib9IhuI.svg"
+                alt="few_logo"
+                style="display: block; margin: 30px auto;"
+            />
+        </td>
+    </tr>
+    <tr class="logo-spacer"><td></td></tr>
+    <tr>
+        <td>
+            <header>
+                <h2 class="h2-bold" style="color: black; padding: 5px;">few에 가입해주셔서 감사합니다.</h2>
+            </header>
+        </td>
+    </tr>
+    <tr class="email-spacer"><td></td></tr>
+    <tr>
+        <td>
+            <article>
+                <span class="body2-regular" style="color: #484848">가입하신 이메일 주소를 확인해주세요.</span>
+                <br>
+                <span class="body2-medium" style="color: #0166B3" id="email" th:text="${email}"></span>
+            </article>
+        </td>
+    </tr>
+    <tr class="cta-spacer"><td></td></tr>
+    <tr>
+        <td>
+            <a
+                id="article-to-problem"
+                class="body3-medium"
+                style="
+              display: flex;
+              height: 20px;
+              text-decoration: none;
+              padding: 17px 0px 18px 0px;
+              justify-content: center;
+              align-items: center;
+              color: #ffffff;
+              background-color: #264932;
+            "
+                th:href="${confirmLink}"
+                target="_blank"
+            >
+                네, 이메일 주소가 맞습니다.
+            </a>
+        </td>
+    </tr>
+    <tr class="footer-spacer"><td></td></tr>
+    <tr>
+        <td>
+            <span class="sub3-500">*본 메일은 발신 전용 메일로 회신을 받을 수 없습니다.</span>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

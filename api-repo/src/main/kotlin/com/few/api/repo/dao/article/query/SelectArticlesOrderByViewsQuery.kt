@@ -4,5 +4,5 @@ import com.few.data.common.code.CategoryType
 
 data class SelectArticlesOrderByViewsQuery(
     val offset: Long,
-    val category: CategoryType?,
+    val category: CategoryType,
 )

@@ -8,8 +8,9 @@ import com.few.api.domain.workbook.usecase.dto.BrowseWorkBookDetail
 import com.few.api.domain.workbook.usecase.dto.BrowseWorkbooksUseCaseIn
 import com.few.api.domain.workbook.usecase.dto.BrowseWorkbooksUseCaseOut
 import com.few.api.domain.workbook.usecase.dto.WriterDetail
-import com.few.api.domain.workbook.usecase.model.AuthMainViewWorkbookOrderDelegator
 import com.few.api.domain.workbook.usecase.model.BasicWorkbookOrderDelegator
+import com.few.api.domain.workbook.usecase.model.AuthMainViewWorkbookOrderDelegator
+import com.few.api.domain.workbook.usecase.service.WorkbookOrderDelegatorExecutor
 import com.few.api.repo.dao.workbook.WorkbookDao
 import com.few.api.repo.dao.workbook.query.BrowseWorkBookQueryWithSubscriptionCount
 import com.few.api.web.support.ViewCategory
@@ -40,6 +41,7 @@ class BrowseWorkbooksUseCase(
     private val workbookDao: WorkbookDao,
     private val workbookMemberService: WorkbookMemberService,
     private val workbookSubscribeService: WorkbookSubscribeService,
+    private val workbookOrderDelegatorExecutor: WorkbookOrderDelegatorExecutor,
 ) {
 
     @Transactional
@@ -90,7 +92,9 @@ class BrowseWorkbooksUseCase(
                 BasicWorkbookOrderDelegator(workbookDetails)
             }
             else -> BasicWorkbookOrderDelegator(workbookDetails)
-        }.order()
+        }.let { delegator ->
+            workbookOrderDelegatorExecutor.execute(delegator)
+        }
 
         return BrowseWorkbooksUseCaseOut(
             workbooks = orderedWorkbooks

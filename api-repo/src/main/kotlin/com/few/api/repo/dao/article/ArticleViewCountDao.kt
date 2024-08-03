@@ -59,7 +59,9 @@ class ArticleViewCountDao(
                 rowNumber().over(
                     orderBy(ARTICLE_VIEW_COUNT.VIEW_COUNT.desc(), ARTICLE_VIEW_COUNT.ARTICLE_ID.desc())
                 ).`as`("offset")
-            ).from(ARTICLE_VIEW_COUNT).asTable("row_rank_tb")
+            ).from(ARTICLE_VIEW_COUNT)
+                .where(ARTICLE_VIEW_COUNT.DELETED_AT.isNull)
+                .asTable("row_rank_tb")
         )
         .where(field("row_rank_tb.${ARTICLE_VIEW_COUNT.ARTICLE_ID.name}")!!.eq(query.articleId))
         .query

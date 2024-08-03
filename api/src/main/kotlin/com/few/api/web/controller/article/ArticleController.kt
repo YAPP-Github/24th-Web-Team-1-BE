@@ -43,6 +43,7 @@ class ArticleController(
                 useCaseOut.writer.name,
                 useCaseOut.writer.url
             ),
+            mainImageUrl = useCaseOut.mainImageUrl,
             content = useCaseOut.content,
             problemIds = useCaseOut.problemIds,
             category = useCaseOut.category,
@@ -75,6 +76,7 @@ class ArticleController(
                     a.writer.name,
                     a.writer.url
                 ),
+                mainImageUrl = a.mainImageUrl,
                 content = a.content,
                 problemIds = a.problemIds,
                 category = a.category,

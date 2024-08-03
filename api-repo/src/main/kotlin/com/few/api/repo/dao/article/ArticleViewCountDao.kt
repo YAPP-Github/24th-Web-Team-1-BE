@@ -5,10 +5,9 @@ import com.few.api.repo.dao.article.query.ArticleViewCountQuery
 import com.few.api.repo.dao.article.query.SelectArticlesOrderByViewsQuery
 import com.few.api.repo.dao.article.query.SelectRankByViewsQuery
 import com.few.api.repo.dao.article.record.SelectArticleViewsRecord
+import com.few.data.common.code.CategoryType
 import jooq.jooq_dsl.tables.ArticleViewCount.ARTICLE_VIEW_COUNT
 import org.jooq.DSLContext
-import org.jooq.Record2
-import org.jooq.SelectLimitPercentStep
 import org.jooq.impl.DSL.*
 import org.springframework.stereotype.Repository
 
@@ -56,43 +55,39 @@ class ArticleViewCountDao(
     fun selectRankByViewsQuery(query: SelectRankByViewsQuery) = dslContext
         .select(field("row_rank_tb.offset", Long::class.java))
         .from(
-            dslContext
-                .select(
-                    ARTICLE_VIEW_COUNT.ARTICLE_ID,
-                    rowNumber().over(orderBy(ARTICLE_VIEW_COUNT.VIEW_COUNT.desc())).`as`("offset")
-                )
-                .from(ARTICLE_VIEW_COUNT)
+            dslContext.select(
+                ARTICLE_VIEW_COUNT.ARTICLE_ID,
+                rowNumber().over(
+                    orderBy(ARTICLE_VIEW_COUNT.VIEW_COUNT.desc(), ARTICLE_VIEW_COUNT.ARTICLE_ID.desc())
+                ).`as`("offset")
+            ).from(ARTICLE_VIEW_COUNT)
+                .where(ARTICLE_VIEW_COUNT.DELETED_AT.isNull)
                 .asTable("row_rank_tb")
         )
         .where(field("row_rank_tb.${ARTICLE_VIEW_COUNT.ARTICLE_ID.name}")!!.eq(query.articleId))
         .query
 
-    fun selectArticlesOrderByViews(query: SelectArticlesOrderByViewsQuery): Set<SelectArticleViewsRecord> {
+    fun selectArticlesOrderByViews(query: SelectArticlesOrderByViewsQuery): List<SelectArticleViewsRecord> {
         return selectArticlesOrderByViewsQuery(query)
             .fetchInto(SelectArticleViewsRecord::class.java)
-            .toSet()
     }
 
-    fun selectArticlesOrderByViewsQuery(query: SelectArticlesOrderByViewsQuery): SelectLimitPercentStep<Record2<Any, Any>> {
-        val articleViewCountOffsetTb = select()
-            .from(ARTICLE_VIEW_COUNT)
-            .where(ARTICLE_VIEW_COUNT.DELETED_AT.isNull)
-            .orderBy(ARTICLE_VIEW_COUNT.VIEW_COUNT.desc())
-            .limit(query.offset, Long.MAX_VALUE)
-            .asTable("article_view_count_offset_tb")
-
-        val baseQuery = dslContext.select(
+    fun selectArticlesOrderByViewsQuery(query: SelectArticlesOrderByViewsQuery) = dslContext
+        .select(
             field("article_view_count_offset_tb.article_id").`as`(SelectArticleViewsRecord::articleId.name),
             field("article_view_count_offset_tb.view_count").`as`(SelectArticleViewsRecord::views.name)
-        )
-            .from(articleViewCountOffsetTb)
-
-        return if (query.category != null) {
-            baseQuery.where(field("article_view_count_offset_tb.category_cd").eq(query.category.code))
-                .limit(10)
-        } else {
-            baseQuery
-                .limit(10)
-        } // TODO: .query로 리턴하면 리턴 타입이 달라져 못받는 문제
-    }
+        ).from(
+            dslContext.select()
+                .from(ARTICLE_VIEW_COUNT)
+                .where(ARTICLE_VIEW_COUNT.DELETED_AT.isNull)
+                .orderBy(ARTICLE_VIEW_COUNT.VIEW_COUNT.desc(), ARTICLE_VIEW_COUNT.ARTICLE_ID.desc())
+                .limit(query.offset, Long.MAX_VALUE)
+                .asTable("article_view_count_offset_tb")
+        ).where(
+            when {
+                (query.category == CategoryType.All) -> noCondition()
+                else -> field("article_view_count_offset_tb.category_cd").eq(query.category.code)
+            }
+        ).limit(11)
+        .query
 }

@@ -7,6 +7,7 @@ import java.time.LocalDateTime
 data class ReadArticleResponse(
     val id: Long,
     val writer: WriterInfo,
+    val mainImageUrl: URL,
     val title: String,
     val content: String,
     val problemIds: List<Long>,

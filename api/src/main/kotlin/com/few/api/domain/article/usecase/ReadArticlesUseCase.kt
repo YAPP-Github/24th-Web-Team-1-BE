@@ -35,12 +35,19 @@ class ReadArticlesUseCase(
         }
 
         // 이번 스크롤에서 보여줄 아티클 ID에 대한 기준 (Criterion)
-        val articleViewsRecords: Set<SelectArticleViewsRecord> = articleViewCountDao.selectArticlesOrderByViews(
+        val articleViewsRecords: MutableList<SelectArticleViewsRecord> = articleViewCountDao.selectArticlesOrderByViews(
             SelectArticlesOrderByViewsQuery(
                 offset,
-                CategoryType.fromCode(useCaseIn.categoryCd)
+                CategoryType.fromCode(useCaseIn.categoryCd) ?: CategoryType.All
             )
-        )
+        ).toMutableList()
+
+        val isLast = if (articleViewsRecords.size == 11) {
+            articleViewsRecords.removeAt(10)
+            false
+        } else {
+            true
+        }
 
         // 2. TODO: 조회한 10개의 아티클 아이디를 기반으로 로컬 캐시에 있는지 조회(아티클 단건조회 캐시 사용)
         // 3. TODO: 로컬캐시에 없으면 ARTICLE_MAIN_CARD 테이블에서 데이터가 있는지 조회 (컨텐츠는 article_ifo에서)
@@ -83,6 +90,7 @@ class ReadArticlesUseCase(
                     name = a.writerName,
                     url = a.writerImgUrl
                 ),
+                mainImageUrl = a.mainImageUrl,
                 title = a.articleTitle,
                 content = a.content,
                 problemIds = emptyList(),
@@ -96,12 +104,12 @@ class ReadArticlesUseCase(
             )
         }.toList()
 
-        return ReadArticlesUseCaseOut(articleUseCaseOuts, sortedArticles.size != 10)
+        return ReadArticlesUseCaseOut(articleUseCaseOuts, isLast)
     }
 
     private fun updateAndSortArticleViews(
         articleRecords: Set<ArticleMainCardRecord>,
-        articleViewsRecords: Set<SelectArticleViewsRecord>,
+        articleViewsRecords: List<SelectArticleViewsRecord>,
     ): Set<ArticleMainCardRecord> {
         val sortedSet = TreeSet(
             Comparator<ArticleMainCardRecord> { a1, a2 ->

@@ -3,7 +3,7 @@ package com.few.api.domain.workbook.usecase.model
 import com.few.api.domain.workbook.service.dto.BrowseMemberSubscribeWorkbooksOutDto
 import com.few.api.domain.workbook.usecase.dto.BrowseWorkBookDetail
 
-class MainViewWorkbookOrderDelegator(
+class AuthMainViewWorkbookOrderDelegator(
     private val workbooks: List<BrowseWorkBookDetail>,
     private val memberSubscribeWorkbooks: List<BrowseMemberSubscribeWorkbooksOutDto>,
 ) : WorkbookOrderDelegator {

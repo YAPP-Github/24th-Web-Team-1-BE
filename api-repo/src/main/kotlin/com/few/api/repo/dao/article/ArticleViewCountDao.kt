@@ -66,10 +66,9 @@ class ArticleViewCountDao(
         .where(field("row_rank_tb.${ARTICLE_VIEW_COUNT.ARTICLE_ID.name}")!!.eq(query.articleId))
         .query
 
-    fun selectArticlesOrderByViews(query: SelectArticlesOrderByViewsQuery): Set<SelectArticleViewsRecord> {
+    fun selectArticlesOrderByViews(query: SelectArticlesOrderByViewsQuery): List<SelectArticleViewsRecord> {
         return selectArticlesOrderByViewsQuery(query)
             .fetchInto(SelectArticleViewsRecord::class.java)
-            .toSet()
     }
 
     fun selectArticlesOrderByViewsQuery(query: SelectArticlesOrderByViewsQuery) = dslContext
@@ -88,6 +87,6 @@ class ArticleViewCountDao(
                 (null) -> noCondition()
                 else -> field("article_view_count_offset_tb.category_cd").eq(query.category.code)
             }
-        ).limit(10)
+        ).limit(11)
         .query
 }

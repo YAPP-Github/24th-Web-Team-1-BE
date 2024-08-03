@@ -38,7 +38,7 @@ class ReadArticlesUseCase(
         val articleViewsRecords: MutableList<SelectArticleViewsRecord> = articleViewCountDao.selectArticlesOrderByViews(
             SelectArticlesOrderByViewsQuery(
                 offset,
-                CategoryType.fromCode(useCaseIn.categoryCd)
+                CategoryType.fromCode(useCaseIn.categoryCd) ?: CategoryType.All
             )
         ).toMutableList()
 

@@ -12,6 +12,7 @@ import com.few.api.domain.workbook.usecase.dto.*
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
+import com.few.api.web.support.ViewCategory
 import com.few.api.web.support.WorkBookCategory
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
 import com.few.data.common.code.CategoryType
@@ -121,14 +122,17 @@ class WorkBookControllerTest : ControllerTestSpec() {
     fun browseWorkBooks() {
         // given
         val api = "BrowseWorkBooks"
+        val viewCategory = ViewCategory.MAIN_CARD
+        val memberId = 1L
         val uri = UriComponentsBuilder.newInstance()
             .path(BASE_URL)
             .queryParam("category", WorkBookCategory.ECONOMY.code)
+            .queryParam("view", viewCategory.viewName)
             .build()
             .toUriString()
 
         // set usecase mock
-        `when`(browseWorkBooksUseCase.execute(BrowseWorkbooksUseCaseIn(WorkBookCategory.ECONOMY))).thenReturn(
+        `when`(browseWorkBooksUseCase.execute(BrowseWorkbooksUseCaseIn(WorkBookCategory.ECONOMY, viewCategory, memberId))).thenReturn(
             BrowseWorkbooksUseCaseOut(
                 workbooks = listOf(
                     BrowseWorkBookDetail(
@@ -165,7 +169,8 @@ class WorkBookControllerTest : ControllerTestSpec() {
                         .tag(TAG)
                         .requestSchema(Schema.schema(api.toRequestSchema()))
                         .queryParameters(
-                            parameterWithName("category").description("학습지 카테고리").optional()
+                            parameterWithName("category").description("학습지 카테고리").optional(),
+                            parameterWithName("view").description("뷰 카테고리").optional()
                         )
                         .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
                             *Description.describe(

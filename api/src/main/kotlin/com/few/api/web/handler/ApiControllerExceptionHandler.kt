@@ -3,6 +3,7 @@ package com.few.api.web.handler
 import com.few.api.exception.common.ExternalIntegrationException
 import com.few.api.exception.common.InsertException
 import com.few.api.exception.common.NotFoundException
+import com.few.api.exception.member.NotValidTokenException
 import com.few.api.exception.subscribe.SubscribeIllegalArgumentException
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
@@ -38,6 +39,15 @@ class ApiControllerExceptionHandler(
 
     @ExceptionHandler(SubscribeIllegalArgumentException::class)
     fun handleSubscribeException(
+        ex: Exception,
+        request: HttpServletRequest,
+    ): ApiResponse<ApiResponse.FailureBody> {
+        loggingHandler.writeLog(ex, request)
+        return ApiResponseGenerator.fail(ex.message!!, HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(NotValidTokenException::class)
+    fun handleTokenException(
         ex: Exception,
         request: HttpServletRequest,
     ): ApiResponse<ApiResponse.FailureBody> {

@@ -3,6 +3,7 @@ package com.few.api.domain.member.usecase
 import com.few.api.config.crypto.IdEncryption
 import com.few.api.domain.member.usecase.dto.TokenUseCaseIn
 import com.few.api.domain.member.usecase.dto.TokenUseCaseOut
+import com.few.api.exception.member.NotValidTokenException
 import com.few.api.repo.dao.member.MemberDao
 import com.few.api.repo.dao.member.command.UpdateMemberTypeCommand
 import com.few.api.security.authentication.authority.Roles
@@ -11,6 +12,7 @@ import com.few.api.security.token.TokenResolver
 import com.few.data.common.code.MemberType
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import org.webjars.NotFoundException
 
 @Component
 class TokenUseCase(
@@ -43,8 +45,7 @@ class TokenUseCase(
                     )
                 }
             }.onFailure {
-                // todo 별도 에러 구현 & 메시지 논의
-                throw IllegalStateException("Token Resolve Error")
+                throw NotValidTokenException("member.notvalid.token")
             }
         }
 
@@ -52,10 +53,10 @@ class TokenUseCase(
         val refreshTokenValidTime: Long? = useCaseIn.rt
         val memberId = useCaseIn.token?.let {
             idEncryption.decrypt(it).toLong()
-        } ?: throw IllegalStateException("Cannot Decrypt Id")
+        } ?: throw IllegalStateException("member.notvalid.fromEmailId")
 
         val memberEmailAndTypeRecord = memberDao.selectMemberEmailAndType(memberId)
-            ?: throw IllegalStateException("Member Not Found")
+            ?: throw NotFoundException("member.notfound.id")
 
         if (memberEmailAndTypeRecord.memberType == MemberType.PREAUTH) {
             UpdateMemberTypeCommand(

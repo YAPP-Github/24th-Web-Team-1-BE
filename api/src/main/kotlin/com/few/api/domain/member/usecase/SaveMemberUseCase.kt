@@ -3,6 +3,7 @@ package com.few.api.domain.member.usecase
 import com.few.api.config.crypto.IdEncryption
 import com.few.api.domain.member.usecase.dto.SaveMemberUseCaseIn
 import com.few.api.domain.member.usecase.dto.SaveMemberUseCaseOut
+import com.few.api.exception.common.InsertException
 import com.few.api.repo.dao.member.MemberDao
 import com.few.api.repo.dao.member.command.InsertMemberCommand
 import com.few.api.repo.dao.member.command.UpdateDeletedMemberTypeCommand
@@ -37,7 +38,7 @@ class SaveMemberUseCase(
                 email = useCaseIn.email,
                 memberType = MemberType.PREAUTH
             ).let {
-                memberDao.insertMember(it) ?: throw IllegalStateException("Insert Member Error")
+                memberDao.insertMember(it) ?: throw InsertException("member.insertfail.record")
             }
         } else {
             /** 삭제한 회원이라면 회원 타입을 PREAUTH로 변경 */
@@ -46,7 +47,7 @@ class SaveMemberUseCase(
                     id = isSignUpBeforeMember.memberId,
                     memberType = MemberType.PREAUTH
                 ).let {
-                    memberDao.updateMemberType(it) ?: throw IllegalStateException("Update Member Type Error")
+                    memberDao.updateMemberType(it) ?: throw IllegalStateException("member.upddatefail.record")
                 }
             } else {
                 /** 이미 가입한 회원이라면 회원 ID를 반환 */

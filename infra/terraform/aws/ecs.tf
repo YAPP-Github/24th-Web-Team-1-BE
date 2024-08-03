@@ -166,6 +166,26 @@ resource "aws_ecs_task_definition" "ecs_task" {
           {
             "name": "CDN_URL",
             "valueFrom": "${aws_ssm_parameter.cdn_url.name}"
+          },
+          {
+            "name": "ENCRYPTION_ALGORITHM",
+            "valueFrom": "${aws_ssm_parameter.encryption_algorithm}"
+          },
+          {
+            "name": "ENCRYPTION_SECRETKEY",
+            "valueFrom": "${aws_ssm_parameter.encryption_secretkey}"
+          },
+          {
+            "name": "ENCRYPTION_TRANSFORMATION",
+            "valueFrom": "${aws_ssm_parameter.encryption_transformation}"
+          },
+          {
+            "name": "ENCRYPTION_KEY_SIZE",
+            "valueFrom": "${aws_ssm_parameter.encryption_keysize}"
+          },
+          {
+            "name": "ENCRYPTION_IV",
+            "valueFrom": "${aws_ssm_parameter.encryption_iv}"
           }
         ],
         "logConfiguration" : {

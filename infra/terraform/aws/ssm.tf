@@ -238,3 +238,44 @@ resource "aws_ssm_parameter" "cdn_url" {
   type        = "SecureString"
   value       = "https://${aws_cloudfront_distribution.s3_distribution.domain_name}"
 }
+
+## ENCRYPTION_ALGORITHM
+resource "aws_ssm_parameter" "encryption_algorithm" {
+  name        = "/encryption/algorithm"
+  description = "Encryption algorithm"
+  type        = "SecureString"
+  value       = var.encryption_algorithm
+}
+
+## ENCRYPTION_SECRETKEY
+resource "aws_ssm_parameter" "encryption_secretkey" {
+  name        = "/encryption/secretkey"
+  description = "Encryption secret key"
+  type        = "SecureString"
+  value       = var.encryption_secretkey
+}
+
+## ENCRYPTION_TRANSFORMATION
+resource "aws_ssm_parameter" "encryption_transformation" {
+  name        = "/encryption/transformation"
+  description = "Encryption transformation"
+  type        = "SecureString"
+  value       = var.encryption_transformation
+}
+
+## ENCRYPTION_KEYSIZE
+resource "aws_ssm_parameter" "encryption_keysize" {
+  name        = "/encryption/keysize"
+  description = "Encryption keysize"
+  type        = "SecureString"
+  value       = var.encryption_key_size
+}
+
+
+## ENCRYPTION_IV
+resource "aws_ssm_parameter" "encryption_iv" {
+  name        = "/encryption/iv"
+  description = "Encryption IV"
+  type        = "SecureString"
+  value       = var.encryption_iv
+}

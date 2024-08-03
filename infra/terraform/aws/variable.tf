@@ -119,3 +119,30 @@ variable "email_password" {
     type        = string
     description = "The password for the email service"
 }
+
+variable "encryption_secretkey" {
+  type        = string
+  description = "The encryption secret key"
+}
+
+variable "encryption_iv" {
+  type        = string
+  description = "The encryption IV"
+}
+
+variable "encryption_key_size" {
+  type        = number
+  description = "The encryption key size"
+}
+
+variable "encryption_algorithm" {
+  type        = string
+  description = "The encryption algorithm"
+  default = "AES"
+}
+
+variable "encryption_transformation" {
+  type        = string
+  description = "The encryption transformation to use for the S3 bucket"
+  default = "AES/CBC/PKCS5Padding"
+}

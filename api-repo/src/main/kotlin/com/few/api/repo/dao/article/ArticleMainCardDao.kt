@@ -71,7 +71,8 @@ class ArticleMainCardDao(
                 commonJsonMapper.toJsonStr(
                     mapOf(
                         "name" to command.writerName,
-                        "url" to command.writerImgUrl
+                        "url" to command.writerUrl,
+                        "imageUrl" to command.writerImgUrl
                     )
                 )
             )

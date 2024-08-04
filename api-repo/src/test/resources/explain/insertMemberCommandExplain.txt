@@ -1,0 +1,14 @@
+insert into `MEMBER` (`EMAIL`, `TYPE_CD`, `IMG_URL`)
+values (
+  'test100@gmail.com', 
+  60, 
+  'https://github.com/user-attachments/assets/28df9078-488c-49d6-9375-54ce5a250742'
+)
+
+Explain [cost=NaN, rows=0.00]
+
++----+-----------+------+----------+----+-------------+------+-------+------+------+--------+------+
+|  id|select_type|table |partitions|type|possible_keys|key   |key_len|ref   |  rows|filtered|Extra |
++----+-----------+------+----------+----+-------------+------+-------+------+------+--------+------+
+|   1|INSERT     |MEMBER|{null}    |ALL |{null}       |{null}|{null} |{null}|{null}|  {null}|{null}|
++----+-----------+------+----------+----+-------------+------+-------+------+------+--------+------+

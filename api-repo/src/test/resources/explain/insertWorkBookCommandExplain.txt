@@ -1,0 +1,15 @@
+insert into `WORKBOOK` (`TITLE`, `MAIN_IMAGE_URL`, `CATEGORY_CD`, `DESCRIPTION`)
+values (
+  'title2', 
+  'http://localhost:8080/image2.jpg', 
+  0, 
+  'description2'
+)
+
+Explain [cost=NaN, rows=0.00]
+
++----+-----------+--------+----------+----+-------------+------+-------+------+------+--------+------+
+|  id|select_type|table   |partitions|type|possible_keys|key   |key_len|ref   |  rows|filtered|Extra |
++----+-----------+--------+----------+----+-------------+------+-------+------+------+--------+------+
+|   1|INSERT     |WORKBOOK|{null}    |ALL |{null}       |{null}|{null} |{null}|{null}|  {null}|{null}|
++----+-----------+--------+----------+----+-------------+------+-------+------+------+--------+------+

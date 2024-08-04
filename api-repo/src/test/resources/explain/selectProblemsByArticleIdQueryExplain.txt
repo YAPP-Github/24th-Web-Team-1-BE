@@ -1,0 +1,23 @@
+select
+  `PROBLEM`.`ID`,
+  `PROBLEM`.`ARTICLE_ID`,
+  `PROBLEM`.`TITLE`,
+  `PROBLEM`.`CONTENTS`,
+  `PROBLEM`.`ANSWER`,
+  `PROBLEM`.`EXPLANATION`,
+  `PROBLEM`.`CREATOR_ID`,
+  `PROBLEM`.`CREATED_AT`,
+  `PROBLEM`.`DELETED_AT`
+from `PROBLEM`
+where (
+  `PROBLEM`.`ARTICLE_ID` = 1
+  and `PROBLEM`.`DELETED_AT` is null
+)
+
+Explain [cost=NaN, rows=1.00]
+
++----+-----------+-------+----------+----+-------------+------------+-------+-----+----+--------+-----------+
+|  id|select_type|table  |partitions|type|possible_keys|key         |key_len|ref  |rows|filtered|Extra      |
++----+-----------+-------+----------+----+-------------+------------+-------+-----+----+--------+-----------+
+|   1|SIMPLE     |PROBLEM|{null}    |ref |problem_idx1 |problem_idx1|8      |const|   1|   100.0|Using where|
++----+-----------+-------+----------+----+-------------+------------+-------+-----+----+--------+-----------+

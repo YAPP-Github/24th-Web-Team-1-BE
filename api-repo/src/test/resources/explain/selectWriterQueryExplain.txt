@@ -1,0 +1,28 @@
+select
+  `MEMBER`.`ID` as `writerId`,
+  json_unquote(nullif(
+    json_extract(
+      `MEMBER`.`DESCRIPTION`,
+      concat('$.', 'name')
+    ),
+    cast('null' as json)
+  )) as `name`,
+  json_extract(
+    `MEMBER`.`DESCRIPTION`,
+    concat('$.', 'url')
+  ) as `url`,
+  `MEMBER`.`IMG_URL` as `imgUrl`
+from `MEMBER`
+where (
+  `MEMBER`.`ID` = 1
+  and `MEMBER`.`TYPE_CD` = 120
+  and `MEMBER`.`DELETED_AT` is null
+)
+
+Explain [cost=NaN, rows=0.00]
+
++----+-----------+------+----------+------+-------------+------+-------+------+------+--------+---------------------------------------------------+
+|  id|select_type|table |partitions|type  |possible_keys|key   |key_len|ref   |  rows|filtered|Extra                                              |
++----+-----------+------+----------+------+-------------+------+-------+------+------+--------+---------------------------------------------------+
+|   1|SIMPLE     |{null}|{null}    |{null}|{null}       |{null}|{null} |{null}|{null}|  {null}|Impossible WHERE noticed after reading const tables|
++----+-----------+------+----------+------+-------------+------+-------+------+------+--------+---------------------------------------------------+

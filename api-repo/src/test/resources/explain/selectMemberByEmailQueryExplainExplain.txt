@@ -1,0 +1,27 @@
+select
+  `MEMBER`.`ID` as `memberId`,
+  `MEMBER`.`IMG_URL` as `imageUrl`,
+  json_unquote(nullif(
+    json_extract(
+      `MEMBER`.`DESCRIPTION`,
+      concat('$.', 'name')
+    ),
+    cast('null' as json)
+  )) as `writerName`,
+  json_extract(
+    `MEMBER`.`DESCRIPTION`,
+    concat('$.', 'url')
+  ) as `writerUrl`
+from `MEMBER`
+where (
+  `MEMBER`.`EMAIL` = 'member@gmail.com'
+  and `MEMBER`.`DELETED_AT` is null
+)
+
+Explain [cost=NaN, rows=1.00]
+
++----+-----------+------+----------+-----+-------------+-----+-------+-----+----+--------+------+
+|  id|select_type|table |partitions|type |possible_keys|key  |key_len|ref  |rows|filtered|Extra |
++----+-----------+------+----------+-----+-------------+-----+-------+-----+----+--------+------+
+|   1|SIMPLE     |MEMBER|{null}    |const|email        |email|1022   |const|   1|   100.0|{null}|
++----+-----------+------+----------+-----+-------------+-----+-------+-----+----+--------+------+

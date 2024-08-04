@@ -9,6 +9,7 @@ import com.few.api.domain.article.service.dto.ReadWriterOutDto
 import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseIn
 import com.few.api.repo.dao.article.ArticleDao
 import com.few.api.repo.dao.article.record.SelectArticleRecord
+import com.few.data.common.code.MemberDefaultImage
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
@@ -57,7 +58,8 @@ class ReadArticleUseCaseTest : BehaviorSpec({
             val writerSvcOutDto = ReadWriterOutDto(
                 writerId = 1L,
                 name = "hunca",
-                url = URL("https://jh-labs.tistory.com/")
+                url = URL("https://jh-labs.tistory.com/"),
+                imgUrl = URL(MemberDefaultImage.getRandom().url)
             )
             val probSvcOutDto = BrowseArticleProblemsOutDto(problemIds = listOf(1, 2, 3))
 

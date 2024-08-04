@@ -1,0 +1,20 @@
+select
+  `WORKBOOK`.`ID` as `id`,
+  `WORKBOOK`.`TITLE` as `title`,
+  `WORKBOOK`.`MAIN_IMAGE_URL` as `mainImageUrl`,
+  `WORKBOOK`.`CATEGORY_CD` as `category`,
+  `WORKBOOK`.`DESCRIPTION` as `description`,
+  `WORKBOOK`.`CREATED_AT` as `createdAt`
+from `WORKBOOK`
+where (
+  `WORKBOOK`.`ID` = 1
+  and `WORKBOOK`.`DELETED_AT` is null
+)
+
+Explain [cost=NaN, rows=1.00]
+
++----+-----------+--------+----------+-----+-------------+-------+-------+-----+----+--------+------+
+|  id|select_type|table   |partitions|type |possible_keys|key    |key_len|ref  |rows|filtered|Extra |
++----+-----------+--------+----------+-----+-------------+-------+-------+-----+----+--------+------+
+|   1|SIMPLE     |WORKBOOK|{null}    |const|PRIMARY      |PRIMARY|8      |const|   1|   100.0|{null}|
++----+-----------+--------+----------+-----+-------------+-------+-------+-----+----+--------+------+

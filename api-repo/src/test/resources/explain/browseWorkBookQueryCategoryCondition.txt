@@ -1,0 +1,38 @@
+select
+  `WORKBOOK`.`ID` as `id`,
+  `WORKBOOK`.`TITLE` as `title`,
+  `WORKBOOK`.`MAIN_IMAGE_URL` as `mainImageUrl`,
+  `WORKBOOK`.`CATEGORY_CD` as `category`,
+  `WORKBOOK`.`DESCRIPTION` as `description`,
+  `WORKBOOK`.`CREATED_AT` as `createdAt`,
+  coalesce(
+    subscription_count_table.subscription_count,
+    0
+  ) as `subscriptionCount`
+from `WORKBOOK`
+  left outer join (
+    select
+      `SUBSCRIPTION`.`TARGET_WORKBOOK_ID` as `TARGET_WORKBOOK_ID`,
+      count(`SUBSCRIPTION`.`TARGET_WORKBOOK_ID`) as `subscription_count`
+    from `SUBSCRIPTION`
+    where `SUBSCRIPTION`.`DELETED_AT` is null
+    group by `SUBSCRIPTION`.`TARGET_WORKBOOK_ID`
+  ) as `subscription_count_table`
+    on `WORKBOOK`.`ID` = subscription_count_table.TARGET_WORKBOOK_ID
+where (
+  `WORKBOOK`.`CATEGORY_CD` = 0
+  and `WORKBOOK`.`DELETED_AT` is null
+)
+order by
+  subscription_count_table.subscription_count desc,
+  `WORKBOOK`.`CREATED_AT` desc
+
+Explain [cost=NaN, rows=1.00]
+
++----+-----------+------------+----------+-----+-------------------------------------------------------------------+------------------+-------+---------------+----+--------+--------------------------------------------+
+|  id|select_type|table       |partitions|type |possible_keys                                                      |key               |key_len|ref            |rows|filtered|Extra                                       |
++----+-----------+------------+----------+-----+-------------------------------------------------------------------+------------------+-------+---------------+----+--------+--------------------------------------------+
+|   1|PRIMARY    |WORKBOOK    |{null}    |ALL  |{null}                                                             |{null}            |{null} |{null}         |   1|   100.0|Using where; Using temporary; Using filesort|
+|   1|PRIMARY    |<derived2>  |{null}    |ref  |<auto_key0>                                                        |<auto_key0>       |9      |api.WORKBOOK.id|   2|   100.0|{null}                                      |
+|   2|DERIVED    |SUBSCRIPTION|{null}    |index|target_workbook_id,subscription_unique_member_id_target_workbook_id|target_workbook_id|17     |{null}         |   1|   100.0|Using where                                 |
++----+-----------+------------+----------+-----+-------------------------------------------------------------------+------------------+-------+---------------+----+--------+--------------------------------------------+

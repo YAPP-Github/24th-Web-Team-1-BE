@@ -1,0 +1,17 @@
+select
+  `PROBLEM`.`ID` as `id`,
+  `PROBLEM`.`ANSWER` as `answer`,
+  `PROBLEM`.`EXPLANATION` as `explanation`
+from `PROBLEM`
+where (
+  `PROBLEM`.`ID` = 1
+  and `PROBLEM`.`DELETED_AT` is null
+)
+
+Explain [cost=NaN, rows=1.00]
+
++----+-----------+-------+----------+-----+-------------+-------+-------+-----+----+--------+------+
+|  id|select_type|table  |partitions|type |possible_keys|key    |key_len|ref  |rows|filtered|Extra |
++----+-----------+-------+----------+-----+-------------+-------+-------+-----+----+--------+------+
+|   1|SIMPLE     |PROBLEM|{null}    |const|PRIMARY      |PRIMARY|8      |const|   1|   100.0|{null}|
++----+-----------+-------+----------+-----+-------------+-------+-------+-----+----+--------+------+

@@ -1,0 +1,15 @@
+insert into `SUBMIT_HISTORY` (`PROBLEM_ID`, `MEMBER_ID`, `SUBMIT_ANS`, `IS_SOLVED`)
+values (
+  1, 
+  1, 
+  '1', 
+  true
+)
+
+Explain [cost=NaN, rows=0.00]
+
++----+-----------+--------------+----------+----+-------------+------+-------+------+------+--------+------+
+|  id|select_type|table         |partitions|type|possible_keys|key   |key_len|ref   |  rows|filtered|Extra |
++----+-----------+--------------+----------+----+-------------+------+-------+------+------+--------+------+
+|   1|INSERT     |SUBMIT_HISTORY|{null}    |ALL |{null}       |{null}|{null} |{null}|{null}|  {null}|{null}|
++----+-----------+--------------+----------+----+-------------+------+-------+------+------+--------+------+

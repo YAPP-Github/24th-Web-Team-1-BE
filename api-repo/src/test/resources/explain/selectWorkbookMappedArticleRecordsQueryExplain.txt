@@ -1,0 +1,28 @@
+select
+  `ARTICLE_MST`.`ID` as `articleId`,
+  `ARTICLE_MST`.`MEMBER_ID` as `writerId`,
+  `ARTICLE_MST`.`MAIN_IMAGE_URL` as `mainImageURL`,
+  `ARTICLE_MST`.`TITLE` as `title`,
+  `ARTICLE_MST`.`CATEGORY_CD` as `category`,
+  `ARTICLE_IFO`.`CONTENT` as `content`,
+  `ARTICLE_MST`.`CREATED_AT` as `createdAt`,
+  `MAPPING_WORKBOOK_ARTICLE`.`DAY_COL` as `day`
+from `MAPPING_WORKBOOK_ARTICLE`
+  left outer join `ARTICLE_MST`
+    on `MAPPING_WORKBOOK_ARTICLE`.`ARTICLE_ID` = `ARTICLE_MST`.`ID`
+  join `ARTICLE_IFO`
+    on `ARTICLE_MST`.`ID` = `ARTICLE_IFO`.`ARTICLE_MST_ID`
+where (
+  `MAPPING_WORKBOOK_ARTICLE`.`WORKBOOK_ID` = 1
+  and `ARTICLE_MST`.`DELETED_AT` is null
+)
+
+Explain [cost=NaN, rows=1.00]
+
++----+-----------+------------------------+----------+------+-------------+-------+-------+---------------------------------------+----+--------+-----------+
+|  id|select_type|table                   |partitions|type  |possible_keys|key    |key_len|ref                                    |rows|filtered|Extra      |
++----+-----------+------------------------+----------+------+-------------+-------+-------+---------------------------------------+----+--------+-----------+
+|   1|SIMPLE     |MAPPING_WORKBOOK_ARTICLE|{null}    |ALL   |PRIMARY      |{null} |{null} |{null}                                 |   1|   100.0|Using where|
+|   1|SIMPLE     |ARTICLE_MST             |{null}    |eq_ref|PRIMARY      |PRIMARY|8      |api.MAPPING_WORKBOOK_ARTICLE.article_id|   1|   100.0|Using where|
+|   1|SIMPLE     |ARTICLE_IFO             |{null}    |eq_ref|PRIMARY      |PRIMARY|8      |api.MAPPING_WORKBOOK_ARTICLE.article_id|   1|   100.0|{null}     |
++----+-----------+------------------------+----------+------+-------------+-------+-------+---------------------------------------+----+--------+-----------+

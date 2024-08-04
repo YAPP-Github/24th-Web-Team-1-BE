@@ -1,0 +1,15 @@
+insert into `ARTICLE_MST` (`MEMBER_ID`, `MAIN_IMAGE_URL`, `TITLE`, `CATEGORY_CD`)
+values (
+  100, 
+  'http://localhost:8080/image1.jpg', 
+  'this is title1', 
+  0
+)
+
+Explain [cost=NaN, rows=0.00]
+
++----+-----------+-----------+----------+----+-------------+------+-------+------+------+--------+------+
+|  id|select_type|table      |partitions|type|possible_keys|key   |key_len|ref   |  rows|filtered|Extra |
++----+-----------+-----------+----------+----+-------------+------+-------+------+------+--------+------+
+|   1|INSERT     |ARTICLE_MST|{null}    |ALL |{null}       |{null}|{null} |{null}|{null}|  {null}|{null}|
++----+-----------+-----------+----------+----+-------------+------+-------+------+------+--------+------+

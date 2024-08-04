@@ -1,0 +1,6 @@
+-- 멤버 이미지 URL 추가
+ALTER TABLE MEMBER
+    ADD COLUMN img_url VARCHAR(1000); -- TODO: NOT NULL 옵션 추가
+
+ALTER TABLE ARTICLE_MAIN_CARD
+    ADD COLUMN writer_img_url VARCHAR(1000); -- TODO: NOT NULL 옵션 추가

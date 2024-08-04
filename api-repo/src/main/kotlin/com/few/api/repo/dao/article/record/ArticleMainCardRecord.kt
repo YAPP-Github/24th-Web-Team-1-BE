@@ -12,6 +12,7 @@ data class ArticleMainCardRecord(
     val writerId: Long,
     val writerEmail: String,
     val writerName: String,
+    val writerUrl: URL,
     val writerImgUrl: URL,
     val workbooks: List<WorkbookRecord> = emptyList(),
 ) {

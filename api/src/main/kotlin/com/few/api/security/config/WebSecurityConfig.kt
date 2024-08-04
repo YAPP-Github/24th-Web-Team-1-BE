@@ -132,7 +132,23 @@ class WebSecurityConfig(
                     AntPathRequestMatcher("/v3/api-docs/**", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/openapi3.yaml", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/reports/**", HttpMethod.GET.name()),
-                    AntPathRequestMatcher("/api/v1/**") // todo fix
+
+                    /** 인증/비인증 모두 허용 */
+                    AntPathRequestMatcher("/api/v1/subscriptions/workbooks/main", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/api/v1/workbooks", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/api/v1/articles/*", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/api/v1/workbooks/*/articles/*", HttpMethod.GET.name()),
+
+                    /** 인증 불필요 */
+                    AntPathRequestMatcher("/api/v1/members", HttpMethod.POST.name()),
+                    AntPathRequestMatcher("/api/v1/members/token", HttpMethod.POST.name()),
+                    AntPathRequestMatcher("/api/v1/articles", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/api/v1/articles/categories", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/api/v1/workbooks/categories", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/api/v1/problems/**", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/api/v1/workbooks/*", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/api/v1/workbooks/categories", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/batch/**")
                 )
         }
     }
@@ -151,8 +167,23 @@ class WebSecurityConfig(
                     AntPathRequestMatcher("/v3/api-docs/**", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/openapi3.yaml", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/reports/**", HttpMethod.GET.name()),
-                    AntPathRequestMatcher("/api/v1/**"), // todo fix
-                    AntPathRequestMatcher("/batch/**") // todo fix
+
+                    /** 인증/비인증 모두 허용 */
+                    AntPathRequestMatcher("/api/v1/subscriptions/workbooks/main", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/api/v1/workbooks", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/api/v1/articles/*", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/api/v1/workbooks/*/articles/*", HttpMethod.GET.name()),
+
+                    /** 인증 불필요 */
+                    AntPathRequestMatcher("/api/v1/members", HttpMethod.POST.name()),
+                    AntPathRequestMatcher("/api/v1/members/token", HttpMethod.POST.name()),
+                    AntPathRequestMatcher("/api/v1/articles", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/api/v1/articles/categories", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/api/v1/workbooks/categories", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/api/v1/problems/**", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/api/v1/workbooks/*", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/api/v1/workbooks/categories", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/batch/**")
                 )
         }
     }

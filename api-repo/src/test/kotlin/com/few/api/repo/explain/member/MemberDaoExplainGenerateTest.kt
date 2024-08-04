@@ -47,7 +47,11 @@ class MemberDaoExplainGenerateTest : JooqTestSpec() {
             .execute()
 
         val writerDescription = writerDescriptionJsonMapper.toJson(
-            WriterDescription("few2", URL("http://localhost:8080/writers/url2"))
+            WriterDescription(
+                "few2",
+                URL("http://localhost:8080/writers/url2"),
+                URL("https://github.com/user-attachments/assets/28df9078-488c-49d6-9375-54ce5a250742")
+            )
         )
 
         dslContext.insertInto(Member.MEMBER)

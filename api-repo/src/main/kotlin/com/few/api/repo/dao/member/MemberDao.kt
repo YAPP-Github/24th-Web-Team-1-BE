@@ -74,7 +74,8 @@ class MemberDao(
         Member.MEMBER.ID.`as`(WriterRecord::writerId.name),
         DSL.jsonGetAttributeAsText(Member.MEMBER.DESCRIPTION, "name")
             .`as`(WriterRecord::name.name),
-        DSL.jsonGetAttribute(Member.MEMBER.DESCRIPTION, "url").`as`(WriterRecord::url.name)
+        DSL.jsonGetAttribute(Member.MEMBER.DESCRIPTION, "url").`as`(WriterRecord::url.name),
+        DSL.jsonGetAttribute(Member.MEMBER.DESCRIPTION, "imageUrl").`as`(WriterRecord::imageUrl.name)
     )
         .from(Member.MEMBER)
         .where(Member.MEMBER.ID.`in`(notCachedIds))

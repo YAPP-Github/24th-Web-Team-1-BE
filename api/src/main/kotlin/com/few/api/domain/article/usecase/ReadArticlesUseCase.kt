@@ -23,9 +23,11 @@ class ReadArticlesUseCase(
     private val articleDao: ArticleDao,
 ) {
 
-    @Transactional // TODO: read only로 할 수 있도록 점검
+    @Transactional(readOnly = true)
     fun execute(useCaseIn: ReadArticlesUseCaseIn): ReadArticlesUseCaseOut {
-        // 1. 아티클 조회수에서 마지막 읽은 아티클아이디, 카테고리를 기반으로 조회수 상위 10개를 가져옴
+        /**
+         * 아티클 조회수 테이블에서 마지막 읽은 아티클 아이디, 카테고리를 기반으로 Offset(테이블 row 순위)을 구함
+         */
         val offset = if (useCaseIn.prevArticleId <= 0) {
             0L
         } else {
@@ -34,7 +36,10 @@ class ReadArticlesUseCase(
             ) ?: 0
         }
 
-        // 이번 스크롤에서 보여줄 아티클 ID에 대한 기준 (Criterion)
+        /**
+         * 구한 Offset을 기준으로 이번 스크롤에서 보여줄 아티클 11개를 뽑아옴
+         * 카테고리 별, 조회수 순 11개. 조회수가 같을 경우 최신 아티클이 우선순위를 가짐
+         */
         val articleViewsRecords: MutableList<SelectArticleViewsRecord> = articleViewCountDao.selectArticlesOrderByViews(
             SelectArticlesOrderByViewsQuery(
                 offset,
@@ -42,6 +47,9 @@ class ReadArticlesUseCase(
             )
         ).toMutableList()
 
+        /**
+         * 11개를 조회한 상황에서 11개가 조회되지 않았다면 마지막 스크롤로 판단
+         */
         val isLast = if (articleViewsRecords.size == 11) {
             articleViewsRecords.removeAt(10)
             false
@@ -49,38 +57,23 @@ class ReadArticlesUseCase(
             true
         }
 
-        // 2. TODO: 조회한 10개의 아티클 아이디를 기반으로 로컬 캐시에 있는지 조회(아티클 단건조회 캐시 사용)
-        // 3. TODO: 로컬캐시에 없으면 ARTICLE_MAIN_CARD 테이블에서 데이터가 있는지 조회 (컨텐츠는 article_ifo에서)
-
-        // 4. ARTICLE_MAIN_CARD 테이블에도 없으면 조인 진행 후 ARTICLE_MAIN_CARD 테이블 및 캐시에 넣기 (컨텐츠는 article_ifo에서)
-        var existInArticleMainCardRecords: Set<ArticleMainCardRecord> =
+        /**
+         * ARTICLE_MAIN_CARD 테이블에서 이번 스크롤에서 보여줄 10개 아티클 조회 (TODO: 캐싱 적용)
+         */
+        var articleMainCardRecords: Set<ArticleMainCardRecord> =
             articleMainCardDao.selectArticleMainCardsRecord(articleViewsRecords.map { it.articleId }.toSet())
 
-        if (existInArticleMainCardRecords.size != articleViewsRecords.size) {
-            val existInArticleMainCardIds = existInArticleMainCardRecords.map { it.articleId }.toSet()
-            val notExistArticleMainCardTableArticleIds = articleViewsRecords
-                .filterNot { existInArticleMainCardIds.contains(it.articleId) }
-                .map { it.articleId }
-                .toSet()
-
-            // join 진행하여 Select
-            val joinedArticleMainCardRecords: Set<ArticleMainCardRecord> = articleMainCardDao
-                .selectByArticleMstAndMemberAndMappingWorkbookArticleAndWorkbook(notExistArticleMainCardTableArticleIds)
-
-            // 결과를 MainCard 테이블에 저장
-            articleMainCardDao.insertArticleMainCardsBulk(joinedArticleMainCardRecords) // TODO: 트랜잭션 분리 점검
-
-            existInArticleMainCardRecords = (existInArticleMainCardRecords + joinedArticleMainCardRecords).toSet()
-
-            // TODO: 결과를 로컬 캐시에 저장
-        }
-
-        // 아티클 컨텐츠 조회
+        /**
+         * 아티클 컨텐츠는 ARTICLE_MAIN_CARD가 아닌 ARTICLE_IFO에서 조회 (TODO: 캐싱 적용)
+         */
         val selectArticleContentsRecords: List<SelectArticleContentsRecord> =
-            articleDao.selectArticleContents(existInArticleMainCardRecords.map { it.articleId }.toSet())
-        setContentsToRecords(selectArticleContentsRecords, existInArticleMainCardRecords)
+            articleDao.selectArticleContents(articleMainCardRecords.map { it.articleId }.toSet())
+        setContentsToRecords(selectArticleContentsRecords, articleMainCardRecords)
 
-        val sortedArticles = updateAndSortArticleViews(existInArticleMainCardRecords, articleViewsRecords)
+        /**
+         * 아티클 조회수 순, 조회수가 같을 경우 최신 아티클이 우선순위를 가지도록 정렬 (TODO: 삭제시 양향도 파악 필요)
+         */
+        val sortedArticles = updateAndSortArticleViews(articleMainCardRecords, articleViewsRecords)
 
         val articleUseCaseOuts: List<ReadArticleUseCaseOut> = sortedArticles.map { a ->
             ReadArticleUseCaseOut(
@@ -99,8 +92,7 @@ class ReadArticlesUseCase(
                 createdAt = a.createdAt,
                 views = a.views,
                 workbooks = a.workbooks
-                    .filter { it.id != null && it.title != null }
-                    .map { WorkbookDetail(it.id, it.title) }
+                    .map { WorkbookDetail(it.id!!, it.title!!) }
             )
         }.toList()
 

@@ -17,6 +17,10 @@ enum class CategoryType(val code: Byte, val displayName: String) {
             return entries.find { it.code == code }
         }
 
+        fun fromName(displayName: String): CategoryType? {
+            return entries.find { it.displayName.equals(displayName) }
+        }
+
         fun convertToCode(displayName: String): Byte {
             return entries.find { it.name == displayName }?.code ?: throw IllegalArgumentException("Invalid category name $displayName")
         }

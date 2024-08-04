@@ -25,6 +25,6 @@ data class WriterInfo(
 )
 
 data class WorkbookInfo(
-    val id: Long?,
-    val title: String?,
+    val id: Long,
+    val title: String,
 )

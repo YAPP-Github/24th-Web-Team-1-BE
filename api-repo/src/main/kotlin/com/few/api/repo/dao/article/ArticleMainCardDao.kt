@@ -1,13 +1,11 @@
 package com.few.api.repo.dao.article
 
-import jooq.jooq_dsl.tables.ArticleMst.ARTICLE_MST
-import jooq.jooq_dsl.tables.Member.MEMBER
+import com.few.api.repo.dao.article.command.ArticleMainCardExcludeWorkbookCommand
+import com.few.api.repo.dao.article.command.UpdateArticleMainCardWorkbookCommand
 import com.few.api.repo.dao.article.record.ArticleMainCardRecord
 import com.few.api.repo.dao.article.support.CommonJsonMapper
 import com.few.api.repo.dao.article.support.ArticleMainCardMapper
 import jooq.jooq_dsl.tables.ArticleMainCard.ARTICLE_MAIN_CARD
-import jooq.jooq_dsl.tables.MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE
-import jooq.jooq_dsl.tables.Workbook.WORKBOOK
 import org.jooq.*
 import org.jooq.impl.DSL.*
 import org.springframework.stereotype.Repository
@@ -43,47 +41,14 @@ class ArticleMainCardDao(
         .where(ARTICLE_MAIN_CARD.ID.`in`(articleIds))
         .query
 
-    fun selectByArticleMstAndMemberAndMappingWorkbookArticleAndWorkbook(articleIds: Set<Long>): Set<ArticleMainCardRecord> {
-        return selectByArticleMstAndMemberAndMappingWorkbookArticleAndWorkbookQuery(articleIds)
-            .fetch(articleMainCardMapper)
-            .toSet()
-    }
+    /**
+     * NOTE - The query performed in this function do not save the workbook.
+     */
+    fun insertArticleMainCard(command: ArticleMainCardExcludeWorkbookCommand) =
+        insertArticleMainCardQuery(command).execute()
 
-    private fun selectByArticleMstAndMemberAndMappingWorkbookArticleAndWorkbookQuery(articleIds: Set<Long>) =
-        dslContext.select(
-            ARTICLE_MST.ID.`as`(ArticleMainCardRecord::articleId.name),
-            ARTICLE_MST.TITLE.`as`(ArticleMainCardRecord::articleTitle.name),
-            ARTICLE_MST.MAIN_IMAGE_URL.`as`(ArticleMainCardRecord::mainImageUrl.name),
-            ARTICLE_MST.CATEGORY_CD.`as`(ArticleMainCardRecord::categoryCd.name),
-            ARTICLE_MST.CREATED_AT.`as`(ArticleMainCardRecord::createdAt.name),
-            MEMBER.ID.`as`(ArticleMainCardRecord::writerId.name),
-            MEMBER.EMAIL.`as`(ArticleMainCardRecord::writerEmail.name),
-            jsonGetAttributeAsText(MEMBER.DESCRIPTION, "name").`as`(ArticleMainCardRecord::writerName.name),
-            jsonGetAttribute(MEMBER.DESCRIPTION, "url").`as`(ArticleMainCardRecord::writerImgUrl.name),
-            jsonArrayAgg(
-                jsonObject(
-                    key("id").value(WORKBOOK.ID),
-                    key("title").value(WORKBOOK.TITLE)
-                )
-            ).`as`(ArticleMainCardRecord::workbooks.name)
-        )
-            .from(ARTICLE_MST)
-            .join(MEMBER).on(ARTICLE_MST.MEMBER_ID.eq(MEMBER.ID)).and(ARTICLE_MST.DELETED_AT.isNull)
-            .and(MEMBER.DELETED_AT.isNull)
-            .leftJoin(MAPPING_WORKBOOK_ARTICLE).on(ARTICLE_MST.ID.eq(MAPPING_WORKBOOK_ARTICLE.ARTICLE_ID)).and(MAPPING_WORKBOOK_ARTICLE.DELETED_AT.isNull)
-            .leftJoin(WORKBOOK).on(MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.eq(WORKBOOK.ID)).and(WORKBOOK.DELETED_AT.isNull)
-            .where(ARTICLE_MST.ID.`in`(articleIds))
-            .groupBy(ARTICLE_MST.ID)
-            .query
-
-    fun insertArticleMainCardsBulk(commands: Set<ArticleMainCardRecord>) {
-        dslContext.batch(
-            commands.map { command -> insertArticleMainCardsBulkQuery(command) }
-        ).execute()
-    }
-
-    fun insertArticleMainCardsBulkQuery(command: ArticleMainCardRecord) =
-        dslContext.insertInto(
+    fun insertArticleMainCardQuery(command: ArticleMainCardExcludeWorkbookCommand) = dslContext
+        .insertInto(
             ARTICLE_MAIN_CARD,
             ARTICLE_MAIN_CARD.ID,
             ARTICLE_MAIN_CARD.TITLE,
@@ -92,8 +57,7 @@ class ArticleMainCardDao(
             ARTICLE_MAIN_CARD.CREATED_AT,
             ARTICLE_MAIN_CARD.WRITER_ID,
             ARTICLE_MAIN_CARD.WRITER_EMAIL,
-            ARTICLE_MAIN_CARD.WRITER_DESCRIPTION,
-            ARTICLE_MAIN_CARD.WORKBOOKS
+            ARTICLE_MAIN_CARD.WRITER_DESCRIPTION
         ).values(
             command.articleId,
             command.articleTitle,
@@ -109,7 +73,14 @@ class ArticleMainCardDao(
                         "url" to command.writerImgUrl
                     )
                 )
-            ),
-            JSON.valueOf(articleMainCardMapper.toJsonStr(command.workbooks))
+            )
         )
+
+    fun updateArticleMainCardSetWorkbook(command: UpdateArticleMainCardWorkbookCommand) =
+        updateArticleMainCardSetWorkbookQuery(command).execute()
+
+    fun updateArticleMainCardSetWorkbookQuery(command: UpdateArticleMainCardWorkbookCommand) = dslContext
+        .update(ARTICLE_MAIN_CARD)
+        .set(ARTICLE_MAIN_CARD.WORKBOOKS, JSON.valueOf(articleMainCardMapper.toJsonStr(command.workbooks)))
+        .where(ARTICLE_MAIN_CARD.ID.eq(command.articleId))
 }

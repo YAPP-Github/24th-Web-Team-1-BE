@@ -56,25 +56,6 @@ class ReadArticlesUseCase(
         var existInArticleMainCardRecords: Set<ArticleMainCardRecord> =
             articleMainCardDao.selectArticleMainCardsRecord(articleViewsRecords.map { it.articleId }.toSet())
 
-//        if (existInArticleMainCardRecords.size != articleViewsRecords.size) {
-//            val existInArticleMainCardIds = existInArticleMainCardRecords.map { it.articleId }.toSet()
-//            val notExistArticleMainCardTableArticleIds = articleViewsRecords
-//                .filterNot { existInArticleMainCardIds.contains(it.articleId) }
-//                .map { it.articleId }
-//                .toSet()
-//
-//            // join 진행하여 Select
-//            val joinedArticleMainCardRecords: Set<ArticleMainCardRecord> = articleMainCardDao
-//                .selectByArticleMstAndMemberAndMappingWorkbookArticleAndWorkbook(notExistArticleMainCardTableArticleIds)
-//
-//            // 결과를 MainCard 테이블에 저장
-//            articleMainCardDao.insertArticleMainCardsBulk(joinedArticleMainCardRecords) // TODO: 트랜잭션 분리 점검
-//
-//            existInArticleMainCardRecords = (existInArticleMainCardRecords + joinedArticleMainCardRecords).toSet()
-//
-//            // TODO: 결과를 로컬 캐시에 저장
-//        }
-
         // 아티클 컨텐츠 조회
         val selectArticleContentsRecords: List<SelectArticleContentsRecord> =
             articleDao.selectArticleContents(existInArticleMainCardRecords.map { it.articleId }.toSet())

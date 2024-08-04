@@ -46,7 +46,7 @@ class AddArticleUseCase(
     @Transactional
     fun execute(useCaseIn: AddArticleUseCaseIn): AddArticleUseCaseOut {
         /** select writerId */
-        val writerId = SelectMemberByEmailQuery(useCaseIn.writerEmail).let {
+        val writerIdRecord = SelectMemberByEmailQuery(useCaseIn.writerEmail).let {
             memberDao.selectMemberByEmail(it)
         } ?: throw NotFoundException("member.notfound.id")
 
@@ -98,7 +98,7 @@ class AddArticleUseCase(
 
         /** insert article */
         val articleMstId = InsertFullArticleRecordCommand(
-            writerId = writerId.memberId,
+            writerId = writerIdRecord.memberId,
             mainImageURL = useCaseIn.articleImageUrl,
             title = useCaseIn.title,
             category = CategoryType.convertToCode(useCaseIn.category),
@@ -140,9 +140,9 @@ class AddArticleUseCase(
                 categoryCd = CategoryType.fromName(useCaseIn.category)?.code
                     ?: throw NotFoundException("article.invalid.category"),
                 createdAt = LocalDateTime.now(), // TODO: DB insert 시점으로 변경
-                writerId = writerId.memberId,
+                writerId = writerIdRecord.memberId,
                 writerEmail = useCaseIn.writerEmail,
-                writerName = writerId.writerName ?: throw NotFoundException("article.writer.name"),
+                writerName = writerIdRecord.writerName ?: throw NotFoundException("article.writer.name"),
                 writerImgUrl = URL("https://github.com/user-attachments/assets/528a6531-2cba-4efc-b8df-64a083d38be8") //TODO: 작가 이미지로 변환
             )
         )

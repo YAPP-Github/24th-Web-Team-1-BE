@@ -102,3 +102,6 @@ api-repo/**/*.sql
 batch/**/*.sql
 email/**/*.sql
 storage/**/*.sql
+
+# DB explain result files
+**/resources/explain/

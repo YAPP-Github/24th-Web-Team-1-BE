@@ -8,6 +8,7 @@ import com.few.api.repo.dao.member.MemberDao
 import com.few.api.repo.dao.member.command.InsertMemberCommand
 import com.few.api.repo.dao.member.command.UpdateDeletedMemberTypeCommand
 import com.few.api.repo.dao.member.query.SelectMemberByEmailNotConsiderDeletedAtQuery
+import com.few.data.common.code.MemberDefaultImage
 import com.few.data.common.code.MemberType
 import com.few.email.service.member.SendAuthEmailService
 import com.few.email.service.member.dto.Content
@@ -36,7 +37,8 @@ class SaveMemberUseCase(
         val token = if (Objects.isNull(isSignUpBeforeMember)) {
             InsertMemberCommand(
                 email = useCaseIn.email,
-                memberType = MemberType.PREAUTH
+                memberType = MemberType.PREAUTH,
+                MemberDefaultImage.getRandom().url
             ).let {
                 memberDao.insertMember(it) ?: throw InsertException("member.insertfail.record")
             }

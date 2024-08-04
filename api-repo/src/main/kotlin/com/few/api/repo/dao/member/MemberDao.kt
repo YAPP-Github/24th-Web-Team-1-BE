@@ -168,6 +168,7 @@ class MemberDao(
         dslContext.insertInto(Member.MEMBER)
             .set(Member.MEMBER.EMAIL, command.email)
             .set(Member.MEMBER.TYPE_CD, command.memberType.code)
+            .set(Member.MEMBER.IMG_URL, command.imageUrl)
 
     fun selectMemberEmailAndType(memberId: Long): MemberEmailAndTypeRecord? {
         return selectMemberIdAndTypeQuery(memberId)

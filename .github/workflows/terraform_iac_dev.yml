@@ -1,0 +1,43 @@
+name: Terraform IAC
+
+on:
+  push:
+    branches:
+      - infra/dev
+  workflow_dispatch:
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    env:
+      working-directory: ./infra/terraform
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Terraform Setup
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.8.2
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform Init
+        working-directory: ${{ env.working-directory }}
+        run: terraform init
+
+      - name: Terraform Format
+        working-directory: ${{ env.working-directory }}
+        run: terraform fmt -check
+
+      - name: Terraform Plan
+        working-directory: ${{ env.working-directory }}
+        run: terraform plan -input=false -var 'aws_root_arn=${{ secrets.AWS_ROOT_ARN }}' -var 'aws_access_key=${{ secrets.AWS_ACCESS_KEY }}' -var 'aws_secret_key=${{ secrets.AWS_SECRET_KEY }}' -var 'aws_rds_password=${{ secrets.AWS_RDS_PASSWORD }}' -var 'fe_origin=${{ secrets.FE_ORIGIN }}' -var 'email_username=${{ secrets.EMAIL_USERNAME }}' -var 'email_password=${{ secrets.EMAIL_PASSWORD }}' -var 'webhook_discord=${{ secrets.WEBHOOK_DISCORD }}' -var 'encryption_secretkey=${{ secrets.ENCRYPTION_SECRETKEY }}' -var 'encryption_iv=${{ secrets.ENCRYPTION_IV }}' -var 'encryption_key_size=${{ secrets.ENCRYPTION_KEY_SIZE }}'
+
+      - name: Terraform Apply
+        working-directory: ${{ env.working-directory }}
+        if: github.ref == 'refs/heads/infra/main' && github.event_name == 'push'
+        run: terraform apply -auto-approve -input=false -var 'aws_root_arn=${{ secrets.AWS_ROOT_ARN }}' -var 'aws_access_key=${{ secrets.AWS_ACCESS_KEY }}' -var 'aws_secret_key=${{ secrets.AWS_SECRET_KEY }}' -var 'aws_rds_password=${{ secrets.AWS_RDS_PASSWORD }}' -var 'fe_origin=${{ secrets.FE_ORIGIN }}' -var 'email_username=${{ secrets.EMAIL_USERNAME }}' -var 'email_password=${{ secrets.EMAIL_PASSWORD }}' -var 'webhook_discord=${{ secrets.WEBHOOK_DISCORD }}' -var 'encryption_secretkey=${{ secrets.ENCRYPTION_SECRETKEY }}' -var 'encryption_iv=${{ secrets.ENCRYPTION_IV }}' -var 'encryption_key_size=${{ secrets.ENCRYPTION_KEY_SIZE }}'

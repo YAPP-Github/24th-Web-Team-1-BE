@@ -1,5 +1,7 @@
 package com.few.api.repo.dao.article
 
+import com.few.api.repo.dao.article.command.ArticleMainCardExcludeWorkbookCommand
+import com.few.api.repo.dao.article.command.UpdateArticleMainCardWorkbookCommand
 import jooq.jooq_dsl.tables.ArticleMst.ARTICLE_MST
 import jooq.jooq_dsl.tables.Member.MEMBER
 import com.few.api.repo.dao.article.record.ArticleMainCardRecord
@@ -70,7 +72,8 @@ class ArticleMainCardDao(
             .from(ARTICLE_MST)
             .join(MEMBER).on(ARTICLE_MST.MEMBER_ID.eq(MEMBER.ID)).and(ARTICLE_MST.DELETED_AT.isNull)
             .and(MEMBER.DELETED_AT.isNull)
-            .leftJoin(MAPPING_WORKBOOK_ARTICLE).on(ARTICLE_MST.ID.eq(MAPPING_WORKBOOK_ARTICLE.ARTICLE_ID)).and(MAPPING_WORKBOOK_ARTICLE.DELETED_AT.isNull)
+            .leftJoin(MAPPING_WORKBOOK_ARTICLE).on(ARTICLE_MST.ID.eq(MAPPING_WORKBOOK_ARTICLE.ARTICLE_ID))
+            .and(MAPPING_WORKBOOK_ARTICLE.DELETED_AT.isNull)
             .leftJoin(WORKBOOK).on(MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.eq(WORKBOOK.ID)).and(WORKBOOK.DELETED_AT.isNull)
             .where(ARTICLE_MST.ID.`in`(articleIds))
             .groupBy(ARTICLE_MST.ID)
@@ -112,4 +115,47 @@ class ArticleMainCardDao(
             ),
             JSON.valueOf(articleMainCardMapper.toJsonStr(command.workbooks))
         )
+
+    /**
+     * NOTE - The query performed in this function do not save the workbook.
+     */
+    fun insertArticleMainCard(command: ArticleMainCardExcludeWorkbookCommand) =
+        insertArticleMainCardQuery(command).execute()
+
+    fun insertArticleMainCardQuery(command: ArticleMainCardExcludeWorkbookCommand) = dslContext
+        .insertInto(
+            ARTICLE_MAIN_CARD,
+            ARTICLE_MAIN_CARD.ID,
+            ARTICLE_MAIN_CARD.TITLE,
+            ARTICLE_MAIN_CARD.MAIN_IMAGE_URL,
+            ARTICLE_MAIN_CARD.CATEGORY_CD,
+            ARTICLE_MAIN_CARD.CREATED_AT,
+            ARTICLE_MAIN_CARD.WRITER_ID,
+            ARTICLE_MAIN_CARD.WRITER_EMAIL,
+            ARTICLE_MAIN_CARD.WRITER_DESCRIPTION
+        ).values(
+            command.articleId,
+            command.articleTitle,
+            command.mainImageUrl.toString(),
+            command.categoryCd,
+            command.createdAt,
+            command.writerId,
+            command.writerEmail,
+            JSON.valueOf(
+                commonJsonMapper.toJsonStr(
+                    mapOf(
+                        "name" to command.writerName,
+                        "url" to command.writerImgUrl
+                    )
+                )
+            )
+        )
+
+    fun updateArticleMainCardSetWorkbook(command: UpdateArticleMainCardWorkbookCommand) =
+        updateArticleMainCardSetWorkbookQuery(command).execute()
+
+    fun updateArticleMainCardSetWorkbookQuery(command: UpdateArticleMainCardWorkbookCommand) = dslContext
+        .update(ARTICLE_MAIN_CARD)
+        .set(ARTICLE_MAIN_CARD.WORKBOOKS, JSON.valueOf(articleMainCardMapper.toJsonStr(command.workbooks)))
+        .where(ARTICLE_MAIN_CARD.ID.eq(command.articleId))
 }

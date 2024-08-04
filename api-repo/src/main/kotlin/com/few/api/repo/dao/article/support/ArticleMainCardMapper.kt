@@ -2,6 +2,7 @@ package com.few.api.repo.dao.article.support
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.few.api.repo.dao.article.command.WorkbookCommand
 import com.few.api.repo.dao.article.record.ArticleMainCardRecord
 import com.few.api.repo.dao.article.record.WorkbookRecord
 import org.jooq.JSON
@@ -32,5 +33,7 @@ class ArticleMainCardMapper(
         }
     )
 
-    fun toJsonStr(workbooks: List<WorkbookRecord>) = objectMapper.writeValueAsString(workbooks)
+    fun toJsonStr(workbooks: List<WorkbookRecord>) = objectMapper.writeValueAsString(workbooks) // TODO: remove
+
+    fun toJsonStr(workbooks: List<WorkbookCommand>) = objectMapper.writeValueAsString(workbooks)
 }

@@ -12,10 +12,15 @@ import com.few.api.domain.subscription.usecase.dto.BrowseSubscribeWorkbooksUseCa
 import com.few.api.domain.subscription.usecase.dto.SubscribeWorkbookUseCaseIn
 import com.few.api.domain.subscription.usecase.dto.UnsubscribeAllUseCaseIn
 import com.few.api.domain.subscription.usecase.dto.UnsubscribeWorkbookUseCaseIn
+import com.few.api.domain.workbook.usecase.BrowseWorkbooksUseCase
+import com.few.api.domain.workbook.usecase.dto.BrowseWorkbooksUseCaseIn
 import com.few.api.web.controller.subscription.request.UnsubscribeAllRequest
+import com.few.api.web.controller.subscription.response.MainViewBrowseSubscribeWorkbooksResponse
+import com.few.api.web.controller.subscription.response.MainViewSubscribeWorkbookInfo
 import com.few.api.web.controller.subscription.response.SubscribeWorkbookInfo
 import com.few.api.web.controller.subscription.response.SubscribeWorkbooksResponse
 import com.few.api.web.support.ViewCategory
+import com.few.api.web.support.WorkBookCategory
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Min
 import org.springframework.http.HttpStatus
@@ -31,6 +36,9 @@ class SubscriptionController(
     private val unsubscribeWorkbookUseCase: UnsubscribeWorkbookUseCase,
     private val unsubscribeAllUseCase: UnsubscribeAllUseCase,
     private val browseSubscribeWorkbooksUseCase: BrowseSubscribeWorkbooksUseCase,
+
+    // 임시 구현용
+    private val browseWorkBooksUseCase: BrowseWorkbooksUseCase,
 ) {
 
     // todo add auth
@@ -57,6 +65,50 @@ class SubscriptionController(
                     rank = it.rank,
                     totalSubscriber = it.totalSubscriber,
                     articleInfo = it.articleInfo
+                )
+            }
+        ).let {
+            ApiResponseGenerator.success(it, HttpStatus.OK)
+        }
+    }
+
+    // 임시 구현
+    @GetMapping("/subscriptions/workbooks/main")
+    fun mainViewBrowseSubscribeWorkbooks(
+        @RequestParam(value = "category", required = false)
+        category: WorkBookCategory?,
+    ): ApiResponse<ApiResponse.SuccessBody<MainViewBrowseSubscribeWorkbooksResponse>> {
+        // todo fix memberId
+        val memberId = 1L
+        val memberSubscribeWorkbooks = BrowseSubscribeWorkbooksUseCaseIn(memberId).let {
+            browseSubscribeWorkbooksUseCase.execute(it)
+        }
+        val workbooks =
+            BrowseWorkbooksUseCaseIn(
+                category ?: WorkBookCategory.All,
+                ViewCategory.MAIN_CARD,
+                memberId
+            ).let { useCaseIn ->
+                browseWorkBooksUseCase.execute(useCaseIn)
+            }
+
+        return MainViewBrowseSubscribeWorkbooksResponse(
+            workbooks = workbooks.workbooks.map {
+                MainViewSubscribeWorkbookInfo(
+                    id = it.id,
+                    mainImageUrl = it.mainImageUrl,
+                    title = it.title,
+                    description = it.description,
+                    category = it.category,
+                    createdAt = it.createdAt,
+                    writerDetails = it.writerDetails,
+                    subscriptionCount = it.subscriptionCount,
+                    status = memberSubscribeWorkbooks.workbooks.find { subscribe -> subscribe.workbookId == it.id }?.isActiveSub?.name,
+                    totalDay = memberSubscribeWorkbooks.workbooks.find { subscribe -> subscribe.workbookId == it.id }?.totalDay,
+                    currentDay = memberSubscribeWorkbooks.workbooks.find { subscribe -> subscribe.workbookId == it.id }?.currentDay,
+                    rank = memberSubscribeWorkbooks.workbooks.find { subscribe -> subscribe.workbookId == it.id }?.rank,
+                    totalSubscriber = memberSubscribeWorkbooks.workbooks.find { subscribe -> subscribe.workbookId == it.id }?.totalSubscriber,
+                    articleInfo = memberSubscribeWorkbooks.workbooks.find { subscribe -> subscribe.workbookId == it.id }?.articleInfo
                 )
             }
         ).let {

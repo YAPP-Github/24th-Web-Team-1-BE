@@ -20,6 +20,7 @@ class TokenUserDetailsService(
 
     companion object {
         private const val MEMBER_ID_CLAIM_KEY = "memberId"
+        private const val MEMBER_EMAIL_CLAIM_KEY = "memberEmail"
         private const val MEMBER_ROLE_CLAIM_KEY = "memberRole"
     }
 
@@ -37,9 +38,14 @@ class TokenUserDetailsService(
             String::class.java
         )
 
+        val email = claims.get(
+            MEMBER_EMAIL_CLAIM_KEY,
+            String::class.java
+        )
+
         val authorities = toAuthorities(roles)
 
-        return TokenUserDetails(authorities, id.toString())
+        return TokenUserDetails(authorities, id.toString(), email)
     }
 
     private fun toAuthorities(roles: String): List<GrantedAuthority> {

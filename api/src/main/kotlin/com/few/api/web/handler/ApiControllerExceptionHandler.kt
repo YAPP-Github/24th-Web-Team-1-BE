@@ -3,6 +3,7 @@ package com.few.api.web.handler
 import com.few.api.exception.common.ExternalIntegrationException
 import com.few.api.exception.common.InsertException
 import com.few.api.exception.common.NotFoundException
+import com.few.api.exception.member.NotValidTokenException
 import com.few.api.exception.subscribe.SubscribeIllegalArgumentException
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
@@ -32,6 +33,7 @@ class ApiControllerExceptionHandler(
         ex: Exception,
         request: HttpServletRequest,
     ): ApiResponse<ApiResponse.FailureBody> {
+        loggingHandler.writeLog(ex, request)
         return ApiResponseGenerator.fail(ex.message!!, HttpStatus.BAD_REQUEST)
     }
 
@@ -40,6 +42,16 @@ class ApiControllerExceptionHandler(
         ex: Exception,
         request: HttpServletRequest,
     ): ApiResponse<ApiResponse.FailureBody> {
+        loggingHandler.writeLog(ex, request)
+        return ApiResponseGenerator.fail(ex.message!!, HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(NotValidTokenException::class)
+    fun handleTokenException(
+        ex: Exception,
+        request: HttpServletRequest,
+    ): ApiResponse<ApiResponse.FailureBody> {
+        loggingHandler.writeLog(ex, request)
         return ApiResponseGenerator.fail(ex.message!!, HttpStatus.BAD_REQUEST)
     }
 
@@ -48,6 +60,7 @@ class ApiControllerExceptionHandler(
         ex: IllegalArgumentException,
         request: HttpServletRequest,
     ): ApiResponse<ApiResponse.FailureBody> {
+        loggingHandler.writeLog(ex, request)
         return ApiResponseGenerator.fail(ExceptionMessage.FAIL.message, HttpStatus.BAD_REQUEST)
     }
 
@@ -66,6 +79,7 @@ class ApiControllerExceptionHandler(
         ex: Exception,
         request: HttpServletRequest,
     ): ApiResponse<ApiResponse.FailureBody> {
+        loggingHandler.writeLog(ex, request)
         return handleRequestDetails(ex)
     }
 
@@ -101,6 +115,7 @@ class ApiControllerExceptionHandler(
         ex: Exception,
         request: HttpServletRequest,
     ): ApiResponse<ApiResponse.FailureBody> {
+        loggingHandler.writeLog(ex, request)
         return ApiResponseGenerator.fail(
             ExceptionMessage.FAIL.message,
             HttpStatus.INTERNAL_SERVER_ERROR
@@ -112,6 +127,7 @@ class ApiControllerExceptionHandler(
         ex: AccessDeniedException,
         request: HttpServletRequest,
     ): ApiResponse<ApiResponse.FailureBody> {
+        loggingHandler.writeLog(ex, request)
         return ApiResponseGenerator.fail(
             ExceptionMessage.ACCESS_DENIED.message,
             HttpStatus.FORBIDDEN

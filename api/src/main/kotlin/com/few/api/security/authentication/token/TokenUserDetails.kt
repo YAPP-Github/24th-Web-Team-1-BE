@@ -4,8 +4,9 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 class TokenUserDetails(
-    private val authorities: List<GrantedAuthority>,
-    private val id: String,
+    val authorities: List<GrantedAuthority>,
+    val id: String,
+    val email: String,
 ) : UserDetails {
 
     companion object {

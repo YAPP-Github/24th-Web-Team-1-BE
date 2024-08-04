@@ -14,6 +14,7 @@ class TokenResolver(
 
     companion object {
         private const val MEMBER_ID_CLAIM_KEY = "memberId"
+        private const val MEMBER_EMAIL_CLAIM_KEY = "memberEmail"
         private const val MEMBER_ROLE_CLAIM_KEY = "memberRole"
     }
 
@@ -40,6 +41,20 @@ class TokenResolver(
                 .parseClaimsJws(token)
                 .body
                 .get(MEMBER_ID_CLAIM_KEY, Long::class.java)
+        } catch (e: Exception) {
+            log.warn { "${"Failed to get memberId. token: {}"} $token" }
+            return null
+        }
+    }
+
+    fun resolveEmail(token: String?): String? {
+        return try {
+            Jwts.parserBuilder()
+                .setSigningKey(secretKey.toByteArray())
+                .build()
+                .parseClaimsJws(token)
+                .body
+                .get(MEMBER_EMAIL_CLAIM_KEY, String::class.java)
         } catch (e: Exception) {
             log.warn { "${"Failed to get memberId. token: {}"} $token" }
             return null

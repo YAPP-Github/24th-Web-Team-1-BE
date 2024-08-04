@@ -12,7 +12,7 @@ import com.few.api.repo.dao.member.query.SelectMemberByEmailQuery
 import com.few.api.repo.dao.member.query.SelectWriterQuery
 import com.few.api.repo.dao.member.query.SelectWritersQuery
 import com.few.api.repo.dao.member.record.MemberIdAndIsDeletedRecord
-import com.few.api.repo.dao.member.record.MemberIdRecord
+import com.few.api.repo.dao.member.record.MemberIdAndNameRecord
 import com.few.api.repo.dao.member.record.MemberEmailAndTypeRecord
 import com.few.api.repo.dao.member.record.WriterRecord
 import com.few.api.repo.dao.member.record.WriterRecordMappedWorkbook
@@ -125,14 +125,14 @@ class MemberDao(
             .where(Member.MEMBER.TYPE_CD.eq(MemberType.WRITER.code))
             .and(Member.MEMBER.DELETED_AT.isNull)
 
-    fun selectMemberByEmail(query: SelectMemberByEmailQuery): MemberIdRecord? {
+    fun selectMemberByEmail(query: SelectMemberByEmailQuery): MemberIdAndNameRecord? {
         return selectMemberByEmailQuery(query)
-            .fetchOneInto(MemberIdRecord::class.java)
+            .fetchOneInto(MemberIdAndNameRecord::class.java)
     }
 
     fun selectMemberByEmailQuery(query: SelectMemberByEmailQuery) = dslContext.select(
-        Member.MEMBER.ID.`as`(MemberIdRecord::memberId.name),
-        jsonGetAttributeAsText(Member.MEMBER.DESCRIPTION, "name").`as`(MemberIdRecord::writerName.name) // writer only(nullable)
+        Member.MEMBER.ID.`as`(MemberIdAndNameRecord::memberId.name),
+        jsonGetAttributeAsText(Member.MEMBER.DESCRIPTION, "name").`as`(MemberIdAndNameRecord::writerName.name) // writer only(nullable)
     )
         .from(Member.MEMBER)
         .where(Member.MEMBER.EMAIL.eq(query.email))

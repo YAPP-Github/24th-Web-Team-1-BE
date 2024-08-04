@@ -23,7 +23,7 @@ class ReadArticlesUseCase(
     private val articleDao: ArticleDao,
 ) {
 
-    @Transactional // TODO: read only로 할 수 있도록 점검
+    @Transactional(readOnly = true)
     fun execute(useCaseIn: ReadArticlesUseCaseIn): ReadArticlesUseCaseOut {
         // 1. 아티클 조회수에서 마지막 읽은 아티클아이디, 카테고리를 기반으로 조회수 상위 10개를 가져옴
         val offset = if (useCaseIn.prevArticleId <= 0) {
@@ -56,24 +56,24 @@ class ReadArticlesUseCase(
         var existInArticleMainCardRecords: Set<ArticleMainCardRecord> =
             articleMainCardDao.selectArticleMainCardsRecord(articleViewsRecords.map { it.articleId }.toSet())
 
-        if (existInArticleMainCardRecords.size != articleViewsRecords.size) {
-            val existInArticleMainCardIds = existInArticleMainCardRecords.map { it.articleId }.toSet()
-            val notExistArticleMainCardTableArticleIds = articleViewsRecords
-                .filterNot { existInArticleMainCardIds.contains(it.articleId) }
-                .map { it.articleId }
-                .toSet()
-
-            // join 진행하여 Select
-            val joinedArticleMainCardRecords: Set<ArticleMainCardRecord> = articleMainCardDao
-                .selectByArticleMstAndMemberAndMappingWorkbookArticleAndWorkbook(notExistArticleMainCardTableArticleIds)
-
-            // 결과를 MainCard 테이블에 저장
-            articleMainCardDao.insertArticleMainCardsBulk(joinedArticleMainCardRecords) // TODO: 트랜잭션 분리 점검
-
-            existInArticleMainCardRecords = (existInArticleMainCardRecords + joinedArticleMainCardRecords).toSet()
-
-            // TODO: 결과를 로컬 캐시에 저장
-        }
+//        if (existInArticleMainCardRecords.size != articleViewsRecords.size) {
+//            val existInArticleMainCardIds = existInArticleMainCardRecords.map { it.articleId }.toSet()
+//            val notExistArticleMainCardTableArticleIds = articleViewsRecords
+//                .filterNot { existInArticleMainCardIds.contains(it.articleId) }
+//                .map { it.articleId }
+//                .toSet()
+//
+//            // join 진행하여 Select
+//            val joinedArticleMainCardRecords: Set<ArticleMainCardRecord> = articleMainCardDao
+//                .selectByArticleMstAndMemberAndMappingWorkbookArticleAndWorkbook(notExistArticleMainCardTableArticleIds)
+//
+//            // 결과를 MainCard 테이블에 저장
+//            articleMainCardDao.insertArticleMainCardsBulk(joinedArticleMainCardRecords) // TODO: 트랜잭션 분리 점검
+//
+//            existInArticleMainCardRecords = (existInArticleMainCardRecords + joinedArticleMainCardRecords).toSet()
+//
+//            // TODO: 결과를 로컬 캐시에 저장
+//        }
 
         // 아티클 컨텐츠 조회
         val selectArticleContentsRecords: List<SelectArticleContentsRecord> =

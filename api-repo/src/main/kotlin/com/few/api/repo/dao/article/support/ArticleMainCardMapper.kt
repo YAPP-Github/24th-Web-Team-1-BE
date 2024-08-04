@@ -33,7 +33,7 @@ class ArticleMainCardMapper(
         }
     )
 
-    fun toJsonStr(workbooks: List<WorkbookRecord>) = objectMapper.writeValueAsString(workbooks) // TODO: remove
+//    fun toJsonStr(workbooks: List<WorkbookRecord>) = objectMapper.writeValueAsString(workbooks) // TODO: remove
 
     fun toJsonStr(workbooks: List<WorkbookCommand>) = objectMapper.writeValueAsString(workbooks)
 }

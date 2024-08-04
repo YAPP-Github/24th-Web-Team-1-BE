@@ -1,5 +1,7 @@
 package com.few.api.domain.workbook.article.usecase
 
+import com.few.api.domain.article.handler.ArticleViewCountHandler
+import com.few.api.domain.article.handler.ArticleViewHisAsyncHandler
 import com.few.api.domain.article.service.BrowseArticleProblemsService
 import com.few.api.domain.article.service.ReadArticleWriterRecordService
 import com.few.api.domain.article.service.dto.BrowseArticleProblemIdsInDto
@@ -19,6 +21,8 @@ class ReadWorkBookArticleUseCase(
     private val articleDao: ArticleDao,
     private val readArticleWriterRecordService: ReadArticleWriterRecordService,
     private val browseArticleProblemsService: BrowseArticleProblemsService,
+    private val articleViewHisAsyncHandler: ArticleViewHisAsyncHandler,
+    private val articleViewCountHandler: ArticleViewCountHandler,
 ) {
     @Transactional(readOnly = true)
     fun execute(useCaseIn: ReadWorkBookArticleUseCaseIn): ReadWorkBookArticleOut {
@@ -38,6 +42,23 @@ class ReadWorkBookArticleUseCase(
             BrowseArticleProblemIdsInDto(articleRecord.articleId).let { query: BrowseArticleProblemIdsInDto ->
                 browseArticleProblemsService.execute(query)
             }
+
+        /**
+         * @see com.few.api.domain.article.usecase.ReadArticleUseCase
+         */
+        // ARTICLE VIEW HIS에 저장하기 전에 먼저 VIEW COUNT 조회하는 순서 변경 금지
+        val views = articleViewCountHandler.browseArticleViewCount(useCaseIn.articleId)
+        articleViewHisAsyncHandler.addArticleViewHis(
+            useCaseIn.articleId,
+            useCaseIn.memberId,
+            CategoryType.fromCode(articleRecord.category) ?: throw NotFoundException("article.invalid.category")
+        )
+
+        /**
+         * NOTE: The articleViewHisAsyncHandler creates a new transaction that is separate from the current context.
+         * So this section, the logic after the articleViewHisAsyncHandler call,
+         * is where the mismatch between the two transactions can occur if an exception is thrown.
+         */
 
         return ReadWorkBookArticleOut(
             id = articleRecord.articleId,

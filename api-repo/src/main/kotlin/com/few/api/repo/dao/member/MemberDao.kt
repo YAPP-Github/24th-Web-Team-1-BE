@@ -42,7 +42,8 @@ class MemberDao(
     fun selectWriterQuery(query: SelectWriterQuery) = dslContext.select(
         Member.MEMBER.ID.`as`(WriterRecord::writerId.name),
         DSL.jsonGetAttributeAsText(Member.MEMBER.DESCRIPTION, "name").`as`(WriterRecord::name.name),
-        DSL.jsonGetAttribute(Member.MEMBER.DESCRIPTION, "url").`as`(WriterRecord::url.name)
+        DSL.jsonGetAttribute(Member.MEMBER.DESCRIPTION, "url").`as`(WriterRecord::url.name),
+        Member.MEMBER.IMG_URL.`as`(WriterRecord::imgUrl.name)
     )
         .from(Member.MEMBER)
         .where(Member.MEMBER.ID.eq(query.writerId))

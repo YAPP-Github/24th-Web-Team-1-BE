@@ -31,11 +31,12 @@ class ArticleMainCardDao(
         ARTICLE_MAIN_CARD.CREATED_AT.`as`(ArticleMainCardRecord::createdAt.name),
         ARTICLE_MAIN_CARD.WRITER_ID.`as`(ArticleMainCardRecord::writerId.name),
         ARTICLE_MAIN_CARD.WRITER_EMAIL.`as`(ArticleMainCardRecord::writerEmail.name),
+        ARTICLE_MAIN_CARD.WRITER_IMG_URL.`as`(ArticleMainCardRecord::writerImgUrl.name),
         jsonGetAttributeAsText(
             ARTICLE_MAIN_CARD.WRITER_DESCRIPTION,
             "name"
         ).`as`(ArticleMainCardRecord::writerName.name),
-        jsonGetAttribute(ARTICLE_MAIN_CARD.WRITER_DESCRIPTION, "url").`as`(ArticleMainCardRecord::writerImgUrl.name),
+        jsonGetAttribute(ARTICLE_MAIN_CARD.WRITER_DESCRIPTION, "url").`as`(ArticleMainCardRecord::writerUrl.name),
         ARTICLE_MAIN_CARD.WORKBOOKS.`as`(ArticleMainCardRecord::workbooks.name)
     ).from(ARTICLE_MAIN_CARD)
         .where(ARTICLE_MAIN_CARD.ID.`in`(articleIds))

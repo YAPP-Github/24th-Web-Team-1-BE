@@ -41,7 +41,8 @@ class ArticleController(
             writer = WriterInfo(
                 useCaseOut.writer.id,
                 useCaseOut.writer.name,
-                useCaseOut.writer.url
+                useCaseOut.writer.url,
+                useCaseOut.writer.imgUrl
             ),
             mainImageUrl = useCaseOut.mainImageUrl,
             content = useCaseOut.content,
@@ -74,7 +75,8 @@ class ArticleController(
                 writer = WriterInfo(
                     a.writer.id,
                     a.writer.name,
-                    a.writer.url
+                    a.writer.url,
+                    a.writer.imgUrl
                 ),
                 mainImageUrl = a.mainImageUrl,
                 content = a.content,

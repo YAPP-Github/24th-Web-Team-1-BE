@@ -6,4 +6,5 @@ data class WriterRecord(
     val writerId: Long,
     val name: String,
     val url: URL,
+    val imgUrl: URL,
 )

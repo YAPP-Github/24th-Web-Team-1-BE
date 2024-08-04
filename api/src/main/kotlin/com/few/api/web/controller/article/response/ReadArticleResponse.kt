@@ -22,6 +22,7 @@ data class WriterInfo(
     val id: Long,
     val name: String,
     val url: URL,
+    val imgUrl: URL,
 )
 
 data class WorkbookInfo(

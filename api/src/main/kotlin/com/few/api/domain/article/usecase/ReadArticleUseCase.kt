@@ -59,7 +59,8 @@ class ReadArticleUseCase(
             writer = WriterDetail(
                 id = writerRecord.writerId,
                 name = writerRecord.name,
-                url = writerRecord.url
+                url = writerRecord.url,
+                imgUrl = writerRecord.imgUrl
             ),
             mainImageUrl = articleRecord.mainImageURL,
             title = articleRecord.title,

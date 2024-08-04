@@ -18,7 +18,8 @@ class ReadArticleWriterRecordService(
                 ReadWriterOutDto(
                     writerId = it.writerId,
                     name = it.name,
-                    url = it.url
+                    url = it.url,
+                    imgUrl = it.imgUrl
                 )
             }
         }

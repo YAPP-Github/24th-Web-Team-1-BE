@@ -81,7 +81,8 @@ class ReadArticlesUseCase(
                 writer = WriterDetail(
                     id = a.writerId,
                     name = a.writerName,
-                    url = a.writerImgUrl
+                    url = a.writerUrl,
+                    imgUrl = a.writerImgUrl
                 ),
                 mainImageUrl = a.mainImageUrl,
                 title = a.articleTitle,

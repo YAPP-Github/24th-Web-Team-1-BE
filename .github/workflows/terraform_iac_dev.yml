@@ -39,5 +39,5 @@ jobs:
 
       - name: Terraform Apply
         working-directory: ${{ env.working-directory }}
-        if: github.ref == 'refs/heads/infra/main' && github.event_name == 'push'
+        if: github.ref == 'refs/heads/infra/dev' && github.event_name == 'push'
         run: terraform apply -auto-approve -input=false -var 'aws_root_arn=${{ secrets.DEV_AWS_ROOT_ARN }}' -var 'aws_access_key=${{ secrets.DEV_AWS_ACCESS_KEY }}' -var 'aws_secret_key=${{ secrets.DEV_AWS_SECRET_KEY }}' -var 'aws_rds_password=${{ secrets.AWS_RDS_PASSWORD }}' -var 'fe_origin=${{ secrets.FE_ORIGIN }}' -var 'email_username=${{ secrets.EMAIL_USERNAME }}' -var 'email_password=${{ secrets.DEV_EMAIL_PASSWORD }}' -var 'webhook_discord=${{ secrets.WEBHOOK_DISCORD }}' -var 'encryption_secretkey=${{ secrets.ENCRYPTION_SECRETKEY }}' -var 'encryption_iv=${{ secrets.ENCRYPTION_IV }}' -var 'encryption_key_size=${{ secrets.ENCRYPTION_KEY_SIZE }}' -var 'domain_name=${{ secrets.DEV_DOMAIN_NAME }}'

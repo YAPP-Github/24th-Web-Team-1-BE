@@ -1,9 +1,11 @@
 package com.few.api.domain.admin.document.usecase
 
+import com.few.api.domain.admin.document.service.ArticleMainCardService
 import com.few.api.domain.admin.document.usecase.dto.AddArticleUseCaseIn
 import com.few.api.domain.admin.document.usecase.dto.AddArticleUseCaseOut
 import com.few.api.domain.admin.document.service.GetUrlService
 import com.few.api.domain.admin.document.service.dto.GetUrlInDto
+import com.few.api.domain.admin.document.service.dto.InitializeArticleMainCardInDto
 import com.few.api.domain.admin.document.utils.ObjectPathGenerator
 import com.few.api.exception.common.ExternalIntegrationException
 import com.few.api.exception.common.NotFoundException
@@ -25,6 +27,8 @@ import com.few.storage.document.service.PutDocumentService
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.io.File
+import java.net.URL
+import java.time.LocalDateTime
 import java.util.*
 
 @Component
@@ -37,6 +41,7 @@ class AddArticleUseCase(
     private val convertDocumentService: ConvertDocumentService,
     private val putDocumentService: PutDocumentService,
     private val getUrlService: GetUrlService,
+    private val articleMainCardService: ArticleMainCardService,
 ) {
     @Transactional
     fun execute(useCaseIn: AddArticleUseCaseIn): AddArticleUseCaseOut {
@@ -126,6 +131,21 @@ class AddArticleUseCase(
             CategoryType.fromCode(CategoryType.convertToCode(useCaseIn.category))
                 ?: throw NotFoundException("article.invalid.category")
         ).let { articleViewCountDao.insertArticleViewCountToZero(it) }
+
+        articleMainCardService.initialize(
+            InitializeArticleMainCardInDto(
+                articleId = articleMstId,
+                articleTitle = useCaseIn.title,
+                mainImageUrl = useCaseIn.articleImageUrl,
+                categoryCd = CategoryType.fromName(useCaseIn.category)?.code
+                    ?: throw NotFoundException("article.invalid.category"),
+                createdAt = LocalDateTime.now(), // TODO: DB insert 시점으로 변경
+                writerId = writerId.memberId,
+                writerEmail = useCaseIn.writerEmail,
+                writerName = writerId.writerName ?: throw NotFoundException("article.writer.name"),
+                writerImgUrl = URL("https://github.com/user-attachments/assets/528a6531-2cba-4efc-b8df-64a083d38be8") //TODO: 작가 이미지로 변환
+            )
+        )
 
         return AddArticleUseCaseOut(articleMstId)
     }

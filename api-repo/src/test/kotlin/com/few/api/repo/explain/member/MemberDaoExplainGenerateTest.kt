@@ -4,6 +4,7 @@ import com.few.api.repo.dao.member.MemberDao
 import com.few.api.repo.dao.member.command.InsertMemberCommand
 import com.few.api.repo.dao.member.command.UpdateDeletedMemberTypeCommand
 import com.few.api.repo.dao.member.command.UpdateMemberTypeCommand
+import com.few.api.repo.dao.member.query.BrowseWorkbookWritersQuery
 import com.few.api.repo.dao.member.query.SelectMemberByEmailQuery
 import com.few.api.repo.dao.member.query.SelectWriterQuery
 import com.few.api.repo.dao.member.support.WriterDescription
@@ -86,6 +87,17 @@ class MemberDaoExplainGenerateTest : JooqTestSpec() {
         val explain = dslContext.explain(query).toString()
 
         ResultGenerator.execute(query, explain, "selectWritersQueryExplain")
+    }
+
+    @Test
+    fun selectWritersQueryExplainByWorkbookIds() {
+        val query = BrowseWorkbookWritersQuery(listOf(2L, 3L)).let {
+            memberDao.selectWritersQuery(it)
+        }
+
+        val explain = dslContext.explain(query).toString()
+
+        ResultGenerator.execute(query, explain, "selectWritersQueryExplainByWorkbookIds")
     }
 
     @Test

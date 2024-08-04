@@ -4,8 +4,7 @@ terraform {
     organization = "few-org"
     hostname     = "app.terraform.io"
     workspaces {
-      #      name = "few-org-work"
-      name = "few-aws-work"
+      name = "few-aws-dev-work"
     }
   }
 }

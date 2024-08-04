@@ -27,7 +27,11 @@ class ArticleMainCardMapper(
         writerName = record.get(ArticleMainCardRecord::writerName.name, String::class.java),
         writerImgUrl = record.get(ArticleMainCardRecord::writerImgUrl.name, URL::class.java),
         workbooks = record.get(ArticleMainCardRecord::workbooks.name, JSON::class.java)?.data()?.let {
-            objectMapper.readValue<List<WorkbookRecord>>(it)
+            if ("{}".equals(it)) {
+                emptyList()
+            } else {
+                objectMapper.readValue<List<WorkbookRecord>>(it)
+            }
         } ?: run {
             emptyList()
         }

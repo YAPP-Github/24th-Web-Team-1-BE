@@ -16,6 +16,7 @@ import jooq.jooq_dsl.tables.MappingWorkbookArticle
 import jooq.jooq_dsl.tables.Member
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
+import org.jooq.impl.DSL.jsonGetAttributeAsText
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Repository
 
@@ -123,7 +124,8 @@ class MemberDao(
     }
 
     fun selectMemberByEmailQuery(query: SelectMemberByEmailQuery) = dslContext.select(
-        Member.MEMBER.ID.`as`(MemberIdRecord::memberId.name)
+        Member.MEMBER.ID.`as`(MemberIdRecord::memberId.name),
+        jsonGetAttributeAsText(Member.MEMBER.DESCRIPTION, "name").`as`(MemberIdRecord::writerName.name) // writer only(nullable)
     )
         .from(Member.MEMBER)
         .where(Member.MEMBER.EMAIL.eq(query.email))

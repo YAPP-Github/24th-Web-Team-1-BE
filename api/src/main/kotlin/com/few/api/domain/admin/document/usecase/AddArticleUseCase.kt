@@ -96,12 +96,15 @@ class AddArticleUseCase(
             }
         }
 
+        val category = CategoryType.fromName(useCaseIn.category)
+            ?: throw NotFoundException("article.invalid.category")
+
         /** insert article */
         val articleMstId = InsertFullArticleRecordCommand(
             writerId = writerIdRecord.memberId,
             mainImageURL = useCaseIn.articleImageUrl,
             title = useCaseIn.title,
-            category = CategoryType.convertToCode(useCaseIn.category),
+            category = category.code,
             content = htmlSource
         ).let { articleDao.insertFullArticleRecord(it) }
 
@@ -128,8 +131,7 @@ class AddArticleUseCase(
 
         ArticleViewCountQuery(
             articleMstId,
-            CategoryType.fromCode(CategoryType.convertToCode(useCaseIn.category))
-                ?: throw NotFoundException("article.invalid.category")
+            category
         ).let { articleViewCountDao.insertArticleViewCountToZero(it) }
 
         articleMainCardService.initialize(
@@ -137,8 +139,7 @@ class AddArticleUseCase(
                 articleId = articleMstId,
                 articleTitle = useCaseIn.title,
                 mainImageUrl = useCaseIn.articleImageUrl,
-                categoryCd = CategoryType.fromName(useCaseIn.category)?.code
-                    ?: throw NotFoundException("article.invalid.category"),
+                categoryCd = category.code,
                 createdAt = LocalDateTime.now(), // TODO: DB insert 시점으로 변경
                 writerId = writerIdRecord.memberId,
                 writerEmail = useCaseIn.writerEmail,

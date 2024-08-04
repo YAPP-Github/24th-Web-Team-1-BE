@@ -30,7 +30,9 @@ class ArticleMainCardMapper(
             if ("{}".equals(it)) {
                 emptyList()
             } else {
-                objectMapper.readValue<List<WorkbookRecord>>(it)
+                val workbookRecords = objectMapper.readValue<List<WorkbookRecord>>(it)
+                workbookRecords.filter { w -> w.id != null && w.title != null }
+                    .toList()
             }
         } ?: run {
             emptyList()

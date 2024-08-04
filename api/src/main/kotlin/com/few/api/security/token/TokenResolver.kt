@@ -40,7 +40,8 @@ class TokenResolver(
                 .build()
                 .parseClaimsJws(token)
                 .body
-                .get(MEMBER_ID_CLAIM_KEY, Long::class.java)
+                .get(MEMBER_ID_CLAIM_KEY, Integer::class.java)
+                .toLong()
         } catch (e: Exception) {
             log.warn { "${"Failed to get memberId. token: {}"} $token" }
             return null

@@ -4,11 +4,14 @@ import com.few.api.domain.workbook.usecase.BrowseWorkbooksUseCase
 import com.few.api.domain.workbook.usecase.dto.ReadWorkbookUseCaseIn
 import com.few.api.domain.workbook.usecase.ReadWorkbookUseCase
 import com.few.api.domain.workbook.usecase.dto.BrowseWorkbooksUseCaseIn
+import com.few.api.security.filter.token.AccessTokenResolver
+import com.few.api.security.token.TokenResolver
 import com.few.api.web.controller.workbook.response.*
 import com.few.api.web.support.WorkBookCategory
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
 import com.few.api.web.support.ViewCategory
+import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.constraints.Min
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController
 class WorkBookController(
     private val readWorkbookUseCase: ReadWorkbookUseCase,
     private val browseWorkBooksUseCase: BrowseWorkbooksUseCase,
+    private val tokenResolver: TokenResolver,
 ) {
 
     @GetMapping("/categories")
@@ -44,14 +48,20 @@ class WorkBookController(
 
     @GetMapping
     fun browseWorkBooks(
+        servletRequest: HttpServletRequest,
         @RequestParam(value = "category", required = false)
         category: WorkBookCategory?,
         @RequestParam(value = "view", required = false)
         viewCategory: ViewCategory?,
     ): ApiResponse<ApiResponse.SuccessBody<BrowseWorkBooksResponse>> {
+        val authorization: String? = servletRequest.getHeader("Authorization")
+        val memberId = authorization?.let {
+            AccessTokenResolver.resolve(it)
+        }.let {
+            tokenResolver.resolveId(it)
+        }
         val useCaseOut =
-            // todo fix memberId
-            BrowseWorkbooksUseCaseIn(category ?: WorkBookCategory.All, viewCategory, 1L).let { useCaseIn ->
+            BrowseWorkbooksUseCaseIn(category ?: WorkBookCategory.All, viewCategory, memberId).let { useCaseIn ->
                 browseWorkBooksUseCase.execute(useCaseIn)
             }
 

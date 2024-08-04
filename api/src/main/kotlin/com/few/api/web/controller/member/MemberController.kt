@@ -6,6 +6,7 @@ import com.few.api.domain.member.usecase.TokenUseCase
 import com.few.api.domain.member.usecase.dto.DeleteMemberUseCaseIn
 import com.few.api.domain.member.usecase.dto.SaveMemberUseCaseIn
 import com.few.api.domain.member.usecase.dto.TokenUseCaseIn
+import com.few.api.security.authentication.token.TokenUserDetails
 import com.few.api.web.controller.member.request.SaveMemberRequest
 import com.few.api.web.controller.member.request.TokenRequest
 import com.few.api.web.controller.member.response.SaveMemberResponse
@@ -14,6 +15,7 @@ import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -47,10 +49,11 @@ class MemberController(
         }
     }
 
-    // todo add controller test after security is implemented
     @DeleteMapping()
-    fun deleteMember(): ApiResponse<ApiResponse.Success> {
-        val memberId = 1L // todo fix
+    fun deleteMember(
+        @AuthenticationPrincipal userDetails: TokenUserDetails,
+    ): ApiResponse<ApiResponse.Success> {
+        val memberId = userDetails.username.toLong()
         val useCaseOut = DeleteMemberUseCaseIn(
             memberId = memberId
         ).let {

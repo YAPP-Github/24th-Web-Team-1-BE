@@ -9,7 +9,7 @@ enum class WorkBookCategory(val code: Byte, val parameterName: String, val displ
     ECONOMY(0, "economy", "경제"),
     IT(10, "it", "IT"),
     MARKETING(20, "marketing", "마케팅"),
-    CULTURE(30, "culture", "문화"),
+    CULTURE(30, "culture", "교양"),
     SCIENCE(40, "science", "과학"),
     ;
 

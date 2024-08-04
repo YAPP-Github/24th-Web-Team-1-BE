@@ -8,7 +8,7 @@ import com.few.api.repo.dao.member.MemberDao
 import com.few.api.repo.dao.member.command.InsertMemberCommand
 import com.few.api.repo.dao.member.command.UpdateDeletedMemberTypeCommand
 import com.few.api.repo.dao.member.query.SelectMemberByEmailNotConsiderDeletedAtQuery
-import com.few.data.common.code.MemberDefaultImage
+import com.few.data.common.code.MEMBER_DEFAULT_IMG_URL
 import com.few.data.common.code.MemberType
 import com.few.email.service.member.SendAuthEmailService
 import com.few.email.service.member.dto.Content
@@ -38,7 +38,7 @@ class SaveMemberUseCase(
             InsertMemberCommand(
                 email = useCaseIn.email,
                 memberType = MemberType.PREAUTH,
-                MemberDefaultImage.getRandom().url
+                MEMBER_DEFAULT_IMG_URL
             ).let {
                 memberDao.insertMember(it) ?: throw InsertException("member.insertfail.record")
             }

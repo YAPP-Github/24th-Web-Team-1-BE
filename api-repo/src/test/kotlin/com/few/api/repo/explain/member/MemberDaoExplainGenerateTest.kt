@@ -11,7 +11,7 @@ import com.few.api.repo.dao.member.support.WriterDescriptionJsonMapper
 import com.few.api.repo.explain.InsertUpdateExplainGenerator
 import com.few.api.repo.explain.ResultGenerator
 import com.few.api.repo.jooq.JooqTestSpec
-import com.few.data.common.code.MemberDefaultImage
+import com.few.data.common.code.MEMBER_DEFAULT_IMG_URL
 import com.few.data.common.code.MemberType
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jooq.jooq_dsl.tables.Member
@@ -116,7 +116,7 @@ class MemberDaoExplainGenerateTest : JooqTestSpec() {
         val command = InsertMemberCommand(
             email = "test100@gmail.com",
             memberType = MemberType.NORMAL,
-            imageUrl = MemberDefaultImage.getRandom().url
+            imageUrl = MEMBER_DEFAULT_IMG_URL
         ).let {
             memberDao.insertMemberCommand(it)
         }

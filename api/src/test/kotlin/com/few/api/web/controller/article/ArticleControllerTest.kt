@@ -12,7 +12,7 @@ import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
 import com.few.data.common.code.CategoryType
-import com.few.data.common.code.MemberDefaultImage
+import com.few.data.common.code.MEMBER_DEFAULT_IMG_URL
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -80,7 +80,7 @@ class ArticleControllerTest : ControllerTestSpec() {
                     id = 1L,
                     name = "안나포",
                     url = URL("http://localhost:8080/api/v1/writers/1"),
-                    imgUrl = URL(MemberDefaultImage.getRandom().url)
+                    imgUrl = URL(MEMBER_DEFAULT_IMG_URL)
                 ),
                 mainImageUrl = URL("https://github.com/YAPP-Github/24th-Web-Team-1-BE/assets/102807742/0643d805-5f3a-4563-8c48-2a7d51795326"),
                 title = "ETF(상장 지수 펀드)란? 모르면 손해라고?",
@@ -166,7 +166,7 @@ class ArticleControllerTest : ControllerTestSpec() {
                             id = 1L,
                             name = "안나포",
                             url = URL("http://localhost:8080/api/v1/writers/1"),
-                            imgUrl = URL(MemberDefaultImage.getRandom().url)
+                            imgUrl = URL(MEMBER_DEFAULT_IMG_URL)
                         ),
                         mainImageUrl = URL("https://github.com/YAPP-Github/24th-Web-Team-1-BE/assets/102807742/0643d805-5f3a-4563-8c48-2a7d51795326"),
                         title = "ETF(상장 지수 펀드)란? 모르면 손해라고?",

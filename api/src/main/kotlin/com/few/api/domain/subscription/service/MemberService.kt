@@ -7,7 +7,7 @@ import com.few.api.exception.common.InsertException
 import com.few.api.repo.dao.member.MemberDao
 import com.few.api.repo.dao.member.command.InsertMemberCommand
 import com.few.api.repo.dao.member.query.SelectMemberByEmailQuery
-import com.few.data.common.code.MemberDefaultImage
+import com.few.data.common.code.MEMBER_DEFAULT_IMG_URL
 import org.springframework.stereotype.Service
 
 @Service
@@ -20,7 +20,7 @@ class MemberService(
     }
 
     fun insertMember(dto: InsertMemberInDto): MemberIdOutDto {
-        return memberDao.insertMember(InsertMemberCommand(dto.email, dto.memberType, MemberDefaultImage.getRandom().url))
+        return memberDao.insertMember(InsertMemberCommand(dto.email, dto.memberType, MEMBER_DEFAULT_IMG_URL))
             ?.let { MemberIdOutDto(it) }
             ?: throw InsertException("member.insertfail.record")
     }

@@ -5,7 +5,7 @@ import com.few.api.repo.dao.member.query.SelectWritersQuery
 import com.few.api.repo.dao.member.support.WriterDescription
 import com.few.api.repo.dao.member.support.WriterDescriptionJsonMapper
 import com.few.api.repo.jooq.JooqTestSpec
-import com.few.data.common.code.MemberDefaultImage
+import com.few.data.common.code.MEMBER_DEFAULT_IMG_URL
 import com.few.data.common.code.MemberType
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jooq.jooq_dsl.tables.Member
@@ -41,7 +41,7 @@ class MemberDaoTest : JooqTestSpec() {
             .set(Member.MEMBER.ID, 1)
             .set(Member.MEMBER.EMAIL, "member@gmail.com")
             .set(Member.MEMBER.TYPE_CD, MemberType.NORMAL.code)
-            .set(Member.MEMBER.IMG_URL, MemberDefaultImage.getRandom().url)
+            .set(Member.MEMBER.IMG_URL, MEMBER_DEFAULT_IMG_URL)
             .execute()
 
         val writerDescription = writerDescriptionJsonMapper.toJson(
@@ -53,7 +53,7 @@ class MemberDaoTest : JooqTestSpec() {
             .set(Member.MEMBER.EMAIL, "writer2@gmail.com")
             .set(Member.MEMBER.TYPE_CD, MemberType.WRITER.code)
             .set(Member.MEMBER.DESCRIPTION, JSON.valueOf(writerDescription))
-            .set(Member.MEMBER.IMG_URL, MemberDefaultImage.getRandom().url)
+            .set(Member.MEMBER.IMG_URL, MEMBER_DEFAULT_IMG_URL)
             .execute()
         log.debug { "===== finish setUp =====" }
     }
@@ -110,7 +110,7 @@ class MemberDaoTest : JooqTestSpec() {
                 .set(Member.MEMBER.EMAIL, "writer$i@gmail.com")
                 .set(Member.MEMBER.TYPE_CD, MemberType.WRITER.code)
                 .set(Member.MEMBER.DESCRIPTION, JSON.valueOf(writerDescription))
-                .set(Member.MEMBER.IMG_URL, MemberDefaultImage.getRandom().url)
+                .set(Member.MEMBER.IMG_URL, MEMBER_DEFAULT_IMG_URL)
                 .execute()
         }
     }

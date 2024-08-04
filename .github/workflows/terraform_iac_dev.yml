@@ -1,4 +1,4 @@
-name: Terraform IAC
+name: Terraform IAC - Dev
 
 on:
   push:

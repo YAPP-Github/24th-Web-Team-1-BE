@@ -13,4 +13,5 @@ data class ArticleMainCardExcludeWorkbookCommand(
     val writerEmail: String,
     val writerName: String,
     val writerImgUrl: URL,
+    val writerUrl: URL,
 )

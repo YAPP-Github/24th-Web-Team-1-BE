@@ -28,7 +28,8 @@ class ArticleMainCardService(
                 writerId = inDto.writerId,
                 writerEmail = inDto.writerEmail,
                 writerName = inDto.writerName,
-                writerImgUrl = inDto.writerImgUrl
+                writerImgUrl = inDto.writerImgUrl,
+                writerUrl = inDto.writerUrl
             )
         )
     }

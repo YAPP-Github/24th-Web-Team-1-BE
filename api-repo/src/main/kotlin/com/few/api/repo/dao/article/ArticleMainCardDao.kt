@@ -49,29 +49,22 @@ class ArticleMainCardDao(
         insertArticleMainCardQuery(command).execute()
 
     fun insertArticleMainCardQuery(command: ArticleMainCardExcludeWorkbookCommand) = dslContext
-        .insertInto(
-            ARTICLE_MAIN_CARD,
-            ARTICLE_MAIN_CARD.ID,
-            ARTICLE_MAIN_CARD.TITLE,
-            ARTICLE_MAIN_CARD.MAIN_IMAGE_URL,
-            ARTICLE_MAIN_CARD.CATEGORY_CD,
-            ARTICLE_MAIN_CARD.CREATED_AT,
-            ARTICLE_MAIN_CARD.WRITER_ID,
-            ARTICLE_MAIN_CARD.WRITER_EMAIL,
-            ARTICLE_MAIN_CARD.WRITER_DESCRIPTION
-        ).values(
-            command.articleId,
-            command.articleTitle,
-            command.mainImageUrl.toString(),
-            command.categoryCd,
-            command.createdAt,
-            command.writerId,
-            command.writerEmail,
+        .insertInto(ARTICLE_MAIN_CARD)
+        .set(ARTICLE_MAIN_CARD.ID, command.articleId)
+        .set(ARTICLE_MAIN_CARD.TITLE, command.articleTitle)
+        .set(ARTICLE_MAIN_CARD.MAIN_IMAGE_URL, command.mainImageUrl.toString())
+        .set(ARTICLE_MAIN_CARD.CATEGORY_CD, command.categoryCd)
+        .set(ARTICLE_MAIN_CARD.CREATED_AT, command.createdAt)
+        .set(ARTICLE_MAIN_CARD.WRITER_ID, command.writerId)
+        .set(ARTICLE_MAIN_CARD.WRITER_EMAIL, command.writerEmail)
+        .set(ARTICLE_MAIN_CARD.WRITER_IMG_URL, command.writerImgUrl.toString())
+        .set(
+            ARTICLE_MAIN_CARD.WRITER_DESCRIPTION,
             JSON.valueOf(
                 commonJsonMapper.toJsonStr(
                     mapOf(
                         "name" to command.writerName,
-                        "url" to command.writerImgUrl
+                        "url" to command.writerUrl
                     )
                 )
             )

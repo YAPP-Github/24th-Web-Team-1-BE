@@ -12,7 +12,7 @@ import com.few.api.repo.dao.member.query.SelectMemberByEmailQuery
 import com.few.api.repo.dao.member.query.SelectWriterQuery
 import com.few.api.repo.dao.member.query.SelectWritersQuery
 import com.few.api.repo.dao.member.record.MemberIdAndIsDeletedRecord
-import com.few.api.repo.dao.member.record.MemberIdAndNameRecord
+import com.few.api.repo.dao.member.record.MemberRecord
 import com.few.api.repo.dao.member.record.MemberEmailAndTypeRecord
 import com.few.api.repo.dao.member.record.WriterRecord
 import com.few.api.repo.dao.member.record.WriterRecordMappedWorkbook
@@ -22,6 +22,7 @@ import jooq.jooq_dsl.tables.MappingWorkbookArticle
 import jooq.jooq_dsl.tables.Member
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
+import org.jooq.impl.DSL.jsonGetAttribute
 import org.jooq.impl.DSL.jsonGetAttributeAsText
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Repository
@@ -126,14 +127,18 @@ class MemberDao(
             .where(Member.MEMBER.TYPE_CD.eq(MemberType.WRITER.code))
             .and(Member.MEMBER.DELETED_AT.isNull)
 
-    fun selectMemberByEmail(query: SelectMemberByEmailQuery): MemberIdAndNameRecord? {
+    fun selectMemberByEmail(query: SelectMemberByEmailQuery): MemberRecord? {
         return selectMemberByEmailQuery(query)
-            .fetchOneInto(MemberIdAndNameRecord::class.java)
+            .fetchOneInto(MemberRecord::class.java)
     }
 
     fun selectMemberByEmailQuery(query: SelectMemberByEmailQuery) = dslContext.select(
-        Member.MEMBER.ID.`as`(MemberIdAndNameRecord::memberId.name),
-        jsonGetAttributeAsText(Member.MEMBER.DESCRIPTION, "name").`as`(MemberIdAndNameRecord::writerName.name) // writer only(nullable)
+        Member.MEMBER.ID.`as`(MemberRecord::memberId.name),
+        Member.MEMBER.IMG_URL.`as`(MemberRecord::imageUrl.name),
+        // writer only(nullable)
+        jsonGetAttributeAsText(Member.MEMBER.DESCRIPTION, "name").`as`(MemberRecord::writerName.name),
+        // writer only(nullable)
+        jsonGetAttribute(Member.MEMBER.DESCRIPTION, "url").`as`(MemberRecord::writerUrl.name)
     )
         .from(Member.MEMBER)
         .where(Member.MEMBER.EMAIL.eq(query.email))

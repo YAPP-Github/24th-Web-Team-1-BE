@@ -12,6 +12,8 @@ data class SendAuthEmailArgs(
 ) : SendMailArgs<Content, String>
 
 data class Content(
+    val headComment: String,
+    val subComment: String,
     val email: String,
     val confirmLink: URL,
 )

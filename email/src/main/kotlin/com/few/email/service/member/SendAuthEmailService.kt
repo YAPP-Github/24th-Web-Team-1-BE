@@ -20,6 +20,8 @@ class SendAuthEmailService(
         val context = Context()
         context.setVariable("email", args.content.email)
         context.setVariable("confirmLink", args.content.confirmLink)
+        context.setVariable("headComment", args.content.headComment)
+        context.setVariable("subComment", args.content.subComment)
         return templateEngine.process(args.template, context)
     }
 }

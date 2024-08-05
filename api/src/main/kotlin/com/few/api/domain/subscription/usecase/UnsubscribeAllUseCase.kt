@@ -1,9 +1,7 @@
 package com.few.api.domain.subscription.usecase
 
 import com.few.api.domain.subscription.service.MemberService
-import com.few.api.domain.subscription.service.dto.ReadMemberIdInDto
 import com.few.api.domain.subscription.usecase.dto.UnsubscribeAllUseCaseIn
-import com.few.api.exception.common.NotFoundException
 import com.few.api.repo.dao.subscription.SubscriptionDao
 import com.few.api.repo.dao.subscription.command.UpdateDeletedAtInAllSubscriptionCommand
 import org.springframework.stereotype.Component
@@ -18,12 +16,8 @@ class UnsubscribeAllUseCase(
     @Transactional
     fun execute(useCaseIn: UnsubscribeAllUseCaseIn) {
         // TODO: request sending email
-
-        val memberId =
-            memberService.readMemberId(ReadMemberIdInDto(useCaseIn.email))?.memberId ?: throw NotFoundException("member.notfound.email")
-
         subscriptionDao.updateDeletedAtInAllSubscription(
-            UpdateDeletedAtInAllSubscriptionCommand(memberId = memberId, opinion = useCaseIn.opinion)
+            UpdateDeletedAtInAllSubscriptionCommand(memberId = useCaseIn.memberId, opinion = useCaseIn.opinion)
         )
     }
 }

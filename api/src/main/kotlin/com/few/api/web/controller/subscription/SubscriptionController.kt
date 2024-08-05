@@ -163,14 +163,16 @@ class SubscriptionController(
     // todo fix email to memberId
     @PostMapping("/workbooks/{workbookId}/subs")
     fun subscribeWorkbook(
+        @AuthenticationPrincipal userDetails: TokenUserDetails,
         @PathVariable(value = "workbookId")
         @Min(value = 1, message = "{min.id}")
         workbookId: Long,
         @Valid @RequestBody
         body: SubscribeWorkbookRequest,
     ): ApiResponse<ApiResponse.Success> {
+        val memberId = userDetails.username.toLong()
         subscribeWorkbookUseCase.execute(
-            SubscribeWorkbookUseCaseIn(workbookId = workbookId, email = body.email)
+            SubscribeWorkbookUseCaseIn(workbookId = workbookId, memberId = memberId)
         )
 
         return ApiResponseGenerator.success(HttpStatus.OK)
@@ -179,27 +181,34 @@ class SubscriptionController(
     // todo fix email to memberId
     @PostMapping("/workbooks/{workbookId}/unsubs")
     fun unsubscribeWorkbook(
+        @AuthenticationPrincipal userDetails: TokenUserDetails,
         @PathVariable(value = "workbookId")
         @Min(value = 1, message = "{min.id}")
         workbookId: Long,
         @Valid @RequestBody
         body: UnsubscribeWorkbookRequest,
     ): ApiResponse<ApiResponse.Success> {
+        val memberId = userDetails.username.toLong()
         unsubscribeWorkbookUseCase.execute(
-            UnsubscribeWorkbookUseCaseIn(workbookId = workbookId, email = body.email, opinion = body.opinion)
+            UnsubscribeWorkbookUseCaseIn(
+                workbookId = workbookId,
+                memberId = memberId,
+                opinion = body.opinion
+            )
         )
 
         return ApiResponseGenerator.success(HttpStatus.OK)
     }
 
-    // todo fix email to memberId
     @PostMapping("/subscriptions/unsubs")
     fun deactivateAllSubscriptions(
+        @AuthenticationPrincipal userDetails: TokenUserDetails,
         @Valid @RequestBody
         body: UnsubscribeAllRequest,
     ): ApiResponse<ApiResponse.Success> {
+        val memberId = userDetails.username.toLong()
         unsubscribeAllUseCase.execute(
-            UnsubscribeAllUseCaseIn(email = body.email, opinion = body.opinion)
+            UnsubscribeAllUseCaseIn(memberId = memberId, opinion = body.opinion)
         )
 
         return ApiResponseGenerator.success(HttpStatus.OK)

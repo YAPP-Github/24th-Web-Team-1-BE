@@ -64,8 +64,8 @@ class SubscriptionDao(
             SUBSCRIPTION.PROGRESS.add(1).`as`(WorkbookSubscriptionStatus::day.name)
         )
             .from(SUBSCRIPTION)
-            .where(SUBSCRIPTION.TARGET_WORKBOOK_ID.eq(query.workbookId))
-            .and(SUBSCRIPTION.MEMBER_ID.eq(query.memberId))
+            .where(SUBSCRIPTION.MEMBER_ID.eq(query.memberId))
+            .and(SUBSCRIPTION.TARGET_WORKBOOK_ID.eq(query.workbookId))
             .orderBy(SUBSCRIPTION.CREATED_AT.desc())
             .limit(1)
 

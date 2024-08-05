@@ -134,10 +134,19 @@ class WebSecurityConfig(
                     AntPathRequestMatcher("/reports/**", HttpMethod.GET.name()),
 
                     /** 인증/비인증 모두 허용 */
-                    AntPathRequestMatcher("/api/v1/subscriptions/workbooks/main", HttpMethod.GET.name()),
+                    AntPathRequestMatcher(
+                        "/api/v1/subscriptions/workbooks/main",
+                        HttpMethod.GET.name()
+                    ),
                     AntPathRequestMatcher("/api/v1/workbooks", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/api/v1/articles/*", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/api/v1/workbooks/*/articles/*", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/api/v1/subscriptions/workbooks/main", HttpMethod.GET.name()),
+
+                    /** 어드민 */
+                    AntPathRequestMatcher("/api/v1/admin/**", HttpMethod.POST.name()),
+                    AntPathRequestMatcher("/api/v1/logs", HttpMethod.POST.name()),
+                    AntPathRequestMatcher("/batch/**"),
 
                     /** 인증 불필요 */
                     AntPathRequestMatcher("/api/v1/members", HttpMethod.POST.name()),
@@ -145,10 +154,10 @@ class WebSecurityConfig(
                     AntPathRequestMatcher("/api/v1/articles", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/api/v1/articles/categories", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/api/v1/workbooks/categories", HttpMethod.GET.name()),
-                    AntPathRequestMatcher("/api/v1/problems/**", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/api/v1/workbooks/*", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/api/v1/workbooks/categories", HttpMethod.GET.name()),
-                    AntPathRequestMatcher("/batch/**")
+                    AntPathRequestMatcher("/api/v1/workbooks/*/articles/*", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/api/v1/problems/**", HttpMethod.GET.name())
                 )
         }
     }
@@ -169,10 +178,19 @@ class WebSecurityConfig(
                     AntPathRequestMatcher("/reports/**", HttpMethod.GET.name()),
 
                     /** 인증/비인증 모두 허용 */
-                    AntPathRequestMatcher("/api/v1/subscriptions/workbooks/main", HttpMethod.GET.name()),
+                    AntPathRequestMatcher(
+                        "/api/v1/subscriptions/workbooks/main",
+                        HttpMethod.GET.name()
+                    ),
                     AntPathRequestMatcher("/api/v1/workbooks", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/api/v1/articles/*", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/api/v1/workbooks/*/articles/*", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/api/v1/subscriptions/workbooks/main", HttpMethod.GET.name()),
+
+                    /** 어드민 */
+                    AntPathRequestMatcher("/api/v1/admin/**", HttpMethod.POST.name()),
+                    AntPathRequestMatcher("/api/v1/logs", HttpMethod.POST.name()),
+                    AntPathRequestMatcher("/batch/**"),
 
                     /** 인증 불필요 */
                     AntPathRequestMatcher("/api/v1/members", HttpMethod.POST.name()),
@@ -180,10 +198,10 @@ class WebSecurityConfig(
                     AntPathRequestMatcher("/api/v1/articles", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/api/v1/articles/categories", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/api/v1/workbooks/categories", HttpMethod.GET.name()),
-                    AntPathRequestMatcher("/api/v1/problems/**", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/api/v1/workbooks/*", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/api/v1/workbooks/categories", HttpMethod.GET.name()),
-                    AntPathRequestMatcher("/batch/**")
+                    AntPathRequestMatcher("/api/v1/workbooks/*/articles/*", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/api/v1/problems/**", HttpMethod.GET.name())
                 )
         }
     }

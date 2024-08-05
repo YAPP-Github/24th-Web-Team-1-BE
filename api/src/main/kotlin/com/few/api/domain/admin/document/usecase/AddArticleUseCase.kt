@@ -27,7 +27,6 @@ import com.few.storage.document.service.PutDocumentService
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.io.File
-import java.net.URL
 import java.time.LocalDateTime
 import java.util.*
 
@@ -46,7 +45,7 @@ class AddArticleUseCase(
     @Transactional
     fun execute(useCaseIn: AddArticleUseCaseIn): AddArticleUseCaseOut {
         /** select writerId */
-        val writerIdRecord = SelectMemberByEmailQuery(useCaseIn.writerEmail).let {
+        val writerRecord = SelectMemberByEmailQuery(useCaseIn.writerEmail).let {
             memberDao.selectMemberByEmail(it)
         } ?: throw NotFoundException("member.notfound.id")
 
@@ -101,7 +100,7 @@ class AddArticleUseCase(
 
         /** insert article */
         val articleMstId = InsertFullArticleRecordCommand(
-            writerId = writerIdRecord.memberId,
+            writerId = writerRecord.memberId,
             mainImageURL = useCaseIn.articleImageUrl,
             title = useCaseIn.title,
             category = category.code,
@@ -141,10 +140,11 @@ class AddArticleUseCase(
                 mainImageUrl = useCaseIn.articleImageUrl,
                 categoryCd = category.code,
                 createdAt = LocalDateTime.now(), // TODO: DB insert 시점으로 변경
-                writerId = writerIdRecord.memberId,
+                writerId = writerRecord.memberId,
                 writerEmail = useCaseIn.writerEmail,
-                writerName = writerIdRecord.writerName ?: throw NotFoundException("article.writer.name"),
-                writerImgUrl = URL("https://github.com/user-attachments/assets/528a6531-2cba-4efc-b8df-64a083d38be8") //TODO: 작가 이미지로 변환
+                writerName = writerRecord.writerName ?: throw NotFoundException("article.writer.name"),
+                writerUrl = writerRecord.url ?: throw NotFoundException("article.writer.url"),
+                writerImgUrl = writerRecord.imageUrl ?: throw NotFoundException("article.writer.url")
             )
         )
 

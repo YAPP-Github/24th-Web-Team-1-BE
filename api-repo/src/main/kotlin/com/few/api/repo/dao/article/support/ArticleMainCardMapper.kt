@@ -25,6 +25,7 @@ class ArticleMainCardMapper(
         writerId = record.get(ArticleMainCardRecord::writerId.name, Long::class.java),
         writerEmail = record.get(ArticleMainCardRecord::writerEmail.name, String::class.java),
         writerName = record.get(ArticleMainCardRecord::writerName.name, String::class.java),
+        writerUrl = record.get(ArticleMainCardRecord::writerUrl.name, URL::class.java),
         writerImgUrl = record.get(ArticleMainCardRecord::writerImgUrl.name, URL::class.java),
         workbooks = record.get(ArticleMainCardRecord::workbooks.name, JSON::class.java)?.data()?.let {
             if ("{}".equals(it)) {

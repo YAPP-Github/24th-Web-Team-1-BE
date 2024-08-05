@@ -54,9 +54,10 @@ class ArticleController(
             id = useCaseOut.id,
             title = useCaseOut.title,
             writer = WriterInfo(
-                useCaseOut.writer.id,
-                useCaseOut.writer.name,
-                useCaseOut.writer.url
+                id = useCaseOut.writer.id,
+                name = useCaseOut.writer.name,
+                url = useCaseOut.writer.url,
+                imageUrl = useCaseOut.writer.imageUrl
             ),
             mainImageUrl = useCaseOut.mainImageUrl,
             content = useCaseOut.content,
@@ -87,9 +88,10 @@ class ArticleController(
                 id = a.id,
                 title = a.title,
                 writer = WriterInfo(
-                    a.writer.id,
-                    a.writer.name,
-                    a.writer.url
+                    id = a.writer.id,
+                    name = a.writer.name,
+                    url = a.writer.url,
+                    imageUrl = a.writer.imageUrl
                 ),
                 mainImageUrl = a.mainImageUrl,
                 content = a.content,

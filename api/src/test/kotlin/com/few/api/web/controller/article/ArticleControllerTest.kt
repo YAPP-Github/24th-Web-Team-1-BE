@@ -94,7 +94,8 @@ class ArticleControllerTest : ControllerTestSpec() {
                 writer = WriterDetail(
                     id = 1L,
                     name = "안나포",
-                    url = URL("http://localhost:8080/api/v1/writers/1")
+                    url = URL("http://localhost:8080/api/v1/writers/1"),
+                    imageUrl = URL("https://github.com/user-attachments/assets/28df9078-488c-49d6-9375-54ce5a250742")
                 ),
                 mainImageUrl = URL("https://github.com/YAPP-Github/24th-Web-Team-1-BE/assets/102807742/0643d805-5f3a-4563-8c48-2a7d51795326"),
                 title = "ETF(상장 지수 펀드)란? 모르면 손해라고?",
@@ -140,6 +141,8 @@ class ArticleControllerTest : ControllerTestSpec() {
                                             .fieldWithString("아티클 작가 이름"),
                                         PayloadDocumentation.fieldWithPath("data.writer.url")
                                             .fieldWithString("아티클 작가 링크"),
+                                        PayloadDocumentation.fieldWithPath("data.writer.imageUrl")
+                                            .fieldWithString("아티클 작가 이미지 링크(non-null)"),
                                         PayloadDocumentation.fieldWithPath("data.mainImageUrl")
                                             .fieldWithString("아티클 썸네일 이미지 링크"),
                                         PayloadDocumentation.fieldWithPath("data.title")
@@ -186,7 +189,8 @@ class ArticleControllerTest : ControllerTestSpec() {
                         writer = WriterDetail(
                             id = 1L,
                             name = "안나포",
-                            url = URL("http://localhost:8080/api/v1/writers/1")
+                            url = URL("http://localhost:8080/api/v1/writers/1"),
+                            imageUrl = URL("https://github.com/user-attachments/assets/28df9078-488c-49d6-9375-54ce5a250742")
                         ),
                         mainImageUrl = URL("https://github.com/YAPP-Github/24th-Web-Team-1-BE/assets/102807742/0643d805-5f3a-4563-8c48-2a7d51795326"),
                         title = "ETF(상장 지수 펀드)란? 모르면 손해라고?",
@@ -243,6 +247,8 @@ class ArticleControllerTest : ControllerTestSpec() {
                                             .fieldWithString("아티클 작가 이름"),
                                         PayloadDocumentation.fieldWithPath("data.articles[].writer.url")
                                             .fieldWithString("아티클 작가 링크"),
+                                        PayloadDocumentation.fieldWithPath("data.articles[].writer.imageUrl")
+                                            .fieldWithString("아티클 작가 이미지 링크(non-null)"),
                                         PayloadDocumentation.fieldWithPath("data.articles[].mainImageUrl")
                                             .fieldWithString("아티클 썸네일 이미지 링크"),
                                         PayloadDocumentation.fieldWithPath("data.articles[].title")

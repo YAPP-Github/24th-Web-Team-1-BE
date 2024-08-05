@@ -12,5 +12,6 @@ data class InitializeArticleMainCardInDto(
     val writerId: Long,
     val writerEmail: String,
     val writerName: String,
+    val writerUrl: URL,
     val writerImgUrl: URL,
 )

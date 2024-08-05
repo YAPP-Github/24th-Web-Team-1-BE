@@ -1,13 +1,19 @@
 package com.few.api.web.controller.article
 
-import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseIn
 import com.few.api.domain.article.usecase.ReadArticleUseCase
 import com.few.api.domain.article.usecase.ReadArticlesUseCase
+import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseIn
 import com.few.api.domain.article.usecase.dto.ReadArticlesUseCaseIn
-import com.few.api.web.controller.article.response.*
+import com.few.api.security.filter.token.AccessTokenResolver
+import com.few.api.security.token.TokenResolver
+import com.few.api.web.controller.article.response.ReadArticleResponse
+import com.few.api.web.controller.article.response.ReadArticlesResponse
+import com.few.api.web.controller.article.response.WorkbookInfo
+import com.few.api.web.controller.article.response.WriterInfo
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
 import com.few.data.common.code.CategoryType
+import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.constraints.Min
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -20,18 +26,27 @@ import org.springframework.web.bind.annotation.*
 class ArticleController(
     private val readArticleUseCase: ReadArticleUseCase,
     private val readArticlesUseCase: ReadArticlesUseCase,
+    private val tokenResolver: TokenResolver,
 ) {
 
     @GetMapping("/{articleId}")
     fun readArticle(
+        servletRequest: HttpServletRequest,
         @PathVariable(value = "articleId")
         @Min(value = 1, message = "{min.id}")
         articleId: Long,
     ): ApiResponse<ApiResponse.SuccessBody<ReadArticleResponse>> {
+        val authorization: String? = servletRequest.getHeader("Authorization")
+        val memberId = authorization?.let {
+            AccessTokenResolver.resolve(it)
+        }.let {
+            tokenResolver.resolveId(it)
+        } ?: 0L
+
         val useCaseOut = ReadArticleUseCaseIn(
             articleId = articleId,
-            memberId = 0L
-        ).let { useCaseIn: ReadArticleUseCaseIn -> //TODO: membberId검토
+            memberId = memberId
+        ).let { useCaseIn: ReadArticleUseCaseIn ->
             readArticleUseCase.execute(useCaseIn)
         }
 

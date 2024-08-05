@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.few.api.domain.workbook.usecase.BrowseWorkbooksUseCase
 import com.few.api.domain.workbook.usecase.ReadWorkbookUseCase
 import com.few.api.domain.workbook.usecase.dto.*
+import com.few.api.security.token.TokenResolver
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
@@ -54,6 +55,9 @@ class WorkBookControllerTest : ControllerTestSpec() {
 
     @MockBean
     private lateinit var browseWorkBooksUseCase: BrowseWorkbooksUseCase
+
+    @MockBean
+    private lateinit var tokenResolver: TokenResolver
 
     companion object {
         private val BASE_URL = "/api/v1/workbooks"
@@ -117,6 +121,9 @@ class WorkBookControllerTest : ControllerTestSpec() {
         )
     }
 
+    /**
+     * 인증/비인증 모두 가능한 API
+     */
     @Test
     @DisplayName("[GET] /api/v1/workbooks")
     fun browseWorkBooks() {
@@ -132,6 +139,7 @@ class WorkBookControllerTest : ControllerTestSpec() {
             .toUriString()
 
         // set usecase mock
+        `when`(tokenResolver.resolveId("thisisaccesstoken")).thenReturn(memberId)
         `when`(browseWorkBooksUseCase.execute(BrowseWorkbooksUseCaseIn(WorkBookCategory.ECONOMY, viewCategory, memberId))).thenReturn(
             BrowseWorkbooksUseCaseOut(
                 workbooks = listOf(
@@ -156,6 +164,7 @@ class WorkBookControllerTest : ControllerTestSpec() {
         // when
         mockMvc.perform(
             get(uri)
+                .header("Authorization", "Bearer thisisaccesstoken")
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
             status().is2xxSuccessful
@@ -171,6 +180,12 @@ class WorkBookControllerTest : ControllerTestSpec() {
                         .queryParameters(
                             parameterWithName("category").description("학습지 카테고리").optional(),
                             parameterWithName("view").description("뷰 카테고리").optional()
+                        )
+                        .requestHeaders(
+                            ResourceDocumentation.headerWithName("Authorization")
+                                .defaultValue("{{accessToken}}")
+                                .description("Bearer 어세스 토큰")
+                                .optional()
                         )
                         .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
                             *Description.describe(

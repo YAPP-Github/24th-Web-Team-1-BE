@@ -38,7 +38,7 @@ class TokenInvalidExceptionHandlerFilter : OncePerRequestFilter() {
             private const val message = "인증이 필요해요."
         }
         override fun toString(): String {
-            return "{ message: \"$message\" }"
+            return "{ \"message\": \"$message\" }"
         }
     }
 }

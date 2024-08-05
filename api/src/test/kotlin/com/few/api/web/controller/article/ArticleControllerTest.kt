@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.few.api.domain.article.usecase.ReadArticleUseCase
 import com.few.api.domain.article.usecase.ReadArticlesUseCase
 import com.few.api.domain.article.usecase.dto.*
+import com.few.api.security.token.TokenResolver
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
@@ -22,9 +23,13 @@ import org.springframework.http.MediaType
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.restdocs.RestDocumentationContextProvider
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
 import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URL
 import java.time.LocalDateTime
@@ -37,6 +42,9 @@ class ArticleControllerTest : ControllerTestSpec() {
     private lateinit var webTestClient: WebTestClient
 
     @Autowired
+    private lateinit var mockMvc: MockMvc
+
+    @Autowired
     private lateinit var articleController: ArticleController
 
     @MockBean
@@ -44,6 +52,9 @@ class ArticleControllerTest : ControllerTestSpec() {
 
     @MockBean
     private lateinit var readArticlesUseCase: ReadArticlesUseCase
+
+    @MockBean
+    private lateinit var tokenResolver: TokenResolver
 
     companion object {
         private val BASE_URL = "/api/v1/articles"
@@ -63,6 +74,9 @@ class ArticleControllerTest : ControllerTestSpec() {
             .build()
     }
 
+    /**
+     * 인증/비인증 모두 가능한 API
+     */
     @Test
     @DisplayName("[GET] /api/v1/articles/{articleId}")
     fun readArticle() {
@@ -71,7 +85,9 @@ class ArticleControllerTest : ControllerTestSpec() {
         val uri = UriComponentsBuilder.newInstance().path("$BASE_URL/{articleId}").build().toUriString()
         // set usecase mock
         val articleId = 1L
-        val memberId = 0L
+        val memberId = 1L
+
+        `when`(tokenResolver.resolveId("thisisaccesstoken")).thenReturn(memberId)
         `when`(readArticleUseCase.execute(ReadArticleUseCaseIn(articleId, memberId))).thenReturn(
             ReadArticleUseCaseOut(
                 id = 1L,
@@ -91,14 +107,23 @@ class ArticleControllerTest : ControllerTestSpec() {
         )
 
         // when
-        this.webTestClient.get().uri(uri, articleId).accept(MediaType.APPLICATION_JSON)
-            .exchange().expectStatus().isOk().expectBody().consumeWith(
-                WebTestClientRestDocumentation.document(
+        mockMvc.perform(
+            get(uri, articleId)
+                .header("Authorization", "Bearer thisisaccesstoken")
+        ).andExpect(status().is2xxSuccessful)
+            .andDo(
+                document(
                     api.toIdentifier(),
                     ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder().description("아티클 Id로 아티클 조회")
                             .summary(api.toIdentifier()).privateResource(false).deprecated(false)
                             .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))
+                            .requestHeaders(
+                                ResourceDocumentation.headerWithName("Authorization")
+                                    .defaultValue("{{accessToken}}")
+                                    .description("Bearer 어세스 토큰")
+                                    .optional()
+                            )
                             .pathParameters(parameterWithName("articleId").description("아티클 Id"))
                             .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
                                 *Description.describe(

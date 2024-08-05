@@ -2,7 +2,8 @@ name: Sql Explain Hook
 
 on:
     pull_request:
-        branches: ["main"]
+        types: [ opened ]
+        branches: [ "main", "dev" ]
     workflow_dispatch:
 
 env:

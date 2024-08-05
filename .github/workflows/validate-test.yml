@@ -1,8 +1,9 @@
-name: Integration Test
+name: Validate Test
 
 on:
     pull_request:
-        branches: [ "main" ]
+        types: [ opened ]
+        branches: [ "dev" ]
     workflow_dispatch:
 
 permissions:

@@ -31,8 +31,9 @@ class TokenUserDetailsService(
 
         val id = claims.get(
             MEMBER_ID_CLAIM_KEY,
-            Long::class.java
-        )
+            Integer::class.java
+        ).toLong()
+
         val roles = claims.get(
             MEMBER_ROLE_CLAIM_KEY,
             String::class.java

@@ -5,7 +5,7 @@ import com.few.api.repo.dao.subscription.command.InsertWorkbookSubscriptionComma
 import com.few.api.repo.dao.subscription.command.UpdateDeletedAtInAllSubscriptionCommand
 import com.few.api.repo.dao.subscription.query.CountWorkbookMappedArticlesQuery
 import com.few.api.repo.dao.subscription.query.SelectAllWorkbookSubscriptionStatusNotConsiderDeletedAtQuery
-import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookSubscriptionStatusNotConsiderDeletedAtQuery
+import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookSubscriptionStatusUnsubOpinionConditionAndNotConsiderDeletedAQuery
 import com.few.api.repo.explain.InsertUpdateExplainGenerator
 import com.few.api.repo.explain.ResultGenerator
 import com.few.api.repo.jooq.JooqTestSpec
@@ -62,7 +62,11 @@ class SubscriptionDaoExplainGenerateTest : JooqTestSpec() {
 
     @Test
     fun selectAllTopWorkbookSubscriptionStatusQueryExplain() {
-        val query = SelectAllMemberWorkbookSubscriptionStatusNotConsiderDeletedAtQuery(memberId = 1L).let {
+        val query = SelectAllMemberWorkbookSubscriptionStatusUnsubOpinionConditionAndNotConsiderDeletedAQuery(
+            memberId = 1L,
+            unsubOpinion = "receive.all",
+            activeSubscriptionUnsubOpinion = ""
+        ).let {
             subscriptionDao.selectAllWorkbookSubscriptionStatusQuery(it)
         }
 

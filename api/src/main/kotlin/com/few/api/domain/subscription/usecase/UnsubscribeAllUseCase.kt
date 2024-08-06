@@ -16,8 +16,16 @@ class UnsubscribeAllUseCase(
     @Transactional
     fun execute(useCaseIn: UnsubscribeAllUseCaseIn) {
         // TODO: request sending email
+        var opinion = useCaseIn.opinion
+        if (useCaseIn.opinion == "") {
+            opinion = "cancel"
+        }
+
         subscriptionDao.updateDeletedAtInAllSubscription(
-            UpdateDeletedAtInAllSubscriptionCommand(memberId = useCaseIn.memberId, opinion = useCaseIn.opinion)
+            UpdateDeletedAtInAllSubscriptionCommand(
+                memberId = useCaseIn.memberId,
+                opinion = opinion
+            )
         )
     }
 }

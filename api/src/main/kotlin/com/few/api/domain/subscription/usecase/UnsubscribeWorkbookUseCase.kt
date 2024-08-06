@@ -16,12 +16,16 @@ class UnsubscribeWorkbookUseCase(
     @Transactional
     fun execute(useCaseIn: UnsubscribeWorkbookUseCaseIn) {
         // TODO: request sending email
+        var opinion = useCaseIn.opinion
+        if (useCaseIn.opinion == "") {
+            opinion = "cancel"
+        }
 
         subscriptionDao.updateDeletedAtInWorkbookSubscription(
             UpdateDeletedAtInWorkbookSubscriptionCommand(
                 memberId = useCaseIn.memberId,
                 workbookId = useCaseIn.workbookId,
-                opinion = useCaseIn.opinion
+                opinion = opinion
             )
         )
     }

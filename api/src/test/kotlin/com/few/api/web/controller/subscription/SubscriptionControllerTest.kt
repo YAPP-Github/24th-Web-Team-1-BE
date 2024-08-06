@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.few.api.domain.subscription.usecase.BrowseSubscribeWorkbooksUseCase
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
-import com.few.api.web.controller.subscription.request.SubscribeWorkbookRequest
 import com.few.api.web.controller.subscription.request.UnsubscribeWorkbookRequest
 import com.few.api.domain.subscription.usecase.SubscribeWorkbookUseCase
 import com.few.api.domain.subscription.usecase.UnsubscribeAllUseCase
@@ -196,7 +195,6 @@ class SubscriptionControllerTest : ControllerTestSpec() {
             .build().toUriString()
 
         val email = "test@gmail.com"
-        val body = objectMapper.writeValueAsString(SubscribeWorkbookRequest(email = email))
 
         // set usecase mock
         val memberId = 1L
@@ -208,7 +206,6 @@ class SubscriptionControllerTest : ControllerTestSpec() {
         mockMvc.perform(
             post(uri, workbookId)
                 .header("Authorization", "Bearer thisisaccesstoken")
-                .content(body)
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
             .andDo(

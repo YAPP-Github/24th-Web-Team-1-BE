@@ -64,6 +64,6 @@ class PutImageUseCase(
             } ?: throw ExternalIntegrationException("external.presignedfail.image")
 
         // todo fix if webp is default
-        return PutImageUseCaseOut(url)
+        return PutImageUseCaseOut(url, listOf(suffix, "webp"))
     }
 }

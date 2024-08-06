@@ -19,6 +19,11 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-impl:${DependencyVersion.JWT}")
     implementation("io.jsonwebtoken:jjwt-jackson:${DependencyVersion.JWT}")
 
+    /** scrimage */
+    implementation("com.sksamuel.scrimage:scrimage-core:${DependencyVersion.SCRIMAGE}")
+    /** for convert to webp */
+    implementation("com.sksamuel.scrimage:scrimage-webp:${DependencyVersion.SCRIMAGE}")
+
     /** swagger & restdocs */
     implementation("org.springdoc:springdoc-openapi-ui:${DependencyVersion.SPRINGDOC}")
     implementation("org.springframework.restdocs:spring-restdocs-webtestclient")

@@ -14,6 +14,9 @@ object DependencyVersion {
     /** jwt */
     const val JWT = "0.11.5"
 
+    /** scrimage */
+    const val SCRIMAGE = "4.1.2"
+
     /** flyway */
     const val FLYWAY = "9.16.0"
 

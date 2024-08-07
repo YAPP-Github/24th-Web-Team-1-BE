@@ -35,7 +35,8 @@ class ArticleMainCardDao(
             ARTICLE_MAIN_CARD.WRITER_DESCRIPTION,
             "name"
         ).`as`(ArticleMainCardRecord::writerName.name),
-        jsonGetAttribute(ARTICLE_MAIN_CARD.WRITER_DESCRIPTION, "url").`as`(ArticleMainCardRecord::writerImgUrl.name),
+        jsonGetAttribute(ARTICLE_MAIN_CARD.WRITER_DESCRIPTION, "url").`as`(ArticleMainCardRecord::writerUrl.name),
+        jsonGetAttribute(ARTICLE_MAIN_CARD.WRITER_DESCRIPTION, "imageUrl").`as`(ArticleMainCardRecord::writerImgUrl.name),
         ARTICLE_MAIN_CARD.WORKBOOKS.`as`(ArticleMainCardRecord::workbooks.name)
     ).from(ARTICLE_MAIN_CARD)
         .where(ARTICLE_MAIN_CARD.ID.`in`(articleIds))
@@ -70,7 +71,8 @@ class ArticleMainCardDao(
                 commonJsonMapper.toJsonStr(
                     mapOf(
                         "name" to command.writerName,
-                        "url" to command.writerImgUrl
+                        "url" to command.writerUrl,
+                        "imageUrl" to command.writerImgUrl
                     )
                 )
             )

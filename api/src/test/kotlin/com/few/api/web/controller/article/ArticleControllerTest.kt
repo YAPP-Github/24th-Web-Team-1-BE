@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.few.api.domain.article.usecase.ReadArticleUseCase
 import com.few.api.domain.article.usecase.ReadArticlesUseCase
 import com.few.api.domain.article.usecase.dto.*
+import com.few.api.security.token.TokenResolver
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
@@ -22,9 +23,13 @@ import org.springframework.http.MediaType
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.restdocs.RestDocumentationContextProvider
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
 import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URL
 import java.time.LocalDateTime
@@ -37,6 +42,9 @@ class ArticleControllerTest : ControllerTestSpec() {
     private lateinit var webTestClient: WebTestClient
 
     @Autowired
+    private lateinit var mockMvc: MockMvc
+
+    @Autowired
     private lateinit var articleController: ArticleController
 
     @MockBean
@@ -44,6 +52,9 @@ class ArticleControllerTest : ControllerTestSpec() {
 
     @MockBean
     private lateinit var readArticlesUseCase: ReadArticlesUseCase
+
+    @MockBean
+    private lateinit var tokenResolver: TokenResolver
 
     companion object {
         private val BASE_URL = "/api/v1/articles"
@@ -63,6 +74,9 @@ class ArticleControllerTest : ControllerTestSpec() {
             .build()
     }
 
+    /**
+     * 인증/비인증 모두 가능한 API
+     */
     @Test
     @DisplayName("[GET] /api/v1/articles/{articleId}")
     fun readArticle() {
@@ -71,14 +85,17 @@ class ArticleControllerTest : ControllerTestSpec() {
         val uri = UriComponentsBuilder.newInstance().path("$BASE_URL/{articleId}").build().toUriString()
         // set usecase mock
         val articleId = 1L
-        val memberId = 0L
+        val memberId = 1L
+
+        `when`(tokenResolver.resolveId("thisisaccesstoken")).thenReturn(memberId)
         `when`(readArticleUseCase.execute(ReadArticleUseCaseIn(articleId, memberId))).thenReturn(
             ReadArticleUseCaseOut(
                 id = 1L,
                 writer = WriterDetail(
                     id = 1L,
                     name = "안나포",
-                    url = URL("http://localhost:8080/api/v1/writers/1")
+                    url = URL("http://localhost:8080/api/v1/writers/1"),
+                    imageUrl = URL("https://github.com/user-attachments/assets/28df9078-488c-49d6-9375-54ce5a250742")
                 ),
                 mainImageUrl = URL("https://github.com/YAPP-Github/24th-Web-Team-1-BE/assets/102807742/0643d805-5f3a-4563-8c48-2a7d51795326"),
                 title = "ETF(상장 지수 펀드)란? 모르면 손해라고?",
@@ -91,14 +108,23 @@ class ArticleControllerTest : ControllerTestSpec() {
         )
 
         // when
-        this.webTestClient.get().uri(uri, articleId).accept(MediaType.APPLICATION_JSON)
-            .exchange().expectStatus().isOk().expectBody().consumeWith(
-                WebTestClientRestDocumentation.document(
+        mockMvc.perform(
+            get(uri, articleId)
+                .header("Authorization", "Bearer thisisaccesstoken")
+        ).andExpect(status().is2xxSuccessful)
+            .andDo(
+                document(
                     api.toIdentifier(),
                     ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder().description("아티클 Id로 아티클 조회")
                             .summary(api.toIdentifier()).privateResource(false).deprecated(false)
                             .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))
+                            .requestHeaders(
+                                ResourceDocumentation.headerWithName("Authorization")
+                                    .defaultValue("{{accessToken}}")
+                                    .description("Bearer 어세스 토큰")
+                                    .optional()
+                            )
                             .pathParameters(parameterWithName("articleId").description("아티클 Id"))
                             .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
                                 *Description.describe(
@@ -115,6 +141,8 @@ class ArticleControllerTest : ControllerTestSpec() {
                                             .fieldWithString("아티클 작가 이름"),
                                         PayloadDocumentation.fieldWithPath("data.writer.url")
                                             .fieldWithString("아티클 작가 링크"),
+                                        PayloadDocumentation.fieldWithPath("data.writer.imageUrl")
+                                            .fieldWithString("아티클 작가 이미지 링크(non-null)"),
                                         PayloadDocumentation.fieldWithPath("data.mainImageUrl")
                                             .fieldWithString("아티클 썸네일 이미지 링크"),
                                         PayloadDocumentation.fieldWithPath("data.title")
@@ -161,7 +189,8 @@ class ArticleControllerTest : ControllerTestSpec() {
                         writer = WriterDetail(
                             id = 1L,
                             name = "안나포",
-                            url = URL("http://localhost:8080/api/v1/writers/1")
+                            url = URL("http://localhost:8080/api/v1/writers/1"),
+                            imageUrl = URL("https://github.com/user-attachments/assets/28df9078-488c-49d6-9375-54ce5a250742")
                         ),
                         mainImageUrl = URL("https://github.com/YAPP-Github/24th-Web-Team-1-BE/assets/102807742/0643d805-5f3a-4563-8c48-2a7d51795326"),
                         title = "ETF(상장 지수 펀드)란? 모르면 손해라고?",
@@ -218,6 +247,8 @@ class ArticleControllerTest : ControllerTestSpec() {
                                             .fieldWithString("아티클 작가 이름"),
                                         PayloadDocumentation.fieldWithPath("data.articles[].writer.url")
                                             .fieldWithString("아티클 작가 링크"),
+                                        PayloadDocumentation.fieldWithPath("data.articles[].writer.imageUrl")
+                                            .fieldWithString("아티클 작가 이미지 링크(non-null)"),
                                         PayloadDocumentation.fieldWithPath("data.articles[].mainImageUrl")
                                             .fieldWithString("아티클 썸네일 이미지 링크"),
                                         PayloadDocumentation.fieldWithPath("data.articles[].title")

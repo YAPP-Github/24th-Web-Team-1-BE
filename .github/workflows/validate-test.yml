@@ -1,8 +1,8 @@
-name: Integration Test
+name: Validate Test
 
 on:
     pull_request:
-        branches: [ "main" ]
+        branches: [ "dev" ]
     workflow_dispatch:
 
 permissions:
@@ -21,6 +21,16 @@ jobs:
               with:
                   java-version: '17'
                   distribution: 'temurin'
+
+            - name: Cache Gradle
+              uses: actions/cache@v3
+              with:
+                  path: |
+                      ~/.gradle/caches
+                      ~/.gradle/wrapper
+                  key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+                  restore-keys: |
+                      ${{ runner.os }}-gradle-
 
             - name: Jooq Code Generation
               run: |

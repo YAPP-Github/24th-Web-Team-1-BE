@@ -20,6 +20,7 @@ data class WriterDetail(
     val id: Long,
     val name: String,
     val url: URL,
+    val imageUrl: URL,
 )
 
 data class WorkbookDetail(

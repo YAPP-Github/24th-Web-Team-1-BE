@@ -8,7 +8,7 @@ import com.few.api.domain.subscription.usecase.dto.BrowseSubscribeWorkbooksUseCa
 import com.few.api.domain.subscription.usecase.dto.SubscribeWorkbookDetail
 import com.few.api.repo.dao.subscription.SubscriptionDao
 import com.few.api.repo.dao.subscription.query.CountAllWorkbooksSubscription
-import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookSubscriptionStatusNotConsiderDeletedAtQuery
+import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookSubscriptionStatusUnsubOpinionConditionAndNotConsiderDeletedAQuery
 import com.few.api.web.support.WorkBookStatus
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -22,7 +22,7 @@ class BrowseSubscribeWorkbooksUseCase(
     @Transactional
     fun execute(useCaseIn: BrowseSubscribeWorkbooksUseCaseIn): BrowseSubscribeWorkbooksUseCaseOut {
         val subscriptionRecords =
-            SelectAllMemberWorkbookSubscriptionStatusNotConsiderDeletedAtQuery(useCaseIn.memberId).let {
+            SelectAllMemberWorkbookSubscriptionStatusUnsubOpinionConditionAndNotConsiderDeletedAQuery(useCaseIn.memberId).let {
                 subscriptionDao.selectAllWorkbookSubscriptionStatus(it)
             }
 

@@ -23,6 +23,13 @@ class SaveMemberUseCase(
     private val sendAuthEmailService: SendAuthEmailService,
     private val idEncryption: IdEncryption,
 ) {
+    companion object {
+        private const val AUTH_HEAD_COMMENT = "few 로그인 링크입니다."
+        private const val AUTH_SUB_COMMENT = "로그인하시려면 아래 버튼을 눌러주세요!"
+        private const val SIGNUP_HEAD_COMMENT = "few에 가입해주셔서 감사합니다."
+        private const val SIGNUP_SUB_COMMENT = "가입하신 이메일 주소를 확인해주세요."
+    }
+
     @Transactional
     fun execute(useCaseIn: SaveMemberUseCaseIn): SaveMemberUseCaseOut {
         /** email을 통해 가입 이력이 있는지 확인 */
@@ -32,8 +39,15 @@ class SaveMemberUseCase(
             memberDao.selectMemberByEmail(it)
         }
 
+        var headComment = AUTH_HEAD_COMMENT
+        var subComment = AUTH_SUB_COMMENT
+        var email = ""
+
         /** 가입 이력이 없다면 회원 가입 처리 */
         val token = if (Objects.isNull(isSignUpBeforeMember)) {
+            headComment = SIGNUP_HEAD_COMMENT
+            subComment = SIGNUP_SUB_COMMENT
+            email = useCaseIn.email
             InsertMemberCommand(
                 email = useCaseIn.email,
                 memberType = MemberType.PREAUTH
@@ -64,8 +78,10 @@ class SaveMemberUseCase(
                 subject = "[FEW] 인증 이메일 주소를 확인해주세요.",
                 template = "auth",
                 content = Content(
-                    email = useCaseIn.email,
-                    confirmLink = URL("https://www.fewletter.com/auth/validation/complete?token=$token")
+                    headComment = headComment,
+                    subComment = subComment,
+                    email = email,
+                    confirmLink = URL("https://www.fewletter.com/auth/validation/complete?auth_token=$token")
                 )
             ).let {
                 sendAuthEmailService.send(it)

@@ -315,8 +315,8 @@ class AdminControllerTest : ControllerTestSpec() {
         val api = "PutImage"
         val uri = UriComponentsBuilder.newInstance().path("$BASE_URL/utilities/conversion/image").build().toUriString()
         val request = ImageSourceRequest(source = MockMultipartFile("source", "test.jpg", "image/jpeg", "test".toByteArray()))
-        val response = ImageSourceResponse(URL("http://localhost:8080/test.jpg"))
-        val useCaseOut = PutImageUseCaseOut(response.url)
+        val response = ImageSourceResponse(URL("http://localhost:8080/test.jpg"), listOf("jpg", "webp"))
+        val useCaseOut = PutImageUseCaseOut(response.url, response.supportSuffix)
         val useCaseIn = PutImageUseCaseIn(request.source)
         `when`(putImageUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
 
@@ -344,6 +344,10 @@ class AdminControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data.url")
                                             .fieldWithString(
                                                 "이미지 URL"
+                                            ),
+                                        PayloadDocumentation.fieldWithPath("data.supportSuffix")
+                                            .fieldWithArray(
+                                                "지원하는 확장자"
                                             )
                                     )
                                 )

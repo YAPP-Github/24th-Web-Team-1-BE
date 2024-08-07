@@ -9,6 +9,7 @@ import com.few.api.domain.workbook.article.dto.ReadWorkBookArticleUseCaseIn
 import com.few.api.domain.workbook.article.dto.ReadWorkBookArticleOut
 import com.few.api.domain.workbook.article.dto.WriterDetail
 import com.few.api.domain.workbook.article.usecase.ReadWorkBookArticleUseCase
+import com.few.api.security.token.TokenResolver
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
@@ -18,14 +19,18 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.http.MediaType
 import org.mockito.Mockito.`when`
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.restdocs.RestDocumentationContextProvider
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
 import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
+import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URL
 import java.time.LocalDateTime
@@ -38,10 +43,16 @@ class WorkBookArticleControllerTest : ControllerTestSpec() {
     private lateinit var webTestClient: WebTestClient
 
     @Autowired
+    private lateinit var mockMvc: MockMvc
+
+    @Autowired
     private lateinit var workBookArticleController: WorkBookArticleController
 
     @MockBean
     private lateinit var readWorkBookArticleUseCase: ReadWorkBookArticleUseCase
+
+    @MockBean
+    private lateinit var tokenResolver: TokenResolver
 
     companion object {
         private val BASE_URL = "/api/v1/workbooks/{workbookId}/articles"
@@ -63,6 +74,7 @@ class WorkBookArticleControllerTest : ControllerTestSpec() {
 
     @Test
     @DisplayName("[GET] /api/v1/workbooks/{workbookId}/articles/{articleId}")
+    @WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
     fun readWorkBookArticle() {
         // given
         val api = "ReadWorkBookArticle"
@@ -73,7 +85,9 @@ class WorkBookArticleControllerTest : ControllerTestSpec() {
         // set usecase mock
         val workbookId = 1L
         val articleId = 1L
-        `when`(readWorkBookArticleUseCase.execute(ReadWorkBookArticleUseCaseIn(workbookId, articleId))).thenReturn(
+        val memberId = 1L
+        `when`(tokenResolver.resolveId("thisisaccesstoken")).thenReturn(memberId)
+        `when`(readWorkBookArticleUseCase.execute(ReadWorkBookArticleUseCaseIn(workbookId, articleId, memberId = memberId))).thenReturn(
             ReadWorkBookArticleOut(
                 id = 1L,
                 writer = WriterDetail(
@@ -91,12 +105,12 @@ class WorkBookArticleControllerTest : ControllerTestSpec() {
         )
 
         // when
-        this.webTestClient.get()
-            .uri(uri, workbookId, articleId)
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange().expectStatus().isOk()
-            .expectBody().consumeWith(
-                WebTestClientRestDocumentation.document(
+        mockMvc.perform(
+            get(uri, workbookId, articleId)
+                .header("Authorization", "Bearer thisisaccesstoken")
+        ).andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
+            .andDo(
+                MockMvcRestDocumentation.document(
                     api.toIdentifier(),
                     ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()

@@ -89,7 +89,7 @@
     <tr>
         <td style="text-align: center;">
             <img
-                src="https://d3ex4vlh373syu.cloudfront.net/images/2024-07-04/Wuw9u45G0Ib9IhuI.svg"
+                src="https://d3ex4vlh373syu.cloudfront.net/images/2024-08-05/RM1b5wg4du7PN5xy.png"
                 alt="few_logo"
                 style="display: block; margin: 30px auto;"
             />
@@ -99,7 +99,7 @@
     <tr>
         <td>
             <header>
-                <h2 class="h2-bold" style="color: black; padding: 5px;">few에 가입해주셔서 감사합니다.</h2>
+                <h2 class="h2-bold" style="color: black; padding: 5px;" th:text="${headComment}"></h2>
             </header>
         </td>
     </tr>
@@ -107,7 +107,7 @@
     <tr>
         <td>
             <article>
-                <span class="body2-regular" style="color: #484848">가입하신 이메일 주소를 확인해주세요.</span>
+                <span class="body2-regular" style="color: #484848" th:text="${subComment}"></span>
                 <br>
                 <span class="body2-medium" style="color: #0166B3" id="email" th:text="${email}"></span>
             </article>
@@ -120,12 +120,11 @@
                 id="article-to-problem"
                 class="body3-medium"
                 style="
-              display: flex;
+              display: block;
               height: 20px;
               text-decoration: none;
-              padding: 17px 0px 18px 0px;
-              justify-content: center;
-              align-items: center;
+              padding: 17px 0;
+              text-align: center;
               color: #ffffff;
               background-color: #264932;
             "

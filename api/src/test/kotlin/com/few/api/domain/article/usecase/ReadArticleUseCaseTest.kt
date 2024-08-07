@@ -57,7 +57,8 @@ class ReadArticleUseCaseTest : BehaviorSpec({
             val writerSvcOutDto = ReadWriterOutDto(
                 writerId = 1L,
                 name = "hunca",
-                url = URL("https://jh-labs.tistory.com/")
+                url = URL("https://jh-labs.tistory.com/"),
+                imageUrl = URL("https://github.com/user-attachments/assets/28df9078-488c-49d6-9375-54ce5a250742")
             )
             val probSvcOutDto = BrowseArticleProblemsOutDto(problemIds = listOf(1, 2, 3))
 

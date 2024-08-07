@@ -43,7 +43,11 @@ class MemberDaoTest : JooqTestSpec() {
             .execute()
 
         val writerDescription = writerDescriptionJsonMapper.toJson(
-            WriterDescription("few2", URL("http://localhost:8080/writers/url2"))
+            WriterDescription(
+                "few2",
+                URL("http://localhost:8080/writers/url2"),
+                URL("https://github.com/user-attachments/assets/28df9078-488c-49d6-9375-54ce5a250742")
+            )
         )
 
         dslContext.insertInto(Member.MEMBER)
@@ -100,7 +104,11 @@ class MemberDaoTest : JooqTestSpec() {
     fun setMoreWriters(count: Int) {
         for (i in 3 until 3 + count) {
             val writerDescription = writerDescriptionJsonMapper.toJson(
-                WriterDescription("few$i", URL("http://localhost:8080/writers/url$i"))
+                WriterDescription(
+                    "few$i",
+                    URL("http://localhost:8080/writers/url$i"),
+                    URL("https://github.com/user-attachments/assets/28df9078-488c-49d6-9375-54ce5a250742")
+                )
             )
             dslContext.insertInto(Member.MEMBER)
                 .set(Member.MEMBER.ID, i.toLong())

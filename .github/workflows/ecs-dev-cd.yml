@@ -1,9 +1,9 @@
-name: DEV - Deploy to Amazon ECS
+name: DEV - Deploy to Amazon ECS DEV
 
 on:
     push:
         branches:
-            - main
+            - dev
     workflow_dispatch:
 env:
     AWS_REGION: ap-northeast-2
@@ -41,8 +41,8 @@ jobs:
             - name: Configure AWS credentials
               uses: aws-actions/configure-aws-credentials@v1
               with:
-                  aws-access-key-id: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
-                  aws-secret-access-key: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
+                  aws-access-key-id: ${{ secrets.DEV_AWS_ACCESS_KEY }}
+                  aws-secret-access-key: ${{ secrets.DEV_AWS_SECRET_KEY }}
                   aws-region: ${{ env.AWS_REGION }}
 
             - name: Login to Amazon ECR
@@ -62,7 +62,7 @@ jobs:
 
             - name: Generate OpenAPI3
               run: |
-                  ./gradlew --info api:openapi3 -PserverUrl=https://api.fewletter.site
+                  ./gradlew --info api:openapi3 -PserverUrl=https://api.fewletter.shop
 
             - name: Generate Swagger
               run: |

@@ -113,7 +113,7 @@ class AdminController(
             putImageUseCase.execute(useCaseIn)
         }
 
-        return ImageSourceResponse(useCaseOut.url).let {
+        return ImageSourceResponse(useCaseOut.url, useCaseOut.supportSuffix).let {
             ApiResponseGenerator.success(it, HttpStatus.OK)
         }
     }

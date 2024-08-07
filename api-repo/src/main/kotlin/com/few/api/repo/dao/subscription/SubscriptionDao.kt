@@ -7,7 +7,7 @@ import com.few.api.repo.dao.subscription.query.CountAllWorkbooksSubscription
 import com.few.api.repo.dao.subscription.query.SelectAllWorkbookSubscriptionStatusNotConsiderDeletedAtQuery
 import com.few.api.repo.dao.subscription.record.WorkbookSubscriptionStatus
 import com.few.api.repo.dao.subscription.query.CountWorkbookMappedArticlesQuery
-import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookSubscriptionStatusNotConsiderDeletedAtQuery
+import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookSubscriptionStatusUnsubOpinionConditionAndNotConsiderDeletedAQuery
 import com.few.api.repo.dao.subscription.record.CountAllSubscriptionStatusRecord
 import com.few.api.repo.dao.subscription.record.MemberWorkbookSubscriptionStatusRecord
 import jooq.jooq_dsl.Tables.MAPPING_WORKBOOK_ARTICLE
@@ -69,12 +69,12 @@ class SubscriptionDao(
             .orderBy(SUBSCRIPTION.CREATED_AT.desc())
             .limit(1)
 
-    fun selectAllWorkbookSubscriptionStatus(query: SelectAllMemberWorkbookSubscriptionStatusNotConsiderDeletedAtQuery): List<MemberWorkbookSubscriptionStatusRecord> {
+    fun selectAllWorkbookSubscriptionStatus(query: SelectAllMemberWorkbookSubscriptionStatusUnsubOpinionConditionAndNotConsiderDeletedAQuery): List<MemberWorkbookSubscriptionStatusRecord> {
         return selectAllWorkbookSubscriptionStatusQuery(query)
             .fetchInto(MemberWorkbookSubscriptionStatusRecord::class.java)
     }
 
-    fun selectAllWorkbookSubscriptionStatusQuery(query: SelectAllMemberWorkbookSubscriptionStatusNotConsiderDeletedAtQuery) =
+    fun selectAllWorkbookSubscriptionStatusQuery(query: SelectAllMemberWorkbookSubscriptionStatusUnsubOpinionConditionAndNotConsiderDeletedAQuery) =
         dslContext.select(
             SUBSCRIPTION.TARGET_WORKBOOK_ID.`as`(MemberWorkbookSubscriptionStatusRecord::workbookId.name),
             SUBSCRIPTION.DELETED_AT.isNull.`as`(MemberWorkbookSubscriptionStatusRecord::isActiveSub.name),
@@ -82,10 +82,11 @@ class SubscriptionDao(
             DSL.max(MAPPING_WORKBOOK_ARTICLE.DAY_COL).`as`(MemberWorkbookSubscriptionStatusRecord::totalDay.name)
         )
             .from(SUBSCRIPTION)
-            .leftJoin(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE)
+            .join(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE)
             .on(SUBSCRIPTION.TARGET_WORKBOOK_ID.eq(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID))
             .where(SUBSCRIPTION.MEMBER_ID.eq(query.memberId))
             .and(SUBSCRIPTION.TARGET_MEMBER_ID.isNull)
+            .and(SUBSCRIPTION.UNSUBS_OPINION.`in`(query.unsubOpinion, query.activeSubscriptionUnsubOpinion))
             .groupBy(SUBSCRIPTION.TARGET_WORKBOOK_ID, SUBSCRIPTION.DELETED_AT)
             .query
 

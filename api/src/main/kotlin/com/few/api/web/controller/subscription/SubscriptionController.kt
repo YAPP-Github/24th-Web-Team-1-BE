@@ -1,7 +1,6 @@
 package com.few.api.web.controller.subscription
 
 import com.few.api.domain.subscription.usecase.BrowseSubscribeWorkbooksUseCase
-import com.few.api.web.controller.subscription.request.SubscribeWorkbookRequest
 import com.few.api.web.controller.subscription.request.UnsubscribeWorkbookRequest
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
@@ -167,8 +166,6 @@ class SubscriptionController(
         @PathVariable(value = "workbookId")
         @Min(value = 1, message = "{min.id}")
         workbookId: Long,
-        @Valid @RequestBody
-        body: SubscribeWorkbookRequest,
     ): ApiResponse<ApiResponse.Success> {
         val memberId = userDetails.username.toLong()
         subscribeWorkbookUseCase.execute(

@@ -141,7 +141,6 @@ class WebSecurityConfig(
                     AntPathRequestMatcher("/api/v1/workbooks", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/api/v1/articles/*", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/api/v1/workbooks/*/articles/*", HttpMethod.GET.name()),
-                    AntPathRequestMatcher("/api/v1/subscriptions/workbooks/main", HttpMethod.GET.name()),
 
                     /** 어드민 */
                     AntPathRequestMatcher("/api/v1/admin/**", HttpMethod.POST.name()),
@@ -157,7 +156,8 @@ class WebSecurityConfig(
                     AntPathRequestMatcher("/api/v1/workbooks/*", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/api/v1/workbooks/categories", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/api/v1/workbooks/*/articles/*", HttpMethod.GET.name()),
-                    AntPathRequestMatcher("/api/v1/problems/**", HttpMethod.GET.name())
+                    AntPathRequestMatcher("/api/v1/problems/**", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/api/v1/problems/*", HttpMethod.POST.name())
                 )
         }
     }
@@ -185,7 +185,6 @@ class WebSecurityConfig(
                     AntPathRequestMatcher("/api/v1/workbooks", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/api/v1/articles/*", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/api/v1/workbooks/*/articles/*", HttpMethod.GET.name()),
-                    AntPathRequestMatcher("/api/v1/subscriptions/workbooks/main", HttpMethod.GET.name()),
 
                     /** 어드민 */
                     AntPathRequestMatcher("/api/v1/admin/**", HttpMethod.POST.name()),
@@ -201,7 +200,8 @@ class WebSecurityConfig(
                     AntPathRequestMatcher("/api/v1/workbooks/*", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/api/v1/workbooks/categories", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/api/v1/workbooks/*/articles/*", HttpMethod.GET.name()),
-                    AntPathRequestMatcher("/api/v1/problems/**", HttpMethod.GET.name())
+                    AntPathRequestMatcher("/api/v1/problems/**", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/api/v1/problems/*", HttpMethod.POST.name())
                 )
         }
     }

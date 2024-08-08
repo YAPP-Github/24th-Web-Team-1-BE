@@ -58,7 +58,7 @@ jobs:
 
             - name: Test with Gradle
               run: |
-                  ./gradlew test
+                  ./gradlew test -parallel
 
             - name: Generate OpenAPI3
               run: |

@@ -38,4 +38,4 @@ jobs:
 
             - name: Test with Gradle
               run: |
-                  ./gradlew --info test
+                  ./gradlew --info test -parallel

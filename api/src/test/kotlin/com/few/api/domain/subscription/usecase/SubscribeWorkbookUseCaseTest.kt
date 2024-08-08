@@ -21,7 +21,6 @@ class SubscribeWorkbookUseCaseTest : BehaviorSpec({
     lateinit var applicationEventPublisher: ApplicationEventPublisher
     lateinit var useCase: SubscribeWorkbookUseCase
     val workbookId = 1L
-    val useCaseIn = SubscribeWorkbookUseCaseIn(workbookId = workbookId, memberId = 1L)
 
     beforeContainer {
         subscriptionDao = mockk<SubscriptionDao>()
@@ -30,11 +29,16 @@ class SubscribeWorkbookUseCaseTest : BehaviorSpec({
     }
 
     given("구독 요청이 온 상황에서") {
-        `when`("subscriptionStatus가 null일 경우") {
-            val event = WorkbookSubscriptionEvent(workbookId)
+        val workbookId = 1L
+        val memberId = 1L
+        val useCaseIn = SubscribeWorkbookUseCaseIn(workbookId = workbookId, memberId = memberId)
 
+        `when`("subscriptionStatus가 null일 경우") {
             every { subscriptionDao.selectTopWorkbookSubscriptionStatus(any()) } returns null
+
             every { subscriptionDao.insertWorkbookSubscription(any()) } just Runs
+
+            val event = WorkbookSubscriptionEvent(workbookId)
             every { applicationEventPublisher.publishEvent(event) } answers {
                 log.debug { "Mocking applicationEventPublisher.publishEvent(any()) was called" }
             }
@@ -51,13 +55,18 @@ class SubscribeWorkbookUseCaseTest : BehaviorSpec({
 
         `when`("구독을 취소한 경우") {
             val day = 2
-            val lastDay = 3
-            val subscriptionStatusRecord = WorkbookSubscriptionStatus(workbookId = workbookId, isActiveSub = false, day)
-            val event = WorkbookSubscriptionEvent(workbookId)
+            every { subscriptionDao.selectTopWorkbookSubscriptionStatus(any()) } returns WorkbookSubscriptionStatus(
+                workbookId = workbookId,
+                isActiveSub = false,
+                day
+            )
 
-            every { subscriptionDao.selectTopWorkbookSubscriptionStatus(any()) } returns subscriptionStatusRecord
+            val lastDay = 3
             every { subscriptionDao.countWorkbookMappedArticles(any()) } returns lastDay
+
             every { subscriptionDao.reSubscribeWorkbookSubscription(any()) } just Runs
+
+            val event = WorkbookSubscriptionEvent(workbookId)
             every { applicationEventPublisher.publishEvent(event) } answers {
                 log.debug { "Mocking applicationEventPublisher.publishEvent(any()) was called" }
             }
@@ -74,13 +83,14 @@ class SubscribeWorkbookUseCaseTest : BehaviorSpec({
 
         `when`("이미 구독하고 있을 경우") {
             val day = 2
-            val lastDay = 3
-            val subscriptionStatusRecord = WorkbookSubscriptionStatus(workbookId = workbookId, isActiveSub = true, day)
-            val event = WorkbookSubscriptionEvent(workbookId)
+            every { subscriptionDao.selectTopWorkbookSubscriptionStatus(any()) } returns WorkbookSubscriptionStatus(workbookId = workbookId, isActiveSub = true, day)
 
-            every { subscriptionDao.selectTopWorkbookSubscriptionStatus(any()) } returns subscriptionStatusRecord
+            val lastDay = 3
             every { subscriptionDao.countWorkbookMappedArticles(any()) } returns lastDay
+
             every { subscriptionDao.reSubscribeWorkbookSubscription(any()) } just Runs
+
+            val event = WorkbookSubscriptionEvent(workbookId)
             every { applicationEventPublisher.publishEvent(event) } answers {
                 log.debug { "Mocking applicationEventPublisher.publishEvent(any()) was called" }
             }

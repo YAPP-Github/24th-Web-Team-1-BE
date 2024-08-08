@@ -11,13 +11,13 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import java.util.stream.IntStream
 
 class ReadProblemUseCaseTest : BehaviorSpec({
 
     lateinit var problemDao: ProblemDao
     lateinit var contentsJsonMapper: ContentsJsonMapper
     lateinit var useCase: ReadProblemUseCase
-    val useCaseIn = ReadProblemUseCaseIn(problemId = 1L)
 
     beforeContainer {
         problemDao = mockk<ProblemDao>()
@@ -26,17 +26,17 @@ class ReadProblemUseCaseTest : BehaviorSpec({
     }
 
     given("문제를 조회할 상황에서") {
-        `when`("문제가 존재할 경우") {
-            val problemRecord = SelectProblemRecord(id = 1L, title = "title", contents = "{}")
-            val contents = Contents(
-                listOf(
-                    Content(number = 1, content = "{}"),
-                    Content(number = 2, content = "{}")
-                )
-            )
+        val problemId = 1L
+        val useCaseIn = ReadProblemUseCaseIn(problemId = problemId)
 
-            every { problemDao.selectProblemContents(any()) } returns problemRecord
-            every { contentsJsonMapper.toObject(any()) } returns contents
+        `when`("문제가 존재할 경우") {
+            val title = "title"
+            val problemContents = "{}"
+            every { problemDao.selectProblemContents(any()) } returns SelectProblemRecord(id = problemId, title = title, contents = problemContents)
+
+            every { contentsJsonMapper.toObject(any()) } returns Contents(
+                IntStream.range(1, 3).mapToObj { Content(number = it.toLong(), content = "{}") }.toList()
+            )
 
             then("정상적으로 실행되어야 한다") {
                 useCase.execute(useCaseIn)

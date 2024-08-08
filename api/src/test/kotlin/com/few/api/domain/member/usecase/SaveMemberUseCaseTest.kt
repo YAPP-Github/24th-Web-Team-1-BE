@@ -17,7 +17,6 @@ class SaveMemberUseCaseTest : BehaviorSpec({
     lateinit var sendAuthEmailService: SendAuthEmailService
     lateinit var idEncryption: IdEncryption
     lateinit var useCase: SaveMemberUseCase
-    val useCaseIn = SaveMemberUseCaseIn(email = "test@gmail.com")
 
     beforeContainer {
         memberDao = mockk<MemberDao>()
@@ -27,10 +26,17 @@ class SaveMemberUseCaseTest : BehaviorSpec({
     }
 
     given("회원가입/로그인 요청이 온 상황에서") {
+        val email = "test@gmail.com"
+        val useCaseIn = SaveMemberUseCaseIn(email = email)
+
         `when`("요청의 이메일이 가입 이력이 없는 경우") {
             every { memberDao.selectMemberByEmail(any(SelectMemberByEmailNotConsiderDeletedAtQuery::class)) } returns null
+
             every { memberDao.insertMember(any()) } returns 1L
-            every { idEncryption.encrypt(any()) } returns "encryptedToken"
+
+            val token = "encryptedToken"
+            every { idEncryption.encrypt(any()) } returns token
+
             every { sendAuthEmailService.send(any()) } returns Unit
 
             then("인증 이메일 발송 성공 응답을 반환한다") {
@@ -43,11 +49,15 @@ class SaveMemberUseCaseTest : BehaviorSpec({
         }
 
         `when`("요청의 이메일이 가입되어 있는 경우") {
+            val memberId = 1L
             every { memberDao.selectMemberByEmail(any(SelectMemberByEmailNotConsiderDeletedAtQuery::class)) } returns MemberIdAndIsDeletedRecord(
-                memberId = 1L,
+                memberId = memberId,
                 isDeleted = false
             )
-            every { idEncryption.encrypt(any()) } returns "encryptedToken"
+
+            val token = "encryptedToken"
+            every { idEncryption.encrypt(any()) } returns token
+
             every { sendAuthEmailService.send(any()) } returns Unit
 
             then("인증 이메일 발송 성공 응답을 반환한다") {
@@ -60,12 +70,16 @@ class SaveMemberUseCaseTest : BehaviorSpec({
         }
 
         `when`("요청의 이메일이 삭제된 회원인 경우") {
+            val memberId = 1L
             every { memberDao.selectMemberByEmail(any(SelectMemberByEmailNotConsiderDeletedAtQuery::class)) } returns MemberIdAndIsDeletedRecord(
-                memberId = 1L,
+                memberId = memberId,
                 isDeleted = true
             )
-            every { memberDao.updateMemberType(any(UpdateDeletedMemberTypeCommand::class)) } returns 1L
-            every { idEncryption.encrypt(any()) } returns "encryptedToken"
+
+            every { memberDao.updateMemberType(any(UpdateDeletedMemberTypeCommand::class)) } returns memberId
+
+            val token = "encryptedToken"
+            every { idEncryption.encrypt(any()) } returns token
 
             then("인증 이메일 발송 성공 응답을 반환한다") {
                 useCase.execute(useCaseIn)
@@ -79,8 +93,12 @@ class SaveMemberUseCaseTest : BehaviorSpec({
 
         `when`("인증 이메일 발송에 실패한 경우") {
             every { memberDao.selectMemberByEmail(any(SelectMemberByEmailNotConsiderDeletedAtQuery::class)) } returns null
-            every { memberDao.insertMember(any()) } returns 1L
-            every { idEncryption.encrypt(any()) } returns "encryptedToken"
+
+            val memberId = 1L
+            every { memberDao.insertMember(any()) } returns memberId
+
+            val token = "encryptedToken"
+            every { idEncryption.encrypt(any()) } returns token
 
             every { sendAuthEmailService.send(any()) } throws Exception()
 

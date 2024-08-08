@@ -11,6 +11,7 @@ import com.few.email.service.article.dto.Content
 import com.few.email.service.article.dto.SendArticleEmailArgs
 import jooq.jooq_dsl.tables.*
 import org.jooq.DSLContext
+import org.jooq.UpdateConditionStep
 import org.jooq.impl.DSL
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -170,11 +171,11 @@ class WorkBookSubscriberWriter(
             try {
                 sendArticleEmailService.send(it.second)
             } catch (e: Exception) {
-                memberSuccessRecords[it.first] = false
-                failRecords["EmailSendFail"] = failRecords.getOrDefault("EmailSendFail", arrayListOf()).apply {
-                    val message = e.message ?: "Unknown Error"
-                    add(mapOf(it.first to message))
-                }
+//                memberSuccessRecords[it.first] = false
+//                failRecords["EmailSendFail"] = failRecords.getOrDefault("EmailSendFail", arrayListOf()).apply {
+//                    val message = e.message ?: "Unknown Error"
+//                    add(mapOf(it.first to message))
+//                }
             }
         }
 
@@ -201,13 +202,19 @@ class WorkBookSubscriberWriter(
             memberSuccessRecords[it.memberId] == true
         }
 
-        val successMemberIds = memberSuccessRecords.filter { it.value }.keys
         /** 이메일 전송에 성공한 구독자들의 진행률을 업데이트한다.*/
-        dslContext.update(subscriptionT)
-            .set(subscriptionT.PROGRESS, subscriptionT.PROGRESS.add(1))
-            .where(subscriptionT.MEMBER_ID.`in`(successMemberIds))
-            .and(subscriptionT.TARGET_WORKBOOK_ID.`in`(targetWorkBookIds))
-            .execute()
+        val successMemberIds = memberSuccessRecords.filter { it.value }.keys
+        val updateTargetMemberRecords = items.filter { it.memberId in successMemberIds }
+        val updateQueries = mutableListOf<UpdateConditionStep<*>>()
+        for (updateTargetMemberRecord in updateTargetMemberRecords) {
+            updateQueries.add(
+                dslContext.update(subscriptionT)
+                    .set(subscriptionT.PROGRESS, updateTargetMemberRecord.progress + 1)
+                    .where(subscriptionT.MEMBER_ID.eq(updateTargetMemberRecord.memberId))
+                    .and(subscriptionT.TARGET_WORKBOOK_ID.eq(updateTargetMemberRecord.targetWorkBookId))
+            )
+        }
+        dslContext.batch(updateQueries).execute()
 
         /** 마지막 학습지를 받은 구독자들은 구독을 해지한다.*/
         // todo refactoring to batch update

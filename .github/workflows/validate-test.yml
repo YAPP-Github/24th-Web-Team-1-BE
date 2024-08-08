@@ -112,6 +112,8 @@ jobs:
                   path: |
                       ./api-repo/src/generated
                       ./api-repo/src/main/resources/db/migration
+                      ./batch/src/generated
+                      ./batch/src/main/resources/db/migration
                   key: ${{ runner.os }}-jooq-${{ hashFiles('./api-repo/src/generated/**', './api-repo/src/main/resources/db/migration/**', './batch/src/generated/**', './batch/src/main/resources/db/migration/**') }}
                   restore-keys: |
                       ${{ runner.os }}-jooq-
@@ -145,6 +147,8 @@ jobs:
               uses: actions/cache@v3
               with:
                   path: |
+                      ./api-repo/src/generated
+                      ./api-repo/src/main/resources/db/migration
                       ./batch/src/generated
                       ./batch/src/main/resources/db/migration
                   key: ${{ runner.os }}-jooq-${{ hashFiles('./api-repo/src/generated/**', './api-repo/src/main/resources/db/migration/**', './batch/src/generated/**', './batch/src/main/resources/db/migration/**') }}

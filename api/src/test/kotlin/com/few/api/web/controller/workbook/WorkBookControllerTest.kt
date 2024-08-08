@@ -13,19 +13,12 @@ import com.few.api.web.support.ViewCategory
 import com.few.api.web.support.WorkBookCategory
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
 import com.few.data.common.code.CategoryType
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
-import org.springframework.http.codec.json.Jackson2JsonDecoder
-import org.springframework.http.codec.json.Jackson2JsonEncoder
-import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.payload.PayloadDocumentation
-import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
-import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URL
@@ -33,25 +26,9 @@ import java.time.LocalDateTime
 
 class WorkBookControllerTest : ControllerTestSpec() {
 
-    @Autowired
-    lateinit var workBookController: WorkBookController
-
     companion object {
         private val BASE_URL = "/api/v1/workbooks"
         private val TAG = "WorkBookController"
-    }
-
-    @BeforeEach
-    fun setUp(restDocumentation: RestDocumentationContextProvider) {
-        webTestClient = WebTestClient
-            .bindToController(workBookController)
-            .controllerAdvice(super.apiControllerExceptionHandler).httpMessageCodecs {
-                it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(objectMapper))
-                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(objectMapper))
-            }
-            .configureClient()
-            .filter(WebTestClientRestDocumentation.documentationConfiguration(restDocumentation))
-            .build()
     }
 
     @Test
@@ -230,14 +207,14 @@ class WorkBookControllerTest : ControllerTestSpec() {
         )
 
         // when
-        this.webTestClient.get()
-            .uri(uri, 1)
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange().expectStatus().isOk()
-            .expectBody().consumeWith(
-                WebTestClientRestDocumentation.document(
+        mockMvc.perform(
+            get(uri, workbookId)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().is2xxSuccessful)
+            .andDo(
+                document(
                     api.toIdentifier(),
-                    ResourceDocumentation.resource(
+                    resource(
                         ResourceSnippetParameters.builder()
                             .description("학습지 Id를 입력하여 학습지 정보를 조회합니다.")
                             .summary(api.toIdentifier())

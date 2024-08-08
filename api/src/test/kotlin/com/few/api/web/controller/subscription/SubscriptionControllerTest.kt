@@ -11,47 +11,24 @@ import com.few.api.domain.subscription.usecase.dto.*
 import com.few.api.web.controller.helper.*
 import com.few.api.web.support.ViewCategory
 import com.few.api.web.support.WorkBookStatus
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.doReturn
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
-import org.springframework.http.codec.json.Jackson2JsonDecoder
-import org.springframework.http.codec.json.Jackson2JsonEncoder
-import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
 import org.springframework.restdocs.payload.PayloadDocumentation
-import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
 import org.springframework.security.test.context.support.WithUserDetails
-import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.web.util.UriComponentsBuilder
 
 class SubscriptionControllerTest : ControllerTestSpec() {
 
-    @Autowired
-    lateinit var subscriptionController: SubscriptionController
-
     companion object {
         private val BASE_URL = "/api/v1/"
         private val TAG = "WorkbookSubscriptionController"
-    }
-
-    @BeforeEach
-    fun setUp(restDocumentation: RestDocumentationContextProvider) {
-        webTestClient = WebTestClient
-            .bindToController(subscriptionController)
-            .controllerAdvice(super.apiControllerExceptionHandler).httpMessageCodecs {
-                it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(objectMapper))
-                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(objectMapper))
-            }
-            .configureClient()
-            .filter(WebTestClientRestDocumentation.documentationConfiguration(restDocumentation))
-            .build()
     }
 
     @Test

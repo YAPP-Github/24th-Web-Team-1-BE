@@ -1,6 +1,7 @@
 package com.few.api.web.controller.member
 
 import com.epages.restdocs.apispec.ResourceDocumentation
+import com.epages.restdocs.apispec.ResourceDocumentation.resource
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
 import com.few.api.domain.member.usecase.dto.SaveMemberUseCaseIn
@@ -12,39 +13,21 @@ import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
 import com.few.api.web.controller.member.request.SaveMemberRequest
 import com.few.api.web.controller.member.request.TokenRequest
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
-import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
 import org.springframework.restdocs.payload.PayloadDocumentation
-import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
-import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
 
 class MemberControllerTest : ControllerTestSpec() {
 
-    @Autowired
-    lateinit var memberController: MemberController
-
     companion object {
         private val BASE_URL = "/api/v1/members"
         private val TAG = "MemberController"
-    }
-
-    @BeforeEach
-    fun setUp(restDocumentation: RestDocumentationContextProvider) {
-        webTestClient = WebTestClient
-            .bindToController(memberController)
-            .controllerAdvice(super.apiControllerExceptionHandler)
-            .configureClient()
-            .filter(WebTestClientRestDocumentation.documentationConfiguration(restDocumentation))
-            .build()
     }
 
     @Test
@@ -64,16 +47,16 @@ class MemberControllerTest : ControllerTestSpec() {
         `when`(saveMemberUseCase.execute(useCaseIn)).thenReturn(SaveMemberUseCaseOut(isSendAuthEmail = true))
 
         // when
-        this.webTestClient.post()
-            .uri(uri)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(body)
-            .exchange().expectStatus().is2xxSuccessful()
-            .expectBody().consumeWith(
-                WebTestClientRestDocumentation.document(
+        mockMvc.perform(
+            post(uri)
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(status().isOk)
+            .andDo(
+                document(
                     api.toIdentifier(),
-                    ResourceDocumentation.resource(
+                    resource(
                         ResourceSnippetParameters.builder()
                             .description("회원가입")
                             .summary(api.toIdentifier())
@@ -132,16 +115,17 @@ class MemberControllerTest : ControllerTestSpec() {
         // when
         mockMvc.perform(
             post(uri)
-                .contentType(MediaType.APPLICATION_JSON)
                 .queryParam("auth_token", auth_token)
                 .queryParam("at", at.toString())
                 .queryParam("rt", rt.toString())
                 .content(body)
-        ).andExpect(status().is2xxSuccessful)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(status().isOk)
             .andDo(
                 document(
                     api.toIdentifier(),
-                    ResourceDocumentation.resource(
+                    resource(
                         ResourceSnippetParameters.builder()
                             .summary(api.toIdentifier())
                             .description("토큰 발급")

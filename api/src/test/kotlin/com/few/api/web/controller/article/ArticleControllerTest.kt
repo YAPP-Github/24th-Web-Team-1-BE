@@ -2,6 +2,7 @@ package com.few.api.web.controller.article
 
 import com.epages.restdocs.apispec.ResourceDocumentation
 import com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName
+import com.epages.restdocs.apispec.ResourceDocumentation.resource
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
 import com.few.api.domain.article.usecase.dto.*
@@ -9,20 +10,13 @@ import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
 import com.few.data.common.code.CategoryType
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
-import org.springframework.http.codec.json.Jackson2JsonDecoder
-import org.springframework.http.codec.json.Jackson2JsonEncoder
-import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
 import org.springframework.restdocs.payload.PayloadDocumentation
-import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
-import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URL
@@ -30,25 +24,9 @@ import java.time.LocalDateTime
 
 class ArticleControllerTest : ControllerTestSpec() {
 
-    @Autowired
-    lateinit var articleController: ArticleController
-
     companion object {
         private val BASE_URL = "/api/v1/articles"
         private val TAG = "ArticleController"
-    }
-
-    @BeforeEach
-    fun setUp(restDocumentation: RestDocumentationContextProvider) {
-        webTestClient = WebTestClient.bindToController(articleController)
-            .controllerAdvice(super.apiControllerExceptionHandler)
-            .httpMessageCodecs {
-                it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(objectMapper))
-                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(objectMapper))
-            }
-            .configureClient()
-            .filter(WebTestClientRestDocumentation.documentationConfiguration(restDocumentation))
-            .build()
     }
 
     /**
@@ -88,11 +66,12 @@ class ArticleControllerTest : ControllerTestSpec() {
         mockMvc.perform(
             get(uri, articleId)
                 .header("Authorization", "Bearer thisisaccesstoken")
+                .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().is2xxSuccessful)
             .andDo(
                 document(
                     api.toIdentifier(),
-                    ResourceDocumentation.resource(
+                    resource(
                         ResourceSnippetParameters.builder().description("아티클 Id로 아티클 조회")
                             .summary(api.toIdentifier()).privateResource(false).deprecated(false)
                             .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))
@@ -193,11 +172,13 @@ class ArticleControllerTest : ControllerTestSpec() {
         )
 
         // when
-        this.webTestClient.get().uri(uri).accept(MediaType.APPLICATION_JSON)
-            .exchange().expectStatus().isOk().expectBody().consumeWith(
-                WebTestClientRestDocumentation.document(
+        mockMvc.perform(
+            get(uri, prevArticleId, categoryCd).contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().is2xxSuccessful)
+            .andDo(
+                document(
                     api.toIdentifier(),
-                    ResourceDocumentation.resource(
+                    resource(
                         ResourceSnippetParameters.builder().description("아티 목록 10개씩 조회(조회수 기반 정렬)")
                             .summary(api.toIdentifier()).privateResource(false).deprecated(false)
                             .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))
@@ -265,11 +246,13 @@ class ArticleControllerTest : ControllerTestSpec() {
             .toUriString()
 
         // when, then
-        this.webTestClient.get().uri(uri).accept(MediaType.APPLICATION_JSON)
-            .exchange().expectStatus().isOk().expectBody().consumeWith(
-                WebTestClientRestDocumentation.document(
+        mockMvc.perform(
+            get(uri).contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().is2xxSuccessful)
+            .andDo(
+                document(
                     api.toIdentifier(),
-                    ResourceDocumentation.resource(
+                    resource(
                         ResourceSnippetParameters.builder().description("아티클 카테고리 code, name 조회")
                             .summary(api.toIdentifier()).privateResource(false).deprecated(false)
                             .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))

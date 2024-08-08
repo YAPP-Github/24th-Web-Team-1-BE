@@ -1,6 +1,5 @@
 package com.few.api.web.controller.admin
 
-import com.epages.restdocs.apispec.ResourceDocumentation
 import com.epages.restdocs.apispec.ResourceDocumentation.resource
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
@@ -12,47 +11,25 @@ import com.few.api.web.controller.admin.response.ImageSourceResponse
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
 import com.few.data.common.code.CategoryType
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.`when`
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
-import org.springframework.http.codec.json.Jackson2JsonDecoder
-import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.mock.web.MockMultipartFile
-import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
 import org.springframework.restdocs.payload.PayloadDocumentation
-import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
-import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URL
 
 class AdminControllerTest : ControllerTestSpec() {
 
-    @Autowired
-    lateinit var adminController: AdminController
-
     companion object {
         private val BASE_URL = "/api/v1/admin"
         private val TAG = "AdminController"
-    }
-
-    @BeforeEach
-    fun setUp(restDocumentation: RestDocumentationContextProvider) {
-        webTestClient = WebTestClient.bindToController(adminController)
-            .controllerAdvice(super.apiControllerExceptionHandler)
-            .httpMessageCodecs {
-                it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(objectMapper))
-                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(objectMapper))
-            }
-            .configureClient()
-            .filter(WebTestClientRestDocumentation.documentationConfiguration(restDocumentation))
-            .build()
     }
 
     @Test
@@ -72,16 +49,16 @@ class AdminControllerTest : ControllerTestSpec() {
         )
 
         // when
-        this.webTestClient.post()
-            .uri(uri)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(body)
-            .exchange().expectStatus().is2xxSuccessful()
-            .expectBody().consumeWith(
-                WebTestClientRestDocumentation.document(
+        mockMvc.perform(
+            post(uri)
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(status().isOk)
+            .andDo(
+                document(
                     api.toIdentifier(),
-                    ResourceDocumentation.resource(
+                    resource(
                         ResourceSnippetParameters.builder().description("학습지 추가")
                             .summary(api.toIdentifier()).privateResource(false).deprecated(false)
                             .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))
@@ -178,16 +155,16 @@ class AdminControllerTest : ControllerTestSpec() {
         ).thenReturn(AddArticleUseCaseOut(1L))
 
         // when
-        this.webTestClient.post()
-            .uri(uri)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(body)
-            .exchange().expectStatus().is2xxSuccessful()
-            .expectBody().consumeWith(
-                WebTestClientRestDocumentation.document(
+        mockMvc.perform(
+            post(uri)
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(status().isOk)
+            .andDo(
+                document(
                     api.toIdentifier(),
-                    ResourceDocumentation.resource(
+                    resource(
                         ResourceSnippetParameters.builder().description("아티클 추가")
                             .summary(api.toIdentifier()).privateResource(false).deprecated(false)
                             .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))
@@ -217,14 +194,14 @@ class AdminControllerTest : ControllerTestSpec() {
         doNothing().`when`(mapArticleUseCase).execute(MapArticleUseCaseIn(1L, 1L, 1))
 
         // when
-        this.webTestClient.post()
-            .uri(uri)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(body)
-            .exchange().expectStatus().is2xxSuccessful()
-            .expectBody().consumeWith(
-                WebTestClientRestDocumentation.document(
+        mockMvc.perform(
+            post(uri)
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(status().isOk)
+            .andDo(
+                document(
                     api.toIdentifier(),
                     resource(
                         ResourceSnippetParameters.builder().description("아티클 매핑")

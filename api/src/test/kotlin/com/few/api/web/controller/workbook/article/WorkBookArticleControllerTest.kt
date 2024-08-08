@@ -11,20 +11,13 @@ import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
 import com.few.data.common.code.CategoryType
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.codec.json.Jackson2JsonDecoder
-import org.springframework.http.codec.json.Jackson2JsonEncoder
-import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
 import org.springframework.restdocs.payload.PayloadDocumentation
-import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
 import org.springframework.security.test.context.support.WithUserDetails
-import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URL
@@ -32,25 +25,9 @@ import java.time.LocalDateTime
 
 class WorkBookArticleControllerTest : ControllerTestSpec() {
 
-    @Autowired
-    lateinit var workBookArticleController: WorkBookArticleController
-
     companion object {
         private val BASE_URL = "/api/v1/workbooks/{workbookId}/articles"
         private val TAG = "WorkBookArticleController"
-    }
-
-    @BeforeEach
-    fun setUp(restDocumentation: RestDocumentationContextProvider) {
-        webTestClient = WebTestClient
-            .bindToController(workBookArticleController)
-            .controllerAdvice(super.apiControllerExceptionHandler).httpMessageCodecs {
-                it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(objectMapper))
-                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(objectMapper))
-            }
-            .configureClient()
-            .filter(WebTestClientRestDocumentation.documentationConfiguration(restDocumentation))
-            .build()
     }
 
     @Test

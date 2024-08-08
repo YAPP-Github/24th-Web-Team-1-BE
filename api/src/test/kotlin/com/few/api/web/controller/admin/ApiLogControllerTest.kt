@@ -3,8 +3,6 @@ package com.few.api.web.controller.admin
 import com.epages.restdocs.apispec.ResourceDocumentation.resource
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.few.api.domain.log.AddApiLogUseCase
 import com.few.api.domain.log.dto.AddApiLogUseCaseIn
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.admin.request.ApiLogRequest
@@ -15,22 +13,11 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.pos
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 class ApiLogControllerTest : ControllerTestSpec() {
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
-
-    @Autowired
-    private lateinit var mockMvc: MockMvc
-
-    @MockBean
-    private lateinit var addApiLogUseCase: AddApiLogUseCase
 
     companion object {
         private val BASE_URL = "/api/v1/logs"

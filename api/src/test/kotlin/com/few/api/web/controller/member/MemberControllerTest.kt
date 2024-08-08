@@ -3,9 +3,6 @@ package com.few.api.web.controller.member
 import com.epages.restdocs.apispec.ResourceDocumentation
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.few.api.domain.member.usecase.SaveMemberUseCase
-import com.few.api.domain.member.usecase.TokenUseCase
 import com.few.api.domain.member.usecase.dto.SaveMemberUseCaseIn
 import com.few.api.domain.member.usecase.dto.SaveMemberUseCaseOut
 import com.few.api.domain.member.usecase.dto.TokenUseCaseIn
@@ -19,8 +16,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
@@ -28,28 +23,10 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.pos
 import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
 import org.springframework.test.web.reactive.server.WebTestClient
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
 
 class MemberControllerTest : ControllerTestSpec() {
-
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
-
-    private lateinit var webTestClient: WebTestClient
-
-    @Autowired
-    private lateinit var mockMvc: MockMvc
-
-    @Autowired
-    private lateinit var memberController: MemberController
-
-    @MockBean
-    private lateinit var saveMemberUseCase: SaveMemberUseCase
-
-    @MockBean
-    private lateinit var tokenUseCase: TokenUseCase
 
     companion object {
         private val BASE_URL = "/api/v1/members"

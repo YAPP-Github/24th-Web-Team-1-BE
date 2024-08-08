@@ -4,7 +4,6 @@ import com.epages.restdocs.apispec.ResourceDocumentation
 import com.epages.restdocs.apispec.ResourceDocumentation.resource
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.few.api.domain.admin.document.usecase.*
 import com.few.api.domain.admin.document.usecase.dto.*
 import com.few.api.web.controller.ControllerTestSpec
@@ -18,8 +17,6 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.`when`
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.http.codec.json.Jackson2JsonEncoder
@@ -30,38 +27,11 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.mul
 import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
 import org.springframework.test.web.reactive.server.WebTestClient
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URL
 
 class AdminControllerTest : ControllerTestSpec() {
-
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
-
-    private lateinit var webTestClient: WebTestClient
-
-    @Autowired
-    private lateinit var mockMvc: MockMvc
-
-    @Autowired
-    private lateinit var adminController: AdminController
-
-    @MockBean
-    private lateinit var addArticleUseCase: AddArticleUseCase
-
-    @MockBean
-    private lateinit var addWorkbookUseCase: AddWorkbookUseCase
-
-    @MockBean
-    private lateinit var mapArticleUseCase: MapArticleUseCase
-
-    @MockBean
-    private lateinit var convertContentUseCase: ConvertContentUseCase
-
-    @MockBean
-    private lateinit var putImageUseCase: PutImageUseCase
 
     companion object {
         private val BASE_URL = "/api/v1/admin"

@@ -171,11 +171,11 @@ class WorkBookSubscriberWriter(
             try {
                 sendArticleEmailService.send(it.second)
             } catch (e: Exception) {
-//                memberSuccessRecords[it.first] = false
-//                failRecords["EmailSendFail"] = failRecords.getOrDefault("EmailSendFail", arrayListOf()).apply {
-//                    val message = e.message ?: "Unknown Error"
-//                    add(mapOf(it.first to message))
-//                }
+                memberSuccessRecords[it.first] = false
+                failRecords["EmailSendFail"] = failRecords.getOrDefault("EmailSendFail", arrayListOf()).apply {
+                    val message = e.message ?: "Unknown Error"
+                    add(mapOf(it.first to message))
+                }
             }
         }
 

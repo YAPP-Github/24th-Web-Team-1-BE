@@ -32,10 +32,89 @@ jobs:
                   restore-keys: |
                       ${{ runner.os }}-gradle-
 
+    api-test:
+        needs: validate-test
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Set up JDK 17
+              uses: actions/setup-java@v3
+              with:
+                  java-version: '17'
+                  distribution: 'temurin'
+
+            - name: Cache Gradle
+              uses: actions/cache@v3
+              with:
+                  path: |
+                      ~/.gradle/caches
+                      ~/.gradle/wrapper
+                  key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+                  restore-keys: |
+                      ${{ runner.os }}-gradle-
+
             - name: Jooq Code Generation
               run: |
                   ./gradlew  jooqCodegenAll
 
-            - name: Test with Gradle
+            - name: API Test with Gradle
               run: |
-                  ./gradlew test -parallel
+                  ./gradlew  api:test -parallel
+
+    api-repo-test:
+        needs: validate-test
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v3
+            -   name: Set up JDK 17
+                uses: actions/setup-java@v3
+                with:
+                    java-version: '17'
+                    distribution: 'temurin'
+
+            -   name: Cache Gradle
+                uses: actions/cache@v3
+                with:
+                    path: |
+                        ~/.gradle/caches
+                        ~/.gradle/wrapper
+                    key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+                    restore-keys: |
+                        ${{ runner.os }}-gradle-
+
+            - name: Jooq Code Generation
+              run: |
+                  ./gradlew  jooqCodegenAll
+
+            -   name: API Repo Test with Gradle
+                run: |
+                    ./gradlew  api-repo:test -parallel
+
+    batch-test:
+        needs: validate-test
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v3
+            -   name: Set up JDK 17
+                uses: actions/setup-java@v3
+                with:
+                    java-version: '17'
+                    distribution: 'temurin'
+
+            -   name: Cache Gradle
+                uses: actions/cache@v3
+                with:
+                    path: |
+                        ~/.gradle/caches
+                        ~/.gradle/wrapper
+                    key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+                    restore-keys: |
+                        ${{ runner.os }}-gradle-
+
+            - name: Jooq Code Generation
+              run: |
+                  ./gradlew  jooqCodegenAll
+
+            -   name: Batch Test with Gradle
+                run: |
+                    ./gradlew  batch:test -parallel

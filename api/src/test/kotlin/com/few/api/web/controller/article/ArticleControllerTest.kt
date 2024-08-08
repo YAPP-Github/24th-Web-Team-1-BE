@@ -21,12 +21,13 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URL
 import java.time.LocalDateTime
+import java.util.stream.IntStream
 
 class ArticleControllerTest : ControllerTestSpec() {
 
     companion object {
-        private val BASE_URL = "/api/v1/articles"
-        private val TAG = "ArticleController"
+        private const val BASE_URL = "/api/v1/articles"
+        private const val TAG = "ArticleController"
     }
 
     /**
@@ -37,35 +38,38 @@ class ArticleControllerTest : ControllerTestSpec() {
     fun readArticle() {
         // given
         val api = "ReadArticle"
+        val token = "thisisaccesstoken"
         val uri = UriComponentsBuilder.newInstance().path("$BASE_URL/{articleId}").build().toUriString()
-        // set usecase mock
         val articleId = 1L
-        val memberId = 1L
 
-        `when`(tokenResolver.resolveId("thisisaccesstoken")).thenReturn(memberId)
-        `when`(readArticleUseCase.execute(ReadArticleUseCaseIn(articleId, memberId))).thenReturn(
-            ReadArticleUseCaseOut(
+        val memberId = 1L
+        `when`(tokenResolver.resolveId(token)).thenReturn(memberId)
+
+        val useCaseIn = ReadArticleUseCaseIn(articleId, memberId)
+        val useCaseOut = ReadArticleUseCaseOut(
+            id = 1L,
+            writer = WriterDetail(
                 id = 1L,
-                writer = WriterDetail(
-                    id = 1L,
-                    name = "안나포",
-                    url = URL("http://localhost:8080/api/v1/writers/1"),
-                    imageUrl = URL("https://github.com/user-attachments/assets/28df9078-488c-49d6-9375-54ce5a250742")
-                ),
-                mainImageUrl = URL("https://github.com/YAPP-Github/24th-Web-Team-1-BE/assets/102807742/0643d805-5f3a-4563-8c48-2a7d51795326"),
-                title = "ETF(상장 지수 펀드)란? 모르면 손해라고?",
-                content = CategoryType.fromCode(0)!!.name,
-                problemIds = listOf(1L, 2L, 3L),
-                category = "경제",
-                createdAt = LocalDateTime.now(),
-                views = 1L
-            )
+                name = "안나포",
+                url = URL("http://localhost:8080/api/v1/writers/1"),
+                imageUrl = URL("https://github.com/user-attachments/assets/28df9078-488c-49d6-9375-54ce5a250742")
+            ),
+            mainImageUrl = URL("https://github.com/YAPP-Github/24th-Web-Team-1-BE/assets/102807742/0643d805-5f3a-4563-8c48-2a7d51795326"),
+            title = "ETF(상장 지수 펀드)란? 모르면 손해라고?",
+            content = CategoryType.fromCode(0)!!.name,
+            problemIds = listOf(1L, 2L, 3L),
+            category = "경제",
+            createdAt = LocalDateTime.now(),
+            views = 1L
+        )
+        `when`(readArticleUseCase.execute(useCaseIn)).thenReturn(
+            useCaseOut
         )
 
         // when
         mockMvc.perform(
             get(uri, articleId)
-                .header("Authorization", "Bearer thisisaccesstoken")
+                .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().is2xxSuccessful)
             .andDo(
@@ -131,45 +135,41 @@ class ArticleControllerTest : ControllerTestSpec() {
         val prevArticleId = 1L
         val categoryCd: Byte = CategoryType.IT.code
         val uri = UriComponentsBuilder.newInstance()
-            .path("$BASE_URL")
+            .path(BASE_URL)
             .queryParam("prevArticleId", prevArticleId)
             .queryParam("categoryCd", categoryCd)
             .build()
             .toUriString()
-        // set usecase mock
-        `when`(readArticlesUseCase.execute(ReadArticlesUseCaseIn(prevArticleId, categoryCd))).thenReturn(
-            ReadArticlesUseCaseOut(
-                listOf(
-                    ReadArticleUseCaseOut(
+
+        val useCaseIn = ReadArticlesUseCaseIn(prevArticleId, categoryCd)
+        val useCaseOut = ReadArticlesUseCaseOut(
+            IntStream.range(0, 10).mapToObj {
+                ReadArticleUseCaseOut(
+                    id = it.toLong(),
+                    writer = WriterDetail(
                         id = 1L,
-                        writer = WriterDetail(
-                            id = 1L,
-                            name = "안나포",
-                            url = URL("http://localhost:8080/api/v1/writers/1"),
-                            imageUrl = URL("https://github.com/user-attachments/assets/28df9078-488c-49d6-9375-54ce5a250742")
-                        ),
-                        mainImageUrl = URL("https://github.com/YAPP-Github/24th-Web-Team-1-BE/assets/102807742/0643d805-5f3a-4563-8c48-2a7d51795326"),
-                        title = "ETF(상장 지수 펀드)란? 모르면 손해라고?",
-                        content = CategoryType.fromCode(0)!!.name,
-                        problemIds = emptyList(),
-                        category = CategoryType.IT.displayName,
-                        createdAt = LocalDateTime.now(),
-                        views = 9876543210L,
-                        workbooks = listOf(
-                            WorkbookDetail(
-                                id = 1,
-                                title = "워크북1 타이틀"
-                            ),
-                            WorkbookDetail(
-                                id = 2,
-                                title = "워크북2 타이틀"
-                            )
+                        name = "writer$it",
+                        url = URL("http://localhost:8080/api/v1/writers/$it"),
+                        imageUrl = URL("http://localhost:8080/api/v1/writers/images/$it")
+                    ),
+                    mainImageUrl = URL("http://localhost:8080/api/v1/articles/main/images/$it"),
+                    title = "title$it",
+                    content = "content$it",
+                    problemIds = emptyList(),
+                    category = CategoryType.ECONOMY.displayName,
+                    createdAt = LocalDateTime.now(),
+                    views = it.toLong(),
+                    workbooks = IntStream.range(0, 2).mapToObj { j ->
+                        WorkbookDetail(
+                            id = "$it$j".toLong(),
+                            title = "workbook$it$j"
                         )
-                    )
-                ),
-                true
-            )
+                    }.toList()
+                )
+            }.toList(),
+            true
         )
+        `when`(readArticlesUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
 
         // when
         mockMvc.perform(

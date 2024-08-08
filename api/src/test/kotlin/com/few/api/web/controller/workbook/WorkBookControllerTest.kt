@@ -27,8 +27,8 @@ import java.time.LocalDateTime
 class WorkBookControllerTest : ControllerTestSpec() {
 
     companion object {
-        private val BASE_URL = "/api/v1/workbooks"
-        private val TAG = "WorkBookController"
+        private const val BASE_URL = "/api/v1/workbooks"
+        private const val TAG = "WorkBookController"
     }
 
     @Test
@@ -83,8 +83,8 @@ class WorkBookControllerTest : ControllerTestSpec() {
     fun browseWorkBooks() {
         // given
         val api = "BrowseWorkBooks"
+        val token = "thisisaccesstoken"
         val viewCategory = ViewCategory.MAIN_CARD
-        val memberId = 1L
         val uri = UriComponentsBuilder.newInstance()
             .path(BASE_URL)
             .queryParam("category", WorkBookCategory.ECONOMY.code)
@@ -92,33 +92,35 @@ class WorkBookControllerTest : ControllerTestSpec() {
             .build()
             .toUriString()
 
-        // set usecase mock
-        `when`(tokenResolver.resolveId("thisisaccesstoken")).thenReturn(memberId)
-        `when`(browseWorkBooksUseCase.execute(BrowseWorkbooksUseCaseIn(WorkBookCategory.ECONOMY, viewCategory, memberId))).thenReturn(
-            BrowseWorkbooksUseCaseOut(
-                workbooks = listOf(
-                    BrowseWorkBookDetail(
-                        id = 1L,
-                        mainImageUrl = URL("http://localhost:8080/api/v1/workbooks/1/image"),
-                        title = "재태크, 투자 필수 용어 모음집",
-                        description = "사회 초년생부터, 직장인, 은퇴자까지 모두가 알아야 할 기본적인 재태크, 투자 필수 용어 모음집 입니다.",
-                        category = CategoryType.fromCode(0)!!.name,
-                        createdAt = LocalDateTime.now(),
-                        writerDetails = listOf(
-                            WriterDetail(1L, "안나포", URL("http://localhost:8080/api/v1/users/1")),
-                            WriterDetail(2L, "퓨퓨", URL("http://localhost:8080/api/v1/users/2")),
-                            WriterDetail(3L, "프레소", URL("http://localhost:8080/api/v1/users/3"))
-                        ),
-                        subscriptionCount = 100
-                    )
+        val memberId = 1L
+        `when`(tokenResolver.resolveId(token)).thenReturn(memberId)
+
+        val useCaseIn =
+            BrowseWorkbooksUseCaseIn(WorkBookCategory.ECONOMY, viewCategory, memberId)
+        val useCaseOut = BrowseWorkbooksUseCaseOut(
+            workbooks = listOf(
+                BrowseWorkBookDetail(
+                    id = 1L,
+                    mainImageUrl = URL("http://localhost:8080/api/v1/workbooks/1/image"),
+                    title = "재태크, 투자 필수 용어 모음집",
+                    description = "사회 초년생부터, 직장인, 은퇴자까지 모두가 알아야 할 기본적인 재태크, 투자 필수 용어 모음집 입니다.",
+                    category = CategoryType.fromCode(0)!!.name,
+                    createdAt = LocalDateTime.now(),
+                    writerDetails = listOf(
+                        WriterDetail(1L, "안나포", URL("http://localhost:8080/api/v1/users/1")),
+                        WriterDetail(2L, "퓨퓨", URL("http://localhost:8080/api/v1/users/2")),
+                        WriterDetail(3L, "프레소", URL("http://localhost:8080/api/v1/users/3"))
+                    ),
+                    subscriptionCount = 100
                 )
             )
         )
+        `when`(browseWorkBooksUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
 
         // when
         mockMvc.perform(
             get(uri)
-                .header("Authorization", "Bearer thisisaccesstoken")
+                .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
             status().is2xxSuccessful
@@ -187,24 +189,30 @@ class WorkBookControllerTest : ControllerTestSpec() {
             .path("$BASE_URL/{workbookId}")
             .build()
             .toUriString()
-        // set usecase mock
+
         val workbookId = 1L
-        `when`(readWorkbookUseCase.execute(ReadWorkbookUseCaseIn(workbookId))).thenReturn(
-            ReadWorkbookUseCaseOut(
-                id = 1L,
-                mainImageUrl = URL("http://localhost:8080/api/v1/workbooks/1/image"),
-                title = "재태크, 투자 필수 용어 모음집",
-                description = "사회 초년생부터, 직장인, 은퇴자까지 모두가 알아야 할 기본적인 재태크, 투자 필수 용어 모음집 입니다.",
-                category = CategoryType.fromCode(0)!!.name,
-                createdAt = LocalDateTime.now(),
-                writers = listOf(
-                    WriterDetail(1L, "안나포", URL("http://localhost:8080/api/v1/users/1")),
-                    WriterDetail(2L, "퓨퓨", URL("http://localhost:8080/api/v1/users/2")),
-                    WriterDetail(3L, "프레소", URL("http://localhost:8080/api/v1/users/3"))
-                ),
-                articles = listOf(ArticleDetail(1L, "ISA(개인종합자산관리계좌)란?"), ArticleDetail(2L, "ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란?"))
+        val useCaseIn = ReadWorkbookUseCaseIn(workbookId)
+        val useCaseOut = ReadWorkbookUseCaseOut(
+            id = 1L,
+            mainImageUrl = URL("http://localhost:8080/api/v1/workbooks/1/image"),
+            title = "재태크, 투자 필수 용어 모음집",
+            description = "사회 초년생부터, 직장인, 은퇴자까지 모두가 알아야 할 기본적인 재태크, 투자 필수 용어 모음집 입니다.",
+            category = CategoryType.fromCode(0)!!.name,
+            createdAt = LocalDateTime.now(),
+            writers = listOf(
+                WriterDetail(1L, "안나포", URL("http://localhost:8080/api/v1/users/1")),
+                WriterDetail(2L, "퓨퓨", URL("http://localhost:8080/api/v1/users/2")),
+                WriterDetail(3L, "프레소", URL("http://localhost:8080/api/v1/users/3"))
+            ),
+            articles = listOf(
+                ArticleDetail(1L, "ISA(개인종합자산관리계좌)란?"),
+                ArticleDetail(
+                    2L,
+                    "ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란?"
+                )
             )
         )
+        `when`(readWorkbookUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
 
         // when
         mockMvc.perform(

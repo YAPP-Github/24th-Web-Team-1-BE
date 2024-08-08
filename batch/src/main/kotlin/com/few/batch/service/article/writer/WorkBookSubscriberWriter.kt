@@ -217,15 +217,17 @@ class WorkBookSubscriberWriter(
         dslContext.batch(updateQueries).execute()
 
         /** 마지막 학습지를 받은 구독자들은 구독을 해지한다.*/
-        // todo refactoring to batch update
+        val receiveLastDayQueries = mutableListOf<UpdateConditionStep<*>>()
         for (receiveLastDayMember in receiveLastDayMembers) {
-            dslContext.update(subscriptionT)
-                .set(subscriptionT.DELETED_AT, LocalDateTime.now())
-                .set(subscriptionT.UNSUBS_OPINION, "receive.all")
-                .where(subscriptionT.MEMBER_ID.eq(receiveLastDayMember.memberId))
-                .and(subscriptionT.TARGET_WORKBOOK_ID.eq(receiveLastDayMember.targetWorkBookId))
-                .execute()
+            receiveLastDayQueries.add(
+                dslContext.update(subscriptionT)
+                    .set(subscriptionT.DELETED_AT, LocalDateTime.now())
+                    .set(subscriptionT.UNSUBS_OPINION, "receive.all")
+                    .where(subscriptionT.MEMBER_ID.eq(receiveLastDayMember.memberId))
+                    .and(subscriptionT.TARGET_WORKBOOK_ID.eq(receiveLastDayMember.targetWorkBookId))
+            )
         }
+        dslContext.batch(receiveLastDayQueries).execute()
 
         return if (failRecords.isNotEmpty()) {
             mapOf("records" to memberSuccessRecords, "fail" to failRecords)

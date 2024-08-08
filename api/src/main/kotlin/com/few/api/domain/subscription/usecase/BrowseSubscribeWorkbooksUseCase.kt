@@ -8,7 +8,8 @@ import com.few.api.domain.subscription.usecase.dto.BrowseSubscribeWorkbooksUseCa
 import com.few.api.domain.subscription.usecase.dto.SubscribeWorkbookDetail
 import com.few.api.repo.dao.subscription.SubscriptionDao
 import com.few.api.repo.dao.subscription.query.CountAllWorkbooksSubscription
-import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookSubscriptionStatusUnsubOpinionConditionAndNotConsiderDeletedAQuery
+import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookActiveSubscription
+import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookInActiveSubscription
 import com.few.api.web.support.WorkBookStatus
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -21,10 +22,17 @@ class BrowseSubscribeWorkbooksUseCase(
 ) {
     @Transactional
     fun execute(useCaseIn: BrowseSubscribeWorkbooksUseCaseIn): BrowseSubscribeWorkbooksUseCaseOut {
-        val subscriptionRecords =
-            SelectAllMemberWorkbookSubscriptionStatusUnsubOpinionConditionAndNotConsiderDeletedAQuery(useCaseIn.memberId).let {
-                subscriptionDao.selectAllWorkbookSubscriptionStatus(it)
+        val inActiveSubscriptionRecords =
+            SelectAllMemberWorkbookInActiveSubscription(useCaseIn.memberId).let {
+                subscriptionDao.selectAllInActiveWorkbookSubscriptionStatus(it)
             }
+
+        val activeSubscriptionRecords =
+            SelectAllMemberWorkbookActiveSubscription(useCaseIn.memberId).let {
+                subscriptionDao.selectAllActiveWorkbookSubscriptionStatus(it)
+            }
+
+        val subscriptionRecords = inActiveSubscriptionRecords + activeSubscriptionRecords
 
         /**
          * key: workbookId

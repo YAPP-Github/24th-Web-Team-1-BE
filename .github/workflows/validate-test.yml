@@ -53,10 +53,6 @@ jobs:
                   restore-keys: |
                       ${{ runner.os }}-gradle-
 
-            - name: Jooq Code Generation
-              run: |
-                  ./gradlew  jooqCodegenAll
-
             - name: API Test with Gradle
               run: |
                   ./gradlew  api:test -parallel
@@ -84,7 +80,7 @@ jobs:
 
             - name: Jooq Code Generation
               run: |
-                  ./gradlew  jooqCodegenAll
+                  ./gradlew  api-repo:jooqCodegen
 
             -   name: API Repo Test with Gradle
                 run: |
@@ -113,7 +109,7 @@ jobs:
 
             - name: Jooq Code Generation
               run: |
-                  ./gradlew  jooqCodegenAll
+                  ./gradlew  batch:jooqCodegen
 
             -   name: Batch Test with Gradle
                 run: |

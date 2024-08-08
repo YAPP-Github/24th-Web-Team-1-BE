@@ -21,7 +21,6 @@ class ReadWorkbookUseCaseTest : BehaviorSpec({
     lateinit var workbookArticleService: WorkbookArticleService
     lateinit var workbookMemberService: WorkbookMemberService
     lateinit var useCase: ReadWorkbookUseCase
-    val useCaseIn = ReadWorkbookUseCaseIn(workbookId = 1L)
 
     beforeContainer {
         workbookDao = mockk<WorkbookDao>()
@@ -31,6 +30,9 @@ class ReadWorkbookUseCaseTest : BehaviorSpec({
     }
 
     given("워크북 조회 요청이 온 상황에서") {
+        val workbookId = 1L
+        val useCaseIn = ReadWorkbookUseCaseIn(workbookId = workbookId)
+
         `when`("워크북과 작가가 존재할 경우") {
             every { workbookDao.selectWorkBook(any()) } returns SelectWorkBookRecord(
                 id = 1L,
@@ -40,6 +42,7 @@ class ReadWorkbookUseCaseTest : BehaviorSpec({
                 description = "workbook description",
                 createdAt = LocalDateTime.now()
             )
+
             every { workbookArticleService.browseWorkbookArticles(any()) } returns listOf(
                 WorkBookArticleOutDto(
                     articleId = 1L,
@@ -51,6 +54,7 @@ class ReadWorkbookUseCaseTest : BehaviorSpec({
                     createdAt = LocalDateTime.now()
                 )
             )
+
             every { workbookMemberService.browseWriterRecords(any()) } returns listOf(
                 WriterOutDto(
                     writerId = 1L,

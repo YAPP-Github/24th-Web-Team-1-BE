@@ -27,6 +27,9 @@ class BrowseSubscribeWorkbooksUseCaseTest : BehaviorSpec({
     }
 
     given("사용자 구독 정보 조회 요청이 온 상황에서") {
+        val memberId = 1L
+        val useCaseIn = BrowseSubscribeWorkbooksUseCaseIn(memberId = memberId)
+
         `when`("사용자의 구독 정보가 있는 경우") {
             every { subscriptionDao.selectAllInActiveWorkbookSubscriptionStatus(any()) } returns listOf(
                 MemberWorkbookSubscriptionStatusRecord(
@@ -58,7 +61,6 @@ class BrowseSubscribeWorkbooksUseCaseTest : BehaviorSpec({
             every { objectMapper.writeValueAsString(any()) } returns "{\"articleId\":1}" andThen "{\"articleId\":2}"
 
             then("사용자의 구독 정보를 조회한다") {
-                val useCaseIn = BrowseSubscribeWorkbooksUseCaseIn(memberId = 1L)
                 useCase.execute(useCaseIn)
 
                 verify(exactly = 1) { subscriptionDao.selectAllInActiveWorkbookSubscriptionStatus(any()) }

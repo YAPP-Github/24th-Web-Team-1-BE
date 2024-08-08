@@ -24,14 +24,16 @@ class CheckProblemUseCaseTest : BehaviorSpec({
     }
 
     given("문제 정답 확인 요청이 온 상황에서") {
-        `when`("제출 값과 문제 정답이 같을 경우") {
-            val submissionVal = "1"
-            val answer = submissionVal
-            val useCaseIn = CheckProblemUseCaseIn(problemId = 1L, sub = submissionVal)
-            val answerRecord = SelectProblemAnswerRecord(id = 1L, answer = answer, explanation = "해설입니다.")
+        val problemId = 1L
+        val submissionVal = "1"
+        val useCaseIn = CheckProblemUseCaseIn(problemId = problemId, sub = submissionVal)
 
-            every { problemDao.selectProblemAnswer(any()) } returns answerRecord
-            every { submitHistoryDao.insertSubmitHistory(any()) } returns 1L
+        `when`("제출 값과 문제 정답이 같을 경우") {
+            val answer = submissionVal
+            every { problemDao.selectProblemAnswer(any()) } returns SelectProblemAnswerRecord(id = problemId, answer = answer, explanation = "해설입니다.")
+
+            val problemSubmitHistoryId = 1L
+            every { submitHistoryDao.insertSubmitHistory(any()) } returns problemSubmitHistoryId
 
             then("문제가 정답처리 된다") {
                 val useCaseOut = useCase.execute(useCaseIn)
@@ -43,13 +45,15 @@ class CheckProblemUseCaseTest : BehaviorSpec({
         }
 
         `when`("제출 값과 문제 정답이 다를 경우") {
-            val submissionVal = "1"
             val answer = "2"
-            val useCaseIn = CheckProblemUseCaseIn(problemId = 1L, sub = submissionVal)
-            val answerRecord = SelectProblemAnswerRecord(id = 1L, answer = answer, explanation = "해설입니다.")
+            every { problemDao.selectProblemAnswer(any()) } returns SelectProblemAnswerRecord(
+                id = problemId,
+                answer = answer,
+                explanation = "해설입니다."
+            )
 
-            every { problemDao.selectProblemAnswer(any()) } returns answerRecord
-            every { submitHistoryDao.insertSubmitHistory(any()) } returns 1L
+            val problemSubmitHistoryId = 1L
+            every { submitHistoryDao.insertSubmitHistory(any()) } returns problemSubmitHistoryId
 
             then("문제가 오답처리 된다") {
                 val useCaseOut = useCase.execute(useCaseIn)
@@ -61,8 +65,6 @@ class CheckProblemUseCaseTest : BehaviorSpec({
         }
 
         `when`("존재하지 않는 문제일 경우") {
-            val useCaseIn = CheckProblemUseCaseIn(problemId = 1L, sub = "1")
-
             every { problemDao.selectProblemAnswer(any()) } returns null
 
             then("예외가 발생한다") {

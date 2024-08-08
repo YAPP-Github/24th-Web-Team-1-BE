@@ -7,7 +7,7 @@ logging:
 
 spring:
     datasource:
-        jdbcUrl: jdbc:mysql://localhost:13306/api?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&allowMultiQueries=true
+        jdbcUrl: jdbc:mysql://localhost:43306/api?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&allowMultiQueries=true
         username: root
         password: root
         driver-class-name: com.mysql.cj.jdbc.Driver

@@ -135,22 +135,6 @@ subprojects {
         }
     }
 
-    /** do all copy data migration */
-    tasks.register("copyDataMigrationAll") {
-        dependsOn(":api-repo:copyDataMigration")
-        dependsOn(":batch:copyDataMigration")
-    }
-
-    /** copy data migration before compile kotlin */
-    tasks.compileKotlin {
-        dependsOn("copyDataMigrationAll")
-    }
-
-    /** jooq codegen after copy data migration */
-    tasks.jooqCodegen {
-        dependsOn("copyDataMigrationAll")
-    }
-
     jooq {
         configuration {
             generator {
@@ -223,8 +207,15 @@ subprojects {
     defaultTasks("bootRun")
 }
 
+/** do all copy data migration */
+tasks.register("copyDataMigrationAll") {
+    dependsOn(":api-repo:copyDataMigration")
+    dependsOn(":batch:copyDataMigration")
+}
+
 /** do all jooq codegen */
 tasks.register("jooqCodegenAll") {
+    dependsOn("copyDataMigrationAll")
     dependsOn(":api-repo:jooqCodegen")
     dependsOn(":batch:jooqCodegen")
 }

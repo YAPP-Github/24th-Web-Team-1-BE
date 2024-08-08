@@ -1,7 +1,7 @@
 spring:
     datasource:
         hikari:
-            jdbcUrl: jdbc:mysql://localhost:13306/api?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&allowMultiQueries=true
+            jdbcUrl: jdbc:mysql://localhost:23306/api?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&allowMultiQueries=true
             username: root
             password: root
             driver-class-name: com.mysql.cj.jdbc.Driver
@@ -33,7 +33,7 @@ spring:
                     EnableSSL:
                         enable: true
 storage:
-    url: http://127.0.0.1:9000
+    url: http://127.0.0.1:29000
     access-key: thisisroot
     secret-key: thisisroot
     region: ap-northeast-2
@@ -47,7 +47,7 @@ document:
         bucket-name: document
 
 cdn:
-    url: http://127.0.0.1:9000
+    url: http://127.0.0.1:29000
 
 client:
     timeout:

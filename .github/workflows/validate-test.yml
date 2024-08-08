@@ -12,7 +12,7 @@ env:
     EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
 
 jobs:
-    validate-test:
+    setup-test:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
@@ -34,8 +34,139 @@ jobs:
 
             - name: Jooq Code Generation
               run: |
-                  ./gradlew --info jooqCodegenAll
+                  ./gradlew  jooqCodegenAll
 
-            - name: Test with Gradle
+            - name: Cache Api Repo Jooq
+              uses: actions/cache@v3
+              with:
+                  path: |
+                      ./api-repo/src/generated
+                      ./api-repo/src/main/resources/db/migration
+                  key: ${{ runner.os }}-api-repo-jooq-${{ hashFiles('./api-repo/src/generated/**', './api-repo/src/main/resources/db/migration/**') }}
+                  restore-keys: |
+                      ${{ runner.os }}-api-repo-jooq-
+
+            - name: Cache Batch Jooq
+              uses: actions/cache@v3
+              with:
+                  path: |
+                      ./batch/src/generated
+                      ./batch/src/main/resources/db/migration
+                  key: ${{ runner.os }}-batch-jooq-${{ hashFiles('./batch/src/generated/**', './batch/src/main/resources/db/migration/**') }}
+                  restore-keys: |
+                      ${{ runner.os }}-batch-jooq-
+
+    api-test:
+        needs: setup-test
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Set up JDK 17
+              uses: actions/setup-java@v3
+              with:
+                  java-version: '17'
+                  distribution: 'temurin'
+
+            - name: Cache Gradle
+              uses: actions/cache@v3
+              with:
+                  path: |
+                      ~/.gradle/caches
+                      ~/.gradle/wrapper
+                  key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+                  restore-keys: |
+                      ${{ runner.os }}-gradle-
+
+            - name: Cache Api Repo Jooq
+              uses: actions/cache@v3
+              with:
+                  path: |
+                      ./api-repo/src/generated
+                      ./api-repo/src/main/resources/db/migration
+                  key: ${{ runner.os }}-api-repo-jooq-${{ hashFiles('./api-repo/src/generated/**', './api-repo/src/main/resources/db/migration/**') }}
+                  restore-keys: |
+                      ${{ runner.os }}-api-repo-jooq-
+
+            - name: Cache Batch Jooq
+              uses: actions/cache@v3
+              with:
+                  path: |
+                      ./batch/src/generated
+                      ./batch/src/main/resources/db/migration
+                  key: ${{ runner.os }}-batch-jooq-${{ hashFiles('./batch/src/generated/**', './batch/src/main/resources/db/migration/**') }}
+                  restore-keys: |
+                      ${{ runner.os }}-batch-jooq-
+
+            - name: API Test with Gradle
               run: |
-                  ./gradlew --info test
+                  ./gradlew  api:test
+
+    api-repo-test:
+        needs: setup-test
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v3
+            -   name: Set up JDK 17
+                uses: actions/setup-java@v3
+                with:
+                    java-version: '17'
+                    distribution: 'temurin'
+
+            -   name: Cache Gradle
+                uses: actions/cache@v3
+                with:
+                    path: |
+                        ~/.gradle/caches
+                        ~/.gradle/wrapper
+                    key: ${{ runner.os }}-jooq-${{ hashFiles('./api-repo/src/generated/**', './api-repo/src/main/resources/db/migration/**', './batch/src/generated/**', './batch/src/main/resources/db/migration/**') }}
+                    restore-keys: |
+                        ${{ runner.os }}-gradle-
+
+            - name: Cache Api Repo Jooq
+              uses: actions/cache@v3
+              with:
+                  path: |
+                      ./api-repo/src/generated
+                      ./api-repo/src/main/resources/db/migration
+                  key: ${{ runner.os }}-api-repo-jooq-${{ hashFiles('./api-repo/src/generated/**', './api-repo/src/main/resources/db/migration/**') }}
+                  restore-keys: |
+                      ${{ runner.os }}-api-repo-jooq-
+
+            -   name: API Repo Test with Gradle
+                run: |
+                    ./gradlew  api-repo:test
+
+    batch-test:
+        needs: setup-test
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v3
+            -   name: Set up JDK 17
+                uses: actions/setup-java@v3
+                with:
+                    java-version: '17'
+                    distribution: 'temurin'
+
+            -   name: Cache Gradle
+                uses: actions/cache@v3
+                with:
+                    path: |
+                        ~/.gradle/caches
+                        ~/.gradle/wrapper
+                    key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+                    restore-keys: |
+                        ${{ runner.os }}-gradle-
+
+            - name: Cache Batch Jooq
+              uses: actions/cache@v3
+              with:
+                  path: |
+                      ./batch/src/generated
+                      ./batch/src/main/resources/db/migration
+                  key: ${{ runner.os }}-batch-jooq-${{ hashFiles('./batch/src/generated/**', './batch/src/main/resources/db/migration/**') }}
+                  restore-keys: |
+                      ${{ runner.os }}-batch-jooq-
+
+            -   name: Batch Test with Gradle
+                run: |
+                    ./gradlew  batch:test

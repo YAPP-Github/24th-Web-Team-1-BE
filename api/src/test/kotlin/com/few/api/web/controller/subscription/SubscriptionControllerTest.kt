@@ -4,14 +4,9 @@ import com.epages.restdocs.apispec.ResourceDocumentation
 import com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.few.api.domain.subscription.usecase.BrowseSubscribeWorkbooksUseCase
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.subscription.request.UnsubscribeWorkbookRequest
-import com.few.api.domain.subscription.usecase.SubscribeWorkbookUseCase
-import com.few.api.domain.subscription.usecase.UnsubscribeAllUseCase
-import com.few.api.domain.subscription.usecase.UnsubscribeWorkbookUseCase
 import com.few.api.domain.subscription.usecase.dto.*
 import com.few.api.web.controller.helper.*
 import com.few.api.web.support.ViewCategory
@@ -22,7 +17,6 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.doReturn
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.http.codec.json.Jackson2JsonEncoder
@@ -34,34 +28,13 @@ import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.reactive.server.WebTestClient
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.web.util.UriComponentsBuilder
 
 class SubscriptionControllerTest : ControllerTestSpec() {
 
     @Autowired
-    private lateinit var objectMapper: ObjectMapper
-
-    private lateinit var webTestClient: WebTestClient
-
-    @Autowired
-    private lateinit var mockMvc: MockMvc
-
-    @Autowired
-    private lateinit var subscriptionController: SubscriptionController
-
-    @MockBean
-    private lateinit var subscribeWorkbookUseCase: SubscribeWorkbookUseCase
-
-    @MockBean
-    private lateinit var unsubscribeWorkbookUseCase: UnsubscribeWorkbookUseCase
-
-    @MockBean
-    private lateinit var unsubscribeAllUseCase: UnsubscribeAllUseCase
-
-    @MockBean
-    private lateinit var browseSubscribeWorkbooksUseCase: BrowseSubscribeWorkbooksUseCase
+    lateinit var subscriptionController: SubscriptionController
 
     companion object {
         private val BASE_URL = "/api/v1/"

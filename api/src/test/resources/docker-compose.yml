@@ -9,15 +9,15 @@ services:
       - TZ=Asia/Seoul
     command: [ "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci", "--lower_case_table_names=1", "--max_connections=2048", "--wait_timeout=3600" ]
     ports:
-      - "13306:3306"
+      - "23306:3306"
     volumes:
       - ./mysql-init.d:/docker-entrypoint-initdb.d
 
   minio:
       image: minio/minio
       ports:
-          - "9000:9000"
-          - "9001:9001"
+          - "29000:9000"
+          - "29001:9001"
       shm_size: '1gb'
       environment:
           - MINIO_ACCESS_KEY=thisisroot

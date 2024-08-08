@@ -34,11 +34,11 @@ jobs:
 
             - name: Jooq Code Generation
               run: |
-                  ./gradlew --info jooqCodegenAll
+                  ./gradlew  jooqCodegenAll
 
             - name: Generate Explain Docs
               run: |
-                  ./gradlew --info api-repo:generateExplainDocs
+                  ./gradlew  api-repo:generateExplainDocs
 
             - name: Zip Explain Docs
               run: |

@@ -34,8 +34,8 @@ jobs:
 
             - name: Jooq Code Generation
               run: |
-                  ./gradlew --info jooqCodegenAll
+                  ./gradlew  jooqCodegenAll
 
             - name: Test with Gradle
               run: |
-                  ./gradlew --info test -parallel
+                  ./gradlew test -parallel

@@ -12,7 +12,7 @@ env:
     EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
 
 jobs:
-    validate-test:
+    setup-test:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
@@ -36,7 +36,7 @@ jobs:
               run: |
                   ./gradlew  jooqCodegenAll
 
-            - name: Jooq Cache
+            - name: Cache Jooq
               uses: actions/cache@v3
               with:
                   path: |
@@ -49,7 +49,7 @@ jobs:
                       ${{ runner.os }}-jooq-
 
     api-test:
-        needs: validate-test
+        needs: setup-test
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
@@ -69,7 +69,7 @@ jobs:
                   restore-keys: |
                       ${{ runner.os }}-gradle-
 
-            - name: Jooq Cache
+            - name: Cache Jooq
               uses: actions/cache@v3
               with:
                   path: |
@@ -86,7 +86,7 @@ jobs:
                   ./gradlew  api:test
 
     api-repo-test:
-        needs: validate-test
+        needs: setup-test
         runs-on: ubuntu-latest
         steps:
             -   uses: actions/checkout@v3
@@ -106,14 +106,12 @@ jobs:
                     restore-keys: |
                         ${{ runner.os }}-gradle-
 
-            - name: Jooq Cache
+            - name: Cache Jooq
               uses: actions/cache@v3
               with:
                   path: |
                       ./api-repo/src/generated
                       ./api-repo/src/main/resources/db/migration
-                      ./batch/src/generated
-                      ./batch/src/main/resources/db/migration
                   key: ${{ runner.os }}-jooq-${{ hashFiles('./api-repo/src/generated/**', './api-repo/src/main/resources/db/migration/**', './batch/src/generated/**', './batch/src/main/resources/db/migration/**') }}
                   restore-keys: |
                       ${{ runner.os }}-jooq-
@@ -123,7 +121,7 @@ jobs:
                     ./gradlew  api-repo:test
 
     batch-test:
-        needs: validate-test
+        needs: setup-test
         runs-on: ubuntu-latest
         steps:
             -   uses: actions/checkout@v3
@@ -143,12 +141,10 @@ jobs:
                     restore-keys: |
                         ${{ runner.os }}-gradle-
 
-            - name: Jooq Cache
+            - name: Cache Jooq
               uses: actions/cache@v3
               with:
                   path: |
-                      ./api-repo/src/generated
-                      ./api-repo/src/main/resources/db/migration
                       ./batch/src/generated
                       ./batch/src/main/resources/db/migration
                   key: ${{ runner.os }}-jooq-${{ hashFiles('./api-repo/src/generated/**', './api-repo/src/main/resources/db/migration/**', './batch/src/generated/**', './batch/src/main/resources/db/migration/**') }}

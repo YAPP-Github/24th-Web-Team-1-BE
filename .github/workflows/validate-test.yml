@@ -83,7 +83,7 @@ jobs:
 
             - name: API Test with Gradle
               run: |
-                  ./gradlew  api:test -parallel
+                  ./gradlew  api:test
 
     api-repo-test:
         needs: validate-test
@@ -120,7 +120,7 @@ jobs:
 
             -   name: API Repo Test with Gradle
                 run: |
-                    ./gradlew  api-repo:test -parallel
+                    ./gradlew  api-repo:test
 
     batch-test:
         needs: validate-test
@@ -157,4 +157,4 @@ jobs:
 
             -   name: Batch Test with Gradle
                 run: |
-                    ./gradlew  batch:test -parallel
+                    ./gradlew  batch:test

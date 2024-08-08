@@ -32,6 +32,22 @@ jobs:
                   restore-keys: |
                       ${{ runner.os }}-gradle-
 
+            - name: Jooq Code Generation
+              run: |
+                  ./gradlew  jooqCodegenAll
+
+            - name: Jooq Cache
+              uses: actions/cache@v3
+              with:
+                  path: |
+                      ./api-repo/src/generated
+                      ./api-repo/src/main/resources/db/migration
+                      ./batch/src/generated
+                      ./batch/src/main/resources/db/migration
+                  key: ${{ runner.os }}-jooq-${{ hashFiles('./api-repo/src/generated/**', './api-repo/src/main/resources/db/migration/**', './batch/src/generated/**', './batch/src/main/resources/db/migration/**') }}
+                  restore-keys: |
+                      ${{ runner.os }}-jooq-
+
     api-test:
         needs: validate-test
         runs-on: ubuntu-latest
@@ -52,6 +68,18 @@ jobs:
                   key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
                   restore-keys: |
                       ${{ runner.os }}-gradle-
+
+            - name: Jooq Cache
+              uses: actions/cache@v3
+              with:
+                  path: |
+                        ./api-repo/src/generated
+                        ./api-repo/src/main/resources/db/migration
+                        ./batch/src/generated
+                        ./batch/src/main/resources/db/migration
+                  key: ${{ runner.os }}-jooq-${{ hashFiles('./api-repo/src/generated/**', './api-repo/src/main/resources/db/migration/**', './batch/src/generated/**', './batch/src/main/resources/db/migration/**') }}
+                  restore-keys: |
+                    ${{ runner.os }}-jooq-
 
             - name: API Test with Gradle
               run: |
@@ -74,13 +102,21 @@ jobs:
                     path: |
                         ~/.gradle/caches
                         ~/.gradle/wrapper
-                    key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+                    key: ${{ runner.os }}-jooq-${{ hashFiles('./api-repo/src/generated/**', './api-repo/src/main/resources/db/migration/**', './batch/src/generated/**', './batch/src/main/resources/db/migration/**') }}
                     restore-keys: |
                         ${{ runner.os }}-gradle-
 
-            - name: Jooq Code Generation
-              run: |
-                  ./gradlew  api-repo:jooqCodegen
+            - name: Jooq Cache
+              uses: actions/cache@v3
+              with:
+                  path: |
+                      ./api-repo/src/generated
+                      ./api-repo/src/main/resources/db/migration
+                      ./batch/src/generated
+                      ./batch/src/main/resources/db/migration
+                  key: ${{ runner.os }}-jooq-${{ hashFiles('./api-repo/src/generated/**', './api-repo/src/main/resources/db/migration/**', './batch/src/generated/**', './batch/src/main/resources/db/migration/**') }}
+                  restore-keys: |
+                      ${{ runner.os }}-jooq-
 
             -   name: API Repo Test with Gradle
                 run: |
@@ -107,9 +143,17 @@ jobs:
                     restore-keys: |
                         ${{ runner.os }}-gradle-
 
-            - name: Jooq Code Generation
-              run: |
-                  ./gradlew  batch:jooqCodegen
+            - name: Jooq Cache
+              uses: actions/cache@v3
+              with:
+                  path: |
+                      ./api-repo/src/generated
+                      ./api-repo/src/main/resources/db/migration
+                      ./batch/src/generated
+                      ./batch/src/main/resources/db/migration
+                  key: ${{ runner.os }}-jooq-${{ hashFiles('./api-repo/src/generated/**', './api-repo/src/main/resources/db/migration/**', './batch/src/generated/**', './batch/src/main/resources/db/migration/**') }}
+                  restore-keys: |
+                      ${{ runner.os }}-jooq-
 
             -   name: Batch Test with Gradle
                 run: |

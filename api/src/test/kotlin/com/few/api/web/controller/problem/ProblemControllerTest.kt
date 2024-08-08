@@ -20,6 +20,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.payload.PayloadDocumentation
@@ -28,6 +29,9 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.util.UriComponentsBuilder
 
 class ProblemControllerTest : ControllerTestSpec() {
+
+    @Autowired
+    lateinit var problemController: ProblemController
 
     companion object {
         private val BASE_URL = "/api/v1/problems"

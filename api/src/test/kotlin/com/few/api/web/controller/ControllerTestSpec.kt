@@ -19,13 +19,6 @@ import com.few.api.domain.workbook.article.usecase.ReadWorkBookArticleUseCase
 import com.few.api.domain.workbook.usecase.BrowseWorkbooksUseCase
 import com.few.api.domain.workbook.usecase.ReadWorkbookUseCase
 import com.few.api.security.token.TokenResolver
-import com.few.api.web.controller.admin.AdminController
-import com.few.api.web.controller.article.ArticleController
-import com.few.api.web.controller.member.MemberController
-import com.few.api.web.controller.problem.ProblemController
-import com.few.api.web.controller.subscription.SubscriptionController
-import com.few.api.web.controller.workbook.WorkBookController
-import com.few.api.web.controller.workbook.article.WorkBookArticleController
 import com.few.api.web.handler.ApiControllerExceptionHandler
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -63,9 +56,6 @@ abstract class ControllerTestSpec {
     lateinit var tokenResolver: TokenResolver
 
     /** AdminControllerTest */
-    @Autowired
-    lateinit var adminController: AdminController
-
     @MockBean
     lateinit var addArticleUseCase: AddArticleUseCase
 
@@ -86,9 +76,6 @@ abstract class ControllerTestSpec {
     lateinit var addApiLogUseCase: AddApiLogUseCase
 
     /** ArticleControllerTest */
-    @Autowired
-    lateinit var articleController: ArticleController
-
     @MockBean
     lateinit var readArticleUseCase: ReadArticleUseCase
 
@@ -96,9 +83,6 @@ abstract class ControllerTestSpec {
     lateinit var readArticlesUseCase: ReadArticlesUseCase
 
     /** MemberControllerTest */
-    @Autowired
-    lateinit var memberController: MemberController
-
     @MockBean
     lateinit var saveMemberUseCase: SaveMemberUseCase
 
@@ -106,9 +90,6 @@ abstract class ControllerTestSpec {
     lateinit var tokenUseCase: TokenUseCase
 
     /** ProblemControllerTest */
-    @Autowired
-    lateinit var problemController: ProblemController
-
     @MockBean
     lateinit var browseProblemsUseCase: BrowseProblemsUseCase
 
@@ -119,9 +100,6 @@ abstract class ControllerTestSpec {
     lateinit var checkProblemUseCase: CheckProblemUseCase
 
     /** SubscriptionControllerTest */
-    @Autowired
-    lateinit var subscriptionController: SubscriptionController
-
     @MockBean
     lateinit var subscribeWorkbookUseCase: SubscribeWorkbookUseCase
 
@@ -135,16 +113,10 @@ abstract class ControllerTestSpec {
     lateinit var browseSubscribeWorkbooksUseCase: BrowseSubscribeWorkbooksUseCase
 
     /** WorkBookArticleControllerTest */
-    @Autowired
-    lateinit var workBookArticleController: WorkBookArticleController
-
     @MockBean
     lateinit var readWorkBookArticleUseCase: ReadWorkBookArticleUseCase
 
     /** WorkBookControllerTest */
-    @Autowired
-    lateinit var workBookController: WorkBookController
-
     @MockBean
     lateinit var readWorkbookUseCase: ReadWorkbookUseCase
 

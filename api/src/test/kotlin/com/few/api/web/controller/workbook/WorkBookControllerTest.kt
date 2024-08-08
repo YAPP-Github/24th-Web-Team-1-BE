@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.http.codec.json.Jackson2JsonEncoder
@@ -31,6 +32,9 @@ import java.net.URL
 import java.time.LocalDateTime
 
 class WorkBookControllerTest : ControllerTestSpec() {
+
+    @Autowired
+    lateinit var workBookController: WorkBookController
 
     companion object {
         private val BASE_URL = "/api/v1/workbooks"

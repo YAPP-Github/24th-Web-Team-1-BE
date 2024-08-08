@@ -6,6 +6,7 @@ import com.epages.restdocs.apispec.ResourceDocumentation.resource
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
 import com.few.api.domain.workbook.usecase.dto.*
+import com.few.api.security.token.TokenResolver
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
@@ -35,6 +36,9 @@ class WorkBookControllerTest : ControllerTestSpec() {
 
     @Autowired
     lateinit var workBookController: WorkBookController
+
+    @MockBean
+    private lateinit var tokenResolver: TokenResolver
 
     companion object {
         private val BASE_URL = "/api/v1/workbooks"

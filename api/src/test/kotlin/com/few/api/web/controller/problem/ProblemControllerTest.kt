@@ -17,7 +17,6 @@ import com.few.api.domain.problem.usecase.dto.ReadProblemContentsUseCaseOutDetai
 import com.few.api.domain.problem.usecase.dto.ReadProblemUseCaseOut
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
@@ -30,8 +29,8 @@ import org.springframework.web.util.UriComponentsBuilder
 class ProblemControllerTest : ControllerTestSpec() {
 
     companion object {
-        private val BASE_URL = "/api/v1/problems"
-        private val TAG = "ProblemController"
+        private const val BASE_URL = "/api/v1/problems"
+        private const val TAG = "ProblemController"
     }
 
     @Test
@@ -48,8 +47,7 @@ class ProblemControllerTest : ControllerTestSpec() {
 
         val useCaseIn = BrowseProblemsUseCaseIn(articleId)
         val useCaseOut = BrowseProblemsUseCaseOut(listOf(1L, 2L, 3L))
-        `when`(browseProblemsUseCase.execute(useCaseIn))
-            .thenReturn(useCaseOut)
+        `when`(browseProblemsUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
 
         // when
         mockMvc.perform(
@@ -95,7 +93,6 @@ class ProblemControllerTest : ControllerTestSpec() {
             .build()
             .toUriString()
 
-        // set usecase mock
         val problemId = 1L
         val useCaseIn = ReadProblemUseCaseIn(problemId)
         val useCaseOut = ReadProblemUseCaseOut(
@@ -108,8 +105,7 @@ class ProblemControllerTest : ControllerTestSpec() {
                 ReadProblemContentsUseCaseOutDetail(4L, "투명성")
             )
         )
-        Mockito.`when`(readProblemUseCase.execute(useCaseIn))
-            .thenReturn(useCaseOut)
+        `when`(readProblemUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
 
         // when
         mockMvc.perform(
@@ -160,11 +156,10 @@ class ProblemControllerTest : ControllerTestSpec() {
         val api = "CheckProblem"
         val uri = UriComponentsBuilder.newInstance()
             .path("$BASE_URL/{problemId}").build().toUriString()
-
-        // set usecase mock
         val problemId = 1L
         val sub = "제출답"
         val body = objectMapper.writeValueAsString(CheckProblemRequest(sub = sub))
+
         val useCaseIn = CheckProblemUseCaseIn(problemId, sub = sub)
         val useCaseOut = CheckProblemUseCaseOut(
             explanation = "ETF는 일반적으로 낮은 운용 비용을 특징으로 합니다.이는 ETF가 보통 지수 추종(passive management) 방식으로 운용되기 때문입니다. 지수를 추종하는 전략은 액티브 매니지먼트(active management)에 비해 관리가 덜 복잡하고, 따라서 비용이 낮습니다.",

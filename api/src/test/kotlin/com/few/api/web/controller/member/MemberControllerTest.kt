@@ -26,8 +26,8 @@ import org.springframework.web.util.UriComponentsBuilder
 class MemberControllerTest : ControllerTestSpec() {
 
     companion object {
-        private val BASE_URL = "/api/v1/members"
-        private val TAG = "MemberController"
+        private const val BASE_URL = "/api/v1/members"
+        private const val TAG = "MemberController"
     }
 
     @Test
@@ -42,9 +42,9 @@ class MemberControllerTest : ControllerTestSpec() {
         val email = "test@gmail.com"
         val body = objectMapper.writeValueAsString(SaveMemberRequest(email = email))
 
-        // set mock
         val useCaseIn = SaveMemberUseCaseIn(email = email)
-        `when`(saveMemberUseCase.execute(useCaseIn)).thenReturn(SaveMemberUseCaseOut(isSendAuthEmail = true))
+        val useCaseOut = SaveMemberUseCaseOut(isSendAuthEmail = true)
+        `when`(saveMemberUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
 
         // when
         mockMvc.perform(
@@ -104,13 +104,12 @@ class MemberControllerTest : ControllerTestSpec() {
             rt = rt,
             refreshToken = tokenRequest.refreshToken
         )
-        `when`(tokenUseCase.execute(useCaseIn)).thenReturn(
-            TokenUseCaseOut(
-                accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJtZW1iZXJJZCI6NTcsIm1lbWJlclJvbGUiOiJbUk9MRV9VU0VSXSIsImlhdCI6MTcyMjI1NTE4MywiZXhwIjoxNzUzODEyNzgzfQ.1KXRim0MVvz1vxOQB_700XPCD9zPQtHNItF_A9upvA8",
-                refreshToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJtZW1iZXJJZCI6NTcsIm1lbWJlclJvbGUiOiJbUk9MRV9VU0VSXSIsImlhdCI6MTcyMjI1NTE4MywiZXhwIjoxNzUzODEyNzgzfQ.1KXRim0MVvz1vxOQB_700XPCD9zPQtHNItF_A9upvA8",
-                isLogin = false
-            )
+        val useCaseOut = TokenUseCaseOut(
+            accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJtZW1iZXJJZCI6NTcsIm1lbWJlclJvbGUiOiJbUk9MRV9VU0VSXSIsImlhdCI6MTcyMjI1NTE4MywiZXhwIjoxNzUzODEyNzgzfQ.1KXRim0MVvz1vxOQB_700XPCD9zPQtHNItF_A9upvA8",
+            refreshToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJtZW1iZXJJZCI6NTcsIm1lbWJlclJvbGUiOiJbUk9MRV9VU0VSXSIsImlhdCI6MTcyMjI1NTE4MywiZXhwIjoxNzUzODEyNzgzfQ.1KXRim0MVvz1vxOQB_700XPCD9zPQtHNItF_A9upvA8",
+            isLogin = false
         )
+        `when`(tokenUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
 
         // when
         mockMvc.perform(

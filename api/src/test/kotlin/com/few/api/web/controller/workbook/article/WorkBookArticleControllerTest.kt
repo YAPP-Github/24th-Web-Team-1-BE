@@ -26,8 +26,8 @@ import java.time.LocalDateTime
 class WorkBookArticleControllerTest : ControllerTestSpec() {
 
     companion object {
-        private val BASE_URL = "/api/v1/workbooks/{workbookId}/articles"
-        private val TAG = "WorkBookArticleController"
+        private const val BASE_URL = "/api/v1/workbooks/{workbookId}/articles"
+        private const val TAG = "WorkBookArticleController"
     }
 
     @Test
@@ -36,36 +36,39 @@ class WorkBookArticleControllerTest : ControllerTestSpec() {
     fun readWorkBookArticle() {
         // given
         val api = "ReadWorkBookArticle"
+        val token = "thisisaccesstoken"
         val uri = UriComponentsBuilder.newInstance()
             .path("$BASE_URL/{articleId}")
             .build()
             .toUriString()
-        // set usecase mock
+
+        val memberId = 1L
+        `when`(tokenResolver.resolveId(token)).thenReturn(memberId)
+
         val workbookId = 1L
         val articleId = 1L
-        val memberId = 1L
-        `when`(tokenResolver.resolveId("thisisaccesstoken")).thenReturn(memberId)
-        `when`(readWorkBookArticleUseCase.execute(ReadWorkBookArticleUseCaseIn(workbookId, articleId, memberId = memberId))).thenReturn(
-            ReadWorkBookArticleOut(
+        val useCaseIn =
+            ReadWorkBookArticleUseCaseIn(workbookId, articleId, memberId = memberId)
+        val useCaseOut = ReadWorkBookArticleOut(
+            id = 1L,
+            writer = WriterDetail(
                 id = 1L,
-                writer = WriterDetail(
-                    id = 1L,
-                    name = "안나포",
-                    url = URL("http://localhost:8080/api/v1/writers/1")
-                ),
-                title = "ETF(상장 지수 펀드)란? 모르면 손해라고?",
-                content = "content",
-                problemIds = listOf(1L, 2L, 3L),
-                category = CategoryType.fromCode(0)!!.name,
-                createdAt = LocalDateTime.now(),
-                day = 1L
-            )
+                name = "안나포",
+                url = URL("http://localhost:8080/api/v1/writers/1")
+            ),
+            title = "ETF(상장 지수 펀드)란? 모르면 손해라고?",
+            content = "content",
+            problemIds = listOf(1L, 2L, 3L),
+            category = CategoryType.fromCode(0)!!.name,
+            createdAt = LocalDateTime.now(),
+            day = 1L
         )
+        `when`(readWorkBookArticleUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
 
         // when
         mockMvc.perform(
             get(uri, workbookId, articleId)
-                .header("Authorization", "Bearer thisisaccesstoken")
+                .header("Authorization", "Bearer $token")
         ).andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
             .andDo(
                 MockMvcRestDocumentation.document(

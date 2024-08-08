@@ -36,17 +36,25 @@ jobs:
               run: |
                   ./gradlew  jooqCodegenAll
 
-            - name: Cache Jooq
+            - name: Cache Api Repo Jooq
               uses: actions/cache@v3
               with:
                   path: |
                       ./api-repo/src/generated
                       ./api-repo/src/main/resources/db/migration
+                  key: ${{ runner.os }}-api-repo-jooq-${{ hashFiles('./api-repo/src/generated/**', './api-repo/src/main/resources/db/migration/**') }}
+                  restore-keys: |
+                      ${{ runner.os }}-api-repo-jooq-
+
+            - name: Cache Batch Jooq
+              uses: actions/cache@v3
+              with:
+                  path: |
                       ./batch/src/generated
                       ./batch/src/main/resources/db/migration
-                  key: ${{ runner.os }}-jooq-${{ hashFiles('./api-repo/src/generated/**', './api-repo/src/main/resources/db/migration/**', './batch/src/generated/**', './batch/src/main/resources/db/migration/**') }}
+                  key: ${{ runner.os }}-batch-jooq-${{ hashFiles('./batch/src/generated/**', './batch/src/main/resources/db/migration/**') }}
                   restore-keys: |
-                      ${{ runner.os }}-jooq-
+                      ${{ runner.os }}-batch-jooq-
 
     api-test:
         needs: setup-test
@@ -69,17 +77,25 @@ jobs:
                   restore-keys: |
                       ${{ runner.os }}-gradle-
 
-            - name: Cache Jooq
+            - name: Cache Api Repo Jooq
               uses: actions/cache@v3
               with:
                   path: |
-                        ./api-repo/src/generated
-                        ./api-repo/src/main/resources/db/migration
-                        ./batch/src/generated
-                        ./batch/src/main/resources/db/migration
-                  key: ${{ runner.os }}-jooq-${{ hashFiles('./api-repo/src/generated/**', './api-repo/src/main/resources/db/migration/**', './batch/src/generated/**', './batch/src/main/resources/db/migration/**') }}
+                      ./api-repo/src/generated
+                      ./api-repo/src/main/resources/db/migration
+                  key: ${{ runner.os }}-api-repo-jooq-${{ hashFiles('./api-repo/src/generated/**', './api-repo/src/main/resources/db/migration/**') }}
                   restore-keys: |
-                    ${{ runner.os }}-jooq-
+                      ${{ runner.os }}-api-repo-jooq-
+
+            - name: Cache Batch Jooq
+              uses: actions/cache@v3
+              with:
+                  path: |
+                      ./batch/src/generated
+                      ./batch/src/main/resources/db/migration
+                  key: ${{ runner.os }}-batch-jooq-${{ hashFiles('./batch/src/generated/**', './batch/src/main/resources/db/migration/**') }}
+                  restore-keys: |
+                      ${{ runner.os }}-batch-jooq-
 
             - name: API Test with Gradle
               run: |
@@ -106,17 +122,15 @@ jobs:
                     restore-keys: |
                         ${{ runner.os }}-gradle-
 
-            - name: Cache Jooq
+            - name: Cache Api Repo Jooq
               uses: actions/cache@v3
               with:
                   path: |
                       ./api-repo/src/generated
                       ./api-repo/src/main/resources/db/migration
-                      ./batch/src/generated
-                      ./batch/src/main/resources/db/migration
-                  key: ${{ runner.os }}-jooq-${{ hashFiles('./api-repo/src/generated/**', './api-repo/src/main/resources/db/migration/**', './batch/src/generated/**', './batch/src/main/resources/db/migration/**') }}
+                  key: ${{ runner.os }}-api-repo-jooq-${{ hashFiles('./api-repo/src/generated/**', './api-repo/src/main/resources/db/migration/**') }}
                   restore-keys: |
-                      ${{ runner.os }}-jooq-
+                      ${{ runner.os }}-api-repo-jooq-
 
             -   name: API Repo Test with Gradle
                 run: |
@@ -143,17 +157,15 @@ jobs:
                     restore-keys: |
                         ${{ runner.os }}-gradle-
 
-            - name: Cache Jooq
+            - name: Cache Batch Jooq
               uses: actions/cache@v3
               with:
                   path: |
-                      ./api-repo/src/generated
-                      ./api-repo/src/main/resources/db/migration
                       ./batch/src/generated
                       ./batch/src/main/resources/db/migration
-                  key: ${{ runner.os }}-jooq-${{ hashFiles('./api-repo/src/generated/**', './api-repo/src/main/resources/db/migration/**', './batch/src/generated/**', './batch/src/main/resources/db/migration/**') }}
+                  key: ${{ runner.os }}-batch-jooq-${{ hashFiles('./batch/src/generated/**', './batch/src/main/resources/db/migration/**') }}
                   restore-keys: |
-                      ${{ runner.os }}-jooq-
+                      ${{ runner.os }}-batch-jooq-
 
             -   name: Batch Test with Gradle
                 run: |

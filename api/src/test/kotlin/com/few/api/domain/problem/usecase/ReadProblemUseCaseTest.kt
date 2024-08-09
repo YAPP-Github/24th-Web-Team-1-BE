@@ -8,6 +8,7 @@ import com.few.api.repo.dao.problem.support.Contents
 import com.few.api.repo.dao.problem.support.ContentsJsonMapper
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -25,7 +26,7 @@ class ReadProblemUseCaseTest : BehaviorSpec({
         useCase = ReadProblemUseCase(problemDao, contentsJsonMapper)
     }
 
-    given("문제를 조회할 상황에서") {
+    given("특정 문제를 조회하는 요청이 온 상황에서") {
         val problemId = 1L
         val useCaseIn = ReadProblemUseCaseIn(problemId = problemId)
 
@@ -34,12 +35,21 @@ class ReadProblemUseCaseTest : BehaviorSpec({
             val problemContents = "{}"
             every { problemDao.selectProblemContents(any()) } returns SelectProblemRecord(id = problemId, title = title, contents = problemContents)
 
+            val contentCount = 2
             every { contentsJsonMapper.toObject(any()) } returns Contents(
-                IntStream.range(1, 3).mapToObj { Content(number = it.toLong(), content = "{}") }.toList()
+                IntStream.range(1, 1 + contentCount)
+                    .mapToObj { Content(number = it.toLong(), content = "{}") }.toList()
             )
 
-            then("정상적으로 실행되어야 한다") {
-                useCase.execute(useCaseIn)
+            then("문제 정보를 반환한다") {
+                val useCaseOut = useCase.execute(useCaseIn)
+                useCaseOut.id shouldBe problemId
+                useCaseOut.title shouldBe title
+                useCaseOut.contents.size shouldBe contentCount
+                useCaseOut.contents.forEachIndexed { index, content ->
+                    content.number shouldBe (index + 1).toLong()
+                    content.content shouldBe "{}"
+                }
 
                 verify(exactly = 1) { problemDao.selectProblemContents(any()) }
                 verify(exactly = 1) { contentsJsonMapper.toObject(any()) }
@@ -49,10 +59,11 @@ class ReadProblemUseCaseTest : BehaviorSpec({
         `when`("문제가 존재하지 않을 경우") {
             every { problemDao.selectProblemContents(any()) } returns null
 
-            then("예외가 발생해야 한다") {
+            then("예외가 발생한다") {
                 shouldThrow<Exception> { useCase.execute(useCaseIn) }
 
                 verify(exactly = 1) { problemDao.selectProblemContents(any()) }
+                verify(exactly = 0) { contentsJsonMapper.toObject(any()) }
             }
         }
     }

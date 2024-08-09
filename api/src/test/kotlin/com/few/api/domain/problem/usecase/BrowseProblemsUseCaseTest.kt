@@ -5,6 +5,7 @@ import com.few.api.repo.dao.problem.ProblemDao
 import com.few.api.repo.dao.problem.record.ProblemIdsRecord
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -19,21 +20,23 @@ class BrowseProblemsUseCaseTest : BehaviorSpec({
         useCase = BrowseProblemsUseCase(problemDao)
     }
 
-    given("특정 아티클에 대한") {
+    given("특정 아티클에 대한 문제 조회 요청이 온 상황에서") {
         val articleId = 1L
         val useCaseIn = BrowseProblemsUseCaseIn(articleId = articleId)
 
-        `when`("문제가 존재할 경우") {
-            every { problemDao.selectProblemsByArticleId(any()) } returns ProblemIdsRecord(listOf(1, 2, 3))
+        `when`("아티클의 문제가 존재할 경우") {
+            val problemIds = listOf(1L, 2L, 3L)
+            every { problemDao.selectProblemsByArticleId(any()) } returns ProblemIdsRecord(problemIds)
 
-            then("문제번호가 정상적으로 조회된다") {
-                useCase.execute(useCaseIn)
+            then("문제 목록을 반환한다") {
+                val useCaseOut = useCase.execute(useCaseIn)
+                useCaseOut.problemIds shouldBe problemIds
 
                 verify(exactly = 1) { problemDao.selectProblemsByArticleId(any()) }
             }
         }
 
-        `when`("문제가 존재하지 않을 경우") {
+        `when`("아티클의 문제가 존재하지 않을 경우") {
             every { problemDao.selectProblemsByArticleId(any()) } returns null
 
             then("예외가 발생한다") {

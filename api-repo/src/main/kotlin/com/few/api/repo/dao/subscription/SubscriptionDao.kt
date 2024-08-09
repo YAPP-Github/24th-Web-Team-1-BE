@@ -32,22 +32,28 @@ class SubscriptionDao(
             .set(SUBSCRIPTION.TARGET_WORKBOOK_ID, command.workbookId)
 
     fun reSubscribeWorkbookSubscription(command: InsertWorkbookSubscriptionCommand) {
+        reSubscribeWorkBookSubscriptionCommand(command)
+            .execute()
+    }
+
+    fun reSubscribeWorkBookSubscriptionCommand(command: InsertWorkbookSubscriptionCommand) =
         dslContext.update(SUBSCRIPTION)
             .set(SUBSCRIPTION.DELETED_AT, null as LocalDateTime?)
             .set(SUBSCRIPTION.UNSUBS_OPINION, null as String?)
             .where(SUBSCRIPTION.MEMBER_ID.eq(command.memberId))
             .and(SUBSCRIPTION.TARGET_WORKBOOK_ID.eq(command.workbookId))
+
+    fun updateDeletedAtInWorkbookSubscription(command: UpdateDeletedAtInWorkbookSubscriptionCommand) {
+        updateDeletedAtInWorkbookSubscriptionCommand(command)
             .execute()
     }
 
-    fun updateDeletedAtInWorkbookSubscription(command: UpdateDeletedAtInWorkbookSubscriptionCommand) {
+    fun updateDeletedAtInWorkbookSubscriptionCommand(command: UpdateDeletedAtInWorkbookSubscriptionCommand) =
         dslContext.update(SUBSCRIPTION)
             .set(SUBSCRIPTION.DELETED_AT, LocalDateTime.now())
             .set(SUBSCRIPTION.UNSUBS_OPINION, command.opinion)
             .where(SUBSCRIPTION.MEMBER_ID.eq(command.memberId))
             .and(SUBSCRIPTION.TARGET_WORKBOOK_ID.eq(command.workbookId))
-            .execute()
-    }
 
     fun selectTopWorkbookSubscriptionStatus(query: SelectAllWorkbookSubscriptionStatusNotConsiderDeletedAtQuery): WorkbookSubscriptionStatus? {
         return selectTopWorkbookSubscriptionStatusQuery(query)

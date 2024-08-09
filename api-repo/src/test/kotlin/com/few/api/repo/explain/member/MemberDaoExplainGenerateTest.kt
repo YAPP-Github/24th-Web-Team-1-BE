@@ -1,10 +1,12 @@
 package com.few.api.repo.explain.member
 
 import com.few.api.repo.dao.member.MemberDao
+import com.few.api.repo.dao.member.command.DeleteMemberCommand
 import com.few.api.repo.dao.member.command.InsertMemberCommand
 import com.few.api.repo.dao.member.command.UpdateDeletedMemberTypeCommand
 import com.few.api.repo.dao.member.command.UpdateMemberTypeCommand
 import com.few.api.repo.dao.member.query.BrowseWorkbookWritersQuery
+import com.few.api.repo.dao.member.query.SelectMemberByEmailNotConsiderDeletedAtQuery
 import com.few.api.repo.dao.member.query.SelectMemberByEmailQuery
 import com.few.api.repo.dao.member.query.SelectWriterQuery
 import com.few.api.repo.dao.member.support.WriterDescription
@@ -117,7 +119,7 @@ class MemberDaoExplainGenerateTest : JooqTestSpec() {
 
     @Test
     fun selectMemberByEmailNotConsiderDeletedAtQueryExplain() {
-        val query = SelectMemberByEmailQuery("test@gmail.com").let {
+        val query = SelectMemberByEmailNotConsiderDeletedAtQuery("test@gmail.com").let {
             memberDao.selectMemberByEmailQuery(it)
         }
 
@@ -181,11 +183,10 @@ class MemberDaoExplainGenerateTest : JooqTestSpec() {
 
     @Test
     fun deleteMemberCommandExplain() {
-        val command = UpdateDeletedMemberTypeCommand(
-            id = 1,
-            memberType = MemberType.WRITER
+        val command = DeleteMemberCommand(
+            memberId = 1
         ).let {
-            memberDao.updateMemberTypeCommand(it)
+            memberDao.deleteMemberCommand(it)
         }
 
         val explain = InsertUpdateExplainGenerator.execute(dslContext, command.sql, command.bindValues)

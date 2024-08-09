@@ -11,20 +11,13 @@ import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
 import com.few.data.common.code.CategoryType
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.codec.json.Jackson2JsonDecoder
-import org.springframework.http.codec.json.Jackson2JsonEncoder
-import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
 import org.springframework.restdocs.payload.PayloadDocumentation
-import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
 import org.springframework.security.test.context.support.WithUserDetails
-import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URL
@@ -32,25 +25,9 @@ import java.time.LocalDateTime
 
 class WorkBookArticleControllerTest : ControllerTestSpec() {
 
-    @Autowired
-    lateinit var workBookArticleController: WorkBookArticleController
-
     companion object {
-        private val BASE_URL = "/api/v1/workbooks/{workbookId}/articles"
-        private val TAG = "WorkBookArticleController"
-    }
-
-    @BeforeEach
-    fun setUp(restDocumentation: RestDocumentationContextProvider) {
-        webTestClient = WebTestClient
-            .bindToController(workBookArticleController)
-            .controllerAdvice(super.apiControllerExceptionHandler).httpMessageCodecs {
-                it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(objectMapper))
-                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(objectMapper))
-            }
-            .configureClient()
-            .filter(WebTestClientRestDocumentation.documentationConfiguration(restDocumentation))
-            .build()
+        private const val BASE_URL = "/api/v1/workbooks/{workbookId}/articles"
+        private const val TAG = "WorkBookArticleController"
     }
 
     @Test
@@ -59,36 +36,39 @@ class WorkBookArticleControllerTest : ControllerTestSpec() {
     fun readWorkBookArticle() {
         // given
         val api = "ReadWorkBookArticle"
+        val token = "thisisaccesstoken"
         val uri = UriComponentsBuilder.newInstance()
             .path("$BASE_URL/{articleId}")
             .build()
             .toUriString()
-        // set usecase mock
+
+        val memberId = 1L
+        `when`(tokenResolver.resolveId(token)).thenReturn(memberId)
+
         val workbookId = 1L
         val articleId = 1L
-        val memberId = 1L
-        `when`(tokenResolver.resolveId("thisisaccesstoken")).thenReturn(memberId)
-        `when`(readWorkBookArticleUseCase.execute(ReadWorkBookArticleUseCaseIn(workbookId, articleId, memberId = memberId))).thenReturn(
-            ReadWorkBookArticleOut(
+        val useCaseIn =
+            ReadWorkBookArticleUseCaseIn(workbookId, articleId, memberId = memberId)
+        val useCaseOut = ReadWorkBookArticleOut(
+            id = 1L,
+            writer = WriterDetail(
                 id = 1L,
-                writer = WriterDetail(
-                    id = 1L,
-                    name = "안나포",
-                    url = URL("http://localhost:8080/api/v1/writers/1")
-                ),
-                title = "ETF(상장 지수 펀드)란? 모르면 손해라고?",
-                content = "content",
-                problemIds = listOf(1L, 2L, 3L),
-                category = CategoryType.fromCode(0)!!.name,
-                createdAt = LocalDateTime.now(),
-                day = 1L
-            )
+                name = "안나포",
+                url = URL("http://localhost:8080/api/v1/writers/1")
+            ),
+            title = "ETF(상장 지수 펀드)란? 모르면 손해라고?",
+            content = "content",
+            problemIds = listOf(1L, 2L, 3L),
+            category = CategoryType.fromCode(0)!!.name,
+            createdAt = LocalDateTime.now(),
+            day = 1L
         )
+        `when`(readWorkBookArticleUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
 
         // when
         mockMvc.perform(
             get(uri, workbookId, articleId)
-                .header("Authorization", "Bearer thisisaccesstoken")
+                .header("Authorization", "Bearer $token")
         ).andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
             .andDo(
                 MockMvcRestDocumentation.document(

@@ -24,6 +24,8 @@ class TokenUseCase(
 
     @Transactional
     fun execute(useCaseIn: TokenUseCaseIn): TokenUseCaseOut {
+        var isLogin = true
+
         /** refreshToken이 요청에 포함되어 있으면 refreshToken을 통해 memberId를 추출하여 새로운 토큰을 발급 */
         var _memberId: Long? = null
         var _memberEmail: String? = null
@@ -59,6 +61,7 @@ class TokenUseCase(
             ?: throw NotFoundException("member.notfound.id")
 
         if (memberEmailAndTypeRecord.memberType == MemberType.PREAUTH) {
+            isLogin = false
             UpdateMemberTypeCommand(
                 id = memberId,
                 memberType = MemberType.NORMAL
@@ -79,7 +82,7 @@ class TokenUseCase(
         return TokenUseCaseOut(
             accessToken = token.accessToken,
             refreshToken = token.refreshToken,
-            isLogin = false
+            isLogin = isLogin
         )
     }
 }

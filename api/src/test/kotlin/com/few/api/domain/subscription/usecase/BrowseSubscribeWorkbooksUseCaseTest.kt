@@ -5,8 +5,10 @@ import com.few.api.domain.subscription.service.SubscriptionArticleService
 import com.few.api.domain.subscription.usecase.dto.BrowseSubscribeWorkbooksUseCaseIn
 import com.few.api.repo.dao.subscription.SubscriptionDao
 import com.few.api.repo.dao.subscription.record.MemberWorkbookSubscriptionStatusRecord
+import com.few.api.web.support.WorkBookStatus
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -26,47 +28,166 @@ class BrowseSubscribeWorkbooksUseCaseTest : BehaviorSpec({
         useCase = BrowseSubscribeWorkbooksUseCase(subscriptionDao, subscriptionArticleService, objectMapper)
     }
 
-    given("사용자 구독 정보 조회 요청이 온 상황에서") {
+    given("멤버의 구독 워크북 정보 조회 요청이 온 상황에서") {
         val memberId = 1L
         val useCaseIn = BrowseSubscribeWorkbooksUseCaseIn(memberId = memberId)
 
-        `when`("사용자의 구독 정보가 있는 경우") {
+        `when`("멤버의 구독 워크북 정보가 존재할 경우") {
+            val inactiveWorkbookId = 1L
+            val inactiveWorkbookCurrentDay = 2
+            val inactiveWorkbookTotalDay = 3
             every { subscriptionDao.selectAllInActiveWorkbookSubscriptionStatus(any()) } returns listOf(
                 MemberWorkbookSubscriptionStatusRecord(
-                    workbookId = 1L,
+                    workbookId = inactiveWorkbookId,
                     isActiveSub = false,
-                    currentDay = 1,
-                    totalDay = 3
+                    currentDay = inactiveWorkbookCurrentDay,
+                    totalDay = inactiveWorkbookTotalDay
                 )
             )
 
+            val activeWorkbookId = 2L
+            val activeWorkbookCurrentDay = 1
+            val activeWorkbookTotalDay = 3
             every { subscriptionDao.selectAllActiveWorkbookSubscriptionStatus(any()) } returns listOf(
                 MemberWorkbookSubscriptionStatusRecord(
-                    workbookId = 2L,
+                    workbookId = activeWorkbookId,
                     isActiveSub = true,
-                    currentDay = 2,
-                    totalDay = 3
+                    currentDay = activeWorkbookCurrentDay,
+                    totalDay = activeWorkbookTotalDay
+                )
+
+            )
+
+            every {
+                subscriptionArticleService.readArticleIdByWorkbookIdAndDay(any())
+            } returns inactiveWorkbookId andThen activeWorkbookId
+
+            val activeWorkbookSubscriptionCount = 1
+            val inactiveWorkbookSubscriptionCount = 2
+            every { subscriptionDao.countAllWorkbookSubscription(any()) } returns mapOf(
+                inactiveWorkbookId to inactiveWorkbookSubscriptionCount,
+                activeWorkbookId to activeWorkbookSubscriptionCount
+            )
+
+            every { objectMapper.writeValueAsString(any()) } returns "{\"articleId\":$inactiveWorkbookId}" andThen "{\"articleId\":$activeWorkbookId}"
+
+            then("멤버의 구독 워크북 정보를 반환한다") {
+                val useCaseOut = useCase.execute(useCaseIn)
+                useCaseOut.workbooks.size shouldBe 2
+
+                val inActiveSubscriptionWorkbook = useCaseOut.workbooks[0]
+                inActiveSubscriptionWorkbook.workbookId shouldBe inactiveWorkbookId
+                inActiveSubscriptionWorkbook.isActiveSub shouldBe WorkBookStatus.DONE
+                inActiveSubscriptionWorkbook.currentDay shouldBe inactiveWorkbookCurrentDay
+                inActiveSubscriptionWorkbook.totalDay shouldBe inactiveWorkbookTotalDay
+                inActiveSubscriptionWorkbook.totalSubscriber shouldBe inactiveWorkbookSubscriptionCount
+                inActiveSubscriptionWorkbook.articleInfo shouldBe "{\"articleId\":$inactiveWorkbookId}"
+
+                val activeSubscriptionWorkbook = useCaseOut.workbooks[1]
+                activeSubscriptionWorkbook.workbookId shouldBe activeWorkbookId
+                activeSubscriptionWorkbook.isActiveSub shouldBe WorkBookStatus.ACTIVE
+                activeSubscriptionWorkbook.currentDay shouldBe activeWorkbookCurrentDay
+                activeSubscriptionWorkbook.totalDay shouldBe activeWorkbookTotalDay
+                activeSubscriptionWorkbook.totalSubscriber shouldBe activeWorkbookSubscriptionCount
+                activeSubscriptionWorkbook.articleInfo shouldBe "{\"articleId\":$activeWorkbookId}"
+
+                verify(exactly = 1) { subscriptionDao.selectAllInActiveWorkbookSubscriptionStatus(any()) }
+                verify(exactly = 1) { subscriptionDao.selectAllActiveWorkbookSubscriptionStatus(any()) }
+                verify(exactly = 2) { subscriptionArticleService.readArticleIdByWorkbookIdAndDay(any()) }
+                verify(exactly = 1) { subscriptionDao.countAllWorkbookSubscription(any()) }
+                verify(exactly = 2) { objectMapper.writeValueAsString(any()) }
+            }
+        }
+
+        `when`("멤버의 구독 비활성 워크북 정보만 존재할 경우") {
+            val inactiveWorkbookId = 1L
+            val inactiveWorkbookCurrentDay = 2
+            val inactiveWorkbookTotalDay = 3
+            every { subscriptionDao.selectAllInActiveWorkbookSubscriptionStatus(any()) } returns listOf(
+                MemberWorkbookSubscriptionStatusRecord(
+                    workbookId = inactiveWorkbookId,
+                    isActiveSub = false,
+                    currentDay = inactiveWorkbookCurrentDay,
+                    totalDay = inactiveWorkbookTotalDay
+                )
+            )
+
+            every { subscriptionDao.selectAllActiveWorkbookSubscriptionStatus(any()) } returns emptyList()
+
+            every {
+                subscriptionArticleService.readArticleIdByWorkbookIdAndDay(any())
+            } returns inactiveWorkbookId
+
+            val inactiveWorkbookSubscriptionCount = 2
+            every { subscriptionDao.countAllWorkbookSubscription(any()) } returns mapOf(
+                inactiveWorkbookId to inactiveWorkbookSubscriptionCount
+            )
+
+            every { objectMapper.writeValueAsString(any()) } returns "{\"articleId\":$inactiveWorkbookId}"
+
+            then("멤버의 구독 비활성 워크북 정보를 반환한다") {
+                val useCaseOut = useCase.execute(useCaseIn)
+                useCaseOut.workbooks.size shouldBe 1
+
+                val inActiveSubscriptionWorkbook = useCaseOut.workbooks[0]
+                inActiveSubscriptionWorkbook.workbookId shouldBe inactiveWorkbookId
+                inActiveSubscriptionWorkbook.isActiveSub shouldBe WorkBookStatus.DONE
+                inActiveSubscriptionWorkbook.currentDay shouldBe inactiveWorkbookCurrentDay
+                inActiveSubscriptionWorkbook.totalDay shouldBe inactiveWorkbookTotalDay
+                inActiveSubscriptionWorkbook.totalSubscriber shouldBe inactiveWorkbookSubscriptionCount
+                inActiveSubscriptionWorkbook.articleInfo shouldBe "{\"articleId\":$inactiveWorkbookId}"
+
+                verify(exactly = 1) { subscriptionDao.selectAllInActiveWorkbookSubscriptionStatus(any()) }
+                verify(exactly = 1) { subscriptionDao.selectAllActiveWorkbookSubscriptionStatus(any()) }
+                verify(exactly = 1) { subscriptionArticleService.readArticleIdByWorkbookIdAndDay(any()) }
+                verify(exactly = 1) { subscriptionDao.countAllWorkbookSubscription(any()) }
+                verify(exactly = 1) { objectMapper.writeValueAsString(any()) }
+            }
+        }
+
+        `when`("멤버의 구독 활성 워크북 정보만 존재할 경우") {
+            every { subscriptionDao.selectAllInActiveWorkbookSubscriptionStatus(any()) } returns emptyList()
+
+            val activeWorkbookId = 1L
+            val activeWorkbookCurrentDay = 2
+            val activeWorkbookTotalDay = 3
+            every { subscriptionDao.selectAllActiveWorkbookSubscriptionStatus(any()) } returns listOf(
+                MemberWorkbookSubscriptionStatusRecord(
+                    workbookId = activeWorkbookId,
+                    isActiveSub = false,
+                    currentDay = activeWorkbookCurrentDay,
+                    totalDay = activeWorkbookTotalDay
                 )
             )
 
             every {
                 subscriptionArticleService.readArticleIdByWorkbookIdAndDay(any())
-            } returns 1L andThen 2L
+            } returns activeWorkbookId
 
+            val activeWorkbookSubscriptionCount = 1
             every { subscriptionDao.countAllWorkbookSubscription(any()) } returns mapOf(
-                1L to 1,
-                2L to 2
+                activeWorkbookId to activeWorkbookSubscriptionCount
             )
 
-            every { objectMapper.writeValueAsString(any()) } returns "{\"articleId\":1}" andThen "{\"articleId\":2}"
+            every { objectMapper.writeValueAsString(any()) } returns "{\"articleId\":$activeWorkbookId}"
 
-            then("사용자의 구독 정보를 조회한다") {
-                useCase.execute(useCaseIn)
+            then("멤버의 구독 활성 워크북 정보를 반환한다") {
+                val useCaseOut = useCase.execute(useCaseIn)
+                useCaseOut.workbooks.size shouldBe 1
+
+                val inActiveSubscriptionWorkbook = useCaseOut.workbooks[0]
+                inActiveSubscriptionWorkbook.workbookId shouldBe activeWorkbookId
+                inActiveSubscriptionWorkbook.isActiveSub shouldBe WorkBookStatus.DONE
+                inActiveSubscriptionWorkbook.currentDay shouldBe activeWorkbookCurrentDay
+                inActiveSubscriptionWorkbook.totalDay shouldBe activeWorkbookTotalDay
+                inActiveSubscriptionWorkbook.totalSubscriber shouldBe activeWorkbookSubscriptionCount
+                inActiveSubscriptionWorkbook.articleInfo shouldBe "{\"articleId\":$activeWorkbookId}"
 
                 verify(exactly = 1) { subscriptionDao.selectAllInActiveWorkbookSubscriptionStatus(any()) }
                 verify(exactly = 1) { subscriptionDao.selectAllActiveWorkbookSubscriptionStatus(any()) }
+                verify(exactly = 1) { subscriptionArticleService.readArticleIdByWorkbookIdAndDay(any()) }
                 verify(exactly = 1) { subscriptionDao.countAllWorkbookSubscription(any()) }
-                verify(exactly = 2) { objectMapper.writeValueAsString(any()) }
+                verify(exactly = 1) { objectMapper.writeValueAsString(any()) }
             }
         }
     }

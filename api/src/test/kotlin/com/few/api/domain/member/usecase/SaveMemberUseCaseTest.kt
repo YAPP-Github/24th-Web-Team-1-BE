@@ -7,10 +7,13 @@ import com.few.api.repo.dao.member.command.UpdateDeletedMemberTypeCommand
 import com.few.api.repo.dao.member.query.SelectMemberByEmailNotConsiderDeletedAtQuery
 import com.few.api.repo.dao.member.record.MemberIdAndIsDeletedRecord
 import com.few.email.service.member.SendAuthEmailService
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import org.mockito.ArgumentMatchers.any
 
 class SaveMemberUseCaseTest : BehaviorSpec({
     lateinit var memberDao: MemberDao
@@ -40,11 +43,14 @@ class SaveMemberUseCaseTest : BehaviorSpec({
             every { sendAuthEmailService.send(any()) } returns Unit
 
             then("인증 이메일 발송 성공 응답을 반환한다") {
-                useCase.execute(useCaseIn)
+                val useCaseOut = useCase.execute(useCaseIn)
+                useCaseOut.isSendAuthEmail shouldBe true
 
                 verify(exactly = 1) { memberDao.selectMemberByEmail(any(SelectMemberByEmailNotConsiderDeletedAtQuery::class)) }
                 verify(exactly = 1) { memberDao.insertMember(any()) }
+                verify(exactly = 0) { memberDao.updateMemberType(any(UpdateDeletedMemberTypeCommand::class)) }
                 verify(exactly = 1) { idEncryption.encrypt(any()) }
+                verify(exactly = 1) { sendAuthEmailService.send(any()) }
             }
         }
 
@@ -61,11 +67,14 @@ class SaveMemberUseCaseTest : BehaviorSpec({
             every { sendAuthEmailService.send(any()) } returns Unit
 
             then("인증 이메일 발송 성공 응답을 반환한다") {
-                useCase.execute(useCaseIn)
+                val useCaseOut = useCase.execute(useCaseIn)
+                useCaseOut.isSendAuthEmail shouldBe true
 
                 verify(exactly = 1) { memberDao.selectMemberByEmail(any(SelectMemberByEmailNotConsiderDeletedAtQuery::class)) }
                 verify(exactly = 0) { memberDao.insertMember(any()) }
+                verify(exactly = 0) { memberDao.updateMemberType(any(UpdateDeletedMemberTypeCommand::class)) }
                 verify(exactly = 1) { idEncryption.encrypt(any()) }
+                verify(exactly = 1) { sendAuthEmailService.send(any()) }
             }
         }
 
@@ -81,13 +90,17 @@ class SaveMemberUseCaseTest : BehaviorSpec({
             val token = "encryptedToken"
             every { idEncryption.encrypt(any()) } returns token
 
+            every { sendAuthEmailService.send(any()) } returns Unit
+
             then("인증 이메일 발송 성공 응답을 반환한다") {
-                useCase.execute(useCaseIn)
+                val useCaseOut = useCase.execute(useCaseIn)
+                useCaseOut.isSendAuthEmail shouldBe true
 
                 verify(exactly = 1) { memberDao.selectMemberByEmail(any(SelectMemberByEmailNotConsiderDeletedAtQuery::class)) }
                 verify(exactly = 0) { memberDao.insertMember(any()) }
                 verify(exactly = 1) { memberDao.updateMemberType(any(UpdateDeletedMemberTypeCommand::class)) }
                 verify(exactly = 1) { idEncryption.encrypt(any()) }
+                verify(exactly = 1) { sendAuthEmailService.send(any()) }
             }
         }
 
@@ -103,11 +116,12 @@ class SaveMemberUseCaseTest : BehaviorSpec({
             every { sendAuthEmailService.send(any()) } throws Exception()
 
             then("인증 이메일 발송 실패 응답을 반환한다") {
-                useCase.execute(useCaseIn)
+                val useCaseOut = useCase.execute(useCaseIn)
+                useCaseOut.isSendAuthEmail shouldBe false
 
-                verify(exactly = 1) { memberDao.selectMemberByEmail(any(SelectMemberByEmailNotConsiderDeletedAtQuery::class)) }
-                verify(exactly = 1) { memberDao.insertMember(any()) }
-                verify(exactly = 1) { idEncryption.encrypt(any()) }
+                shouldThrow<Exception> {
+                    sendAuthEmailService.send(any())
+                }
             }
         }
     }

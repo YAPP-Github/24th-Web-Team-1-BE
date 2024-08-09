@@ -7,8 +7,10 @@ import com.few.api.domain.workbook.service.dto.WriterOutDto
 import com.few.api.domain.workbook.usecase.dto.ReadWorkbookUseCaseIn
 import com.few.api.repo.dao.workbook.WorkbookDao
 import com.few.api.repo.dao.workbook.record.SelectWorkBookRecord
+import com.few.data.common.code.CategoryType
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -29,42 +31,61 @@ class ReadWorkbookUseCaseTest : BehaviorSpec({
         useCase = ReadWorkbookUseCase(workbookDao, workbookArticleService, workbookMemberService)
     }
 
-    given("워크북 조회 요청이 온 상황에서") {
+    given("특정 워크북 조회 요청이 온 상황에서") {
         val workbookId = 1L
         val useCaseIn = ReadWorkbookUseCaseIn(workbookId = workbookId)
 
-        `when`("워크북과 작가가 존재할 경우") {
+        `when`("워크북이 존재할 경우") {
+            val workbookId = 1L
+            val title = "workbook title"
+            val workBookMainImageUrl = URL("http://localhost:8080/image/main/1")
+            val category = CategoryType.ECONOMY.code
+            val workbookDescription = "workbook description"
             every { workbookDao.selectWorkBook(any()) } returns SelectWorkBookRecord(
-                id = 1L,
-                title = "workbook title",
-                mainImageUrl = URL("https://jh-labs.tistory.com/"),
-                category = (10).toByte(),
-                description = "workbook description",
+                id = workbookId,
+                title = title,
+                mainImageUrl = workBookMainImageUrl,
+                category = category,
+                description = workbookDescription,
                 createdAt = LocalDateTime.now()
             )
 
+            val articleId = 1L
+            val articleWriterId = 1L
+            val articleMainImageUrl = URL("http://localhost:8080/image/main/1")
+            val articleTitle = "article title"
+            val articleContent = "article content"
             every { workbookArticleService.browseWorkbookArticles(any()) } returns listOf(
                 WorkBookArticleOutDto(
-                    articleId = 1L,
-                    writerId = 1L,
-                    mainImageURL = URL("https://jh-labs.tistory.com/"),
-                    title = "article title",
-                    category = (10).toByte(),
-                    content = "article description",
+                    articleId = articleId,
+                    writerId = articleWriterId,
+                    mainImageURL = articleMainImageUrl,
+                    title = articleTitle,
+                    category = category,
+                    content = articleContent,
                     createdAt = LocalDateTime.now()
                 )
             )
 
+            val writerName = "writer"
+            val writerUrl = URL("http://localhost:8080/writer/1")
             every { workbookMemberService.browseWriterRecords(any()) } returns listOf(
                 WriterOutDto(
-                    writerId = 1L,
-                    name = "hunca",
-                    url = URL("https://jh-labs.tistory.com/")
+                    writerId = articleWriterId,
+                    name = writerName,
+                    url = writerUrl
                 )
             )
 
-            then("워크북 정상 조회된다") {
-                useCase.execute(useCaseIn)
+            then("워크북과 관련된 정보를 반환한다") {
+                val useCaseOut = useCase.execute(useCaseIn)
+                useCaseOut.id shouldBe workbookId
+                useCaseOut.title shouldBe title
+                useCaseOut.mainImageUrl shouldBe workBookMainImageUrl
+                useCaseOut.category shouldBe CategoryType.convertToDisplayName(category)
+                useCaseOut.description shouldBe workbookDescription
+                useCaseOut.writers.size shouldBe 1
+                useCaseOut.articles.size shouldBe 1
 
                 verify(exactly = 1) { workbookDao.selectWorkBook(any()) }
                 verify(exactly = 1) { workbookArticleService.browseWorkbookArticles(any()) }

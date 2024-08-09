@@ -23,7 +23,7 @@ class ArticleMainCardDao(
             .toSet()
     }
 
-    private fun selectArticleMainCardsRecordQuery(articleIds: Set<Long>) = dslContext.select(
+    fun selectArticleMainCardsRecordQuery(articleIds: Set<Long>) = dslContext.select(
         ARTICLE_MAIN_CARD.ID.`as`(ArticleMainCardRecord::articleId.name),
         ARTICLE_MAIN_CARD.TITLE.`as`(ArticleMainCardRecord::articleTitle.name),
         ARTICLE_MAIN_CARD.MAIN_IMAGE_URL.`as`(ArticleMainCardRecord::mainImageUrl.name),
@@ -46,9 +46,9 @@ class ArticleMainCardDao(
      * NOTE - The query performed in this function do not save the workbook.
      */
     fun insertArticleMainCard(command: ArticleMainCardExcludeWorkbookCommand) =
-        insertArticleMainCardQuery(command).execute()
+        insertArticleMainCardCommand(command).execute()
 
-    fun insertArticleMainCardQuery(command: ArticleMainCardExcludeWorkbookCommand) = dslContext
+    fun insertArticleMainCardCommand(command: ArticleMainCardExcludeWorkbookCommand) = dslContext
         .insertInto(
             ARTICLE_MAIN_CARD,
             ARTICLE_MAIN_CARD.ID,
@@ -79,9 +79,9 @@ class ArticleMainCardDao(
         )
 
     fun updateArticleMainCardSetWorkbook(command: UpdateArticleMainCardWorkbookCommand) =
-        updateArticleMainCardSetWorkbookQuery(command).execute()
+        updateArticleMainCardSetWorkbookCommand(command).execute()
 
-    fun updateArticleMainCardSetWorkbookQuery(command: UpdateArticleMainCardWorkbookCommand) = dslContext
+    fun updateArticleMainCardSetWorkbookCommand(command: UpdateArticleMainCardWorkbookCommand) = dslContext
         .update(ARTICLE_MAIN_CARD)
         .set(ARTICLE_MAIN_CARD.WORKBOOKS, JSON.valueOf(articleMainCardMapper.toJsonStr(command.workbooks)))
         .where(ARTICLE_MAIN_CARD.ID.eq(command.articleId))

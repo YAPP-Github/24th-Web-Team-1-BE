@@ -134,4 +134,15 @@ class ArticleDaoExplainGenerateTest : JooqTestSpec() {
 
         ResultGenerator.execute(query, explain, "selectArticleIdByWorkbookIdAndDayQueryExplain")
     }
+
+    @Test
+    fun selectArticleContentsQueryExplain() {
+        val query = setOf(1L).let {
+            articleDao.selectArticleContentsQuery(it)
+        }
+
+        val explain = dslContext.explain(query).toString()
+
+        ResultGenerator.execute(query, explain, "selectArticleContentsQueryExplain")
+    }
 }

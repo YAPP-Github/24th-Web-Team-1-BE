@@ -28,13 +28,16 @@ class BrowseSubscribeWorkbooksUseCaseTest : BehaviorSpec({
 
     given("사용자 구독 정보 조회 요청이 온 상황에서") {
         `when`("사용자의 구독 정보가 있는 경우") {
-            every { subscriptionDao.selectAllWorkbookSubscriptionStatus(any()) } returns listOf(
+            every { subscriptionDao.selectAllInActiveWorkbookSubscriptionStatus(any()) } returns listOf(
                 MemberWorkbookSubscriptionStatusRecord(
                     workbookId = 1L,
-                    isActiveSub = true,
+                    isActiveSub = false,
                     currentDay = 1,
                     totalDay = 3
-                ),
+                )
+            )
+
+            every { subscriptionDao.selectAllActiveWorkbookSubscriptionStatus(any()) } returns listOf(
                 MemberWorkbookSubscriptionStatusRecord(
                     workbookId = 2L,
                     isActiveSub = true,
@@ -58,7 +61,8 @@ class BrowseSubscribeWorkbooksUseCaseTest : BehaviorSpec({
                 val useCaseIn = BrowseSubscribeWorkbooksUseCaseIn(memberId = 1L)
                 useCase.execute(useCaseIn)
 
-                verify(exactly = 1) { subscriptionDao.selectAllWorkbookSubscriptionStatus(any()) }
+                verify(exactly = 1) { subscriptionDao.selectAllInActiveWorkbookSubscriptionStatus(any()) }
+                verify(exactly = 1) { subscriptionDao.selectAllActiveWorkbookSubscriptionStatus(any()) }
                 verify(exactly = 1) { subscriptionDao.countAllWorkbookSubscription(any()) }
                 verify(exactly = 2) { objectMapper.writeValueAsString(any()) }
             }

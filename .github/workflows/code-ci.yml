@@ -36,27 +36,27 @@ jobs:
 
             - name: Jooq Code Generation
               run: |
-                  ./gradlew --info jooqCodegenAll
+                  ./gradlew  jooqCodegenAll
 
             - name: Test with Gradle
               run: |
-                  ./gradlew --info test
+                  ./gradlew test -parallel
 
             - name: Build with Gradle
               run: |
-                  ./gradlew --info api:build -x test
+                  ./gradlew  api:build -x test
 
             - name: Generate OpenAPI3
               run: |
-                  ./gradlew --info api:openapi3 -PserverUrl=https://api.fewletter.site
+                  ./gradlew  api:openapi3 -PserverUrl=https://api.fewletter.site
 
             - name: Generate Swagger
               run: |
-                  ./gradlew --info api:generateStaticSwaggerUIApi
+                  ./gradlew  api:generateStaticSwaggerUIApi
 
             - name : Docker Login
               run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
             - name: Build Docker Image
               run: |
-                  ./gradlew --info api:buildDockerImage -PimageName=fewletter/api -PreleaseVersion=${{ env.RELEASE_VERSION }}
+                  ./gradlew  api:buildDockerImage -PimageName=fewletter/api -PreleaseVersion=${{ env.RELEASE_VERSION }}

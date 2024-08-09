@@ -1,7 +1,6 @@
 package com.few.batch.service.article.writer
 
 import com.few.batch.BatchTestSpec
-import com.few.email.service.article.SendArticleEmailService
 import com.few.email.service.article.dto.SendArticleEmailArgs
 import jooq.jooq_dsl.tables.ArticleIfo
 import jooq.jooq_dsl.tables.ArticleMst
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.mock.mockito.MockBean
 import kotlin.random.Random
 
 class WorkBookSubscriberWriterTest : BatchTestSpec() {
@@ -27,9 +25,6 @@ class WorkBookSubscriberWriterTest : BatchTestSpec() {
 
     @Autowired
     private lateinit var workBookSubscriberWriter: WorkBookSubscriberWriter
-
-    @MockBean
-    private lateinit var sendArticleEmailService: SendArticleEmailService
 
     @BeforeEach
     fun setUp() {

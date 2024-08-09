@@ -58,15 +58,15 @@ jobs:
 
             - name: Test with Gradle
               run: |
-                  ./gradlew test
+                  ./gradlew test -parallel
 
             - name: Generate OpenAPI3
               run: |
-                  ./gradlew --info api:openapi3 -PserverUrl=https://api.fewletter.site
+                  ./gradlew  api:openapi3 -PserverUrl=https://api.fewletter.site
 
             - name: Generate Swagger
               run: |
-                  ./gradlew --info api:generateStaticSwaggerUIApi
+                  ./gradlew  api:generateStaticSwaggerUIApi
 
             - name: Build with Gradle bootBuildImage, tag, and push image to Amazon ECR
               env:

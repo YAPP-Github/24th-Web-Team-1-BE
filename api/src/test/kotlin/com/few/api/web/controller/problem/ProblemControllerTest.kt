@@ -4,14 +4,10 @@ import com.epages.restdocs.apispec.ResourceDocumentation
 import com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.few.api.domain.problem.usecase.BrowseProblemsUseCase
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
 import com.few.api.web.controller.problem.request.CheckProblemRequest
-import com.few.api.domain.problem.usecase.CheckProblemUseCase
-import com.few.api.domain.problem.usecase.ReadProblemUseCase
 import com.few.api.domain.problem.usecase.dto.BrowseProblemsUseCaseIn
 import com.few.api.domain.problem.usecase.dto.CheckProblemUseCaseIn
 import com.few.api.domain.problem.usecase.dto.ReadProblemUseCaseIn
@@ -25,7 +21,6 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.payload.PayloadDocumentation
@@ -36,21 +31,7 @@ import org.springframework.web.util.UriComponentsBuilder
 class ProblemControllerTest : ControllerTestSpec() {
 
     @Autowired
-    private lateinit var objectMapper: ObjectMapper
-
-    private lateinit var webTestClient: WebTestClient
-
-    @Autowired
-    private lateinit var problemController: ProblemController
-
-    @MockBean
-    private lateinit var browseProblemsUseCase: BrowseProblemsUseCase
-
-    @MockBean
-    private lateinit var readProblemUseCase: ReadProblemUseCase
-
-    @MockBean
-    private lateinit var checkProblemUseCase: CheckProblemUseCase
+    lateinit var problemController: ProblemController
 
     companion object {
         private val BASE_URL = "/api/v1/problems"

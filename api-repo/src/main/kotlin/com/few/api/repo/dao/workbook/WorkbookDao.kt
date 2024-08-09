@@ -56,12 +56,15 @@ class WorkbookDao(
             .set(Workbook.WORKBOOK.DESCRIPTION, command.description)
 
     fun mapWorkBookToArticle(command: MapWorkBookToArticleCommand) {
+        mapWorkBookToArticleCommand(command)
+            .execute()
+    }
+
+    fun mapWorkBookToArticleCommand(command: MapWorkBookToArticleCommand) =
         dslContext.insertInto(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE)
             .set(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID, command.workbookId)
             .set(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.ARTICLE_ID, command.articleId)
             .set(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.DAY_COL, command.dayCol)
-            .execute()
-    }
 
     /**
      * category에 따라서 조회된 구독자 수가 포함된 Workbook 목록을 반환한다.

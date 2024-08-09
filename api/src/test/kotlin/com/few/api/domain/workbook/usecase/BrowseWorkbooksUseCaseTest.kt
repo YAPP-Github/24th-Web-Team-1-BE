@@ -4,12 +4,12 @@ import com.few.api.domain.workbook.service.WorkbookMemberService
 import com.few.api.domain.workbook.service.WorkbookSubscribeService
 import com.few.api.domain.workbook.service.dto.BrowseMemberSubscribeWorkbooksOutDto
 import com.few.api.domain.workbook.service.dto.WriterMappedWorkbookOutDto
-import com.few.api.domain.workbook.usecase.dto.BrowseWorkBookDetail
 import com.few.api.domain.workbook.usecase.dto.BrowseWorkbooksUseCaseIn
-import com.few.api.domain.workbook.usecase.dto.WriterDetail
-import com.few.api.domain.workbook.usecase.model.AuthMainViewWorkbookOrderDelegator
-import com.few.api.domain.workbook.usecase.model.BasicWorkbookOrderDelegator
-import com.few.api.domain.workbook.usecase.service.WorkbookOrderDelegatorExecutor
+import com.few.api.domain.workbook.usecase.model.WorkBook
+import com.few.api.domain.workbook.usecase.model.WorkBookWriter
+import com.few.api.domain.workbook.usecase.service.order.AuthMainViewWorkbookOrderDelegator
+import com.few.api.domain.workbook.usecase.service.order.BasicWorkbookOrderDelegator
+import com.few.api.domain.workbook.usecase.service.order.WorkbookOrderDelegatorExecutor
 import com.few.api.repo.dao.workbook.WorkbookDao
 import com.few.api.repo.dao.workbook.record.SelectWorkBookRecordWithSubscriptionCount
 import com.few.api.web.support.ViewCategory
@@ -96,7 +96,7 @@ class BrowseWorkbooksUseCaseTest : BehaviorSpec({
             every {
                 workbookOrderDelegatorExecutor.execute(any(AuthMainViewWorkbookOrderDelegator::class))
             } returns IntStream.range(1, 1 + workbookCount).mapToObj {
-                BrowseWorkBookDetail(
+                WorkBook(
                     id = it.toLong(),
                     title = "workbook title$it",
                     mainImageUrl = URL("http://localhost:8080/image/main/$it"),
@@ -104,7 +104,7 @@ class BrowseWorkbooksUseCaseTest : BehaviorSpec({
                     description = "workbook$it description",
                     createdAt = LocalDateTime.now(),
                     writerDetails = listOf(
-                        WriterDetail(
+                        WorkBookWriter(
                             id = it.toLong(),
                             name = "writer$it",
                             url = URL("https://jh-labs.tistory.com/")
@@ -134,7 +134,13 @@ class BrowseWorkbooksUseCaseTest : BehaviorSpec({
                 verify(exactly = 1) { workbookDao.browseWorkBookWithSubscriptionCount(any()) }
                 verify(exactly = 1) { workbookMemberService.browseWorkbookWriterRecords(any()) }
                 verify(exactly = 1) { workbookSubscribeService.browseMemberSubscribeWorkbooks(any()) }
-                verify(exactly = 1) { workbookOrderDelegatorExecutor.execute(any(AuthMainViewWorkbookOrderDelegator::class)) }
+                verify(exactly = 1) {
+                    workbookOrderDelegatorExecutor.execute(
+                        any(
+                            AuthMainViewWorkbookOrderDelegator::class
+                        )
+                    )
+                }
             }
         }
     }
@@ -174,7 +180,7 @@ class BrowseWorkbooksUseCaseTest : BehaviorSpec({
                 workbookOrderDelegatorExecutor.execute(any(BasicWorkbookOrderDelegator::class))
             } returns
                 IntStream.range(1, 1 + workbookCount).mapToObj {
-                    BrowseWorkBookDetail(
+                    WorkBook(
                         id = it.toLong(),
                         title = "workbook title$it",
                         mainImageUrl = URL("http://localhost:8080/image/main/$it"),
@@ -182,7 +188,7 @@ class BrowseWorkbooksUseCaseTest : BehaviorSpec({
                         description = "workbook$it description",
                         createdAt = LocalDateTime.now(),
                         writerDetails = listOf(
-                            WriterDetail(
+                            WorkBookWriter(
                                 id = it.toLong(),
                                 name = "writer$it",
                                 url = URL("http://localhost:8080/image/writer/$it")
@@ -212,7 +218,13 @@ class BrowseWorkbooksUseCaseTest : BehaviorSpec({
                 verify(exactly = 1) { workbookDao.browseWorkBookWithSubscriptionCount(any()) }
                 verify(exactly = 1) { workbookMemberService.browseWorkbookWriterRecords(any()) }
                 verify(exactly = 0) { workbookSubscribeService.browseMemberSubscribeWorkbooks(any()) }
-                verify(exactly = 1) { workbookOrderDelegatorExecutor.execute(any(BasicWorkbookOrderDelegator::class)) }
+                verify(exactly = 1) {
+                    workbookOrderDelegatorExecutor.execute(
+                        any(
+                            BasicWorkbookOrderDelegator::class
+                        )
+                    )
+                }
             }
         }
     }
@@ -259,7 +271,7 @@ class BrowseWorkbooksUseCaseTest : BehaviorSpec({
             every {
                 workbookOrderDelegatorExecutor.execute(any(BasicWorkbookOrderDelegator::class))
             } returns IntStream.range(1, 1 + workbookCount).mapToObj {
-                BrowseWorkBookDetail(
+                WorkBook(
                     id = it.toLong(),
                     title = "workbook title$it",
                     mainImageUrl = URL("http://localhost:8080/image/main/$it"),
@@ -267,7 +279,7 @@ class BrowseWorkbooksUseCaseTest : BehaviorSpec({
                     description = "workbook$it description",
                     createdAt = LocalDateTime.now(),
                     writerDetails = listOf(
-                        WriterDetail(
+                        WorkBookWriter(
                             id = it.toLong(),
                             name = "writer$it",
                             url = URL("http://localhost:8080/image/writer/$it")
@@ -296,7 +308,13 @@ class BrowseWorkbooksUseCaseTest : BehaviorSpec({
                 verify(exactly = 1) { workbookDao.browseWorkBookWithSubscriptionCount(any()) }
                 verify(exactly = 1) { workbookMemberService.browseWorkbookWriterRecords(any()) }
                 verify(exactly = 0) { workbookSubscribeService.browseMemberSubscribeWorkbooks(any()) }
-                verify(exactly = 1) { workbookOrderDelegatorExecutor.execute(any(BasicWorkbookOrderDelegator::class)) }
+                verify(exactly = 1) {
+                    workbookOrderDelegatorExecutor.execute(
+                        any(
+                            BasicWorkbookOrderDelegator::class
+                        )
+                    )
+                }
             }
         }
     }

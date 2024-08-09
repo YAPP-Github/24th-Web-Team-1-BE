@@ -8,9 +8,10 @@ import com.few.api.domain.workbook.usecase.dto.BrowseWorkBookDetail
 import com.few.api.domain.workbook.usecase.dto.BrowseWorkbooksUseCaseIn
 import com.few.api.domain.workbook.usecase.dto.BrowseWorkbooksUseCaseOut
 import com.few.api.domain.workbook.usecase.dto.WriterDetail
-import com.few.api.domain.workbook.usecase.model.BasicWorkbookOrderDelegator
-import com.few.api.domain.workbook.usecase.model.AuthMainViewWorkbookOrderDelegator
-import com.few.api.domain.workbook.usecase.service.WorkbookOrderDelegatorExecutor
+import com.few.api.domain.workbook.usecase.model.*
+import com.few.api.domain.workbook.usecase.service.order.AuthMainViewWorkbookOrderDelegator
+import com.few.api.domain.workbook.usecase.service.order.BasicWorkbookOrderDelegator
+import com.few.api.domain.workbook.usecase.service.order.WorkbookOrderDelegatorExecutor
 import com.few.api.repo.dao.workbook.WorkbookDao
 import com.few.api.repo.dao.workbook.query.BrowseWorkBookQueryWithSubscriptionCount
 import com.few.api.web.support.ViewCategory
@@ -56,7 +57,7 @@ class BrowseWorkbooksUseCase(
         }
 
         val workbookDetails = workbookRecords.map { record ->
-            BrowseWorkBookDetail(
+            WorkBook(
                 id = record.id,
                 mainImageUrl = record.mainImageUrl,
                 title = record.title,
@@ -64,7 +65,7 @@ class BrowseWorkbooksUseCase(
                 category = CategoryType.convertToDisplayName(record.category),
                 createdAt = record.createdAt,
                 writerDetails = writerRecords[record.id]?.map {
-                    WriterDetail(
+                    WorkBookWriter(
                         id = it.writerId,
                         name = it.name,
                         url = it.url
@@ -84,8 +85,14 @@ class BrowseWorkbooksUseCase(
             WorkBookOrderStrategy.MAIN_VIEW_AUTH -> {
                 BrowseMemberSubscribeWorkbooksInDto(useCaseIn.memberId!!).let { dto ->
                     workbookSubscribeService.browseMemberSubscribeWorkbooks(dto)
-                }.let { memberSubscribeWorkbooks ->
-                    AuthMainViewWorkbookOrderDelegator(workbookDetails, memberSubscribeWorkbooks)
+                }.map {
+                    MemberSubscribedWorkbook(
+                        workbookId = it.workbookId,
+                        isActiveSub = it.isActiveSub,
+                        currentDay = it.currentDay
+                    )
+                }.let { subscribedWorkbooks ->
+                    AuthMainViewWorkbookOrderDelegator(workbookDetails, subscribedWorkbooks)
                 }
             }
             WorkBookOrderStrategy.MAIN_VIEW_UNAUTH -> {
@@ -96,8 +103,27 @@ class BrowseWorkbooksUseCase(
             workbookOrderDelegatorExecutor.execute(delegator)
         }
 
-        return BrowseWorkbooksUseCaseOut(
-            workbooks = orderedWorkbooks
-        )
+        orderedWorkbooks.map { workBook ->
+            BrowseWorkBookDetail(
+                id = workBook.id,
+                mainImageUrl = workBook.mainImageUrl,
+                title = workBook.title,
+                description = workBook.description,
+                category = workBook.category,
+                createdAt = workBook.createdAt,
+                writerDetails = workBook.writerDetails.map {
+                    WriterDetail(
+                        id = it.id,
+                        name = it.name,
+                        url = it.url
+                    )
+                },
+                subscriptionCount = workBook.subscriptionCount
+            )
+        }.let {
+            return BrowseWorkbooksUseCaseOut(
+                workbooks = it
+            )
+        }
     }
 }

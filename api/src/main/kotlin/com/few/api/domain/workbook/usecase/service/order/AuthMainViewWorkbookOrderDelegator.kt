@@ -1,30 +1,33 @@
-package com.few.api.domain.workbook.usecase.model
+package com.few.api.domain.workbook.usecase.service.order
 
-import com.few.api.domain.workbook.service.dto.BrowseMemberSubscribeWorkbooksOutDto
-import com.few.api.domain.workbook.usecase.dto.BrowseWorkBookDetail
+import com.few.api.domain.workbook.usecase.model.MemberSubscribedWorkbook
+import com.few.api.domain.workbook.usecase.model.WorkBook
 
 class AuthMainViewWorkbookOrderDelegator(
     /**
      * @see com.few.api.repo.dao.workbook.WorkbookDao.browseWorkBookWithSubscriptionCount
      */
-    private val workbooks: List<BrowseWorkBookDetail>,
-    private val memberSubscribeWorkbooks: List<BrowseMemberSubscribeWorkbooksOutDto>,
+    private val workbooks: List<WorkBook>,
+    private val memberSubscribedWorkbooks: List<MemberSubscribedWorkbook>,
 ) : WorkbookOrderDelegator {
 
     /**
      * 메인 화면에 보여질 워크북을 정렬합니다.
      * 1. 활성화된 구독 워크북을 먼저 보여줍니다.
+     *    - 구독 워크북 정렬 기준은 currentDay를 기준으로 내림차순입니다.
      * 2. 구독 기록이 없는 워크북을 보여줍니다.
      * 3. 비활성화된 구독 워크북을 보여줍니다.
      */
-    override fun order(): List<BrowseWorkBookDetail> {
+    override fun order(): List<WorkBook> {
         val allWorkbookIds = workbooks.associate { it.id to false }.toMutableMap()
-        val activeSubWorkbookIds = memberSubscribeWorkbooks.filter { it.isActiveSub }.sortedByDescending {
-            it.currentDay
-        }.map { it.workbookId }
-        val inActiveSubWorkbookIds = memberSubscribeWorkbooks.filter { !it.isActiveSub }.map { it.workbookId }
+        val activeSubWorkbookIds =
+            memberSubscribedWorkbooks.filter { it.isActiveSub }.sortedByDescending {
+                it.currentDay
+            }.map { it.workbookId }
+        val inActiveSubWorkbookIds =
+            memberSubscribedWorkbooks.filter { !it.isActiveSub }.map { it.workbookId }
 
-        val orderedWorkbooks = mutableListOf<BrowseWorkBookDetail>()
+        val orderedWorkbooks = mutableListOf<WorkBook>()
 
         /**
          * 활성화된 구독 워크북을 먼저 보여줍니다.
@@ -39,7 +42,7 @@ class AuthMainViewWorkbookOrderDelegator(
         /**
          * 비활성화된 구독 워크북을 모아둡니다.
          */
-        val lastAddWorkbooks = mutableListOf<BrowseWorkBookDetail>()
+        val lastAddWorkbooks = mutableListOf<WorkBook>()
         inActiveSubWorkbookIds.forEach { inActiveSubWorkbookId ->
             workbooks.find { it.id == inActiveSubWorkbookId }?.let {
                 lastAddWorkbooks.add(it)

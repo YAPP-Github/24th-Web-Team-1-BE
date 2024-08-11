@@ -198,13 +198,16 @@ class WorkBookSubscriberWriter(
             (it.progress.toInt() + 1) == lastDayCol[it.targetWorkBookId]
         }.map {
             ReceiveLastDayMember(it.memberId, it.targetWorkBookId)
-        }.filter {
-            memberSuccessRecords[it.memberId] == true
+        }
+
+        val receiveLastDayMemberIds = receiveLastDayMembers.map {
+            it.memberId
         }
 
         /** 이메일 전송에 성공한 구독자들의 진행률을 업데이트한다.*/
         val successMemberIds = memberSuccessRecords.filter { it.value }.keys
-        val updateTargetMemberRecords = items.filter { it.memberId in successMemberIds }
+        val updateTargetMemberRecords = items.filter { it.memberId in successMemberIds }.filterNot { it.memberId in receiveLastDayMemberIds }
+
         val updateQueries = mutableListOf<UpdateConditionStep<*>>()
         for (updateTargetMemberRecord in updateTargetMemberRecords) {
             updateQueries.add(

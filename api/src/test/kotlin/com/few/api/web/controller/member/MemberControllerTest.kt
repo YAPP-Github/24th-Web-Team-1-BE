@@ -149,7 +149,7 @@ class MemberControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data.refreshToken")
                                             .fieldWithString("refreshToken"),
                                         PayloadDocumentation.fieldWithPath("data.isLogin")
-                                            .fieldWithBoolean("로그인 여부")
+                                            .fieldWithBoolean("로그인/회원가입 여부")
                                     )
                                 )
                             )

@@ -264,9 +264,9 @@ class ArticleControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data.categories")
                                             .fieldWithArray("카테고리 목록"),
                                         PayloadDocumentation.fieldWithPath("data.categories[].code")
-                                            .fieldWithNumber("카테고리 code"),
+                                            .fieldWithNumber("카테고리 코드"),
                                         PayloadDocumentation.fieldWithPath("data.categories[].name")
-                                            .fieldWithString("카테고리 name")
+                                            .fieldWithString("카테고리 이름")
                                     )
                                 )
                             ).build()

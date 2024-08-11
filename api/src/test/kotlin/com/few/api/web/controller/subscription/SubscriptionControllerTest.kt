@@ -121,7 +121,7 @@ class SubscriptionControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data.workbooks[].rank")
                                             .fieldWithNumber("순위"),
                                         PayloadDocumentation.fieldWithPath("data.workbooks[].totalSubscriber")
-                                            .fieldWithNumber("전체 구독자 수"),
+                                            .fieldWithNumber("누적 구독자 수"),
                                         PayloadDocumentation.fieldWithPath("data.workbooks[].articleInfo")
                                             .fieldWithString("학습지 정보(Json 타입)")
                                     )

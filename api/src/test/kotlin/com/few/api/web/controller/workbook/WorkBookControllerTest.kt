@@ -169,9 +169,9 @@ class WorkBookControllerTest : ControllerTestSpec() {
                                     PayloadDocumentation.fieldWithPath("data.workbooks[].writers[].name")
                                         .fieldWithString("워크북 작가 이름"),
                                     PayloadDocumentation.fieldWithPath("data.workbooks[].writers[].url")
-                                        .fieldWithString("워크북 작가 링크"),
+                                        .fieldWithString("워크북 작가 외부 링크"),
                                     PayloadDocumentation.fieldWithPath("data.workbooks[].subscriberCount")
-                                        .fieldWithNumber("워크북 구독자 수")
+                                        .fieldWithNumber("워크북 현재 구독자 수")
                                 )
                             )
                         ).build()

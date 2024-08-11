@@ -49,7 +49,7 @@ class SubscribeWorkbookUseCase(
                 subscriptionDao.reSubscribeWorkbookSubscription(command)
             }
 
-            /** 이미 구독한 히스토리가 있고 구독이 취소되지 않은 경우 */
+            /** 구독 중인 경우 */
             else -> {
                 throw SubscribeIllegalArgumentException("subscribe.state.subscribed")
             }

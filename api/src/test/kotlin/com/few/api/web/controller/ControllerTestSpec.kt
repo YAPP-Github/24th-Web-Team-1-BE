@@ -19,7 +19,6 @@ import com.few.api.domain.workbook.article.usecase.ReadWorkBookArticleUseCase
 import com.few.api.domain.workbook.usecase.BrowseWorkbooksUseCase
 import com.few.api.domain.workbook.usecase.ReadWorkbookUseCase
 import com.few.api.security.token.TokenResolver
-import com.few.api.web.handler.ApiControllerExceptionHandler
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
@@ -29,7 +28,6 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.restdocs.RestDocumentationExtension
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.servlet.MockMvc
 
 @ActiveProfiles(value = ["test", "new"])
@@ -42,12 +40,7 @@ abstract class ControllerTestSpec {
 
     /** Common */
     @Autowired
-    lateinit var apiControllerExceptionHandler: ApiControllerExceptionHandler
-
-    @Autowired
     lateinit var objectMapper: ObjectMapper
-
-    lateinit var webTestClient: WebTestClient
 
     @Autowired
     lateinit var mockMvc: MockMvc

@@ -3,6 +3,7 @@ package com.few.api.repo.explain.subscription
 import com.few.api.repo.dao.subscription.SubscriptionDao
 import com.few.api.repo.dao.subscription.command.InsertWorkbookSubscriptionCommand
 import com.few.api.repo.dao.subscription.command.UpdateDeletedAtInAllSubscriptionCommand
+import com.few.api.repo.dao.subscription.command.UpdateDeletedAtInWorkbookSubscriptionCommand
 import com.few.api.repo.dao.subscription.query.CountWorkbookMappedArticlesQuery
 import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookActiveSubscription
 import com.few.api.repo.dao.subscription.query.SelectAllWorkbookSubscriptionStatusNotConsiderDeletedAtQuery
@@ -136,5 +137,34 @@ class SubscriptionDaoExplainGenerateTest : JooqTestSpec() {
         val explain = dslContext.explain(query).toString()
 
         ResultGenerator.execute(query, explain, "countAllWorkbookSubscriptionQueryExplain")
+    }
+
+    @Test
+    fun reSubscribeWorkBookSubscriptionCommandExplain() {
+        val command = InsertWorkbookSubscriptionCommand(
+            memberId = 1L,
+            workbookId = 1L
+        ).let {
+            subscriptionDao.reSubscribeWorkBookSubscriptionCommand(it)
+        }
+
+        val explain = InsertUpdateExplainGenerator.execute(dslContext, command.sql, command.bindValues)
+
+        ResultGenerator.execute(command, explain, "reSubscribeWorkBookSubscriptionCommandExplain")
+    }
+
+    @Test
+    fun updateDeletedAtInWorkbookSubscriptionCommandExplain() {
+        val command = UpdateDeletedAtInWorkbookSubscriptionCommand(
+            memberId = 1L,
+            workbookId = 1L,
+            opinion = "test"
+        ).let {
+            subscriptionDao.updateDeletedAtInWorkbookSubscriptionCommand(it)
+        }
+
+        val explain = InsertUpdateExplainGenerator.execute(dslContext, command.sql, command.bindValues)
+
+        ResultGenerator.execute(command, explain, "updateDeletedAtInWorkbookSubscriptionCommandExplain")
     }
 }

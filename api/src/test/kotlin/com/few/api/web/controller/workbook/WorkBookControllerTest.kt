@@ -13,19 +13,12 @@ import com.few.api.web.support.ViewCategory
 import com.few.api.web.support.WorkBookCategory
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
 import com.few.data.common.code.CategoryType
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
-import org.springframework.http.codec.json.Jackson2JsonDecoder
-import org.springframework.http.codec.json.Jackson2JsonEncoder
-import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.payload.PayloadDocumentation
-import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
-import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URL
@@ -33,25 +26,9 @@ import java.time.LocalDateTime
 
 class WorkBookControllerTest : ControllerTestSpec() {
 
-    @Autowired
-    lateinit var workBookController: WorkBookController
-
     companion object {
-        private val BASE_URL = "/api/v1/workbooks"
-        private val TAG = "WorkBookController"
-    }
-
-    @BeforeEach
-    fun setUp(restDocumentation: RestDocumentationContextProvider) {
-        webTestClient = WebTestClient
-            .bindToController(workBookController)
-            .controllerAdvice(super.apiControllerExceptionHandler).httpMessageCodecs {
-                it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(objectMapper))
-                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(objectMapper))
-            }
-            .configureClient()
-            .filter(WebTestClientRestDocumentation.documentationConfiguration(restDocumentation))
-            .build()
+        private const val BASE_URL = "/api/v1/workbooks"
+        private const val TAG = "WorkBookController"
     }
 
     @Test
@@ -106,8 +83,8 @@ class WorkBookControllerTest : ControllerTestSpec() {
     fun browseWorkBooks() {
         // given
         val api = "BrowseWorkBooks"
+        val token = "thisisaccesstoken"
         val viewCategory = ViewCategory.MAIN_CARD
-        val memberId = 1L
         val uri = UriComponentsBuilder.newInstance()
             .path(BASE_URL)
             .queryParam("category", WorkBookCategory.ECONOMY.code)
@@ -115,33 +92,35 @@ class WorkBookControllerTest : ControllerTestSpec() {
             .build()
             .toUriString()
 
-        // set usecase mock
-        `when`(tokenResolver.resolveId("thisisaccesstoken")).thenReturn(memberId)
-        `when`(browseWorkBooksUseCase.execute(BrowseWorkbooksUseCaseIn(WorkBookCategory.ECONOMY, viewCategory, memberId))).thenReturn(
-            BrowseWorkbooksUseCaseOut(
-                workbooks = listOf(
-                    BrowseWorkBookDetail(
-                        id = 1L,
-                        mainImageUrl = URL("http://localhost:8080/api/v1/workbooks/1/image"),
-                        title = "재태크, 투자 필수 용어 모음집",
-                        description = "사회 초년생부터, 직장인, 은퇴자까지 모두가 알아야 할 기본적인 재태크, 투자 필수 용어 모음집 입니다.",
-                        category = CategoryType.fromCode(0)!!.name,
-                        createdAt = LocalDateTime.now(),
-                        writerDetails = listOf(
-                            WriterDetail(1L, "안나포", URL("http://localhost:8080/api/v1/users/1")),
-                            WriterDetail(2L, "퓨퓨", URL("http://localhost:8080/api/v1/users/2")),
-                            WriterDetail(3L, "프레소", URL("http://localhost:8080/api/v1/users/3"))
-                        ),
-                        subscriptionCount = 100
-                    )
+        val memberId = 1L
+        `when`(tokenResolver.resolveId(token)).thenReturn(memberId)
+
+        val useCaseIn =
+            BrowseWorkbooksUseCaseIn(WorkBookCategory.ECONOMY, viewCategory, memberId)
+        val useCaseOut = BrowseWorkbooksUseCaseOut(
+            workbooks = listOf(
+                BrowseWorkBookDetail(
+                    id = 1L,
+                    mainImageUrl = URL("http://localhost:8080/api/v1/workbooks/1/image"),
+                    title = "재태크, 투자 필수 용어 모음집",
+                    description = "사회 초년생부터, 직장인, 은퇴자까지 모두가 알아야 할 기본적인 재태크, 투자 필수 용어 모음집 입니다.",
+                    category = CategoryType.fromCode(0)!!.name,
+                    createdAt = LocalDateTime.now(),
+                    writerDetails = listOf(
+                        WriterDetail(1L, "안나포", URL("http://localhost:8080/api/v1/users/1")),
+                        WriterDetail(2L, "퓨퓨", URL("http://localhost:8080/api/v1/users/2")),
+                        WriterDetail(3L, "프레소", URL("http://localhost:8080/api/v1/users/3"))
+                    ),
+                    subscriptionCount = 100
                 )
             )
         )
+        `when`(browseWorkBooksUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
 
         // when
         mockMvc.perform(
             get(uri)
-                .header("Authorization", "Bearer thisisaccesstoken")
+                .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
             status().is2xxSuccessful
@@ -190,9 +169,9 @@ class WorkBookControllerTest : ControllerTestSpec() {
                                     PayloadDocumentation.fieldWithPath("data.workbooks[].writers[].name")
                                         .fieldWithString("워크북 작가 이름"),
                                     PayloadDocumentation.fieldWithPath("data.workbooks[].writers[].url")
-                                        .fieldWithString("워크북 작가 링크"),
+                                        .fieldWithString("워크북 작가 외부 링크"),
                                     PayloadDocumentation.fieldWithPath("data.workbooks[].subscriberCount")
-                                        .fieldWithNumber("워크북 구독자 수")
+                                        .fieldWithNumber("워크북 현재 구독자 수")
                                 )
                             )
                         ).build()
@@ -210,34 +189,40 @@ class WorkBookControllerTest : ControllerTestSpec() {
             .path("$BASE_URL/{workbookId}")
             .build()
             .toUriString()
-        // set usecase mock
+
         val workbookId = 1L
-        `when`(readWorkbookUseCase.execute(ReadWorkbookUseCaseIn(workbookId))).thenReturn(
-            ReadWorkbookUseCaseOut(
-                id = 1L,
-                mainImageUrl = URL("http://localhost:8080/api/v1/workbooks/1/image"),
-                title = "재태크, 투자 필수 용어 모음집",
-                description = "사회 초년생부터, 직장인, 은퇴자까지 모두가 알아야 할 기본적인 재태크, 투자 필수 용어 모음집 입니다.",
-                category = CategoryType.fromCode(0)!!.name,
-                createdAt = LocalDateTime.now(),
-                writers = listOf(
-                    WriterDetail(1L, "안나포", URL("http://localhost:8080/api/v1/users/1")),
-                    WriterDetail(2L, "퓨퓨", URL("http://localhost:8080/api/v1/users/2")),
-                    WriterDetail(3L, "프레소", URL("http://localhost:8080/api/v1/users/3"))
-                ),
-                articles = listOf(ArticleDetail(1L, "ISA(개인종합자산관리계좌)란?"), ArticleDetail(2L, "ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란?"))
+        val useCaseIn = ReadWorkbookUseCaseIn(workbookId)
+        val useCaseOut = ReadWorkbookUseCaseOut(
+            id = 1L,
+            mainImageUrl = URL("http://localhost:8080/api/v1/workbooks/1/image"),
+            title = "재태크, 투자 필수 용어 모음집",
+            description = "사회 초년생부터, 직장인, 은퇴자까지 모두가 알아야 할 기본적인 재태크, 투자 필수 용어 모음집 입니다.",
+            category = CategoryType.fromCode(0)!!.name,
+            createdAt = LocalDateTime.now(),
+            writers = listOf(
+                WriterDetail(1L, "안나포", URL("http://localhost:8080/api/v1/users/1")),
+                WriterDetail(2L, "퓨퓨", URL("http://localhost:8080/api/v1/users/2")),
+                WriterDetail(3L, "프레소", URL("http://localhost:8080/api/v1/users/3"))
+            ),
+            articles = listOf(
+                ArticleDetail(1L, "ISA(개인종합자산관리계좌)란?"),
+                ArticleDetail(
+                    2L,
+                    "ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란? ISA(개인종합자산관리계좌)란?"
+                )
             )
         )
+        `when`(readWorkbookUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
 
         // when
-        this.webTestClient.get()
-            .uri(uri, 1)
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange().expectStatus().isOk()
-            .expectBody().consumeWith(
-                WebTestClientRestDocumentation.document(
+        mockMvc.perform(
+            get(uri, workbookId)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().is2xxSuccessful)
+            .andDo(
+                document(
                     api.toIdentifier(),
-                    ResourceDocumentation.resource(
+                    resource(
                         ResourceSnippetParameters.builder()
                             .description("학습지 Id를 입력하여 학습지 정보를 조회합니다.")
                             .summary(api.toIdentifier())

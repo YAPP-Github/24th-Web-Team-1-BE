@@ -20,8 +20,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 class ApiLogControllerTest : ControllerTestSpec() {
 
     companion object {
-        private val BASE_URL = "/api/v1/logs"
-        private val TAG = "ApiLogControllerTest"
+        private const val BASE_URL = "/api/v1/logs"
+        private const val TAG = "ApiLogControllerTest"
     }
 
     @Test
@@ -32,14 +32,15 @@ class ApiLogControllerTest : ControllerTestSpec() {
         val history =
             objectMapper.writeValueAsString(mapOf("from" to "email", "to" to "readArticle"))
         val request = ApiLogRequest(history)
-        val content = objectMapper.writeValueAsString(request)
+        val body = objectMapper.writeValueAsString(request)
+
         val useCaseIn = AddApiLogUseCaseIn(history)
         Mockito.doNothing().`when`(addApiLogUseCase).execute(useCaseIn)
 
         // When
         mockMvc.perform(
             post(BASE_URL)
-                .content(content)
+                .content(body)
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
             status().is2xxSuccessful

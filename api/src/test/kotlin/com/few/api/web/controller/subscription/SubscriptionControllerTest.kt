@@ -11,47 +11,24 @@ import com.few.api.domain.subscription.usecase.dto.*
 import com.few.api.web.controller.helper.*
 import com.few.api.web.support.ViewCategory
 import com.few.api.web.support.WorkBookStatus
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.doReturn
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
-import org.springframework.http.codec.json.Jackson2JsonDecoder
-import org.springframework.http.codec.json.Jackson2JsonEncoder
-import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
 import org.springframework.restdocs.payload.PayloadDocumentation
-import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
 import org.springframework.security.test.context.support.WithUserDetails
-import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.web.util.UriComponentsBuilder
 
 class SubscriptionControllerTest : ControllerTestSpec() {
 
-    @Autowired
-    lateinit var subscriptionController: SubscriptionController
-
     companion object {
-        private val BASE_URL = "/api/v1/"
-        private val TAG = "WorkbookSubscriptionController"
-    }
-
-    @BeforeEach
-    fun setUp(restDocumentation: RestDocumentationContextProvider) {
-        webTestClient = WebTestClient
-            .bindToController(subscriptionController)
-            .controllerAdvice(super.apiControllerExceptionHandler).httpMessageCodecs {
-                it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(objectMapper))
-                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(objectMapper))
-            }
-            .configureClient()
-            .filter(WebTestClientRestDocumentation.documentationConfiguration(restDocumentation))
-            .build()
+        private const val BASE_URL = "/api/v1/"
+        private const val TAG = "WorkbookSubscriptionController"
     }
 
     @Test
@@ -60,6 +37,7 @@ class SubscriptionControllerTest : ControllerTestSpec() {
     fun browseSubscribeWorkbooks() {
         // given
         val api = "BrowseSubscribeWorkBooks"
+        val token = "thisisaccesstoken"
         val view = ViewCategory.MAIN_CARD
         val uri = UriComponentsBuilder.newInstance()
             .path("$BASE_URL/subscriptions/workbooks")
@@ -67,7 +45,6 @@ class SubscriptionControllerTest : ControllerTestSpec() {
             .build()
             .toUriString()
 
-        // set usecase mock
         val memberId = 1L
         val useCaseIn = BrowseSubscribeWorkbooksUseCaseIn(memberId)
         val useCaseOut = BrowseSubscribeWorkbooksUseCaseOut(
@@ -101,13 +78,12 @@ class SubscriptionControllerTest : ControllerTestSpec() {
                 )
             )
         )
-
         doReturn(useCaseOut).`when`(browseSubscribeWorkbooksUseCase).execute(useCaseIn)
 
         // when
         mockMvc.perform(
             get(uri)
-                .header("Authorization", "Bearer thisisaccesstoken")
+                .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
             .andDo(
@@ -145,7 +121,7 @@ class SubscriptionControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data.workbooks[].rank")
                                             .fieldWithNumber("순위"),
                                         PayloadDocumentation.fieldWithPath("data.workbooks[].totalSubscriber")
-                                            .fieldWithNumber("전체 구독자 수"),
+                                            .fieldWithNumber("누적 구독자 수"),
                                         PayloadDocumentation.fieldWithPath("data.workbooks[].articleInfo")
                                             .fieldWithString("학습지 정보(Json 타입)")
                                     )
@@ -163,13 +139,11 @@ class SubscriptionControllerTest : ControllerTestSpec() {
     fun subscribeWorkbook() {
         // given
         val api = "SubscribeWorkBook"
+        val token = "thisisaccesstoken"
         val uri = UriComponentsBuilder.newInstance()
             .path("$BASE_URL/workbooks/{workbookId}/subs")
             .build().toUriString()
 
-        val email = "test@gmail.com"
-
-        // set usecase mock
         val memberId = 1L
         val workbookId = 1L
         val useCaseIn = SubscribeWorkbookUseCaseIn(workbookId = workbookId, memberId = memberId)
@@ -178,7 +152,7 @@ class SubscriptionControllerTest : ControllerTestSpec() {
         // when
         mockMvc.perform(
             post(uri, workbookId)
-                .header("Authorization", "Bearer thisisaccesstoken")
+                .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
             .andDo(
@@ -214,15 +188,15 @@ class SubscriptionControllerTest : ControllerTestSpec() {
     fun unsubscribeWorkbook() {
         // given
         val api = "UnsubscribeWorkBook"
+        val token = "thisisaccesstoken"
         val uri = UriComponentsBuilder.newInstance()
             .path("$BASE_URL/workbooks/{workbookId}/unsubs")
             .build()
             .toUriString()
 
-        // set usecase mock
         val workbookId = 1L
         val memberId = 1L
-        val opinion = "취소합니다."
+        val opinion = "cancel."
         val body = objectMapper.writeValueAsString(
             UnsubscribeWorkbookRequest(opinion = opinion)
         )
@@ -236,7 +210,7 @@ class SubscriptionControllerTest : ControllerTestSpec() {
         // when
         mockMvc.perform(
             post(uri, workbookId)
-                .header("Authorization", "Bearer thisisaccesstoken")
+                .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body)
         ).andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
@@ -273,17 +247,18 @@ class SubscriptionControllerTest : ControllerTestSpec() {
     fun deactivateAllSubscriptions() {
         // given
         val api = "UnsubscribeAll"
+        val token = "thisisaccesstoken"
         val uri = UriComponentsBuilder.newInstance()
             .path("$BASE_URL/subscriptions/unsubs")
             .build()
             .toUriString()
 
-        // set usecase mock
-        val memberId = 1L
         val opinion = "전체 수신거부합니다."
         val body = objectMapper.writeValueAsString(
             UnsubscribeWorkbookRequest(opinion = opinion)
         )
+
+        val memberId = 1L
         val useCaseIn = UnsubscribeAllUseCaseIn(
             memberId = memberId,
             opinion = opinion
@@ -293,7 +268,7 @@ class SubscriptionControllerTest : ControllerTestSpec() {
         // when
         mockMvc.perform(
             post(uri)
-                .header("Authorization", "Bearer thisisaccesstoken")
+                .header("Authorization", "Bearer $token")
                 .content(body)
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().is2xxSuccessful)

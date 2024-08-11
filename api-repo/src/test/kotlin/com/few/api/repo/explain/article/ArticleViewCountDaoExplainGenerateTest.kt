@@ -3,6 +3,8 @@ package com.few.api.repo.explain.article
 import com.few.api.repo.dao.article.ArticleViewCountDao
 import com.few.api.repo.dao.article.command.ArticleViewCountCommand
 import com.few.api.repo.dao.article.query.ArticleViewCountQuery
+import com.few.api.repo.dao.article.query.SelectArticlesOrderByViewsQuery
+import com.few.api.repo.dao.article.query.SelectRankByViewsQuery
 import com.few.api.repo.explain.InsertUpdateExplainGenerator
 import com.few.api.repo.explain.ResultGenerator
 import com.few.api.repo.jooq.JooqTestSpec
@@ -60,5 +62,42 @@ class ArticleViewCountDaoExplainGenerateTest : JooqTestSpec() {
         val explain = InsertUpdateExplainGenerator.execute(dslContext, command.sql, command.bindValues)
 
         ResultGenerator.execute(command, explain, "upsertArticleViewCountQueryExplain")
+    }
+
+    @Test
+    fun insertArticleViewCountToZeroQueryExplain() {
+        val command = ArticleViewCountQuery(
+            articleId = 1L,
+            categoryType = CategoryType.fromCode(0)!!
+        ).let {
+            articleViewCountDao.insertArticleViewCountToZeroQuery(it)
+        }
+
+        val explain = InsertUpdateExplainGenerator.execute(dslContext, command.sql, command.bindValues)
+
+        ResultGenerator.execute(command, explain, "insertArticleViewCountToZeroQueryExplain")
+    }
+
+    @Test
+    fun selectRankByViewsQueryExplain() {
+        val query = SelectRankByViewsQuery(1L).let {
+            articleViewCountDao.selectRankByViewsQuery(it)
+        }
+
+        val explain = dslContext.explain(query).toString()
+        ResultGenerator.execute(query, explain, "selectRankByViewsQueryExplain")
+    }
+
+    @Test
+    fun selectArticlesOrderByViewsQueryExplain() {
+        val query = SelectArticlesOrderByViewsQuery(
+            offset = 0,
+            category = CategoryType.fromCode(0)!!
+        ).let {
+            articleViewCountDao.selectArticlesOrderByViewsQuery(it)
+        }
+
+        val explain = dslContext.explain(query).toString()
+        ResultGenerator.execute(query, explain, "selectArticlesOrderByViewsQueryExplain")
     }
 }

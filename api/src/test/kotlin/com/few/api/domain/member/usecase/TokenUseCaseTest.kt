@@ -9,7 +9,9 @@ import com.few.api.security.token.AuthToken
 import com.few.api.security.token.TokenGenerator
 import com.few.api.security.token.TokenResolver
 import com.few.data.common.code.MemberType
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -29,97 +31,135 @@ class TokenUseCaseTest : BehaviorSpec({
         useCase = TokenUseCase(tokenGenerator, tokenResolver, memberDao, idEncryption)
     }
 
-    given("토큰 요청이 온 상황에서") {
-        `when`("요청에 refreshToken이 포함되어 있는 경우") {
-            every { tokenResolver.resolveId(any()) } returns 1L
-            every { tokenResolver.resolveEmail(any()) } returns "test@gmail.com"
+    given("리프레시 토큰이 포함된 토큰 갱신 요청이 온 상황에서") {
+        val oldRefreshToken = "refreshToken"
+        val useCaseIn = TokenUseCaseIn(
+            token = null,
+            refreshToken = oldRefreshToken,
+            at = null,
+            rt = null
+        )
+
+        `when`("유효한 리프레시 토큰인 경우") {
+            val memberId = 1L
+            every { tokenResolver.resolveId(any()) } returns memberId
+
+            val email = "test@gmail.com"
+            every { tokenResolver.resolveEmail(any()) } returns email
+
+            val accessToken = "newAccessToken"
+            val refreshToken = "newRefreshToken"
             every { tokenGenerator.generateAuthToken(any(), any(), any()) } returns AuthToken(
-                accessToken = "accessToken",
-                refreshToken = "refreshToken"
+                accessToken = accessToken,
+                refreshToken = refreshToken
             )
+
             then("새로운 토큰을 반환한다") {
-                useCase.execute(
-                    TokenUseCaseIn(
-                        token = null,
-                        refreshToken = "refreshToken",
-                        at = null,
-                        rt = null
-                    )
-                )
+                val useCaseOut = useCase.execute(useCaseIn)
+                useCaseOut.accessToken shouldBe accessToken
+                useCaseOut.refreshToken shouldBe refreshToken
+                useCaseOut.isLogin shouldBe true
+
                 verify(exactly = 1) { tokenResolver.resolveId(any()) }
                 verify(exactly = 1) { tokenResolver.resolveEmail(any()) }
                 verify(exactly = 1) { tokenGenerator.generateAuthToken(any(), any(), any()) }
             }
         }
 
-        `when`("요청에 로그인을 하려는 멤버의 token이 포함되어 있는 경우") {
-            every { idEncryption.decrypt(any()) } returns "1"
+        `when`("유효하지 않은 리프레시 토큰인 경우") {
+            every { tokenResolver.resolveId(any()) } throws IllegalStateException()
+
+            then("예외를 반환한다") {
+                shouldThrow<Exception> { useCase.execute(useCaseIn) }
+
+                verify(exactly = 1) { tokenResolver.resolveId(any()) }
+                verify(exactly = 0) { tokenResolver.resolveEmail(any()) }
+                verify(exactly = 0) { tokenGenerator.generateAuthToken(any(), any(), any()) }
+            }
+        }
+    }
+
+    given("멤버 아이디 정보를 암호화한 토큰이 포함된 토큰 갱신 요청이 온 상황에서") {
+        val encryptedIdToken = "token"
+        val useCaseIn = TokenUseCaseIn(
+            token = encryptedIdToken,
+            refreshToken = null,
+            at = null,
+            rt = null
+        )
+
+        `when`("멤버 인증 토큰이 유효하고 인증을 위한 요청인 경우") {
+            val decryptedId = "1"
+            every { idEncryption.decrypt(any()) } returns decryptedId
+
+            val accessToken = "newAccessToken"
+            val refreshToken = "newRefreshToken"
             every { tokenGenerator.generateAuthToken(any(), any(), any(), any(), any()) } returns AuthToken(
-                accessToken = "accessToken",
-                refreshToken = "refreshToken"
+                accessToken = accessToken,
+                refreshToken = refreshToken
             )
+
+            val email = "test@gmail.com"
             every { memberDao.selectMemberEmailAndType(any()) } returns MemberEmailAndTypeRecord(
-                email = "test@gmail.com",
+                email = email,
                 memberType = MemberType.NORMAL
             )
 
             then("새로운 토큰을 반환한다") {
-                useCase.execute(
-                    TokenUseCaseIn(
-                        token = "token",
-                        refreshToken = null,
-                        at = null,
-                        rt = null
-                    )
-                )
+                val useCaseOut = useCase.execute(useCaseIn)
+                useCaseOut.accessToken shouldBe accessToken
+                useCaseOut.refreshToken shouldBe refreshToken
+                useCaseOut.isLogin shouldBe true
+
                 verify(exactly = 1) { idEncryption.decrypt(any()) }
-                verify(exactly = 1) {
-                    tokenGenerator.generateAuthToken(
-                        any(),
-                        any(),
-                        any(),
-                        any(),
-                        any()
-                    )
-                }
                 verify(exactly = 1) { memberDao.selectMemberEmailAndType(any()) }
+                verify(exactly = 0) { memberDao.updateMemberType(any(UpdateMemberTypeCommand::class)) }
+                verify(exactly = 1) { tokenGenerator.generateAuthToken(any(), any(), any(), any(), any()) }
             }
         }
 
-        `when`("요청에 회원가입을 완료 하려는 멤버의 token이 포함되어 있는 경우") {
-            every { idEncryption.decrypt(any()) } returns "1"
+        `when`("멤버 인증 토큰이 유효하고 가입을 위한 요청인 경우") {
+            val decryptedId = "1"
+            every { idEncryption.decrypt(any()) } returns decryptedId
+
+            val accessToken = "newAccessToken"
+            val refreshToken = "newRefreshToken"
             every { tokenGenerator.generateAuthToken(any(), any(), any(), any(), any()) } returns AuthToken(
-                accessToken = "accessToken",
-                refreshToken = "refreshToken"
+                accessToken = accessToken,
+                refreshToken = refreshToken
             )
+
+            val email = "test@gmail.com"
             every { memberDao.selectMemberEmailAndType(any()) } returns MemberEmailAndTypeRecord(
-                email = "test@gmail.com",
+                email = email,
                 memberType = MemberType.PREAUTH
             )
 
             every { memberDao.updateMemberType(any(UpdateMemberTypeCommand::class)) } returns Unit
 
             then("새로운 토큰을 반환한다") {
-                useCase.execute(
-                    TokenUseCaseIn(
-                        token = "token",
-                        refreshToken = null,
-                        at = null,
-                        rt = null
-                    )
-                )
+                val useCaseOut = useCase.execute(useCaseIn)
+                useCaseOut.accessToken shouldBe accessToken
+                useCaseOut.refreshToken shouldBe refreshToken
+                useCaseOut.isLogin shouldBe false
+
                 verify(exactly = 1) { idEncryption.decrypt(any()) }
-                verify(exactly = 1) {
-                    tokenGenerator.generateAuthToken(
-                        any(),
-                        any(),
-                        any(),
-                        any(),
-                        any()
-                    )
-                }
                 verify(exactly = 1) { memberDao.selectMemberEmailAndType(any()) }
                 verify(exactly = 1) { memberDao.updateMemberType(any(UpdateMemberTypeCommand::class)) }
+                verify(exactly = 1) { tokenGenerator.generateAuthToken(any(), any(), any(), any(), any()) }
+            }
+        }
+
+        `when`("유효하지 않은 멤버 인증 토큰인 경우") {
+            every { idEncryption.decrypt(any()) } throws IllegalStateException()
+
+            then("예외를 반환한다") {
+                shouldThrow<Exception> { useCase.execute(useCaseIn) }
+
+                verify(exactly = 1) { idEncryption.decrypt(any()) }
+                verify(exactly = 0) { memberDao.selectMemberEmailAndType(any()) }
+                verify(exactly = 0) { memberDao.updateMemberType(any(UpdateMemberTypeCommand::class)) }
+                verify(exactly = 0) { tokenGenerator.generateAuthToken(any(), any(), any(), any(), any()) }
             }
         }
     }

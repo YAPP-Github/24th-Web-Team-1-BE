@@ -2,6 +2,7 @@ package com.few.api.repo.explain.workbook
 
 import com.few.api.repo.dao.workbook.WorkbookDao
 import com.few.api.repo.dao.workbook.command.InsertWorkBookCommand
+import com.few.api.repo.dao.workbook.command.MapWorkBookToArticleCommand
 import com.few.api.repo.dao.workbook.query.BrowseWorkBookQueryWithSubscriptionCount
 import com.few.api.repo.dao.workbook.query.SelectWorkBookRecordQuery
 import com.few.api.repo.explain.InsertUpdateExplainGenerator
@@ -88,5 +89,20 @@ class WorkbookDaoExplainGenerateTest : JooqTestSpec() {
         val explain = dslContext.explain(query).toString()
 
         ResultGenerator.execute(query, explain, "browseWorkBookQueryCategoryCondition")
+    }
+
+    @Test
+    fun mapWorkBookToArticleCommandExplain() {
+        val command = MapWorkBookToArticleCommand(
+            workbookId = 1L,
+            articleId = 1L,
+            dayCol = 1
+        ).let {
+            workbookDao.mapWorkBookToArticleCommand(it)
+        }
+
+        val explain = InsertUpdateExplainGenerator.execute(dslContext, command.sql, command.bindValues)
+
+        ResultGenerator.execute(command, explain, "mapWorkBookToArticleCommandExplain")
     }
 }

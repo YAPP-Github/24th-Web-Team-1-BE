@@ -13,6 +13,7 @@ import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookInActiveSu
 import com.few.api.web.support.WorkBookStatus
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import org.webjars.NotFoundException
 
 @Component
 class BrowseSubscribeWorkbooksUseCase(
@@ -41,7 +42,7 @@ class BrowseSubscribeWorkbooksUseCase(
         val workbookSubscriptionCurrentArticleIdRecords = subscriptionRecords.associate { it ->
             val articleId = ReadArticleIdByWorkbookIdAndDayDto(it.workbookId, it.currentDay).let {
                 subscriptionArticleService.readArticleIdByWorkbookIdAndDay(it)
-            } ?: throw IllegalArgumentException("articleId is null")
+            } ?: throw NotFoundException("article.notfound.workbookIdAndCurrentDay")
             it.workbookId to articleId
         }
 

@@ -1,6 +1,7 @@
 package com.few.api.web.controller.member
 
 import com.epages.restdocs.apispec.ResourceDocumentation
+import com.epages.restdocs.apispec.ResourceDocumentation.resource
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
 import com.few.api.domain.member.usecase.dto.SaveMemberUseCaseIn
@@ -12,39 +13,21 @@ import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
 import com.few.api.web.controller.member.request.SaveMemberRequest
 import com.few.api.web.controller.member.request.TokenRequest
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
-import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
 import org.springframework.restdocs.payload.PayloadDocumentation
-import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
-import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
 
 class MemberControllerTest : ControllerTestSpec() {
 
-    @Autowired
-    lateinit var memberController: MemberController
-
     companion object {
-        private val BASE_URL = "/api/v1/members"
-        private val TAG = "MemberController"
-    }
-
-    @BeforeEach
-    fun setUp(restDocumentation: RestDocumentationContextProvider) {
-        webTestClient = WebTestClient
-            .bindToController(memberController)
-            .controllerAdvice(super.apiControllerExceptionHandler)
-            .configureClient()
-            .filter(WebTestClientRestDocumentation.documentationConfiguration(restDocumentation))
-            .build()
+        private const val BASE_URL = "/api/v1/members"
+        private const val TAG = "MemberController"
     }
 
     @Test
@@ -59,21 +42,21 @@ class MemberControllerTest : ControllerTestSpec() {
         val email = "test@gmail.com"
         val body = objectMapper.writeValueAsString(SaveMemberRequest(email = email))
 
-        // set mock
         val useCaseIn = SaveMemberUseCaseIn(email = email)
-        `when`(saveMemberUseCase.execute(useCaseIn)).thenReturn(SaveMemberUseCaseOut(isSendAuthEmail = true))
+        val useCaseOut = SaveMemberUseCaseOut(isSendAuthEmail = true)
+        `when`(saveMemberUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
 
         // when
-        this.webTestClient.post()
-            .uri(uri)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(body)
-            .exchange().expectStatus().is2xxSuccessful()
-            .expectBody().consumeWith(
-                WebTestClientRestDocumentation.document(
+        mockMvc.perform(
+            post(uri)
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(status().isOk)
+            .andDo(
+                document(
                     api.toIdentifier(),
-                    ResourceDocumentation.resource(
+                    resource(
                         ResourceSnippetParameters.builder()
                             .description("회원가입")
                             .summary(api.toIdentifier())
@@ -121,27 +104,27 @@ class MemberControllerTest : ControllerTestSpec() {
             rt = rt,
             refreshToken = tokenRequest.refreshToken
         )
-        `when`(tokenUseCase.execute(useCaseIn)).thenReturn(
-            TokenUseCaseOut(
-                accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJtZW1iZXJJZCI6NTcsIm1lbWJlclJvbGUiOiJbUk9MRV9VU0VSXSIsImlhdCI6MTcyMjI1NTE4MywiZXhwIjoxNzUzODEyNzgzfQ.1KXRim0MVvz1vxOQB_700XPCD9zPQtHNItF_A9upvA8",
-                refreshToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJtZW1iZXJJZCI6NTcsIm1lbWJlclJvbGUiOiJbUk9MRV9VU0VSXSIsImlhdCI6MTcyMjI1NTE4MywiZXhwIjoxNzUzODEyNzgzfQ.1KXRim0MVvz1vxOQB_700XPCD9zPQtHNItF_A9upvA8",
-                isLogin = false
-            )
+        val useCaseOut = TokenUseCaseOut(
+            accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJtZW1iZXJJZCI6NTcsIm1lbWJlclJvbGUiOiJbUk9MRV9VU0VSXSIsImlhdCI6MTcyMjI1NTE4MywiZXhwIjoxNzUzODEyNzgzfQ.1KXRim0MVvz1vxOQB_700XPCD9zPQtHNItF_A9upvA8",
+            refreshToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJtZW1iZXJJZCI6NTcsIm1lbWJlclJvbGUiOiJbUk9MRV9VU0VSXSIsImlhdCI6MTcyMjI1NTE4MywiZXhwIjoxNzUzODEyNzgzfQ.1KXRim0MVvz1vxOQB_700XPCD9zPQtHNItF_A9upvA8",
+            isLogin = false
         )
+        `when`(tokenUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
 
         // when
         mockMvc.perform(
             post(uri)
-                .contentType(MediaType.APPLICATION_JSON)
                 .queryParam("auth_token", auth_token)
                 .queryParam("at", at.toString())
                 .queryParam("rt", rt.toString())
                 .content(body)
-        ).andExpect(status().is2xxSuccessful)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(status().isOk)
             .andDo(
                 document(
                     api.toIdentifier(),
-                    ResourceDocumentation.resource(
+                    resource(
                         ResourceSnippetParameters.builder()
                             .summary(api.toIdentifier())
                             .description("토큰 발급")
@@ -166,7 +149,7 @@ class MemberControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data.refreshToken")
                                             .fieldWithString("refreshToken"),
                                         PayloadDocumentation.fieldWithPath("data.isLogin")
-                                            .fieldWithBoolean("로그인 여부")
+                                            .fieldWithBoolean("로그인/회원가입 여부")
                                     )
                                 )
                             )

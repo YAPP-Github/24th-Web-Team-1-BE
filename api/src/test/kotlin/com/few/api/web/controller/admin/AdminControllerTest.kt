@@ -1,58 +1,34 @@
 package com.few.api.web.controller.admin
 
-import com.epages.restdocs.apispec.ResourceDocumentation
 import com.epages.restdocs.apispec.ResourceDocumentation.resource
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
-import com.few.api.domain.admin.document.usecase.*
 import com.few.api.domain.admin.document.usecase.dto.*
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.admin.request.*
-import com.few.api.web.controller.admin.response.ImageSourceResponse
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
 import com.few.data.common.code.CategoryType
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.`when`
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
-import org.springframework.http.codec.json.Jackson2JsonDecoder
-import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.mock.web.MockMultipartFile
-import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
 import org.springframework.restdocs.payload.PayloadDocumentation
-import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
-import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URL
+import java.util.stream.IntStream
 
 class AdminControllerTest : ControllerTestSpec() {
 
-    @Autowired
-    lateinit var adminController: AdminController
-
     companion object {
-        private val BASE_URL = "/api/v1/admin"
-        private val TAG = "AdminController"
-    }
-
-    @BeforeEach
-    fun setUp(restDocumentation: RestDocumentationContextProvider) {
-        webTestClient = WebTestClient.bindToController(adminController)
-            .controllerAdvice(super.apiControllerExceptionHandler)
-            .httpMessageCodecs {
-                it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(objectMapper))
-                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(objectMapper))
-            }
-            .configureClient()
-            .filter(WebTestClientRestDocumentation.documentationConfiguration(restDocumentation))
-            .build()
+        private const val BASE_URL = "/api/v1/admin"
+        private const val TAG = "AdminController"
     }
 
     @Test
@@ -67,21 +43,22 @@ class AdminControllerTest : ControllerTestSpec() {
         val description = "description"
         val request = AddWorkbookRequest(title, mainImageUrl, category, description)
         val body = objectMapper.writeValueAsString(request)
-        `when`(addWorkbookUseCase.execute(AddWorkbookUseCaseIn(title, mainImageUrl, category, description))).thenReturn(
-            AddWorkbookUseCaseOut(1L)
-        )
+
+        val useCaseIn = AddWorkbookUseCaseIn(title, mainImageUrl, category, description)
+        val useCaseOut = AddWorkbookUseCaseOut(1L)
+        `when`(addWorkbookUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
 
         // when
-        this.webTestClient.post()
-            .uri(uri)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(body)
-            .exchange().expectStatus().is2xxSuccessful()
-            .expectBody().consumeWith(
-                WebTestClientRestDocumentation.document(
+        mockMvc.perform(
+            post(uri)
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(status().isOk)
+            .andDo(
+                document(
                     api.toIdentifier(),
-                    ResourceDocumentation.resource(
+                    resource(
                         ResourceSnippetParameters.builder().description("학습지 추가")
                             .summary(api.toIdentifier()).privateResource(false).deprecated(false)
                             .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))
@@ -106,88 +83,66 @@ class AdminControllerTest : ControllerTestSpec() {
         // given
         val api = "AddArticle"
         val uri = UriComponentsBuilder.newInstance().path("$BASE_URL/articles").build().toUriString()
-        val request = AddArticleRequest(
-            "writer@gmail.com",
-            URL("http://localhost:8080"),
-            "title",
-            CategoryType.fromCode(0)!!.name,
-            "md",
-            "content source",
-            listOf(
-                ProblemDto(
-                    "title1",
-                    listOf(
-                        ProblemContentDto(1L, "content1"),
-                        ProblemContentDto(2L, "content2"),
-                        ProblemContentDto(3L, "content3"),
-                        ProblemContentDto(4L, "content4")
-                    ),
-                    "1",
-                    "explanation"
-                ),
-                ProblemDto(
-                    "title2",
-                    listOf(
-                        ProblemContentDto(1L, "content1"),
-                        ProblemContentDto(2L, "content2"),
-                        ProblemContentDto(3L, "content3"),
-                        ProblemContentDto(4L, "content4")
-                    ),
-                    "2",
-                    "explanation"
-                )
+        val writerEmail = "writer@gmail.com"
+        val articleImageURL = URL("http://localhost:8080")
+        val title = "title"
+        val category = CategoryType.fromCode(0)!!.name
+        val contentType = "md"
+        val contentSource = "content source"
+        val problemDTOs = IntStream.range(0, 2).mapToObj {
+            ProblemDto(
+                "title$it",
+                IntStream.range(0, 4).mapToObj { ProblemContentDto(it.toLong(), "content$it") }.toList(),
+                "$it",
+                "explanation$it"
             )
+        }.toList()
+        val problemDetails = problemDTOs.map {
+            ProblemDetail(
+                it.title,
+                it.contents.map { content -> ProblemContentDetail(content.number, content.content) },
+                it.answer,
+                it.explanation
+            )
+        }
+        val request = AddArticleRequest(
+            writerEmail,
+            articleImageURL,
+            title,
+            category,
+            contentType,
+            contentSource,
+            problemDTOs
         )
         val body = objectMapper.writeValueAsString(request)
 
+        val useCaseIn = AddArticleUseCaseIn(
+            writerEmail,
+            articleImageURL,
+            title,
+            category,
+            contentType,
+            contentSource,
+            problemDetails
+        )
+        val useCaseOut = AddArticleUseCaseOut(1L)
         `when`(
             addArticleUseCase.execute(
-                AddArticleUseCaseIn(
-                    "writer@gmail.com",
-                    URL("http://localhost:8080"),
-                    "title",
-                    CategoryType.fromCode(0)!!.name,
-                    "md",
-                    "content source",
-                    listOf(
-                        ProblemDetail(
-                            "title1",
-                            listOf(
-                                ProblemContentDetail(1L, "content1"),
-                                ProblemContentDetail(2L, "content2"),
-                                ProblemContentDetail(3L, "content3"),
-                                ProblemContentDetail(4L, "content4")
-                            ),
-                            "1",
-                            "explanation"
-                        ),
-                        ProblemDetail(
-                            "title2",
-                            listOf(
-                                ProblemContentDetail(1L, "content1"),
-                                ProblemContentDetail(2L, "content2"),
-                                ProblemContentDetail(3L, "content3"),
-                                ProblemContentDetail(4L, "content4")
-                            ),
-                            "2",
-                            "explanation"
-                        )
-                    )
-                )
+                useCaseIn
             )
-        ).thenReturn(AddArticleUseCaseOut(1L))
+        ).thenReturn(useCaseOut)
 
         // when
-        this.webTestClient.post()
-            .uri(uri)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(body)
-            .exchange().expectStatus().is2xxSuccessful()
-            .expectBody().consumeWith(
-                WebTestClientRestDocumentation.document(
+        mockMvc.perform(
+            post(uri)
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(status().isOk)
+            .andDo(
+                document(
                     api.toIdentifier(),
-                    ResourceDocumentation.resource(
+                    resource(
                         ResourceSnippetParameters.builder().description("아티클 추가")
                             .summary(api.toIdentifier()).privateResource(false).deprecated(false)
                             .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))
@@ -212,19 +167,24 @@ class AdminControllerTest : ControllerTestSpec() {
         // given
         val api = "MapArticle"
         val uri = UriComponentsBuilder.newInstance().path("$BASE_URL/relations/articles").build().toUriString()
-        val request = MapArticleRequest(1L, 1L, 1)
+        val workbookId = 1L
+        val articleId = 1L
+        val dayCol = 1
+        val request = MapArticleRequest(workbookId, articleId, dayCol)
         val body = objectMapper.writeValueAsString(request)
-        doNothing().`when`(mapArticleUseCase).execute(MapArticleUseCaseIn(1L, 1L, 1))
+
+        val useCaseIn = MapArticleUseCaseIn(workbookId, articleId, dayCol)
+        doNothing().`when`(mapArticleUseCase).execute(useCaseIn)
 
         // when
-        this.webTestClient.post()
-            .uri(uri)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(body)
-            .exchange().expectStatus().is2xxSuccessful()
-            .expectBody().consumeWith(
-                WebTestClientRestDocumentation.document(
+        mockMvc.perform(
+            post(uri)
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(status().isOk)
+            .andDo(
+                document(
                     api.toIdentifier(),
                     resource(
                         ResourceSnippetParameters.builder().description("아티클 매핑")
@@ -244,7 +204,12 @@ class AdminControllerTest : ControllerTestSpec() {
         // given
         val api = "ConvertContent"
         val uri = UriComponentsBuilder.newInstance().path("$BASE_URL/utilities/conversion/content").build().toUriString()
-        val request = ConvertContentRequest(MockMultipartFile("content", "test.md", "text/markdown", "#test".toByteArray()))
+        val name = "content"
+        val originalFilename = "test.md"
+        val contentType = "text/markdown"
+        val content = "#test".toByteArray()
+        val request = ConvertContentRequest(MockMultipartFile(name, originalFilename, contentType, content))
+
         val useCaseOut = ConvertContentUseCaseOut("converted content", URL("http://localhost:8080/test.md"))
         val useCaseIn = ConvertContentUseCaseIn(request.content)
         `when`(convertContentUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
@@ -288,9 +253,13 @@ class AdminControllerTest : ControllerTestSpec() {
         // given
         val api = "PutImage"
         val uri = UriComponentsBuilder.newInstance().path("$BASE_URL/utilities/conversion/image").build().toUriString()
-        val request = ImageSourceRequest(source = MockMultipartFile("source", "test.jpg", "image/jpeg", "test".toByteArray()))
-        val response = ImageSourceResponse(URL("http://localhost:8080/test.jpg"), listOf("jpg", "webp"))
-        val useCaseOut = PutImageUseCaseOut(response.url, response.supportSuffix)
+        val name = "source"
+        val originalFilename = "test.jpg"
+        val contentType = "image/jpeg"
+        val content = "test".toByteArray()
+        val request = ImageSourceRequest(source = MockMultipartFile(name, originalFilename, contentType, content))
+
+        val useCaseOut = PutImageUseCaseOut(URL("http://localhost:8080/test.jpg"), listOf("jpg", "webp"))
         val useCaseIn = PutImageUseCaseIn(request.source)
         `when`(putImageUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
 

@@ -70,7 +70,7 @@ class SaveMemberUseCaseTest : BehaviorSpec({
             then("인증 이메일 발송 성공 응답을 반환한다") {
                 useCase.execute(useCaseIn)
 
-                verify(exactly = 1) { memberDao.selectMemberByEmail(any(SelectMemberByEmailNotConsiderDeletedAtQuery::class)) }
+                verify(exactly = 2) { memberDao.selectMemberByEmail(any(SelectMemberByEmailNotConsiderDeletedAtQuery::class)) }
                 verify(exactly = 0) { memberDao.insertMember(any()) }
                 verify(exactly = 1) { memberDao.updateMemberType(any(UpdateDeletedMemberTypeCommand::class)) }
                 verify(exactly = 1) { idEncryption.encrypt(any()) }

@@ -61,7 +61,15 @@ class SaveMemberUseCase(
                     id = isSignUpBeforeMember.memberId,
                     memberType = MemberType.PREAUTH
                 ).let {
-                    memberDao.updateMemberType(it) ?: throw IllegalStateException("member.upddatefail.record")
+                    val isUpdate = memberDao.updateMemberType(it)
+                    if (isUpdate != 1L) {
+                        throw InsertException("member.updatefail.record")
+                    }
+                    memberDao.selectMemberByEmail(
+                        SelectMemberByEmailNotConsiderDeletedAtQuery(
+                            email = useCaseIn.email
+                        )
+                    )?.memberId ?: throw InsertException("member.selectfail.record")
                 }
             } else {
                 /** 이미 가입한 회원이라면 회원 ID를 반환 */

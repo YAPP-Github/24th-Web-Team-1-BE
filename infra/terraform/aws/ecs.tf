@@ -30,10 +30,10 @@ resource "aws_ecs_task_definition" "ecs_task" {
         "cpu" : 0,
         "memory" : 512,
         "memoryReservation" : 256,
-        "environment": [
+        "environment" : [
           {
-            "name": "spring.profiles.active",
-            "value": "prd"
+            "name" : "spring.profiles.active",
+            "value" : "prd"
           }
         ],
         "essential" : true,
@@ -116,20 +116,20 @@ resource "aws_ecs_task_definition" "ecs_task" {
             "valueFrom" : "${aws_ssm_parameter.image_store_bucket_name.name}"
           },
           {
-            "name": "DOCUMENT_STORE_BUCKET_NAME",
-            "valueFrom": "${aws_ssm_parameter.document_store_bucket_name.name}"
+            "name" : "DOCUMENT_STORE_BUCKET_NAME",
+            "valueFrom" : "${aws_ssm_parameter.document_store_bucket_name.name}"
           },
           {
             "name" : "STORAGE_REGION",
             "valueFrom" : "${aws_ssm_parameter.storage_region.name}"
           },
           {
-              "name" : "EMAIL_USERNAME",
-              "valueFrom" : "${aws_ssm_parameter.email_username.name}"
+            "name" : "EMAIL_USERNAME",
+            "valueFrom" : "${aws_ssm_parameter.email_username.name}"
           },
           {
-              "name" : "EMAIL_PASSWORD",
-              "valueFrom" : "${aws_ssm_parameter.email_password.name}"
+            "name" : "EMAIL_PASSWORD",
+            "valueFrom" : "${aws_ssm_parameter.email_password.name}"
           },
           {
             "name" : "TIMEOUT_CONNECT",
@@ -140,20 +140,20 @@ resource "aws_ecs_task_definition" "ecs_task" {
             "valueFrom" : "${aws_ssm_parameter.timeout_read.name}"
           },
           {
-            "name": "WEBHOOK_DISCORD",
-            "valueFrom": "${aws_ssm_parameter.webhook_discord.name}"
+            "name" : "WEBHOOK_DISCORD",
+            "valueFrom" : "${aws_ssm_parameter.webhook_discord.name}"
           },
           {
             "name" : "DISCORD_THREAD_POOL_CORE_POOL_SIZE",
             "valueFrom" : "${aws_ssm_parameter.discord_thread_pool_core_pool_size.name}"
           },
           {
-            "name": "DISCORD_THREAD_POOL_MAX_POOL_SIZE",
-            "valueFrom": "${aws_ssm_parameter.discord_thread_pool_max_pool_size.name}"
+            "name" : "DISCORD_THREAD_POOL_MAX_POOL_SIZE",
+            "valueFrom" : "${aws_ssm_parameter.discord_thread_pool_max_pool_size.name}"
           },
           {
-            "name": "DISCORD_THREAD_POOL_QUEUE_CAPACITY",
-            "valueFrom": "${aws_ssm_parameter.discord_thread_pool_queue_capacity.name}"
+            "name" : "DISCORD_THREAD_POOL_QUEUE_CAPACITY",
+            "valueFrom" : "${aws_ssm_parameter.discord_thread_pool_queue_capacity.name}"
           },
           {
             "name" : "DISCORD_THREAD_POOL_WAIT_FOR_TASKS_TO_COMPLETE_ON_SHUTDOWN",
@@ -164,28 +164,40 @@ resource "aws_ecs_task_definition" "ecs_task" {
             "valueFrom" : "${aws_ssm_parameter.discord_thread_pool_await_termination_seconds.name}"
           },
           {
-            "name": "CDN_URL",
-            "valueFrom": "${aws_ssm_parameter.cdn_url.name}"
+            "name" : "CDN_URL",
+            "valueFrom" : "${aws_ssm_parameter.cdn_url.name}"
           },
           {
-            "name": "ENCRYPTION_ALGORITHM",
-            "valueFrom": "${aws_ssm_parameter.encryption_algorithm.name}"
+            "name" : "ENCRYPTION_ALGORITHM",
+            "valueFrom" : "${aws_ssm_parameter.encryption_algorithm}"
           },
           {
-            "name": "ENCRYPTION_SECRETKEY",
-            "valueFrom": "${aws_ssm_parameter.encryption_secretkey.name}"
+            "name" : "ENCRYPTION_SECRETKEY",
+            "valueFrom" : "${aws_ssm_parameter.encryption_secretkey}"
           },
           {
-            "name": "ENCRYPTION_TRANSFORMATION",
-            "valueFrom": "${aws_ssm_parameter.encryption_transformation.name}"
+            "name" : "ENCRYPTION_TRANSFORMATION",
+            "valueFrom" : "${aws_ssm_parameter.encryption_transformation}"
           },
           {
-            "name": "ENCRYPTION_KEY_SIZE",
-            "valueFrom": "${aws_ssm_parameter.encryption_keysize.name}"
+            "name" : "ENCRYPTION_KEY_SIZE",
+            "valueFrom" : "${aws_ssm_parameter.encryption_keysize}"
           },
           {
-            "name": "ENCRYPTION_IV",
-            "valueFrom": "${aws_ssm_parameter.encryption_iv.name}"
+            "name" : "ENCRYPTION_IV",
+            "valueFrom" : "${aws_ssm_parameter.encryption_iv}"
+          },
+          {
+            "name" : "EMAIL_ACCESS_KEY",
+            "valueFrom" : "${aws_ssm_parameter.email_access_key}"
+          },
+          {
+            "name" : "EMAIL_SECRET_KEY",
+            "valueFrom" : "${aws_ssm_parameter.email_secret_key}"
+          },
+          {
+            "name" : "EMAIL_REGION",
+            "valueFrom" : "${aws_ssm_parameter.email_region}"
           }
         ],
         "logConfiguration" : {

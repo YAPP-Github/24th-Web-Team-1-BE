@@ -169,35 +169,35 @@ resource "aws_ecs_task_definition" "ecs_task" {
           },
           {
             "name" : "ENCRYPTION_ALGORITHM",
-            "valueFrom" : "${aws_ssm_parameter.encryption_algorithm}"
+            "valueFrom" : "${aws_ssm_parameter.encryption_algorithm.name}"
           },
           {
             "name" : "ENCRYPTION_SECRETKEY",
-            "valueFrom" : "${aws_ssm_parameter.encryption_secretkey}"
+            "valueFrom" : "${aws_ssm_parameter.encryption_secretkey.name}"
           },
           {
             "name" : "ENCRYPTION_TRANSFORMATION",
-            "valueFrom" : "${aws_ssm_parameter.encryption_transformation}"
+            "valueFrom" : "${aws_ssm_parameter.encryption_transformation.name}"
           },
           {
             "name" : "ENCRYPTION_KEY_SIZE",
-            "valueFrom" : "${aws_ssm_parameter.encryption_keysize}"
+            "valueFrom" : "${aws_ssm_parameter.encryption_keysize.name}"
           },
           {
             "name" : "ENCRYPTION_IV",
-            "valueFrom" : "${aws_ssm_parameter.encryption_iv}"
+            "valueFrom" : "${aws_ssm_parameter.encryption_iv.name}"
           },
           {
             "name" : "EMAIL_ACCESS_KEY",
-            "valueFrom" : "${aws_ssm_parameter.email_access_key}"
+            "valueFrom" : "${aws_ssm_parameter.email_access_key.name}"
           },
           {
             "name" : "EMAIL_SECRET_KEY",
-            "valueFrom" : "${aws_ssm_parameter.email_secret_key}"
+            "valueFrom" : "${aws_ssm_parameter.email_secret_key.name}"
           },
           {
             "name" : "EMAIL_REGION",
-            "valueFrom" : "${aws_ssm_parameter.email_region}"
+            "valueFrom" : "${aws_ssm_parameter.email_region.name}"
           }
         ],
         "logConfiguration" : {

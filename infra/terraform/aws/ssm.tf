@@ -20,7 +20,7 @@ resource "aws_ssm_parameter" "webhook_discord" {
   name        = "/webhook/discord"
   description = "Webhook discord"
   type        = "SecureString"
-    value       = var.webhook_discord
+  value       = var.webhook_discord
 }
 
 ## DISCORD_THREAD_POOL_CORE_POOL_SIZE
@@ -180,7 +180,7 @@ resource "aws_ssm_parameter" "email_password" {
   name        = "/email/password"
   description = "Email password"
   type        = "SecureString"
-    value       = var.email_password
+  value       = var.email_password
 }
 
 ## STORAGE_URL
@@ -278,4 +278,28 @@ resource "aws_ssm_parameter" "encryption_iv" {
   description = "Encryption IV"
   type        = "SecureString"
   value       = var.encryption_iv
+}
+
+## EMAIL_ACCESS_KEY
+resource "aws_ssm_parameter" "email_access_key" {
+  name        = "/email/access-key"
+  description = "Email access key"
+  type        = "SecureString"
+  value       = var.access_key
+}
+
+## EMAIL_SECRET_KEY
+resource "aws_ssm_parameter" "email_secret_key" {
+  name        = "/email/secret-key"
+  description = "Email secret key"
+  type        = "SecureString"
+  value       = var.secret_key
+}
+
+## EMAIL_REGION
+resource "aws_ssm_parameter" "email_region" {
+  name        = "/email/region"
+  description = "Email region"
+  type        = "SecureString"
+  value       = var.region
 }

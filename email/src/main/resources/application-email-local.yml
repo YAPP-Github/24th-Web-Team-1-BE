@@ -14,3 +14,9 @@ spring:
               enable: true
           EnableSSL:
                 enable: true
+
+    provider:
+        aws:
+            access-key: thisisaccesskey
+            secret-key: thisissecretkey
+            region: ap-northeast-2

@@ -2,6 +2,7 @@ package com.few.email.sender.provider
 
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService
 import com.amazonaws.services.simpleemail.model.*
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
@@ -9,10 +10,13 @@ import org.springframework.stereotype.Component
 @Component
 class AwsSESEmailSendProvider(
     private val amazonSimpleEmailService: AmazonSimpleEmailService,
+    private val javaEmailSendProvider: JavaEmailSendProvider,
 ) : EmailSendProvider {
+    private val log = KotlinLogging.logger {}
     companion object {
         private const val UTF_8 = "utf-8"
     }
+
     override fun sendEmail(form: String, to: String, subject: String, message: String) {
         val destination = Destination().withToAddresses(to)
         val sendMessage = Message()
@@ -25,6 +29,23 @@ class AwsSESEmailSendProvider(
             .withMessage(sendMessage)
             .withConfigurationSetName("few-configuration-set")
 
-        amazonSimpleEmailService.sendEmail(sendEmailRequest)
+        runCatching {
+            amazonSimpleEmailService.sendEmail(sendEmailRequest)
+        }.onFailure {
+            log.warn {
+                "Failed to send email using AWS SES. Falling back to JavaMailSender. Error: $it"
+            }
+            runCatching {
+                log.info {
+                    "Sending email using JavaMailSender."
+                }
+                javaEmailSendProvider.sendEmail(form, to, subject, message)
+            }.onFailure {
+                log.error {
+                    "Failed to send email using JavaMailSender."
+                }
+                throw it
+            }
+        }
     }
 }

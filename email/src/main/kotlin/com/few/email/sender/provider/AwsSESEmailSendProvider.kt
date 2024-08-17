@@ -3,9 +3,11 @@ package com.few.email.sender.provider
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService
 import com.amazonaws.services.simpleemail.model.*
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
+@Primary
 @Profile("prd")
 @Component
 class AwsSESEmailSendProvider(

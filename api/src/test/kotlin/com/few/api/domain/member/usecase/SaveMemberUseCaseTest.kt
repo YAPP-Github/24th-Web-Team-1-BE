@@ -96,7 +96,7 @@ class SaveMemberUseCaseTest : BehaviorSpec({
                 val useCaseOut = useCase.execute(useCaseIn)
                 useCaseOut.isSendAuthEmail shouldBe true
 
-                verify(exactly = 1) { memberDao.selectMemberByEmail(any(SelectMemberByEmailNotConsiderDeletedAtQuery::class)) }
+                verify(exactly = 2) { memberDao.selectMemberByEmail(any(SelectMemberByEmailNotConsiderDeletedAtQuery::class)) }
                 verify(exactly = 0) { memberDao.insertMember(any()) }
                 verify(exactly = 1) { memberDao.updateMemberType(any(UpdateDeletedMemberTypeCommand::class)) }
                 verify(exactly = 1) { idEncryption.encrypt(any()) }

@@ -85,12 +85,13 @@ class ArticleDao(
         MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.DAY_COL.`as`(SelectWorkBookArticleRecord::day.name)
     )
         .from(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE)
-        .leftJoin(ArticleMst.ARTICLE_MST)
+        .join(ArticleMst.ARTICLE_MST)
         .on(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.ARTICLE_ID.eq(ArticleMst.ARTICLE_MST.ID))
         .join(ArticleIfo.ARTICLE_IFO)
         .on(ArticleMst.ARTICLE_MST.ID.eq(ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID))
         .where(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.eq(query.workbookId))
         .and(ArticleMst.ARTICLE_MST.DELETED_AT.isNull)
+        .orderBy(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.DAY_COL)
         .query
 
     fun insertFullArticleRecord(command: InsertFullArticleRecordCommand): Long {

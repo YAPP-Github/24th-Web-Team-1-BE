@@ -1,6 +1,11 @@
 package com.few.email.config
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider
+import com.amazonaws.auth.BasicAWSCredentials
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailService
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder
 import com.few.email.config.MailConfig.Companion.BEAN_NAME_PREFIX
+import com.few.email.config.porperty.AwsEmailProviderProperties
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.mail.MailProperties
 import org.springframework.context.annotation.Bean
@@ -15,6 +20,8 @@ class MailSenderConfig {
     companion object {
         const val MAIL_PROPERTIES = BEAN_NAME_PREFIX + "MailProperties"
         const val MAIL_SENDER = BEAN_NAME_PREFIX + "JavaMailSender"
+        const val AWS_EMAIL_PROVIDER_PROPERTIES = BEAN_NAME_PREFIX + "AwsEmailProviderProperties"
+        const val AWS_EMAIL_SENDER = BEAN_NAME_PREFIX + "AwsEmailProvider"
 
         const val MAIL_SMTP_AUTH_KEY = "mail.smtp.auth"
         const val MAIL_SMTP_DEBUG_KEY = "mail.smtp.debug"
@@ -64,6 +71,11 @@ class MailSenderConfig {
         return mailProperties
     }
 
+    @Bean(name = [AWS_EMAIL_PROVIDER_PROPERTIES])
+    fun awsProviderProperties(): AwsEmailProviderProperties {
+        return AwsEmailProviderProperties()
+    }
+
     @Bean(name = [MAIL_SENDER])
     fun javaMailSender(): JavaMailSender {
         val javaMailSender = JavaMailSenderImpl()
@@ -84,5 +96,19 @@ class MailSenderConfig {
 
         javaMailSender.setJavaMailProperties(props)
         return javaMailSender
+    }
+
+    @Bean(name = [AWS_EMAIL_SENDER])
+    fun awsEmailSender(): AmazonSimpleEmailService {
+        val properties = awsProviderProperties()
+        val basicAWSCredentials = BasicAWSCredentials(properties.accessKey, properties.secretKey)
+        val awsStaticCredentialsProvider = AWSStaticCredentialsProvider(
+            basicAWSCredentials
+        )
+
+        return AmazonSimpleEmailServiceClientBuilder.standard()
+            .withCredentials(awsStaticCredentialsProvider)
+            .withRegion(properties.region)
+            .build()
     }
 }

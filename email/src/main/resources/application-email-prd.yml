@@ -14,3 +14,9 @@ spring:
               enable: true
           EnableSSL:
                 enable: true
+
+    provider:
+     aws:
+      access-key: ${EMAIL_ACCESS_KEY}
+      secret-key: ${EMAIL_SECRET_KEY}
+      region: ${EMAIL_REGION}

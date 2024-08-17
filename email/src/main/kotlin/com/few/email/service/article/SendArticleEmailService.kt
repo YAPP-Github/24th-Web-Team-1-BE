@@ -1,9 +1,9 @@
 package com.few.email.service.article
 
-import com.few.email.sender.SendEmailSender
+import com.few.email.sender.EmailSender
+import com.few.email.sender.provider.EmailSendProvider
 import com.few.email.service.article.dto.SendArticleEmailArgs
 import org.springframework.boot.autoconfigure.mail.MailProperties
-import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.stereotype.Component
 import org.thymeleaf.TemplateEngine
 import org.thymeleaf.context.Context
@@ -13,9 +13,9 @@ import java.util.*
 @Component
 class SendArticleEmailService(
     mailProperties: MailProperties,
-    emailSender: JavaMailSender,
+    emailSendProvider: EmailSendProvider,
     private val templateEngine: TemplateEngine,
-) : SendEmailSender<SendArticleEmailArgs>(mailProperties, emailSender) {
+) : EmailSender<SendArticleEmailArgs>(mailProperties, emailSendProvider) {
 
     override fun getHtml(args: SendArticleEmailArgs): String {
         val context = Context()

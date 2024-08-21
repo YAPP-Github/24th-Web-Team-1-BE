@@ -73,7 +73,7 @@ jobs:
                   ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
               run: |
                   GIT_HASH=$(git rev-parse --short HEAD)
-                  ./gradlew buildEcsDockerImage -PimageName=${ECR_REGISTRY}/${ECR_REPOSITORY}:latest
+                  ./gradlew buildPinpointEcsDockerImage -PimageName=${ECR_REGISTRY}/${ECR_REPOSITORY}:latest -PpinpointAgentId=fewletter-api-dev -PpinpointApplicationName=fewletter-api-dev
                   docker tag ${ECR_REGISTRY}/${ECR_REPOSITORY}:latest ${ECR_REGISTRY}/${ECR_REPOSITORY}:${GIT_HASH}
                   docker push ${ECR_REGISTRY}/${ECR_REPOSITORY} --all-tags
             - name: Get ECR Repository image path

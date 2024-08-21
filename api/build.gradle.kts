@@ -213,23 +213,7 @@ tasks.register("buildEcsDockerImage") {
     }
 }
 
-val pinpointAgentId = project.hasProperty("pinpointAgentId").let {
-    if (it) {
-        project.property("pinpointAgentId") as String
-    } else {
-        "fewletter-api"
-    }
-}
-
-val pinpointApplicationName = project.hasProperty("pinpointApplicationName").let {
-    if (it) {
-        project.property("pinpointApplicationName") as String
-    } else {
-        "fewletter-api"
-    }
-}
-
-tasks.register("buildPinpointEcsDockerImage") {
+tasks.register("buildPinpointEcsDockerImageDev") {
     dependsOn("bootJar")
 
     doLast {
@@ -243,9 +227,7 @@ tasks.register("buildPinpointEcsDockerImage") {
                 "--build-arg",
                 "RELEASE_VERSION=$releaseVersion",
                 "--build-arg",
-                "PINPOINT_AGENT_ID=$pinpointAgentId",
-                "--build-arg",
-                "PINPOINT_AGENT_APPLICATION_NAME=$pinpointApplicationName",
+                "PINPOINT_AGENT_APPLICATION_NAME=fewletter-api-dev",
                 "-f",
                 "Dockerfile.pinpoint",
                 '.'

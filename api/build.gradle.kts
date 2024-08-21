@@ -226,10 +226,29 @@ tasks.register("buildPinpointEcsDockerImageDev") {
                 imageName,
                 "--build-arg",
                 "RELEASE_VERSION=$releaseVersion",
-                "--build-arg",
-                "PINPOINT_AGENT_APPLICATION_NAME=fewletter-api-dev",
                 "-f",
-                "Dockerfile.pinpoint",
+                "Dockerfile.dev.pinpoint",
+                '.'
+            )
+        }
+    }
+}
+
+tasks.register("buildPinpointEcsDockerImagePrd") {
+    dependsOn("bootJar")
+
+    doLast {
+        exec {
+            workingDir(".")
+            commandLine(
+                "docker",
+                "build",
+                "-t",
+                imageName,
+                "--build-arg",
+                "RELEASE_VERSION=$releaseVersion",
+                "-f",
+                "Dockerfile.prd.pinpoint",
                 '.'
             )
         }

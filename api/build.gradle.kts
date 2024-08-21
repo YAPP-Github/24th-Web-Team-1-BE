@@ -212,3 +212,45 @@ tasks.register("buildEcsDockerImage") {
         }
     }
 }
+
+tasks.register("buildPinpointEcsDockerImageDev") {
+    dependsOn("bootJar")
+
+    doLast {
+        exec {
+            workingDir(".")
+            commandLine(
+                "docker",
+                "build",
+                "-t",
+                imageName,
+                "--build-arg",
+                "RELEASE_VERSION=$releaseVersion",
+                "-f",
+                "Dockerfile.dev.pinpoint",
+                '.'
+            )
+        }
+    }
+}
+
+tasks.register("buildPinpointEcsDockerImagePrd") {
+    dependsOn("bootJar")
+
+    doLast {
+        exec {
+            workingDir(".")
+            commandLine(
+                "docker",
+                "build",
+                "-t",
+                imageName,
+                "--build-arg",
+                "RELEASE_VERSION=$releaseVersion",
+                "-f",
+                "Dockerfile.prd.pinpoint",
+                '.'
+            )
+        }
+    }
+}

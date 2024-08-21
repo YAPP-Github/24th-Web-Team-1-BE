@@ -212,3 +212,44 @@ tasks.register("buildEcsDockerImage") {
         }
     }
 }
+
+val pinpointAgentId = project.hasProperty("pinpointAgentId").let {
+    if (it) {
+        project.property("pinpointAgentId") as String
+    } else {
+        "fewletter-api"
+    }
+}
+
+val pinpointApplicationName = project.hasProperty("pinpointApplicationName").let {
+    if (it) {
+        project.property("pinpointApplicationName") as String
+    } else {
+        "fewletter-api"
+    }
+}
+
+tasks.register("buildPinpointEcsDockerImage") {
+    dependsOn("bootJar")
+
+    doLast {
+        exec {
+            workingDir(".")
+            commandLine(
+                "docker",
+                "build",
+                "-t",
+                imageName,
+                "--build-arg",
+                "RELEASE_VERSION=$releaseVersion",
+                "--build-arg",
+                "PINPOINT_AGENT_ID=$pinpointAgentId",
+                "--build-arg",
+                "PINPOINT_AGENT_APPLICATION_NAME=$pinpointApplicationName",
+                "-f",
+                "Dockerfile.pinpoint",
+                '.'
+            )
+        }
+    }
+}

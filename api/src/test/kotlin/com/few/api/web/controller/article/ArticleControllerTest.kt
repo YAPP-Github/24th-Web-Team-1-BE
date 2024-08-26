@@ -169,7 +169,7 @@ class ArticleControllerTest : ControllerTestSpec() {
             }.toList(),
             true
         )
-        `when`(readArticlesUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
+        `when`(browseArticlesUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
 
         // when
         mockMvc.perform(

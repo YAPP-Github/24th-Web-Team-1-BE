@@ -1,7 +1,7 @@
 package com.few.api.web.controller.article
 
 import com.few.api.domain.article.usecase.ReadArticleUseCase
-import com.few.api.domain.article.usecase.ReadArticlesUseCase
+import com.few.api.domain.article.usecase.BrowseArticlesUseCase
 import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseIn
 import com.few.api.domain.article.usecase.dto.ReadArticlesUseCaseIn
 import com.few.api.security.filter.token.AccessTokenResolver
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping(value = ["/api/v1/articles"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class ArticleController(
     private val readArticleUseCase: ReadArticleUseCase,
-    private val readArticlesUseCase: ReadArticlesUseCase,
+    private val browseArticlesUseCase: BrowseArticlesUseCase,
     private val tokenResolver: TokenResolver,
 ) {
 
@@ -81,7 +81,7 @@ class ArticleController(
             defaultValue = "-1"
         ) categoryCd: Byte,
     ): ApiResponse<ApiResponse.SuccessBody<ReadArticlesResponse>> {
-        val useCaseOut = readArticlesUseCase.execute(ReadArticlesUseCaseIn(prevArticleId, categoryCd))
+        val useCaseOut = browseArticlesUseCase.execute(ReadArticlesUseCaseIn(prevArticleId, categoryCd))
 
         val articles: List<ReadArticleResponse> = useCaseOut.articles.map { a ->
             ReadArticleResponse(

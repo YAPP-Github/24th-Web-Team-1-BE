@@ -5,10 +5,7 @@ import com.few.api.repo.dao.member.command.DeleteMemberCommand
 import com.few.api.repo.dao.member.command.InsertMemberCommand
 import com.few.api.repo.dao.member.command.UpdateDeletedMemberTypeCommand
 import com.few.api.repo.dao.member.command.UpdateMemberTypeCommand
-import com.few.api.repo.dao.member.query.BrowseWorkbookWritersQuery
-import com.few.api.repo.dao.member.query.SelectMemberByEmailNotConsiderDeletedAtQuery
-import com.few.api.repo.dao.member.query.SelectMemberByEmailQuery
-import com.few.api.repo.dao.member.query.SelectWriterQuery
+import com.few.api.repo.dao.member.query.*
 import com.few.api.repo.dao.member.support.WriterDescription
 import com.few.api.repo.dao.member.support.WriterDescriptionJsonMapper
 import com.few.api.repo.explain.InsertUpdateExplainGenerator
@@ -140,6 +137,17 @@ class MemberDaoExplainGenerateTest : JooqTestSpec() {
         val explain = InsertUpdateExplainGenerator.execute(dslContext, command.sql, command.bindValues)
 
         ResultGenerator.execute(command, explain, "insertMemberCommandExplain")
+    }
+
+    @Test
+    fun selectMemberEmailQueryExplain() {
+        val query = SelectMemberEmailQuery(1).let {
+            memberDao.selectMemberEmailQuery(it)
+        }
+
+        val explain = ExplainGenerator.execute(dslContext, query)
+
+        ResultGenerator.execute(query, explain, "selectMemberEmailQueryExplain")
     }
 
     @Test

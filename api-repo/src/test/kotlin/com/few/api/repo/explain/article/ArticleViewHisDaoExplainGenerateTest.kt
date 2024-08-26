@@ -3,6 +3,7 @@ package com.few.api.repo.explain.article
 import com.few.api.repo.dao.article.ArticleViewHisDao
 import com.few.api.repo.dao.article.command.ArticleViewHisCommand
 import com.few.api.repo.dao.article.query.ArticleViewHisCountQuery
+import com.few.api.repo.explain.ExplainGenerator
 import com.few.api.repo.explain.InsertUpdateExplainGenerator
 import com.few.api.repo.explain.ResultGenerator
 import com.few.api.repo.jooq.JooqTestSpec
@@ -42,7 +43,7 @@ class ArticleViewHisDaoExplainGenerateTest : JooqTestSpec() {
             articleViewHisDao.countArticleViewsQuery(it)
         }
 
-        val explain = dslContext.explain(query).toString()
+        val explain = ExplainGenerator.execute(dslContext, query)
         ResultGenerator.execute(query, explain, "selectArticleViewCountQueryExplain")
     }
 

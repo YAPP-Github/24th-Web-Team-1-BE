@@ -58,12 +58,6 @@ class ReadWorkBookArticleUseCase(
             )
         )
 
-        /**
-         * NOTE: The articleViewHisAsyncHandler creates a new transaction that is separate from the current context.
-         * So this section, the logic after the articleViewHisAsyncHandler call,
-         * is where the mismatch between the two transactions can occur if an exception is thrown.
-         */
-
         return ReadWorkBookArticleOut(
             id = articleRecord.articleId,
             writer = WriterDetail(

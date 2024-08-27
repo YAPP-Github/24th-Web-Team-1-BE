@@ -1,7 +1,7 @@
 package com.few.api.domain.article.usecase
 
+import com.few.api.domain.article.event.dto.ReadArticleEvent
 import com.few.api.domain.article.handler.ArticleViewCountHandler
-import com.few.api.domain.article.handler.ArticleViewHisAsyncHandler
 import com.few.api.domain.article.service.BrowseArticleProblemsService
 import com.few.api.domain.article.service.ReadArticleWriterRecordService
 import com.few.api.domain.article.service.dto.BrowseArticleProblemsOutDto
@@ -15,6 +15,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.*
+import org.springframework.context.ApplicationEventPublisher
 
 import java.net.URL
 import java.time.LocalDateTime
@@ -26,21 +27,22 @@ class ReadArticleUseCaseTest : BehaviorSpec({
     lateinit var readArticleWriterRecordService: ReadArticleWriterRecordService
     lateinit var browseArticleProblemsService: BrowseArticleProblemsService
     lateinit var useCase: ReadArticleUseCase
-    lateinit var articleViewHisAsyncHandler: ArticleViewHisAsyncHandler
     lateinit var articleViewCountHandler: ArticleViewCountHandler
+    lateinit var applicationEventPublisher: ApplicationEventPublisher
 
     beforeContainer {
         articleDao = mockk<ArticleDao>()
         readArticleWriterRecordService = mockk<ReadArticleWriterRecordService>()
         browseArticleProblemsService = mockk<BrowseArticleProblemsService>()
-        articleViewHisAsyncHandler = mockk<ArticleViewHisAsyncHandler>()
         articleViewCountHandler = mockk<ArticleViewCountHandler>()
+        applicationEventPublisher = mockk<ApplicationEventPublisher>()
+
         useCase = ReadArticleUseCase(
             articleDao,
             readArticleWriterRecordService,
             browseArticleProblemsService,
-            articleViewHisAsyncHandler,
-            articleViewCountHandler
+            articleViewCountHandler,
+            applicationEventPublisher
         )
     }
 
@@ -80,9 +82,7 @@ class ReadArticleUseCaseTest : BehaviorSpec({
             val views = 1L
             every { articleViewCountHandler.browseArticleViewCount(any()) } returns views
 
-            every { articleViewHisAsyncHandler.addArticleViewHis(any(), any(), any()) } answers {
-                log.debug { "Inserting article view history asynchronously" }
-            }
+            every { applicationEventPublisher.publishEvent(any(ReadArticleEvent::class)) } just Runs
 
             then("아티클과 연관된 정보를 조회한다") {
                 val useCaseOut = useCase.execute(useCaseIn)
@@ -103,7 +103,7 @@ class ReadArticleUseCaseTest : BehaviorSpec({
                 verify(exactly = 1) { readArticleWriterRecordService.execute(any()) }
                 verify(exactly = 1) { browseArticleProblemsService.execute(any()) }
                 verify(exactly = 1) { articleViewCountHandler.browseArticleViewCount(any()) }
-                verify(exactly = 1) { articleViewHisAsyncHandler.addArticleViewHis(any(), any(), any()) }
+                verify(exactly = 1) { applicationEventPublisher.publishEvent(any(ReadArticleEvent::class)) }
             }
         }
 
@@ -117,7 +117,7 @@ class ReadArticleUseCaseTest : BehaviorSpec({
                 verify(exactly = 0) { readArticleWriterRecordService.execute(any()) }
                 verify(exactly = 0) { browseArticleProblemsService.execute(any()) }
                 verify(exactly = 0) { articleViewCountHandler.browseArticleViewCount(any()) }
-                verify(exactly = 0) { articleViewHisAsyncHandler.addArticleViewHis(any(), any(), any()) }
+                verify(exactly = 0) { applicationEventPublisher.publishEvent(any(ReadArticleEvent::class)) }
             }
         }
 
@@ -146,7 +146,7 @@ class ReadArticleUseCaseTest : BehaviorSpec({
                 verify(exactly = 1) { readArticleWriterRecordService.execute(any()) }
                 verify(exactly = 0) { browseArticleProblemsService.execute(any()) }
                 verify(exactly = 0) { articleViewCountHandler.browseArticleViewCount(any()) }
-                verify(exactly = 0) { articleViewHisAsyncHandler.addArticleViewHis(any(), any(), any()) }
+                verify(exactly = 0) { applicationEventPublisher.publishEvent(any(ReadArticleEvent::class)) }
             }
         }
     }

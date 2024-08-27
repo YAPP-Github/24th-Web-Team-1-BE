@@ -1,14 +1,10 @@
 package com.few.api.domain.subscription.usecase.model
 
 class CancelledWorkbookSubscriptionHistory(
-    workbookSubscriptionStatus: WorkbookSubscriptionStatus,
+    workbookSubscriptionHistory: WorkbookSubscriptionHistory,
 ) : WorkbookSubscriptionHistory(
-    false,
-    workbookSubscriptionStatus
+    workbookSubscriptionHistory
 ) {
-    constructor(workbookSubscriptionHistory: WorkbookSubscriptionHistory) : this(
-        workbookSubscriptionHistory.workbookSubscriptionStatus!!
-    )
 
     init {
         require(isCancelSub) {

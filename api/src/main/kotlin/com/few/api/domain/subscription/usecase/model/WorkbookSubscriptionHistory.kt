@@ -2,8 +2,13 @@ package com.few.api.domain.subscription.usecase.model
 
 open class WorkbookSubscriptionHistory(
     val isNew: Boolean,
-    internal val workbookSubscriptionStatus: WorkbookSubscriptionStatus? = null,
+    protected val workbookSubscriptionStatus: WorkbookSubscriptionStatus? = null,
 ) {
+
+    constructor(workbookSubscriptionHistory: WorkbookSubscriptionHistory) : this(
+        workbookSubscriptionHistory.isNew,
+        workbookSubscriptionHistory.workbookSubscriptionStatus
+    )
 
     init {
         if (isNew) {

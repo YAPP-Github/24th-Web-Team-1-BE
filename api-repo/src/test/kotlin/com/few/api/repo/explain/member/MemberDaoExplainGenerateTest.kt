@@ -5,22 +5,21 @@ import com.few.api.repo.dao.member.command.DeleteMemberCommand
 import com.few.api.repo.dao.member.command.InsertMemberCommand
 import com.few.api.repo.dao.member.command.UpdateDeletedMemberTypeCommand
 import com.few.api.repo.dao.member.command.UpdateMemberTypeCommand
-import com.few.api.repo.dao.member.query.*
-import com.few.api.repo.dao.member.support.WriterDescription
+import com.few.api.repo.dao.member.query.BrowseWorkbookWritersQuery
+import com.few.api.repo.dao.member.query.SelectMemberByEmailNotConsiderDeletedAtQuery
+import com.few.api.repo.dao.member.query.SelectMemberByEmailQuery
+import com.few.api.repo.dao.member.query.SelectWriterQuery
 import com.few.api.repo.dao.member.support.WriterDescriptionJsonMapper
+import com.few.api.repo.explain.ExplainGenerator
 import com.few.api.repo.explain.InsertUpdateExplainGenerator
 import com.few.api.repo.explain.ResultGenerator
 import com.few.api.repo.jooq.JooqTestSpec
 import com.few.data.common.code.MemberType
 import io.github.oshai.kotlinlogging.KotlinLogging
-import jooq.jooq_dsl.tables.Member
 import org.jooq.DSLContext
-import org.jooq.JSON
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import java.net.URL
 
 @Tag("explain")
 class MemberDaoExplainGenerateTest : JooqTestSpec() {
@@ -36,47 +35,13 @@ class MemberDaoExplainGenerateTest : JooqTestSpec() {
     @Autowired
     private lateinit var writerDescriptionJsonMapper: WriterDescriptionJsonMapper
 
-    @BeforeEach
-    fun setUp() {
-        log.debug { "===== start setUp =====" }
-        dslContext.deleteFrom(Member.MEMBER).execute()
-        dslContext.insertInto(Member.MEMBER)
-            .set(Member.MEMBER.ID, 1)
-            .set(Member.MEMBER.EMAIL, "member@gmail.com")
-            .set(Member.MEMBER.TYPE_CD, MemberType.NORMAL.code)
-            .execute()
-
-        val writerDescription = writerDescriptionJsonMapper.toJson(
-            WriterDescription(
-                "few2",
-                URL("http://localhost:8080/writers/url2"),
-                URL("https://github.com/user-attachments/assets/28df9078-488c-49d6-9375-54ce5a250742")
-            )
-        )
-
-        dslContext.insertInto(Member.MEMBER)
-            .set(Member.MEMBER.ID, 2)
-            .set(Member.MEMBER.EMAIL, "writer2@gmail.com")
-            .set(Member.MEMBER.TYPE_CD, MemberType.WRITER.code)
-            .set(Member.MEMBER.DESCRIPTION, JSON.valueOf(writerDescription))
-            .execute()
-
-        dslContext.insertInto(Member.MEMBER)
-            .set(Member.MEMBER.ID, 3)
-            .set(Member.MEMBER.EMAIL, "writer3@gmail.com")
-            .set(Member.MEMBER.TYPE_CD, MemberType.WRITER.code)
-            .set(Member.MEMBER.DESCRIPTION, JSON.valueOf(writerDescription))
-            .execute()
-        log.debug { "===== finish setUp =====" }
-    }
-
     @Test
     fun selectWriterQueryExplain() {
         val query = SelectWriterQuery(1).let {
             memberDao.selectWriterQuery(it)
         }
 
-        val explain = dslContext.explain(query).toString()
+        val explain = ExplainGenerator.execute(dslContext, query)
 
         ResultGenerator.execute(query, explain, "selectWriterQueryExplain")
     }
@@ -87,7 +52,7 @@ class MemberDaoExplainGenerateTest : JooqTestSpec() {
             memberDao.selectWritersQuery(it)
         }
 
-        val explain = dslContext.explain(query).toString()
+        val explain = ExplainGenerator.execute(dslContext, query)
 
         ResultGenerator.execute(query, explain, "selectWritersQueryExplain")
     }
@@ -98,7 +63,7 @@ class MemberDaoExplainGenerateTest : JooqTestSpec() {
             memberDao.selectWritersQuery(it)
         }
 
-        val explain = dslContext.explain(query).toString()
+        val explain = ExplainGenerator.execute(dslContext, query)
 
         ResultGenerator.execute(query, explain, "selectWritersQueryExplainByWorkbookIds")
     }
@@ -109,7 +74,7 @@ class MemberDaoExplainGenerateTest : JooqTestSpec() {
             memberDao.selectMemberByEmailQuery(it)
         }
 
-        val explain = dslContext.explain(query).toString()
+        val explain = ExplainGenerator.execute(dslContext, query)
 
         ResultGenerator.execute(query, explain, "selectMemberByEmailQueryExplainExplain")
     }
@@ -120,7 +85,7 @@ class MemberDaoExplainGenerateTest : JooqTestSpec() {
             memberDao.selectMemberByEmailQuery(it)
         }
 
-        val explain = dslContext.explain(query).toString()
+        val explain = ExplainGenerator.execute(dslContext, query)
 
         ResultGenerator.execute(query, explain, "selectMemberByEmailNotConsiderDeletedAtQueryExplain")
     }
@@ -156,7 +121,7 @@ class MemberDaoExplainGenerateTest : JooqTestSpec() {
             memberDao.selectMemberIdAndTypeQuery(it)
         }
 
-        val explain = dslContext.explain(query).toString()
+        val explain = ExplainGenerator.execute(dslContext, query)
 
         ResultGenerator.execute(query, explain, "selectMemberIdAndTypeQueryExplain")
     }

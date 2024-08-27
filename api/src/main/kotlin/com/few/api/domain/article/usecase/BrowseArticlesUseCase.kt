@@ -17,7 +17,7 @@ import java.util.*
 import kotlin.Comparator
 
 @Component
-class ReadArticlesUseCase(
+class BrowseArticlesUseCase(
     private val articleViewCountDao: ArticleViewCountDao,
     private val articleMainCardDao: ArticleMainCardDao,
     private val articleDao: ArticleDao,

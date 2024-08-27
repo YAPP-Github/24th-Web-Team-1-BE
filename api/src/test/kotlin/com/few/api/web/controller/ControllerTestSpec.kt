@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.few.api.ApiMain
 import com.few.api.domain.admin.document.usecase.*
 import com.few.api.domain.article.usecase.ReadArticleUseCase
-import com.few.api.domain.article.usecase.ReadArticlesUseCase
+import com.few.api.domain.article.usecase.BrowseArticlesUseCase
 import com.few.api.domain.log.AddApiLogUseCase
 import com.few.api.domain.member.usecase.SaveMemberUseCase
 import com.few.api.domain.member.usecase.TokenUseCase
@@ -73,7 +73,7 @@ abstract class ControllerTestSpec {
     lateinit var readArticleUseCase: ReadArticleUseCase
 
     @MockBean
-    lateinit var readArticlesUseCase: ReadArticlesUseCase
+    lateinit var browseArticlesUseCase: BrowseArticlesUseCase
 
     /** MemberControllerTest */
     @MockBean

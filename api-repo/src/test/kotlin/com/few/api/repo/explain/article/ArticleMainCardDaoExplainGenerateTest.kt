@@ -4,6 +4,8 @@ import com.few.api.repo.dao.article.ArticleMainCardDao
 import com.few.api.repo.dao.article.command.ArticleMainCardExcludeWorkbookCommand
 import com.few.api.repo.dao.article.command.UpdateArticleMainCardWorkbookCommand
 import com.few.api.repo.dao.article.command.WorkbookCommand
+import com.few.api.repo.explain.ExplainGenerator
+import com.few.api.repo.explain.InsertUpdateExplainGenerator
 import com.few.api.repo.explain.ResultGenerator
 import com.few.api.repo.jooq.JooqTestSpec
 import com.few.data.common.code.CategoryType
@@ -59,7 +61,7 @@ class ArticleMainCardDaoExplainGenerateTest : JooqTestSpec() {
     fun selectArticleMainCardsRecordQueryExplain() {
         val query = articleMainCardDao.selectArticleMainCardsRecordQuery(setOf(1L))
 
-        val explain = dslContext.explain(query).toString()
+        val explain = ExplainGenerator.execute(dslContext, query)
         ResultGenerator.execute(query, explain, "selectArticleMainCardsRecordQueryExplain")
     }
 
@@ -80,7 +82,7 @@ class ArticleMainCardDaoExplainGenerateTest : JooqTestSpec() {
             articleMainCardDao.insertArticleMainCardCommand(it)
         }
 
-        val explain = command.toString()
+        val explain = InsertUpdateExplainGenerator.execute(dslContext, command.sql, command.bindValues)
 
         ResultGenerator.execute(command, explain, "insertArticleMainCardCommandExplain")
     }
@@ -103,7 +105,7 @@ class ArticleMainCardDaoExplainGenerateTest : JooqTestSpec() {
             articleMainCardDao.updateArticleMainCardSetWorkbookCommand(it)
         }
 
-        val explain = command.toString()
+        val explain = InsertUpdateExplainGenerator.execute(dslContext, command.sql, command.bindValues)
 
         ResultGenerator.execute(command, explain, "updateArticleMainCardSetWorkbookCommandExplain")
     }

@@ -5,6 +5,7 @@ import com.few.api.repo.dao.article.command.ArticleViewCountCommand
 import com.few.api.repo.dao.article.query.ArticleViewCountQuery
 import com.few.api.repo.dao.article.query.SelectArticlesOrderByViewsQuery
 import com.few.api.repo.dao.article.query.SelectRankByViewsQuery
+import com.few.api.repo.explain.ExplainGenerator
 import com.few.api.repo.explain.InsertUpdateExplainGenerator
 import com.few.api.repo.explain.ResultGenerator
 import com.few.api.repo.jooq.JooqTestSpec
@@ -46,7 +47,7 @@ class ArticleViewCountDaoExplainGenerateTest : JooqTestSpec() {
             articleViewCountDao.selectArticleViewCountQuery(it)
         }
 
-        val explain = dslContext.explain(query).toString()
+        val explain = ExplainGenerator.execute(dslContext, query)
         ResultGenerator.execute(query, explain, "selectArticleViewCountQueryExplain")
     }
 
@@ -84,7 +85,7 @@ class ArticleViewCountDaoExplainGenerateTest : JooqTestSpec() {
             articleViewCountDao.selectRankByViewsQuery(it)
         }
 
-        val explain = dslContext.explain(query).toString()
+        val explain = ExplainGenerator.execute(dslContext, query)
         ResultGenerator.execute(query, explain, "selectRankByViewsQueryExplain")
     }
 
@@ -97,7 +98,7 @@ class ArticleViewCountDaoExplainGenerateTest : JooqTestSpec() {
             articleViewCountDao.selectArticlesOrderByViewsQuery(it)
         }
 
-        val explain = dslContext.explain(query).toString()
+        val explain = ExplainGenerator.execute(dslContext, query)
         ResultGenerator.execute(query, explain, "selectArticlesOrderByViewsQueryExplain")
     }
 }

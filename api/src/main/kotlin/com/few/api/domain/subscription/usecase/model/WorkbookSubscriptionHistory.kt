@@ -5,11 +5,6 @@ open class WorkbookSubscriptionHistory(
     protected val workbookSubscriptionStatus: WorkbookSubscriptionStatus? = null,
 ) {
 
-    constructor(workbookSubscriptionHistory: WorkbookSubscriptionHistory) : this(
-        workbookSubscriptionHistory.isNew,
-        workbookSubscriptionHistory.workbookSubscriptionStatus
-    )
-
     init {
         if (isNew) {
             require(workbookSubscriptionStatus == null) {
@@ -21,6 +16,11 @@ open class WorkbookSubscriptionHistory(
             }
         }
     }
+
+    constructor(workbookSubscriptionHistory: WorkbookSubscriptionHistory) : this(
+        workbookSubscriptionHistory.isNew,
+        workbookSubscriptionHistory.workbookSubscriptionStatus
+    )
 
     /**
      * 이전 구독 히스토리가 존재하고, 현재 구독이 취소된 경우

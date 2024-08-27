@@ -6,6 +6,7 @@ import com.few.api.repo.dao.article.query.SelectArticleIdByWorkbookIdAndDayQuery
 import com.few.api.repo.dao.article.query.SelectArticleRecordQuery
 import com.few.api.repo.dao.article.query.SelectWorkBookArticleRecordQuery
 import com.few.api.repo.dao.article.query.SelectWorkbookMappedArticleRecordsQuery
+import com.few.api.repo.explain.ExplainGenerator
 import com.few.api.repo.explain.InsertUpdateExplainGenerator
 import com.few.api.repo.explain.ResultGenerator
 import com.few.api.repo.jooq.JooqTestSpec
@@ -63,7 +64,7 @@ class ArticleDaoExplainGenerateTest : JooqTestSpec() {
             articleDao.selectArticleRecordQuery(it)
         }
 
-        val explain = dslContext.explain(query).toString()
+        val explain = ExplainGenerator.execute(dslContext, query)
 
         ResultGenerator.execute(query, explain, "selectArticleRecordQueryExplain")
     }
@@ -74,7 +75,7 @@ class ArticleDaoExplainGenerateTest : JooqTestSpec() {
             articleDao.selectWorkBookArticleRecordQuery(it)
         }
 
-        val explain = dslContext.explain(query).toString()
+        val explain = ExplainGenerator.execute(dslContext, query)
 
         ResultGenerator.execute(query, explain, "selectWorkBookArticleRecordQueryExplain")
     }
@@ -85,7 +86,7 @@ class ArticleDaoExplainGenerateTest : JooqTestSpec() {
             articleDao.selectWorkbookMappedArticleRecordsQuery(it)
         }
 
-        val explain = dslContext.explain(query).toString()
+        val explain = ExplainGenerator.execute(dslContext, query)
 
         ResultGenerator.execute(query, explain, "selectWorkbookMappedArticleRecordsQueryExplain")
     }
@@ -130,7 +131,7 @@ class ArticleDaoExplainGenerateTest : JooqTestSpec() {
             articleDao.selectArticleIdByWorkbookIdAndDayQuery(it)
         }
 
-        val explain = dslContext.explain(query).toString()
+        val explain = ExplainGenerator.execute(dslContext, query)
 
         ResultGenerator.execute(query, explain, "selectArticleIdByWorkbookIdAndDayQueryExplain")
     }
@@ -141,7 +142,7 @@ class ArticleDaoExplainGenerateTest : JooqTestSpec() {
             articleDao.selectArticleContentsQuery(it)
         }
 
-        val explain = dslContext.explain(query).toString()
+        val explain = ExplainGenerator.execute(dslContext, query)
 
         ResultGenerator.execute(query, explain, "selectArticleContentsQueryExplain")
     }

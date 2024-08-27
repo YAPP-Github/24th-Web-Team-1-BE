@@ -8,6 +8,7 @@ import com.few.api.repo.dao.subscription.query.CountWorkbookMappedArticlesQuery
 import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookActiveSubscription
 import com.few.api.repo.dao.subscription.query.SelectAllWorkbookSubscriptionStatusNotConsiderDeletedAtQuery
 import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookInActiveSubscription
+import com.few.api.repo.explain.ExplainGenerator
 import com.few.api.repo.explain.InsertUpdateExplainGenerator
 import com.few.api.repo.explain.ResultGenerator
 import com.few.api.repo.jooq.JooqTestSpec
@@ -57,7 +58,7 @@ class SubscriptionDaoExplainGenerateTest : JooqTestSpec() {
             subscriptionDao.selectTopWorkbookSubscriptionStatusQuery(it)
         }
 
-        val explain = dslContext.explain(query).toString()
+        val explain = ExplainGenerator.execute(dslContext, query)
 
         ResultGenerator.execute(query, explain, "selectTopWorkbookSubscriptionStatusQueryExplain")
     }
@@ -71,7 +72,7 @@ class SubscriptionDaoExplainGenerateTest : JooqTestSpec() {
             subscriptionDao.selectAllWorkbookInActiveSubscriptionStatusQuery(it)
         }
 
-        val explain = dslContext.explain(query).toString()
+        val explain = ExplainGenerator.execute(dslContext, query)
 
         ResultGenerator.execute(query, explain, "selectAllWorkbookInActiveSubscriptionStatusQueryExplain")
     }
@@ -84,7 +85,7 @@ class SubscriptionDaoExplainGenerateTest : JooqTestSpec() {
             subscriptionDao.selectAllWorkbookActiveSubscriptionStatusQuery(it)
         }
 
-        val explain = dslContext.explain(query).toString()
+        val explain = ExplainGenerator.execute(dslContext, query)
 
         ResultGenerator.execute(query, explain, "selectAllWorkbookActiveSubscriptionStatusQueryExplain")
     }
@@ -97,7 +98,7 @@ class SubscriptionDaoExplainGenerateTest : JooqTestSpec() {
             subscriptionDao.countWorkbookMappedArticlesQuery(it)
         }
 
-        val explain = dslContext.explain(query).toString()
+        val explain = ExplainGenerator.execute(dslContext, query)
 
         ResultGenerator.execute(query, explain, "countWorkbookMappedArticlesQueryExplain")
     }
@@ -134,7 +135,7 @@ class SubscriptionDaoExplainGenerateTest : JooqTestSpec() {
     fun countAllWorkbookSubscriptionQueryExplain() {
         val query = subscriptionDao.countAllWorkbookSubscriptionQuery()
 
-        val explain = dslContext.explain(query).toString()
+        val explain = ExplainGenerator.execute(dslContext, query)
 
         ResultGenerator.execute(query, explain, "countAllWorkbookSubscriptionQueryExplain")
     }

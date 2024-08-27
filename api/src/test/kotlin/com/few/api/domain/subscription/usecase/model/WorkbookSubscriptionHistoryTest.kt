@@ -3,7 +3,6 @@ package com.few.api.domain.subscription.usecase.model
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import java.lang.NullPointerException
 
 class WorkbookSubscriptionHistoryTest {
 
@@ -132,7 +131,7 @@ class WorkbookSubscriptionHistoryTest {
             )
 
             // when & then
-            assertThrows(NullPointerException::class.java) {
+            assertThrows(IllegalArgumentException::class.java) {
                 CancelledWorkbookSubscriptionHistory(workbookSubscriptionHistory)
             }
         }

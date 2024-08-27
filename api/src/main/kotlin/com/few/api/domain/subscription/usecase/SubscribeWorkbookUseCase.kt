@@ -76,16 +76,18 @@ class SubscribeWorkbookUseCase(
                 throw SubscribeIllegalArgumentException("subscribe.state.subscribed")
             }
         }
-        applicationEventPublisher.publishEvent(WorkbookSubscriptionEvent(workbookId = subTargetWorkbookId))
-        /** todo add before merge issue #360
-         *
-         *         applicationEventPublisher.publishEvent(
-         *             WorkbookSubscriptionEvent(
-         *                 workbookId = subTargetWorkbookId,
-         *                 memberId = memberId,
-         *                 articleDayCol = workbookSubscriptionHistory.subDay
-         *             )
-         *         )
+
+        /**
+         * 구독 이벤트 발행
+         * @see com.few.api.domain.subscription.event.WorkbookSubscriptionEventListener
+         * @see com.few.api.domain.subscription.event.WorkbookSubscriptionAfterCompletionEventListener
          */
+        applicationEventPublisher.publishEvent(
+            WorkbookSubscriptionEvent(
+                workbookId = subTargetWorkbookId,
+                memberId = memberId,
+                articleDayCol = subscriptionStatus?.day ?: 1
+            )
+        )
     }
 }

@@ -3,18 +3,15 @@ package com.few.api.repo.dao.article
 import com.few.api.repo.config.LocalCacheConfig.Companion.LOCAL_CM
 import com.few.api.repo.config.LocalCacheConfig.Companion.SELECT_ARTICLE_RECORD_CACHE
 import com.few.api.repo.dao.article.command.InsertFullArticleRecordCommand
-import com.few.api.repo.dao.article.query.SelectArticleIdByWorkbookIdAndDayQuery
-import com.few.api.repo.dao.article.query.SelectArticleRecordQuery
-import com.few.api.repo.dao.article.query.SelectWorkBookArticleRecordQuery
-import com.few.api.repo.dao.article.query.SelectWorkbookMappedArticleRecordsQuery
-import com.few.api.repo.dao.article.record.SelectArticleContentsRecord
-import com.few.api.repo.dao.article.record.SelectArticleRecord
-import com.few.api.repo.dao.article.record.SelectWorkBookArticleRecord
-import com.few.api.repo.dao.article.record.SelectWorkBookMappedArticleRecord
+import com.few.api.repo.dao.article.query.*
+import com.few.api.repo.dao.article.record.*
+import com.few.data.common.code.MemberType
 import jooq.jooq_dsl.tables.ArticleIfo
 import jooq.jooq_dsl.tables.ArticleMst
 import jooq.jooq_dsl.tables.MappingWorkbookArticle
+import jooq.jooq_dsl.tables.Member
 import org.jooq.*
+import org.jooq.impl.DSL
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Repository
 
@@ -139,4 +136,31 @@ class ArticleDao(
     ).from(ArticleIfo.ARTICLE_IFO)
         .where(ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID.`in`(articleIds))
         .and(ArticleIfo.ARTICLE_IFO.DELETED_AT.isNull)
+
+    fun selectArticleContent(query: SelectArticleContentQuery): ArticleContentRecord? {
+        return selectArticleContentQuery(query)
+            .fetchOneInto(ArticleContentRecord::class.java)
+    }
+
+    fun selectArticleContentQuery(query: SelectArticleContentQuery) =
+        dslContext.select(
+            ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID.`as`(ArticleContentRecord::id.name),
+            ArticleIfo.ARTICLE_IFO.CONTENT.`as`(ArticleContentRecord::articleContent.name),
+            ArticleMst.ARTICLE_MST.TITLE.`as`(ArticleContentRecord::articleTitle.name),
+            ArticleMst.ARTICLE_MST.CATEGORY_CD.`as`(ArticleContentRecord::category.name),
+            DSL.jsonGetAttributeAsText(Member.MEMBER.DESCRIPTION, "name")
+                .`as`(ArticleContentRecord::writerName.name),
+            DSL.jsonGetAttribute(Member.MEMBER.DESCRIPTION, "url")
+                .`as`(ArticleContentRecord::writerLink.name)
+        )
+            .from(ArticleIfo.ARTICLE_IFO)
+            .join(ArticleMst.ARTICLE_MST)
+            .on(ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID.eq(ArticleMst.ARTICLE_MST.ID))
+            .join(Member.MEMBER)
+            .on(
+                ArticleMst.ARTICLE_MST.MEMBER_ID.eq(Member.MEMBER.ID)
+                    .and(Member.MEMBER.TYPE_CD.eq(MemberType.WRITER.code))
+            )
+            .where(ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID.eq(query.articleId))
+            .and(ArticleIfo.ARTICLE_IFO.DELETED_AT.isNull)
 }

@@ -1,8 +1,6 @@
 package com.few.api.repo.dao.subscription
 
-import com.few.api.repo.dao.subscription.command.InsertWorkbookSubscriptionCommand
-import com.few.api.repo.dao.subscription.command.UpdateDeletedAtInAllSubscriptionCommand
-import com.few.api.repo.dao.subscription.command.UpdateDeletedAtInWorkbookSubscriptionCommand
+import com.few.api.repo.dao.subscription.command.*
 import com.few.api.repo.dao.subscription.query.*
 import com.few.api.repo.dao.subscription.record.WorkbookSubscriptionStatus
 import com.few.api.repo.dao.subscription.record.CountAllSubscriptionStatusRecord
@@ -163,4 +161,28 @@ class SubscriptionDao(
         .from(SUBSCRIPTION)
         .groupBy(SUBSCRIPTION.TARGET_WORKBOOK_ID)
         .query
+
+    fun updateArticleProgress(command: UpdateArticleProgressCommand) {
+        updateArticleProgressCommand(command)
+            .execute()
+    }
+
+    fun updateArticleProgressCommand(
+        command: UpdateArticleProgressCommand,
+    ) = dslContext.update(SUBSCRIPTION)
+        .set(SUBSCRIPTION.PROGRESS, SUBSCRIPTION.PROGRESS.add(1))
+        .where(SUBSCRIPTION.MEMBER_ID.eq(command.memberId))
+        .and(SUBSCRIPTION.TARGET_WORKBOOK_ID.eq(command.workbookId))
+
+    fun updateLastArticleProgress(command: UpdateLastArticleProgressCommand) {
+        updateLastArticleProgressCommand(command)
+            .execute()
+    }
+
+    fun updateLastArticleProgressCommand(command: UpdateLastArticleProgressCommand) =
+        dslContext.update(SUBSCRIPTION)
+            .set(SUBSCRIPTION.DELETED_AT, LocalDateTime.now())
+            .set(SUBSCRIPTION.UNSUBS_OPINION, command.opinion)
+            .where(SUBSCRIPTION.MEMBER_ID.eq(command.memberId))
+            .and(SUBSCRIPTION.TARGET_WORKBOOK_ID.eq(command.workbookId))
 }

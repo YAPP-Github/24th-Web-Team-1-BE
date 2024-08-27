@@ -1,5 +1,6 @@
 package com.few.api.web.controller.subscription.response
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.few.api.domain.workbook.usecase.dto.WriterDetail
 import java.net.URL
@@ -16,6 +17,7 @@ data class MainViewSubscribeWorkbookInfo(
     val title: String,
     val description: String,
     val category: String,
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     val createdAt: LocalDateTime,
     val writerDetails: List<WriterDetail>,
     val subscriptionCount: Long,

@@ -1,16 +1,15 @@
 package com.few.api.domain.subscription.service
 
-import com.few.api.domain.subscription.service.dto.InsertMemberInDto
-import com.few.api.domain.subscription.service.dto.MemberIdOutDto
-import com.few.api.domain.subscription.service.dto.ReadMemberIdInDto
+import com.few.api.domain.subscription.service.dto.*
 import com.few.api.exception.common.InsertException
 import com.few.api.repo.dao.member.MemberDao
 import com.few.api.repo.dao.member.command.InsertMemberCommand
 import com.few.api.repo.dao.member.query.SelectMemberByEmailQuery
+import com.few.api.repo.dao.member.query.SelectMemberEmailQuery
 import org.springframework.stereotype.Service
 
 @Service
-class MemberService(
+class SubscriptionMemberService(
     private val memberDao: MemberDao,
 ) {
 
@@ -21,5 +20,13 @@ class MemberService(
     fun insertMember(dto: InsertMemberInDto): MemberIdOutDto {
         return memberDao.insertMember(InsertMemberCommand(dto.email, dto.memberType))?.let { MemberIdOutDto(it) }
             ?: throw InsertException("member.insertfail.record")
+    }
+
+    fun readMemberEmail(dto: ReadMemberEmailInDto): ReadMemberEmailOutDto? {
+        return SelectMemberEmailQuery(dto.memberId).let { query ->
+            memberDao.selectMemberEmail(query)
+        }?.let {
+            ReadMemberEmailOutDto(it)
+        }
     }
 }

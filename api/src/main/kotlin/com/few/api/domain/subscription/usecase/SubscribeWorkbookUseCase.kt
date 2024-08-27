@@ -20,8 +20,6 @@ class SubscribeWorkbookUseCase(
 
     @Transactional
     fun execute(useCaseIn: SubscribeWorkbookUseCaseIn) {
-        // TODO: request sending email
-
         val subTargetWorkbookId = useCaseIn.workbookId
         val memberId = useCaseIn.memberId
         val command = InsertWorkbookSubscriptionCommand(
@@ -54,6 +52,18 @@ class SubscribeWorkbookUseCase(
                 throw SubscribeIllegalArgumentException("subscribe.state.subscribed")
             }
         }
-        applicationEventPublisher.publishEvent(WorkbookSubscriptionEvent(workbookId = subTargetWorkbookId))
+
+        /**
+         * 구독 이벤트 발행
+         * @see com.few.api.domain.subscription.event.WorkbookSubscriptionEventListener
+         * @see com.few.api.domain.subscription.event.WorkbookSubscriptionAfterCompletionEventListener
+         */
+        applicationEventPublisher.publishEvent(
+            WorkbookSubscriptionEvent(
+                workbookId = subTargetWorkbookId,
+                memberId = memberId,
+                articleDayCol = subscriptionStatus?.day ?: 1
+            )
+        )
     }
 }

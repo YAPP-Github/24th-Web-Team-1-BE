@@ -4,6 +4,7 @@ import com.few.api.repo.dao.workbook.WorkbookDao
 import com.few.api.repo.dao.workbook.command.InsertWorkBookCommand
 import com.few.api.repo.dao.workbook.command.MapWorkBookToArticleCommand
 import com.few.api.repo.dao.workbook.query.BrowseWorkBookQueryWithSubscriptionCount
+import com.few.api.repo.dao.workbook.query.SelectWorkBookLastArticleIdQuery
 import com.few.api.repo.dao.workbook.query.SelectWorkBookRecordQuery
 import com.few.api.repo.explain.ExplainGenerator
 import com.few.api.repo.explain.InsertUpdateExplainGenerator
@@ -105,5 +106,16 @@ class WorkbookDaoExplainGenerateTest : JooqTestSpec() {
         val explain = InsertUpdateExplainGenerator.execute(dslContext, command.sql, command.bindValues)
 
         ResultGenerator.execute(command, explain, "mapWorkBookToArticleCommandExplain")
+    }
+
+    @Test
+    fun selectWorkBookLastArticleIdQueryExplain() {
+        val query = SelectWorkBookLastArticleIdQuery(1L).let {
+            workbookDao.selectWorkBookLastArticleIdQuery(it)
+        }
+
+        val explain = ExplainGenerator.execute(dslContext, query)
+
+        ResultGenerator.execute(query, explain, "selectWorkBookLastArticleIdQueryExplain")
     }
 }

@@ -37,7 +37,7 @@ class SubscribeWorkbookUseCaseTest : BehaviorSpec({
 
             every { subscriptionDao.insertWorkbookSubscription(any()) } just Runs
 
-            val event = WorkbookSubscriptionEvent(workbookId)
+            val event = WorkbookSubscriptionEvent(workbookId, memberId, 1)
             every { applicationEventPublisher.publishEvent(event) } answers {
                 log.debug { "Mocking applicationEventPublisher.publishEvent(any()) was called" }
             }
@@ -66,7 +66,7 @@ class SubscribeWorkbookUseCaseTest : BehaviorSpec({
 
             every { subscriptionDao.reSubscribeWorkbookSubscription(any()) } just Runs
 
-            val event = WorkbookSubscriptionEvent(workbookId)
+            val event = WorkbookSubscriptionEvent(workbookId, memberId, day)
             every { applicationEventPublisher.publishEvent(event) } answers {
                 log.debug { "Mocking applicationEventPublisher.publishEvent(any()) was called" }
             }
@@ -93,7 +93,11 @@ class SubscribeWorkbookUseCaseTest : BehaviorSpec({
                 verify(exactly = 0) { subscriptionDao.insertWorkbookSubscription(any()) }
                 verify(exactly = 0) { subscriptionDao.countWorkbookMappedArticles(any()) }
                 verify(exactly = 0) { subscriptionDao.reSubscribeWorkbookSubscription(any()) }
-                verify(exactly = 0) { applicationEventPublisher.publishEvent(WorkbookSubscriptionEvent(workbookId)) }
+                verify(exactly = 0) {
+                    applicationEventPublisher.publishEvent(
+                        WorkbookSubscriptionEvent(workbookId, memberId, day)
+                    )
+                }
             }
         }
     }

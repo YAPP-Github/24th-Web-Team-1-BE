@@ -5,6 +5,7 @@ import com.few.api.repo.config.LocalCacheConfig.Companion.LOCAL_CM
 import com.few.api.repo.dao.workbook.command.InsertWorkBookCommand
 import com.few.api.repo.dao.workbook.command.MapWorkBookToArticleCommand
 import com.few.api.repo.dao.workbook.query.BrowseWorkBookQueryWithSubscriptionCount
+import com.few.api.repo.dao.workbook.query.SelectWorkBookLastArticleIdQuery
 import com.few.api.repo.dao.workbook.query.SelectWorkBookRecordQuery
 import com.few.api.repo.dao.workbook.record.SelectWorkBookRecord
 import com.few.api.repo.dao.workbook.record.SelectWorkBookRecordWithSubscriptionCount
@@ -129,4 +130,18 @@ class WorkbookDao(
             else -> Workbook.WORKBOOK.CATEGORY_CD.eq(query.category)
         }
     }
+
+    fun selectWorkBookLastArticleId(query: SelectWorkBookLastArticleIdQuery): Long? {
+        return selectWorkBookLastArticleIdQuery(query)
+            .fetchOneInto(Long::class.java)
+    }
+
+    fun selectWorkBookLastArticleIdQuery(query: SelectWorkBookLastArticleIdQuery) =
+        dslContext.select(
+            DSL.max(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.DAY_COL)
+        )
+            .from(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE)
+            .where(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.eq(query.workbookId))
+            .and(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.DELETED_AT.isNull)
+            .groupBy(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID)
 }

@@ -4,13 +4,9 @@ import com.few.api.repo.config.LocalCacheConfig.Companion.LOCAL_CM
 import com.few.api.repo.config.LocalCacheConfig.Companion.SELECT_WRITER_CACHE
 import com.few.api.repo.dao.member.command.DeleteMemberCommand
 import com.few.api.repo.dao.member.command.InsertMemberCommand
-import com.few.api.repo.dao.member.query.BrowseWorkbookWritersQuery
 import com.few.api.repo.dao.member.command.UpdateDeletedMemberTypeCommand
 import com.few.api.repo.dao.member.command.UpdateMemberTypeCommand
-import com.few.api.repo.dao.member.query.SelectMemberByEmailNotConsiderDeletedAtQuery
-import com.few.api.repo.dao.member.query.SelectMemberByEmailQuery
-import com.few.api.repo.dao.member.query.SelectWriterQuery
-import com.few.api.repo.dao.member.query.SelectWritersQuery
+import com.few.api.repo.dao.member.query.*
 import com.few.api.repo.dao.member.record.MemberIdAndIsDeletedRecord
 import com.few.api.repo.dao.member.record.MemberRecord
 import com.few.api.repo.dao.member.record.MemberEmailAndTypeRecord
@@ -170,6 +166,17 @@ class MemberDao(
         dslContext.insertInto(Member.MEMBER)
             .set(Member.MEMBER.EMAIL, command.email)
             .set(Member.MEMBER.TYPE_CD, command.memberType.code)
+
+    fun selectMemberEmail(query: SelectMemberEmailQuery): String? {
+        return selectMemberEmailQuery(query)
+            .fetchOne()
+            ?.value1()
+    }
+
+    fun selectMemberEmailQuery(query: SelectMemberEmailQuery) = dslContext.select(Member.MEMBER.EMAIL)
+        .from(Member.MEMBER)
+        .where(Member.MEMBER.ID.eq(query.memberId))
+        .and(Member.MEMBER.DELETED_AT.isNull)
 
     fun selectMemberEmailAndType(memberId: Long): MemberEmailAndTypeRecord? {
         return selectMemberIdAndTypeQuery(memberId)

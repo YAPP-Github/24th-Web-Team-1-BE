@@ -10,6 +10,7 @@ import com.few.api.repo.dao.problem.query.SelectProblemsByArticleIdQuery
 import com.few.api.repo.dao.problem.support.Content
 import com.few.api.repo.dao.problem.support.Contents
 import com.few.api.repo.dao.problem.support.ContentsJsonMapper
+import com.few.api.repo.explain.ExplainGenerator
 import com.few.api.repo.explain.InsertUpdateExplainGenerator
 import com.few.api.repo.explain.ResultGenerator
 import com.few.api.repo.jooq.JooqTestSpec
@@ -69,7 +70,7 @@ class ProblemDaoExplainGenerateTest : JooqTestSpec() {
             problemDao.selectProblemContentsQuery(it)
         }
 
-        val explain = dslContext.explain(query).toString()
+        val explain = ExplainGenerator.execute(dslContext, query)
 
         ResultGenerator.execute(query, explain, "selectProblemContentsQueryExplain")
     }
@@ -80,7 +81,7 @@ class ProblemDaoExplainGenerateTest : JooqTestSpec() {
             problemDao.selectProblemAnswerQuery(it)
         }
 
-        val explain = dslContext.explain(query).toString()
+        val explain = ExplainGenerator.execute(dslContext, query)
 
         ResultGenerator.execute(query, explain, "selectProblemAnswerQueryExplain")
     }
@@ -91,7 +92,7 @@ class ProblemDaoExplainGenerateTest : JooqTestSpec() {
             problemDao.selectProblemsByArticleIdQuery(it)
         }
 
-        val explain = dslContext.explain(query).toString()
+        val explain = ExplainGenerator.execute(dslContext, query)
 
         ResultGenerator.execute(query, explain, "selectProblemsByArticleIdQueryExplain")
     }

@@ -86,7 +86,7 @@ class SubscribeWorkbookUseCase(
             WorkbookSubscriptionEvent(
                 workbookId = subTargetWorkbookId,
                 memberId = memberId,
-                articleDayCol = subscriptionStatus?.day ?: 1
+                articleDayCol = workbookSubscriptionHistory.subDay
             )
         )
     }

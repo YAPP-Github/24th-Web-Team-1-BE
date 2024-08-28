@@ -14,7 +14,7 @@ abstract class EmailSender<T : SendMailArgs<*, *>>(
         val to = args.to
         val subject = args.subject
         val message = getHtml(args)
-        emailSendProvider.sendEmail(from, to, subject, message)
+        emailSendProvider.sendEmail("FEW Letter <$from>", to, subject, message)
     }
 
     abstract fun getHtml(args: T): String

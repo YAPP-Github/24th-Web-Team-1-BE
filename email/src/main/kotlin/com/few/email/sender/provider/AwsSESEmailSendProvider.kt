@@ -19,14 +19,14 @@ class AwsSESEmailSendProvider(
         private const val UTF_8 = "utf-8"
     }
 
-    override fun sendEmail(form: String, to: String, subject: String, message: String) {
+    override fun sendEmail(from: String, to: String, subject: String, message: String) {
         val destination = Destination().withToAddresses(to)
         val sendMessage = Message()
             .withSubject(Content().withCharset(UTF_8).withData(subject))
             .withBody(Body().withHtml(Content().withCharset(UTF_8).withData(message)))
 
         val sendEmailRequest = SendEmailRequest()
-            .withSource(form)
+            .withSource(from)
             .withDestination(destination)
             .withMessage(sendMessage)
             .withConfigurationSetName("few-configuration-set")
@@ -41,7 +41,7 @@ class AwsSESEmailSendProvider(
                 log.info {
                     "Sending email using JavaMailSender."
                 }
-                javaEmailSendProvider.sendEmail(form, to, subject, message)
+                javaEmailSendProvider.sendEmail(from, to, subject, message)
             }.onFailure {
                 log.error {
                     "Failed to send email using JavaMailSender."

@@ -70,12 +70,12 @@ class SubscriptionDao(
             .orderBy(SUBSCRIPTION.CREATED_AT.desc())
             .limit(1)
 
-    fun selectAllInActiveWorkbookSubscriptionStatus(query: SelectAllMemberWorkbookInActiveSubscription): List<MemberWorkbookSubscriptionStatusRecord> {
+    fun selectAllInActiveWorkbookSubscriptionStatus(query: SelectAllMemberWorkbookInActiveSubscriptionQuery): List<MemberWorkbookSubscriptionStatusRecord> {
         return selectAllWorkbookInActiveSubscriptionStatusQuery(query)
             .fetchInto(MemberWorkbookSubscriptionStatusRecord::class.java)
     }
 
-    fun selectAllWorkbookInActiveSubscriptionStatusQuery(query: SelectAllMemberWorkbookInActiveSubscription) =
+    fun selectAllWorkbookInActiveSubscriptionStatusQuery(query: SelectAllMemberWorkbookInActiveSubscriptionQuery) =
         dslContext.select(
             SUBSCRIPTION.TARGET_WORKBOOK_ID.`as`(MemberWorkbookSubscriptionStatusRecord::workbookId.name),
             SUBSCRIPTION.DELETED_AT.isNull.`as`(MemberWorkbookSubscriptionStatusRecord::isActiveSub.name),
@@ -91,12 +91,12 @@ class SubscriptionDao(
             .groupBy(SUBSCRIPTION.TARGET_WORKBOOK_ID, SUBSCRIPTION.DELETED_AT)
             .query
 
-    fun selectAllActiveWorkbookSubscriptionStatus(query: SelectAllMemberWorkbookActiveSubscription): List<MemberWorkbookSubscriptionStatusRecord> {
+    fun selectAllActiveWorkbookSubscriptionStatus(query: SelectAllMemberWorkbookActiveSubscriptionQuery): List<MemberWorkbookSubscriptionStatusRecord> {
         return selectAllWorkbookActiveSubscriptionStatusQuery(query)
             .fetchInto(MemberWorkbookSubscriptionStatusRecord::class.java)
     }
 
-    fun selectAllWorkbookActiveSubscriptionStatusQuery(query: SelectAllMemberWorkbookActiveSubscription) =
+    fun selectAllWorkbookActiveSubscriptionStatusQuery(query: SelectAllMemberWorkbookActiveSubscriptionQuery) =
         dslContext.select(
             SUBSCRIPTION.TARGET_WORKBOOK_ID.`as`(MemberWorkbookSubscriptionStatusRecord::workbookId.name),
             SUBSCRIPTION.DELETED_AT.isNull.`as`(MemberWorkbookSubscriptionStatusRecord::isActiveSub.name),
@@ -148,7 +148,7 @@ class SubscriptionDao(
      * key: workbookId
      * value: workbook 구독 전체 기록 수
      */
-    fun countAllWorkbookSubscription(query: CountAllWorkbooksSubscription): Map<Long, Int> {
+    fun countAllWorkbookSubscription(query: CountAllWorkbooksSubscriptionQuery): Map<Long, Int> {
         return countAllWorkbookSubscriptionQuery()
             .fetch()
             .intoMap(SUBSCRIPTION.TARGET_WORKBOOK_ID, DSL.count(SUBSCRIPTION.TARGET_WORKBOOK_ID))

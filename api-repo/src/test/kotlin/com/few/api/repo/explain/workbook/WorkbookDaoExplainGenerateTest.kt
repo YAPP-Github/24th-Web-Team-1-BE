@@ -3,7 +3,7 @@ package com.few.api.repo.explain.workbook
 import com.few.api.repo.dao.workbook.WorkbookDao
 import com.few.api.repo.dao.workbook.command.InsertWorkBookCommand
 import com.few.api.repo.dao.workbook.command.MapWorkBookToArticleCommand
-import com.few.api.repo.dao.workbook.query.BrowseWorkBookQueryWithSubscriptionCount
+import com.few.api.repo.dao.workbook.query.BrowseWorkBookQueryWithSubscriptionCountQuery
 import com.few.api.repo.dao.workbook.query.SelectWorkBookLastArticleIdQuery
 import com.few.api.repo.dao.workbook.query.SelectWorkBookRecordQuery
 import com.few.api.repo.explain.ExplainGenerator
@@ -73,7 +73,7 @@ class WorkbookDaoExplainGenerateTest : JooqTestSpec() {
 
     @Test
     fun browseWorkBookQueryNoConditionQueryExplain() {
-        val query = BrowseWorkBookQueryWithSubscriptionCount(-1).let {
+        val query = BrowseWorkBookQueryWithSubscriptionCountQuery(-1).let {
             workbookDao.browseWorkBookQuery(it)
         }
 
@@ -84,7 +84,7 @@ class WorkbookDaoExplainGenerateTest : JooqTestSpec() {
 
     @Test
     fun browseWorkBookQueryCategoryConditionExplain() {
-        val query = BrowseWorkBookQueryWithSubscriptionCount(CategoryType.fromCode(0)!!.code).let {
+        val query = BrowseWorkBookQueryWithSubscriptionCountQuery(CategoryType.fromCode(0)!!.code).let {
             workbookDao.browseWorkBookQuery(it)
         }
 

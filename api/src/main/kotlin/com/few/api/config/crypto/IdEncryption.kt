@@ -16,9 +16,10 @@ class IdEncryption(
     @Value("\${security.encryption.iv}") private val iv: String,
 ) : Encryption<String, String> {
 
-    private var key: SecretKeySpec = KeyGenerator.getInstance(algorithm).run {
+    private var key: SecretKeySpec = KeyGenerator.getInstance(algorithm).apply {
         init(keySize)
-        SecretKeySpec(secretKey.toByteArray(), algorithm)
+    }.run {
+        SecretKeySpec(secretKey.toByteArray(), this@IdEncryption.algorithm)
     }
     private var encodeCipher: Cipher = Cipher.getInstance(transformation).apply {
         init(Cipher.ENCRYPT_MODE, key, IvParameterSpec(this@IdEncryption.iv.toByteArray()))

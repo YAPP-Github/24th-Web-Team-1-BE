@@ -12,6 +12,7 @@ import com.few.api.repo.dao.subscription.command.UpdateArticleProgressCommand
 import com.few.api.repo.dao.subscription.command.UpdateLastArticleProgressCommand
 import com.few.data.common.code.CategoryType
 import com.few.email.service.article.dto.Content
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 import java.time.LocalDate
@@ -24,21 +25,23 @@ class SendWorkbookArticleAsyncHandler(
     private val subscriptionDao: SubscriptionDao,
     private val emailService: SubscriptionEmailService,
 ) {
+    private val log = KotlinLogging.logger {}
 
     @Async(value = DATABASE_ACCESS_POOL)
     fun sendWorkbookArticle(memberId: Long, workbookId: Long, articleDayCol: Byte) {
         val date = LocalDate.now()
-        val memberEmail = ReadMemberEmailInDto(memberId).let { memberService.readMemberEmail(it) }.let { it?.email }
+        val memberEmail = memberService.readMemberEmail(ReadMemberEmailInDto(memberId))?.email
             ?: throw NotFoundException("member.notfound.id")
-        val article = ReadArticleIdByWorkbookIdAndDayDto(workbookId, articleDayCol.toInt()).let {
-            articleService.readArticleIdByWorkbookIdAndDay(it)
-        }?.let { articleId ->
-            ReadArticleContentInDto(articleId).let {
-                articleService.readArticleContent(it)
-            }
+        val article = articleService.readArticleIdByWorkbookIdAndDay(
+            ReadArticleIdByWorkbookIdAndDayDto(
+                workbookId,
+                articleDayCol.toInt()
+            )
+        )?.let { articleId ->
+            articleService.readArticleContent(ReadArticleContentInDto(articleId))
         } ?: throw NotFoundException("article.notfound.id")
 
-        SendArticleInDto(
+        val sendArticleInDto = SendArticleInDto(
             memberId = memberId,
             workbookId = workbookId,
             toEmail = memberEmail,
@@ -56,25 +59,35 @@ class SendWorkbookArticleAsyncHandler(
                 writerLink = article.writerLink,
                 articleContent = article.articleContent
             )
-        ).let {
-            runCatching { emailService.sendArticleEmail(it) }
-                .onSuccess {
-                    val lastDayArticleId = ReadWorkbookLastArticleIdInDto(
-                        workbookId
-                    ).let {
-                        workbookService.readWorkbookLastArticleId(it)
-                    }?.lastArticleId ?: throw NotFoundException("workbook.notfound.id")
+        )
 
-                    if (article.id == lastDayArticleId) {
-                        UpdateArticleProgressCommand(workbookId, memberId).let {
-                            subscriptionDao.updateArticleProgress(it)
-                        }
-                    } else {
-                        UpdateLastArticleProgressCommand(workbookId, memberId).let {
-                            subscriptionDao.updateLastArticleProgress(it)
-                        }
-                    }
+        runCatching { emailService.sendArticleEmail(sendArticleInDto) }
+            .onSuccess {
+                val lastDayArticleId =
+                    workbookService.readWorkbookLastArticleId(
+                        ReadWorkbookLastArticleIdInDto(
+                            workbookId
+                        )
+                    )?.lastArticleId ?: throw NotFoundException("workbook.notfound.id")
+
+                if (article.id == lastDayArticleId) {
+                    subscriptionDao.updateArticleProgress(
+                        UpdateArticleProgressCommand(
+                            workbookId,
+                            memberId
+                        )
+                    )
+                } else {
+                    subscriptionDao.updateLastArticleProgress(
+                        UpdateLastArticleProgressCommand(
+                            workbookId,
+                            memberId
+                        )
+                    )
                 }
-        }
+            }
+            .onFailure {
+                log.error(it) { "Failed to send article email" }
+            }
     }
 }

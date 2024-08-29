@@ -18,15 +18,15 @@ class RepoClient(
     private val log = KotlinLogging.logger {}
 
     fun announceRepoAlter(args: RepoAlterArgs) {
-        val embedsList = ArrayList<Embed>()
-        args.let {
-            embedsList.add(
-                Embed(
-                    title = "Exception",
-                    description = "Slow Query Detected"
-                )
+        val embedsList = mutableListOf(
+            Embed(
+                title = "Exception",
+                description = "Slow Query Detected"
             )
-            it.requestURL.let { requestURL ->
+        )
+
+        args.let { arg ->
+            arg.requestURL.let { requestURL ->
                 embedsList.add(
                     Embed(
                         title = "Request URL",
@@ -34,7 +34,8 @@ class RepoClient(
                     )
                 )
             }
-            it.query?.let { query ->
+
+            arg.query?.let { query ->
                 embedsList.add(
                     Embed(
                         title = "Slow Query Detected",
@@ -43,20 +44,19 @@ class RepoClient(
                 )
             }
         }
-        args.let {
-            DiscordBodyProperty(
-                content = "😭 DB 이상 발생",
-                embeds = embedsList
-            )
-        }.let { body ->
-            restTemplate.exchange(
-                discordWebhook,
-                HttpMethod.POST,
-                HttpEntity(body),
-                String::class.java
-            ).let { res ->
-                log.info { "Discord webhook response: ${res.statusCode}" }
-            }
+
+        restTemplate.exchange(
+            discordWebhook,
+            HttpMethod.POST,
+            HttpEntity(
+                DiscordBodyProperty(
+                    content = "😭 DB 이상 발생",
+                    embeds = embedsList
+                )
+            ),
+            String::class.java
+        ).let { res ->
+            log.info { "Discord webhook response: ${res.statusCode}" }
         }
     }
 }

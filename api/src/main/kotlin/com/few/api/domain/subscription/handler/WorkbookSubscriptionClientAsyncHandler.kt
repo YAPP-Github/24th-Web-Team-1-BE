@@ -19,18 +19,18 @@ class WorkbookSubscriptionClientAsyncHandler(
 
     @Async(value = DISCORD_HOOK_EVENT_POOL)
     fun sendSubscriptionEvent(workbookId: Long) {
-        val title = ReadWorkbookTitleInDto(workbookId).let { dto ->
-            workbookService.readWorkbookTitle(dto)?.workbookTitle
+        val title =
+            workbookService.readWorkbookTitle(ReadWorkbookTitleInDto(workbookId))?.workbookTitle
                 ?: throw NotFoundException("workbook.notfound.id")
-        }
-        subscriptionDao.countAllSubscriptionStatus().let { record ->
-            WorkbookSubscriptionArgs(
-                totalSubscriptions = record.totalSubscriptions,
-                activeSubscriptions = record.activeSubscriptions,
-                workbookTitle = title
-            ).let { args ->
-                subscriptionClient.announceWorkbookSubscription(args)
-            }
+
+        subscriptionDao.countAllSubscriptionStatus().also { record ->
+            subscriptionClient.announceWorkbookSubscription(
+                WorkbookSubscriptionArgs(
+                    totalSubscriptions = record.totalSubscriptions,
+                    activeSubscriptions = record.activeSubscriptions,
+                    workbookTitle = title
+                )
+            )
         }
     }
 }

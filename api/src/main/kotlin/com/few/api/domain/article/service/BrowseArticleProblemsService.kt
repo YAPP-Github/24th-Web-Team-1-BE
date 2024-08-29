@@ -7,15 +7,15 @@ import com.few.api.repo.dao.problem.ProblemDao
 import com.few.api.repo.dao.problem.query.SelectProblemsByArticleIdQuery
 import org.springframework.stereotype.Service
 
+@Suppress("NAME_SHADOWING")
 @Service
 class BrowseArticleProblemsService(
     private val problemDao: ProblemDao,
 ) {
 
     fun execute(query: BrowseArticleProblemIdsInDto): BrowseArticleProblemsOutDto {
-        SelectProblemsByArticleIdQuery(query.articleId).let { query: SelectProblemsByArticleIdQuery ->
-            return problemDao.selectProblemsByArticleId(query)?.let { BrowseArticleProblemsOutDto(it.problemIds) }
-                ?: throw NotFoundException("problem.notfound.articleId")
-        }
+        return problemDao.selectProblemsByArticleId(SelectProblemsByArticleIdQuery(query.articleId))
+            ?.let { BrowseArticleProblemsOutDto(it.problemIds) }
+            ?: throw NotFoundException("problem.notfound.articleId")
     }
 }

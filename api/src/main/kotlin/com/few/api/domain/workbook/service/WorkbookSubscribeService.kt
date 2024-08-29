@@ -3,8 +3,8 @@ package com.few.api.domain.workbook.service
 import com.few.api.domain.workbook.service.dto.BrowseMemberSubscribeWorkbooksInDto
 import com.few.api.domain.workbook.service.dto.BrowseMemberSubscribeWorkbooksOutDto
 import com.few.api.repo.dao.subscription.SubscriptionDao
-import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookActiveSubscription
-import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookInActiveSubscription
+import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookActiveSubscriptionQuery
+import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookInActiveSubscriptionQuery
 import org.springframework.stereotype.Service
 
 @Service
@@ -14,14 +14,13 @@ class WorkbookSubscribeService(
 
     fun browseMemberSubscribeWorkbooks(dto: BrowseMemberSubscribeWorkbooksInDto): List<BrowseMemberSubscribeWorkbooksOutDto> {
         val inActiveSubscriptionRecords =
-            SelectAllMemberWorkbookInActiveSubscription(dto.memberId).let {
-                subscriptionDao.selectAllInActiveWorkbookSubscriptionStatus(it)
-            }
+            subscriptionDao.selectAllInActiveWorkbookSubscriptionStatus(
+                SelectAllMemberWorkbookInActiveSubscriptionQuery(dto.memberId)
+            )
 
-        val activeSubscriptionRecords =
-            SelectAllMemberWorkbookActiveSubscription(dto.memberId).let {
-                subscriptionDao.selectAllActiveWorkbookSubscriptionStatus(it)
-            }
+        val activeSubscriptionRecords = subscriptionDao.selectAllActiveWorkbookSubscriptionStatus(
+            SelectAllMemberWorkbookActiveSubscriptionQuery(dto.memberId)
+        )
 
         val subscriptionRecords = inActiveSubscriptionRecords + activeSubscriptionRecords
 

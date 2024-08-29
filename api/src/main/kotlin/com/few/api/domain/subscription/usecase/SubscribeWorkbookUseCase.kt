@@ -31,23 +31,20 @@ class SubscribeWorkbookUseCase(
         )
 
         val workbookSubscriptionHistory = subscriptionDao.selectTopWorkbookSubscriptionStatus(
-            SelectAllWorkbookSubscriptionStatusNotConsiderDeletedAtQuery(memberId = memberId, workbookId = subTargetWorkbookId)
-        ).run {
-            if (this != null) {
-                WorkbookSubscriptionHistory(
-                    false,
-                    WorkbookSubscriptionStatus(
-                        workbookId = this.workbookId,
-                        isActiveSub = this.isActiveSub,
-                        day = this.day
-                    )
+            SelectAllWorkbookSubscriptionStatusNotConsiderDeletedAtQuery(
+                memberId = memberId,
+                workbookId = subTargetWorkbookId
+            )
+        )?.let {
+            WorkbookSubscriptionHistory(
+                false,
+                WorkbookSubscriptionStatus(
+                    workbookId = it.workbookId,
+                    isActiveSub = it.isActiveSub,
+                    day = it.day
                 )
-            } else {
-                WorkbookSubscriptionHistory(
-                    true
-                )
-            }
-        }
+            )
+        } ?: WorkbookSubscriptionHistory(true)
 
         when {
             /** 구독한 히스토리가 없는 경우 */
@@ -58,9 +55,11 @@ class SubscribeWorkbookUseCase(
             /** 이미 구독한 히스토리가 있고 구독이 취소된 경우 */
             workbookSubscriptionHistory.isCancelSub -> {
                 val cancelledWorkbookSubscriptionHistory = CancelledWorkbookSubscriptionHistory(workbookSubscriptionHistory)
-                val lastDay = CountWorkbookMappedArticlesQuery(subTargetWorkbookId).let {
-                    subscriptionDao.countWorkbookMappedArticles(it)
-                } ?: throw NotFoundException("workbook.notfound.id")
+                val lastDay = subscriptionDao.countWorkbookMappedArticles(
+                    CountWorkbookMappedArticlesQuery(
+                        subTargetWorkbookId
+                    )
+                ) ?: throw NotFoundException("workbook.notfound.id")
 
                 if (cancelledWorkbookSubscriptionHistory.isSubEnd(lastDay)) {
                     /** 이미 구독이 종료된 경우 */

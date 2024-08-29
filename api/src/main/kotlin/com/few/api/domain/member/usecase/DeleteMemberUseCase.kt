@@ -14,11 +14,11 @@ class DeleteMemberUseCase(
 ) {
     @Transactional
     fun execute(useCaseIn: DeleteMemberUseCaseIn): DeleteMemberUseCaseOut {
-        DeleteMemberCommand(
-            memberId = useCaseIn.memberId
-        ).let { command ->
-            memberDao.deleteMember(command)
-        }
+        memberDao.deleteMember(
+            DeleteMemberCommand(
+                memberId = useCaseIn.memberId
+            )
+        )
 
         return DeleteMemberUseCaseOut(true)
     }

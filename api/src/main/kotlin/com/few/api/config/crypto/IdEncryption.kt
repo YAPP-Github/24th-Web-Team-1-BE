@@ -16,19 +16,15 @@ class IdEncryption(
     @Value("\${security.encryption.iv}") private val iv: String,
 ) : Encryption<String, String> {
 
-    private lateinit var key: SecretKeySpec
-    private lateinit var encodeCipher: Cipher
-    private lateinit var decodeCipher: Cipher
-
-    init {
-        KeyGenerator.getInstance(algorithm).apply {
-            init(keySize)
-            key = SecretKeySpec(secretKey.toByteArray(), algorithm)
-        }
-        encodeCipher = Cipher.getInstance(transformation)
-        decodeCipher = Cipher.getInstance(transformation)
-        encodeCipher.init(Cipher.ENCRYPT_MODE, key, IvParameterSpec(iv.toByteArray()))
-        decodeCipher.init(Cipher.DECRYPT_MODE, key, IvParameterSpec(iv.toByteArray()))
+    private var key: SecretKeySpec = KeyGenerator.getInstance(algorithm).run {
+        init(keySize)
+        SecretKeySpec(secretKey.toByteArray(), algorithm)
+    }
+    private var encodeCipher: Cipher = Cipher.getInstance(transformation).apply {
+        init(Cipher.ENCRYPT_MODE, key, IvParameterSpec(this@IdEncryption.iv.toByteArray()))
+    }
+    private var decodeCipher: Cipher = Cipher.getInstance(transformation).apply {
+        init(Cipher.DECRYPT_MODE, key, IvParameterSpec(this@IdEncryption.iv.toByteArray()))
     }
 
     override fun encrypt(plainText: String): String {

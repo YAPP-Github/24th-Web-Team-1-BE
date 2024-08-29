@@ -7,9 +7,9 @@ import com.few.api.domain.subscription.usecase.dto.BrowseSubscribeWorkbooksUseCa
 import com.few.api.domain.subscription.usecase.dto.BrowseSubscribeWorkbooksUseCaseOut
 import com.few.api.domain.subscription.usecase.dto.SubscribeWorkbookDetail
 import com.few.api.repo.dao.subscription.SubscriptionDao
-import com.few.api.repo.dao.subscription.query.CountAllWorkbooksSubscription
-import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookActiveSubscription
-import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookInActiveSubscription
+import com.few.api.repo.dao.subscription.query.CountAllWorkbooksSubscriptionQuery
+import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookActiveSubscriptionQuery
+import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookInActiveSubscriptionQuery
 import com.few.api.web.support.WorkBookStatus
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -24,14 +24,13 @@ class BrowseSubscribeWorkbooksUseCase(
     @Transactional
     fun execute(useCaseIn: BrowseSubscribeWorkbooksUseCaseIn): BrowseSubscribeWorkbooksUseCaseOut {
         val inActiveSubscriptionRecords =
-            SelectAllMemberWorkbookInActiveSubscription(useCaseIn.memberId).let {
-                subscriptionDao.selectAllInActiveWorkbookSubscriptionStatus(it)
-            }
+            subscriptionDao.selectAllInActiveWorkbookSubscriptionStatus(
+                SelectAllMemberWorkbookInActiveSubscriptionQuery(useCaseIn.memberId)
+            )
 
-        val activeSubscriptionRecords =
-            SelectAllMemberWorkbookActiveSubscription(useCaseIn.memberId).let {
-                subscriptionDao.selectAllActiveWorkbookSubscriptionStatus(it)
-            }
+        val activeSubscriptionRecords = subscriptionDao.selectAllActiveWorkbookSubscriptionStatus(
+            SelectAllMemberWorkbookActiveSubscriptionQuery(useCaseIn.memberId)
+        )
 
         val subscriptionRecords = inActiveSubscriptionRecords + activeSubscriptionRecords
 
@@ -39,18 +38,18 @@ class BrowseSubscribeWorkbooksUseCase(
          * key: workbookId
          * value: workbook의 currentDay에 해당하는 articleId
          */
-        val workbookSubscriptionCurrentArticleIdRecords = subscriptionRecords.associate { it ->
-            val articleId = ReadArticleIdByWorkbookIdAndDayDto(it.workbookId, it.currentDay).let {
-                subscriptionArticleService.readArticleIdByWorkbookIdAndDay(it)
-            } ?: throw NotFoundException("article.notfound.workbookIdAndCurrentDay")
-            it.workbookId to articleId
+        val workbookSubscriptionCurrentArticleIdRecords = subscriptionRecords.associate { record ->
+            val articleId = subscriptionArticleService.readArticleIdByWorkbookIdAndDay(
+                ReadArticleIdByWorkbookIdAndDayDto(record.workbookId, record.currentDay)
+            ) ?: throw NotFoundException("article.notfound.workbookIdAndCurrentDay")
+
+            record.workbookId to articleId
         }
 
         val subscriptionWorkbookIds = subscriptionRecords.map { it.workbookId }
-        val workbookSubscriptionCountRecords =
-            CountAllWorkbooksSubscription(subscriptionWorkbookIds).let {
-                subscriptionDao.countAllWorkbookSubscription(it)
-            }
+        val workbookSubscriptionCountRecords = subscriptionDao.countAllWorkbookSubscription(
+            CountAllWorkbooksSubscriptionQuery(subscriptionWorkbookIds)
+        )
 
         subscriptionRecords.map {
             /**

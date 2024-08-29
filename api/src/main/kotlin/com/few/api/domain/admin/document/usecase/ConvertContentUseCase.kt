@@ -7,7 +7,6 @@ import com.few.api.domain.admin.document.service.dto.GetUrlInDto
 import com.few.api.domain.admin.document.utils.ObjectPathGenerator
 import com.few.api.exception.common.ExternalIntegrationException
 import com.few.api.exception.common.InsertException
-
 import com.few.api.repo.dao.document.DocumentDao
 import com.few.api.repo.dao.document.command.InsertDocumentIfoCommand
 import com.few.storage.document.service.ConvertDocumentService
@@ -28,30 +27,30 @@ class ConvertContentUseCase(
         val contentSource = useCaseIn.content
 
         val documentSuffix = contentSource.originalFilename?.substringAfterLast(".") ?: "md"
-        val document = runCatching {
-            File.createTempFile("temp", ".$documentSuffix")
-        }.onSuccess {
-            contentSource.transferTo(it)
-        }.getOrThrow()
+        val document = File.createTempFile("temp", ".$documentSuffix").apply {
+            contentSource.transferTo(this)
+        }
+
         val documentName = ObjectPathGenerator.documentPath(documentSuffix)
 
-        val originDownloadUrl = putDocumentService.execute(documentName, document)?.let { res ->
-            val source = res.`object`
-            GetUrlInDto(source).let { query ->
-                getUrlService.execute(query)
-            }.let { dto ->
-                InsertDocumentIfoCommand(
-                    path = documentName,
-                    url = dto.url
-                ).let { command ->
-                    documentDao.insertDocumentIfo(command) ?: throw InsertException("document.insertfail.record")
-                }
-                dto.url
-            }
-        } ?: throw ExternalIntegrationException("external.document.presignedfail")
+        val originDownloadUrl =
+            putDocumentService.execute(documentName, document)
+                ?.`object`
+                ?.let { source ->
+                    getUrlService.execute(GetUrlInDto(source)).also { dto ->
+                        documentDao.insertDocumentIfo(
+                            InsertDocumentIfoCommand(
+                                path = documentName,
+                                url = dto.url
+                            )
+                        ) ?: throw InsertException("document.insertfail.record")
+                    }
+                        .let { savedDocument ->
+                            savedDocument.url
+                        }
+                } ?: throw ExternalIntegrationException("external.document.presignedfail")
 
-        val html =
-            convertDocumentService.mdToHtml(document.readBytes().toString(Charsets.UTF_8))
+        val html = convertDocumentService.mdToHtml(document.readBytes().toString(Charsets.UTF_8))
 
         return ConvertContentUseCaseOut(html.replace("\n", "<br>"), originDownloadUrl)
     }

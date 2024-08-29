@@ -27,22 +27,19 @@ class ReadWorkBookArticleUseCase(
 ) {
     @Transactional(readOnly = true)
     fun execute(useCaseIn: ReadWorkBookArticleUseCaseIn): ReadWorkBookArticleOut {
-        val articleRecord = SelectWorkBookArticleRecordQuery(
-            useCaseIn.workbookId,
-            useCaseIn.articleId
-        ).let { query: SelectWorkBookArticleRecordQuery ->
-            articleDao.selectWorkBookArticleRecord(query)
-        } ?: throw NotFoundException("article.notfound.articleidworkbookid")
+        val articleRecord = articleDao.selectWorkBookArticleRecord(
+            SelectWorkBookArticleRecordQuery(
+                useCaseIn.workbookId,
+                useCaseIn.articleId
+            )
+        ) ?: throw NotFoundException("article.notfound.articleidworkbookid")
 
         val writerRecord =
-            ReadWriterRecordInDto(articleRecord.writerId).let { query: ReadWriterRecordInDto ->
-                readArticleWriterRecordService.execute(query) ?: throw NotFoundException("writer.notfound.id")
-            }
+            readArticleWriterRecordService.execute(ReadWriterRecordInDto(articleRecord.writerId))
+                ?: throw NotFoundException("writer.notfound.id")
 
         val problemIds =
-            BrowseArticleProblemIdsInDto(articleRecord.articleId).let { query: BrowseArticleProblemIdsInDto ->
-                browseArticleProblemsService.execute(query)
-            }
+            browseArticleProblemsService.execute(BrowseArticleProblemIdsInDto(articleRecord.articleId))
 
         /**
          * @see com.few.api.domain.article.usecase.ReadArticleUseCase

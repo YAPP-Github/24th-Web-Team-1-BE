@@ -28,18 +28,16 @@ class ReadArticleUseCase(
 
     @Transactional(readOnly = true)
     fun execute(useCaseIn: ReadArticleUseCaseIn): ReadArticleUseCaseOut {
-        val articleRecord = SelectArticleRecordQuery(useCaseIn.articleId).let { query: SelectArticleRecordQuery ->
-            articleDao.selectArticleRecord(query)
-        } ?: throw NotFoundException("article.notfound.id")
+        val articleRecord =
+            articleDao.selectArticleRecord(SelectArticleRecordQuery(useCaseIn.articleId))
+                ?: throw NotFoundException("article.notfound.id")
 
-        val writerRecord = ReadWriterRecordInDto(articleRecord.writerId).let { query: ReadWriterRecordInDto ->
-            readArticleWriterRecordService.execute(query) ?: throw NotFoundException("writer.notfound.id")
-        }
+        val writerRecord =
+            readArticleWriterRecordService.execute(ReadWriterRecordInDto(articleRecord.writerId))
+                ?: throw NotFoundException("writer.notfound.id")
 
         val problemIds =
-            BrowseArticleProblemIdsInDto(articleRecord.articleId).let { query: BrowseArticleProblemIdsInDto ->
-                browseArticleProblemsService.execute(query)
-            }
+            browseArticleProblemsService.execute(BrowseArticleProblemIdsInDto(articleRecord.articleId))
 
         val views = articleViewCountHandler.browseArticleViewCount(useCaseIn.articleId)
         applicationEventPublisher.publishEvent(

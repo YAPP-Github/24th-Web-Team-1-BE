@@ -15,16 +15,19 @@ class SubscriptionWorkbookService(
 ) {
 
     fun readWorkbookTitle(dto: ReadWorkbookTitleInDto): ReadWorkbookTitleOutDto? {
-        return SelectWorkBookRecordQuery(dto.workbookId).let { query ->
-            workbookDao.selectWorkBook(query)?.title?.let { ReadWorkbookTitleOutDto(it) }
-        }
+        return workbookDao.selectWorkBook(SelectWorkBookRecordQuery(dto.workbookId))
+            ?.title
+            ?.let {
+                ReadWorkbookTitleOutDto(
+                    it
+                )
+            }
     }
 
     fun readWorkbookLastArticleId(dto: ReadWorkbookLastArticleIdInDto): ReadWorkbookLastArticleIdOutDto? {
-        return SelectWorkBookLastArticleIdQuery(dto.workbookId).let { query ->
-            workbookDao.selectWorkBookLastArticleId(query)
-        }?.let {
-            ReadWorkbookLastArticleIdOutDto(it)
-        }
+        return workbookDao.selectWorkBookLastArticleId(SelectWorkBookLastArticleIdQuery(dto.workbookId))
+            ?.let {
+                ReadWorkbookLastArticleIdOutDto(it)
+            }
     }
 }

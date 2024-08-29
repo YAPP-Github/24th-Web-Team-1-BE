@@ -23,9 +23,7 @@ class SubscriptionMemberService(
     }
 
     fun readMemberEmail(dto: ReadMemberEmailInDto): ReadMemberEmailOutDto? {
-        return SelectMemberEmailQuery(dto.memberId).let { query ->
-            memberDao.selectMemberEmail(query)
-        }?.let {
+        return memberDao.selectMemberEmail(SelectMemberEmailQuery(dto.memberId))?.let {
             ReadMemberEmailOutDto(it)
         }
     }

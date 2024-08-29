@@ -62,12 +62,12 @@ class TokenUseCase(
 
         if (memberEmailAndTypeRecord.memberType == MemberType.PREAUTH) {
             isLogin = false
-            UpdateMemberTypeCommand(
-                id = memberId,
-                memberType = MemberType.NORMAL
-            ).let { command ->
-                memberDao.updateMemberType(command)
-            }
+            memberDao.updateMemberType(
+                UpdateMemberTypeCommand(
+                    id = memberId,
+                    memberType = MemberType.NORMAL
+                )
+            )
         }
 
         /** id가 요청에 포함되어 있으면 id를 통해 새로운 토큰을 발급 */

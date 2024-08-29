@@ -21,17 +21,17 @@ class ReadWorkbookUseCase(
     fun execute(useCaseIn: ReadWorkbookUseCaseIn): ReadWorkbookUseCaseOut {
         val workbookId = useCaseIn.workbookId
 
-        val workbookRecord = SelectWorkBookRecordQuery(workbookId).let { query ->
-            workbookDao.selectWorkBook(query) ?: throw NotFoundException("workbook.notfound.id")
-        }
+        val workbookRecord = workbookDao.selectWorkBook(SelectWorkBookRecordQuery(workbookId))
+            ?: throw NotFoundException("workbook.notfound.id")
 
-        val workbookMappedArticles = BrowseWorkbookArticlesInDto(workbookId).let { query ->
-            workbookArticleService.browseWorkbookArticles(query)
-        }
+        val workbookMappedArticles =
+            workbookArticleService.browseWorkbookArticles(BrowseWorkbookArticlesInDto(workbookId))
 
-        val writerRecords = BrowseWriterRecordsInDto(workbookMappedArticles.writerIds()).let { query ->
-            workbookMemberService.browseWriterRecords(query)
-        }
+        val writerRecords = workbookMemberService.browseWriterRecords(
+            BrowseWriterRecordsInDto(
+                workbookMappedArticles.writerIds()
+            )
+        )
 
         return ReadWorkbookUseCaseOut(
             id = workbookRecord.id,

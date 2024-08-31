@@ -14,14 +14,15 @@ class AddWorkbookUseCase(
 ) {
     @Transactional
     fun execute(useCaseIn: AddWorkbookUseCaseIn): AddWorkbookUseCaseOut {
-        val workbookId = InsertWorkBookCommand(
-            title = useCaseIn.title,
-            mainImageUrl = useCaseIn.mainImageUrl,
-            category = useCaseIn.category,
-            description = useCaseIn.description
-        ).let {
-            workbookDao.insertWorkBook(it)
-        } ?: throw InsertException("workbook.insertfail.record")
+        val workbookId =
+            workbookDao.insertWorkBook(
+                InsertWorkBookCommand(
+                    title = useCaseIn.title,
+                    mainImageUrl = useCaseIn.mainImageUrl,
+                    category = useCaseIn.category,
+                    description = useCaseIn.description
+                )
+            ) ?: throw InsertException("workbook.insertfail.record")
 
         return AddWorkbookUseCaseOut(workbookId)
     }

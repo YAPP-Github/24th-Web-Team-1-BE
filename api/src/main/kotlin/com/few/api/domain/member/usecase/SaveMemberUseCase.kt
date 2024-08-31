@@ -48,29 +48,30 @@ class SaveMemberUseCase(
             headComment = SIGNUP_HEAD_COMMENT
             subComment = SIGNUP_SUB_COMMENT
             email = useCaseIn.email
-            InsertMemberCommand(
-                email = useCaseIn.email,
-                memberType = MemberType.PREAUTH
-            ).let {
-                memberDao.insertMember(it) ?: throw InsertException("member.insertfail.record")
-            }
+            memberDao.insertMember(
+                InsertMemberCommand(
+                    email = useCaseIn.email,
+                    memberType = MemberType.PREAUTH
+                )
+            ) ?: throw InsertException("member.insertfail.record")
         } else {
             /** 삭제한 회원이라면 회원 타입을 PREAUTH로 변경 */
             if (isSignUpBeforeMember!!.isDeleted) {
-                UpdateDeletedMemberTypeCommand(
-                    id = isSignUpBeforeMember.memberId,
-                    memberType = MemberType.PREAUTH
-                ).let {
-                    val isUpdate = memberDao.updateMemberType(it)
-                    if (isUpdate != 1L) {
-                        throw InsertException("member.updatefail.record")
-                    }
-                    memberDao.selectMemberByEmail(
-                        SelectMemberByEmailNotConsiderDeletedAtQuery(
-                            email = useCaseIn.email
-                        )
-                    )?.memberId ?: throw InsertException("member.selectfail.record")
+                val isUpdate = memberDao.updateMemberType(
+                    UpdateDeletedMemberTypeCommand(
+                        id = isSignUpBeforeMember.memberId,
+                        memberType = MemberType.PREAUTH
+                    )
+                )
+                if (isUpdate != 1L) {
+                    throw InsertException("member.updatefail.record")
                 }
+
+                memberDao.selectMemberByEmail(
+                    SelectMemberByEmailNotConsiderDeletedAtQuery(
+                        email = useCaseIn.email
+                    )
+                )?.memberId ?: throw InsertException("member.selectfail.record")
             } else {
                 /** 이미 가입한 회원이라면 회원 ID를 반환 */
                 isSignUpBeforeMember.memberId
@@ -81,19 +82,19 @@ class SaveMemberUseCase(
         }
 
         runCatching {
-            SendAuthEmailArgs(
-                to = useCaseIn.email,
-                subject = "[FEW] 인증 이메일 주소를 확인해주세요.",
-                template = "auth",
-                content = Content(
-                    headComment = headComment,
-                    subComment = subComment,
-                    email = email,
-                    confirmLink = URL("https://www.fewletter.com/auth/validation/complete?auth_token=$token")
+            sendAuthEmailService.send(
+                SendAuthEmailArgs(
+                    to = useCaseIn.email,
+                    subject = "[FEW] 인증 이메일 주소를 확인해주세요.",
+                    template = "auth",
+                    content = Content(
+                        headComment = headComment,
+                        subComment = subComment,
+                        email = email,
+                        confirmLink = URL("https://www.fewletter.com/auth/validation/complete?auth_token=$token")
+                    )
                 )
-            ).let {
-                sendAuthEmailService.send(it)
-            }
+            )
         }.onFailure {
             return SaveMemberUseCaseOut(
                 isSendAuthEmail = false

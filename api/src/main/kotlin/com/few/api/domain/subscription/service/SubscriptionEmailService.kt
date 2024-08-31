@@ -16,16 +16,16 @@ class SubscriptionEmailService(
     }
 
     fun sendArticleEmail(dto: SendArticleInDto) {
-        SendArticleEmailArgs(
-            dto.toEmail,
-            ARTICLE_SUBJECT_TEMPLATE.format(
-                dto.articleDayCol,
-                dto.articleTitle
-            ),
-            ARTICLE_TEMPLATE,
-            dto.articleContent
-        ).let {
-            sendArticleEmailService.send(it)
-        }
+        sendArticleEmailService.send(
+            SendArticleEmailArgs(
+                dto.toEmail,
+                ARTICLE_SUBJECT_TEMPLATE.format(
+                    dto.articleDayCol,
+                    dto.articleTitle
+                ),
+                ARTICLE_TEMPLATE,
+                dto.articleContent
+            )
+        )
     }
 }

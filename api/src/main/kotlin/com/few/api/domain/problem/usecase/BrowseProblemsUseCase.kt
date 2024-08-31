@@ -13,10 +13,9 @@ class BrowseProblemsUseCase(
 ) {
 
     fun execute(useCaseIn: BrowseProblemsUseCaseIn): BrowseProblemsUseCaseOut {
-        SelectProblemsByArticleIdQuery(useCaseIn.articleId).let { query: SelectProblemsByArticleIdQuery ->
-            problemDao.selectProblemsByArticleId(query) ?: throw NotFoundException("problem.notfound.articleId")
-        }.let {
-            return BrowseProblemsUseCaseOut(it.problemIds)
-        }
+        problemDao.selectProblemsByArticleId(SelectProblemsByArticleIdQuery(useCaseIn.articleId))
+            ?.let {
+                return BrowseProblemsUseCaseOut(it.problemIds)
+            } ?: throw NotFoundException("problem.notfound.articleId")
     }
 }

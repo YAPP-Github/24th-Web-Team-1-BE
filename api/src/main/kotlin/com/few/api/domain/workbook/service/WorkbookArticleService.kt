@@ -20,18 +20,20 @@ class WorkbookArticleService(
     private val articleDao: ArticleDao,
 ) {
     fun browseWorkbookArticles(query: BrowseWorkbookArticlesInDto): List<WorkBookArticleOutDto> {
-        return SelectWorkbookMappedArticleRecordsQuery(query.workbookId).let { query ->
-            articleDao.selectWorkbookMappedArticleRecords(query).map { record ->
-                WorkBookArticleOutDto(
-                    articleId = record.articleId,
-                    writerId = record.writerId,
-                    mainImageURL = record.mainImageURL,
-                    title = record.title,
-                    category = record.category,
-                    content = record.content,
-                    createdAt = record.createdAt
-                )
-            }
+        return articleDao.selectWorkbookMappedArticleRecords(
+            SelectWorkbookMappedArticleRecordsQuery(
+                query.workbookId
+            )
+        ).map { record ->
+            WorkBookArticleOutDto(
+                articleId = record.articleId,
+                writerId = record.writerId,
+                mainImageURL = record.mainImageURL,
+                title = record.title,
+                category = record.category,
+                content = record.content,
+                createdAt = record.createdAt
+            )
         }
     }
 }

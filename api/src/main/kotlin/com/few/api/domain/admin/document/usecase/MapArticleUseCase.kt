@@ -15,9 +15,14 @@ class MapArticleUseCase(
 ) {
     @Transactional
     fun execute(useCaseIn: MapArticleUseCaseIn) {
-        MapWorkBookToArticleCommand(useCaseIn.workbookId, useCaseIn.articleId, useCaseIn.dayCol).let { command ->
-            workbookDao.mapWorkBookToArticle(command)
-        }
+        workbookDao.mapWorkBookToArticle(
+            MapWorkBookToArticleCommand(
+                useCaseIn.workbookId,
+                useCaseIn.articleId,
+                useCaseIn.dayCol
+            )
+
+        )
 
         articleMainCardService.appendWorkbook(
             AppendWorkbookToArticleMainCardInDto(useCaseIn.articleId, useCaseIn.workbookId)

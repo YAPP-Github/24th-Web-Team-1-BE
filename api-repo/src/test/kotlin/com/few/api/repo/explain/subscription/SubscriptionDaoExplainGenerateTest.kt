@@ -2,10 +2,7 @@ package com.few.api.repo.explain.subscription
 
 import com.few.api.repo.dao.subscription.SubscriptionDao
 import com.few.api.repo.dao.subscription.command.*
-import com.few.api.repo.dao.subscription.query.CountWorkbookMappedArticlesQuery
-import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookActiveSubscriptionQuery
-import com.few.api.repo.dao.subscription.query.SelectAllWorkbookSubscriptionStatusNotConsiderDeletedAtQuery
-import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookInActiveSubscriptionQuery
+import com.few.api.repo.dao.subscription.query.*
 import com.few.api.repo.explain.ExplainGenerator
 import com.few.api.repo.explain.InsertUpdateExplainGenerator
 import com.few.api.repo.explain.ResultGenerator
@@ -189,5 +186,19 @@ class SubscriptionDaoExplainGenerateTest : JooqTestSpec() {
         val explain = InsertUpdateExplainGenerator.execute(dslContext, command.sql, command.bindValues)
 
         ResultGenerator.execute(command, explain, "updateLastArticleProgressCommandExplain")
+    }
+
+    @Test
+    fun selectAllSubscriptionSendStatusQueryExplain() {
+        val query = subscriptionDao.selectAllSubscriptionSendStatusQuery(
+            SelectAllSubscriptionSendStatusQuery(
+                memberId = 1L,
+                workbookIds = listOf(1L)
+            )
+        )
+
+        val explain = ExplainGenerator.execute(dslContext, query)
+
+        ResultGenerator.execute(query, explain, "selectAllSubscriptionSendStatusQueryExplain")
     }
 }

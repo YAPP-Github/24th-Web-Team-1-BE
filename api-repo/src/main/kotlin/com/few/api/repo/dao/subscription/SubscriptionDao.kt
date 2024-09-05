@@ -80,8 +80,10 @@ class SubscriptionDao(
         dslContext.select(
             SUBSCRIPTION.TARGET_WORKBOOK_ID.`as`(MemberWorkbookSubscriptionStatusRecord::workbookId.name),
             SUBSCRIPTION.DELETED_AT.isNull.`as`(MemberWorkbookSubscriptionStatusRecord::isActiveSub.name),
-            DSL.max(SUBSCRIPTION.PROGRESS).add(1).`as`(MemberWorkbookSubscriptionStatusRecord::currentDay.name),
-            DSL.max(MAPPING_WORKBOOK_ARTICLE.DAY_COL).`as`(MemberWorkbookSubscriptionStatusRecord::totalDay.name)
+            DSL.max(SUBSCRIPTION.PROGRESS).add(1)
+                .`as`(MemberWorkbookSubscriptionStatusRecord::currentDay.name),
+            DSL.max(MAPPING_WORKBOOK_ARTICLE.DAY_COL)
+                .`as`(MemberWorkbookSubscriptionStatusRecord::totalDay.name)
         )
             .from(SUBSCRIPTION)
             .join(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE)
@@ -90,6 +92,7 @@ class SubscriptionDao(
             .and(SUBSCRIPTION.TARGET_MEMBER_ID.isNull)
             .and(SUBSCRIPTION.UNSUBS_OPINION.eq(query.unsubOpinion))
             .groupBy(SUBSCRIPTION.TARGET_WORKBOOK_ID, SUBSCRIPTION.DELETED_AT)
+            .orderBy(SUBSCRIPTION.PROGRESS)
             .query
 
     fun selectAllActiveWorkbookSubscriptionStatus(query: SelectAllMemberWorkbookActiveSubscriptionQuery): List<MemberWorkbookSubscriptionStatusRecord> {
@@ -111,6 +114,7 @@ class SubscriptionDao(
             .and(SUBSCRIPTION.TARGET_MEMBER_ID.isNull)
             .and(SUBSCRIPTION.UNSUBS_OPINION.isNull)
             .groupBy(SUBSCRIPTION.TARGET_WORKBOOK_ID, SUBSCRIPTION.DELETED_AT)
+            .orderBy(SUBSCRIPTION.PROGRESS)
             .query
 
     fun updateDeletedAtInAllSubscription(command: UpdateDeletedAtInAllSubscriptionCommand) {

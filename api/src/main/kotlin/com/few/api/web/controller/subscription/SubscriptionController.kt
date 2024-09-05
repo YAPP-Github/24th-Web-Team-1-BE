@@ -1,16 +1,16 @@
 package com.few.api.web.controller.subscription
 
-import com.few.api.domain.subscription.usecase.BrowseSubscribeWorkbooksUseCase
+import com.few.api.domain.subscription.usecase.*
 import com.few.api.web.controller.subscription.request.UnsubscribeWorkbookRequest
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
-import com.few.api.domain.subscription.usecase.SubscribeWorkbookUseCase
-import com.few.api.domain.subscription.usecase.UnsubscribeAllUseCase
-import com.few.api.domain.subscription.usecase.UnsubscribeWorkbookUseCase
 import com.few.api.domain.subscription.usecase.dto.*
 import com.few.api.security.authentication.token.TokenUserDetails
 import com.few.api.web.controller.subscription.request.UnsubscribeAllRequest
+import com.few.api.web.controller.subscription.request.UpdateSubscriptionDayRequest
+import com.few.api.web.controller.subscription.request.UpdateSubscriptionTimeRequest
 import com.few.api.web.controller.subscription.response.*
+import com.few.api.web.support.DayCode
 import com.few.api.web.support.ViewCategory
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Min
@@ -29,6 +29,8 @@ class SubscriptionController(
     private val unsubscribeWorkbookUseCase: UnsubscribeWorkbookUseCase,
     private val unsubscribeAllUseCase: UnsubscribeAllUseCase,
     private val browseSubscribeWorkbooksUseCase: BrowseSubscribeWorkbooksUseCase,
+    private val updateSubscriptionDayUseCase: UpdateSubscriptionDayUseCase,
+    private val updateSubscriptionTimeUseCase: UpdateSubscriptionTimeUseCase,
 ) {
 
     @GetMapping("/subscriptions/workbooks")
@@ -128,6 +130,44 @@ class SubscriptionController(
             UnsubscribeAllUseCaseIn(memberId = memberId, opinion = body.opinion)
         )
 
+        return ApiResponseGenerator.success(HttpStatus.OK)
+    }
+
+    @PatchMapping("/subscriptions/time")
+    fun updateSubscriptionTime(
+        @AuthenticationPrincipal userDetails: TokenUserDetails,
+        @Valid @RequestBody
+        body: UpdateSubscriptionTimeRequest,
+    ): ApiResponse<ApiResponse.Success> {
+        UpdateSubscriptionTimeUseCaseIn(
+            memberId = userDetails.username.toLong(),
+            time = body.time,
+            workbookId = body.workbookId
+        ).let {
+            updateSubscriptionTimeUseCase.execute(it)
+        }
+        return ApiResponseGenerator.success(HttpStatus.OK)
+    }
+
+    @PatchMapping("/subscriptions/day")
+    fun updateSubscriptionDay(
+        @AuthenticationPrincipal userDetails: TokenUserDetails,
+        @Valid @RequestBody
+        body: UpdateSubscriptionDayRequest,
+    ): ApiResponse<ApiResponse.Success> {
+        val dayCode = DayCode.fromCode(body.dayCode)
+        dayCode.also {
+            if (!(it == (DayCode.MON_TUE_WED_THU_FRI_SAT_SUN) || it == (DayCode.MON_TUE_WED_THU_FRI))) {
+                throw IllegalArgumentException("Invalid day code")
+            }
+        }
+        UpdateSubscriptionDayUseCaseIn(
+            memberId = userDetails.username.toLong(),
+            dayCode = dayCode,
+            workbookId = body.workbookId
+        ).let {
+            updateSubscriptionDayUseCase.execute(it)
+        }
         return ApiResponseGenerator.success(HttpStatus.OK)
     }
 }

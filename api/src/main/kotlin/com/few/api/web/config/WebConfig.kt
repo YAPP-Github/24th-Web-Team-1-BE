@@ -1,5 +1,6 @@
 package com.few.api.web.config
 
+import com.few.api.web.config.converter.DayCodeConverter
 import com.few.api.web.config.converter.ViewConverter
 import com.few.api.web.config.converter.WorkBookCategoryConverter
 import org.springframework.context.annotation.Configuration
@@ -28,5 +29,6 @@ class WebConfig : WebMvcConfigurer {
     override fun addFormatters(registry: FormatterRegistry) {
         registry.addConverter(WorkBookCategoryConverter())
         registry.addConverter(ViewConverter())
+        registry.addConverter(DayCodeConverter())
     }
 }

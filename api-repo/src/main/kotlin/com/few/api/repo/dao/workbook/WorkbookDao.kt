@@ -5,10 +5,12 @@ import com.few.api.repo.config.LocalCacheConfig.Companion.LOCAL_CM
 import com.few.api.repo.dao.workbook.command.InsertWorkBookCommand
 import com.few.api.repo.dao.workbook.command.MapWorkBookToArticleCommand
 import com.few.api.repo.dao.workbook.query.BrowseWorkBookQueryWithSubscriptionCountQuery
+import com.few.api.repo.dao.workbook.query.SelectAllWorkbookTitleQuery
 import com.few.api.repo.dao.workbook.query.SelectWorkBookLastArticleIdQuery
 import com.few.api.repo.dao.workbook.query.SelectWorkBookRecordQuery
 import com.few.api.repo.dao.workbook.record.SelectWorkBookRecord
 import com.few.api.repo.dao.workbook.record.SelectWorkBookRecordWithSubscriptionCount
+import com.few.api.repo.dao.workbook.record.WorkbookTitleRecord
 import com.few.data.common.code.CategoryType
 import jooq.jooq_dsl.tables.MappingWorkbookArticle
 import jooq.jooq_dsl.tables.Subscription
@@ -144,4 +146,17 @@ class WorkbookDao(
             .where(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.eq(query.workbookId))
             .and(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.DELETED_AT.isNull)
             .groupBy(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID)
+
+    fun selectAllWorkbookTitle(query: SelectAllWorkbookTitleQuery): List<WorkbookTitleRecord> {
+        return selectAllWorkbookTitleQuery(query)
+            .fetchInto(WorkbookTitleRecord::class.java)
+    }
+
+    fun selectAllWorkbookTitleQuery(query: SelectAllWorkbookTitleQuery) =
+        dslContext.select(
+            Workbook.WORKBOOK.ID.`as`(WorkbookTitleRecord::workbookId.name),
+            Workbook.WORKBOOK.TITLE.`as`(WorkbookTitleRecord::title.name)
+        )
+            .from(Workbook.WORKBOOK)
+            .where(Workbook.WORKBOOK.ID.`in`(query.workbookIds))
 }

@@ -1,10 +1,8 @@
 package com.few.api.domain.subscription.service
 
-import com.few.api.domain.subscription.service.dto.ReadWorkbookLastArticleIdInDto
-import com.few.api.domain.subscription.service.dto.ReadWorkbookLastArticleIdOutDto
-import com.few.api.domain.subscription.service.dto.ReadWorkbookTitleInDto
-import com.few.api.domain.subscription.service.dto.ReadWorkbookTitleOutDto
+import com.few.api.domain.subscription.service.dto.*
 import com.few.api.repo.dao.workbook.WorkbookDao
+import com.few.api.repo.dao.workbook.query.SelectAllWorkbookTitleQuery
 import com.few.api.repo.dao.workbook.query.SelectWorkBookLastArticleIdQuery
 import com.few.api.repo.dao.workbook.query.SelectWorkBookRecordQuery
 import org.springframework.stereotype.Service
@@ -22,6 +20,15 @@ class SubscriptionWorkbookService(
                     it
                 )
             }
+    }
+
+    /**
+     * key: workbookId
+     * value: title
+     */
+    fun readAllWorkbookTitle(dto: ReadAllWorkbookTitleInDto): Map<Long, String> {
+        return workbookDao.selectAllWorkbookTitle(SelectAllWorkbookTitleQuery(dto.workbookIds))
+            .associateBy({ it.workbookId }, { it.title })
     }
 
     fun readWorkbookLastArticleId(dto: ReadWorkbookLastArticleIdInDto): ReadWorkbookLastArticleIdOutDto? {

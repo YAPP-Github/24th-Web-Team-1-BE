@@ -5,6 +5,7 @@ import com.few.api.repo.dao.subscription.query.*
 import com.few.api.repo.dao.subscription.record.WorkbookSubscriptionStatus
 import com.few.api.repo.dao.subscription.record.CountAllSubscriptionStatusRecord
 import com.few.api.repo.dao.subscription.record.MemberWorkbookSubscriptionStatusRecord
+import com.few.api.repo.dao.subscription.record.SubscriptionSendStatusRecord
 import jooq.jooq_dsl.Tables.MAPPING_WORKBOOK_ARTICLE
 import jooq.jooq_dsl.Tables.SUBSCRIPTION
 import jooq.jooq_dsl.tables.MappingWorkbookArticle
@@ -79,8 +80,10 @@ class SubscriptionDao(
         dslContext.select(
             SUBSCRIPTION.TARGET_WORKBOOK_ID.`as`(MemberWorkbookSubscriptionStatusRecord::workbookId.name),
             SUBSCRIPTION.DELETED_AT.isNull.`as`(MemberWorkbookSubscriptionStatusRecord::isActiveSub.name),
-            DSL.max(SUBSCRIPTION.PROGRESS).add(1).`as`(MemberWorkbookSubscriptionStatusRecord::currentDay.name),
-            DSL.max(MAPPING_WORKBOOK_ARTICLE.DAY_COL).`as`(MemberWorkbookSubscriptionStatusRecord::totalDay.name)
+            DSL.max(SUBSCRIPTION.PROGRESS).add(1)
+                .`as`(MemberWorkbookSubscriptionStatusRecord::currentDay.name),
+            DSL.max(MAPPING_WORKBOOK_ARTICLE.DAY_COL)
+                .`as`(MemberWorkbookSubscriptionStatusRecord::totalDay.name)
         )
             .from(SUBSCRIPTION)
             .join(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE)
@@ -89,6 +92,7 @@ class SubscriptionDao(
             .and(SUBSCRIPTION.TARGET_MEMBER_ID.isNull)
             .and(SUBSCRIPTION.UNSUBS_OPINION.eq(query.unsubOpinion))
             .groupBy(SUBSCRIPTION.TARGET_WORKBOOK_ID, SUBSCRIPTION.DELETED_AT)
+            .orderBy(SUBSCRIPTION.PROGRESS)
             .query
 
     fun selectAllActiveWorkbookSubscriptionStatus(query: SelectAllMemberWorkbookActiveSubscriptionQuery): List<MemberWorkbookSubscriptionStatusRecord> {
@@ -110,6 +114,7 @@ class SubscriptionDao(
             .and(SUBSCRIPTION.TARGET_MEMBER_ID.isNull)
             .and(SUBSCRIPTION.UNSUBS_OPINION.isNull)
             .groupBy(SUBSCRIPTION.TARGET_WORKBOOK_ID, SUBSCRIPTION.DELETED_AT)
+            .orderBy(SUBSCRIPTION.PROGRESS)
             .query
 
     fun updateDeletedAtInAllSubscription(command: UpdateDeletedAtInAllSubscriptionCommand) {
@@ -185,4 +190,21 @@ class SubscriptionDao(
             .set(SUBSCRIPTION.UNSUBS_OPINION, command.opinion)
             .where(SUBSCRIPTION.MEMBER_ID.eq(command.memberId))
             .and(SUBSCRIPTION.TARGET_WORKBOOK_ID.eq(command.workbookId))
+
+    fun selectAllSubscriptionSendStatus(query: SelectAllSubscriptionSendStatusQuery): List<SubscriptionSendStatusRecord> {
+        return selectAllSubscriptionSendStatusQuery(query)
+            .fetchInto(
+                SubscriptionSendStatusRecord::class.java
+            )
+    }
+
+    fun selectAllSubscriptionSendStatusQuery(query: SelectAllSubscriptionSendStatusQuery) =
+        dslContext.select(
+            SUBSCRIPTION.TARGET_WORKBOOK_ID.`as`(SubscriptionSendStatusRecord::workbookId.name),
+            SUBSCRIPTION.SEND_TIME.`as`(SubscriptionSendStatusRecord::sendTime.name),
+            SUBSCRIPTION.SEND_DAY.`as`(SubscriptionSendStatusRecord::sendDay.name)
+        )
+            .from(SUBSCRIPTION)
+            .where(SUBSCRIPTION.MEMBER_ID.eq(query.memberId))
+            .and(SUBSCRIPTION.TARGET_WORKBOOK_ID.`in`(query.workbookIds))
 }

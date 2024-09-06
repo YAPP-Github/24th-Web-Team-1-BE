@@ -2,6 +2,7 @@ package com.few.api.web.support
 
 enum class ViewCategory(val viewName: String) {
     MAIN_CARD("mainCard"),
+    MY_PAGE("myPage"),
     ;
 
     companion object {

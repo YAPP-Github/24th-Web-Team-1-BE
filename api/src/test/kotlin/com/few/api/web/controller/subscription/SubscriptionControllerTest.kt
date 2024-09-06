@@ -17,8 +17,7 @@ import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.doReturn
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*
 import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -32,49 +31,53 @@ class SubscriptionControllerTest : ControllerTestSpec() {
     }
 
     @Test
-    @DisplayName("[GET] /api/v1/subscriptions/workbooks")
+    @DisplayName("[GET] /api/v1/subscriptions/workbooks?view=mainCard")
     @WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
-    fun browseSubscribeWorkbooks() {
+    fun browseSubscribeWorkbooksViewMainCard() {
         // given
-        val api = "BrowseSubscribeWorkBooks"
+        val api = "BrowseSubscribeWorkBooksViewMainCard"
         val token = "thisisaccesstoken"
         val view = ViewCategory.MAIN_CARD
         val uri = UriComponentsBuilder.newInstance()
             .path("$BASE_URL/subscriptions/workbooks")
-            .queryParam("view", view)
+            .queryParam("view", view.viewName)
             .build()
             .toUriString()
 
         val memberId = 1L
-        val useCaseIn = BrowseSubscribeWorkbooksUseCaseIn(memberId)
+        val useCaseIn = BrowseSubscribeWorkbooksUseCaseIn(memberId, view)
         val useCaseOut = BrowseSubscribeWorkbooksUseCaseOut(
+            clazz = MainCardSubscribeWorkbookDetail::class.java,
             workbooks = listOf(
-                SubscribeWorkbookDetail(
+                MainCardSubscribeWorkbookDetail(
                     workbookId = 1L,
                     isActiveSub = WorkBookStatus.ACTIVE,
                     currentDay = 1,
                     totalDay = 3,
                     rank = 0,
                     totalSubscriber = 100,
+                    subscription = Subscription(),
                     articleInfo = "{\"articleId\":1}"
                 ),
-                SubscribeWorkbookDetail(
+                MainCardSubscribeWorkbookDetail(
                     workbookId = 2L,
                     isActiveSub = WorkBookStatus.ACTIVE,
                     currentDay = 2,
                     totalDay = 3,
                     rank = 0,
                     totalSubscriber = 1,
+                    subscription = Subscription(),
                     articleInfo = "{\"articleId\":5}"
                 ),
-                SubscribeWorkbookDetail(
+                MainCardSubscribeWorkbookDetail(
                     workbookId = 3L,
                     isActiveSub = WorkBookStatus.DONE,
                     currentDay = 3,
                     totalDay = 3,
                     rank = 0,
                     totalSubscriber = 2,
-                    articleInfo = "{}"
+                    subscription = Subscription(),
+                    articleInfo = "{\"articleId\":6}"
                 )
             )
         )
@@ -91,7 +94,7 @@ class SubscriptionControllerTest : ControllerTestSpec() {
                     api.toIdentifier(),
                     ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
-                            .description("구독한 학습지 정보 목록을 조회합니다.")
+                            .description("메인 카드에 표시할 구독한 학습지 정보 목록을 조회합니다.")
                             .summary(api.toIdentifier())
                             .privateResource(false)
                             .deprecated(false)
@@ -123,7 +126,115 @@ class SubscriptionControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data.workbooks[].totalSubscriber")
                                             .fieldWithNumber("누적 구독자 수"),
                                         PayloadDocumentation.fieldWithPath("data.workbooks[].articleInfo")
-                                            .fieldWithString("학습지 정보(Json 타입)")
+                                            .fieldWithString("아티클 정보(Json 타입)"),
+                                        PayloadDocumentation.fieldWithPath("data.workbooks[].subscription")
+                                            .fieldWithObject("구독 정보"),
+                                        PayloadDocumentation.fieldWithPath("data.workbooks[].subscription.time")
+                                            .fieldWithString("구독 시간"),
+                                        PayloadDocumentation.fieldWithPath("data.workbooks[].subscription.dateTimeCode")
+                                            .fieldWithString("구독 시간 코드")
+                                    )
+                                )
+                            )
+                            .build()
+                    )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("[GET] /api/v1/subscriptions/workbooks?view=myPage")
+    @WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
+    fun browseSubscribeWorkbooksViewMyPage() {
+        // given
+        val api = "BrowseSubscribeWorkBooksViewMyPage"
+        val token = "thisisaccesstoken"
+        val view = ViewCategory.MY_PAGE
+        val uri = UriComponentsBuilder.newInstance()
+            .path("$BASE_URL/subscriptions/workbooks")
+            .queryParam("view", view.viewName)
+            .build()
+            .toUriString()
+
+        val memberId = 1L
+        val useCaseIn = BrowseSubscribeWorkbooksUseCaseIn(memberId, view)
+        val useCaseOut = BrowseSubscribeWorkbooksUseCaseOut(
+            clazz = MyPageSubscribeWorkbookDetail::class.java,
+            workbooks = listOf(
+                MyPageSubscribeWorkbookDetail(
+                    workbookId = 1L,
+                    isActiveSub = WorkBookStatus.ACTIVE,
+                    currentDay = 1,
+                    totalDay = 3,
+                    rank = 0,
+                    totalSubscriber = 100,
+                    subscription = Subscription(),
+                    workbookInfo = "{\"id\":1, \"title\":\"title1\"}"
+                ),
+                MyPageSubscribeWorkbookDetail(
+                    workbookId = 2L,
+                    isActiveSub = WorkBookStatus.ACTIVE,
+                    currentDay = 2,
+                    totalDay = 3,
+                    rank = 0,
+                    totalSubscriber = 1,
+                    subscription = Subscription(),
+                    workbookInfo = "{\"id\":2, \"title\":\"title2\"}"
+                )
+            )
+        )
+        doReturn(useCaseOut).`when`(browseSubscribeWorkbooksUseCase).execute(useCaseIn)
+
+        // when
+        mockMvc.perform(
+            get(uri)
+                .header("Authorization", "Bearer $token")
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
+            .andDo(
+                document(
+                    api.toIdentifier(),
+                    ResourceDocumentation.resource(
+                        ResourceSnippetParameters.builder()
+                            .description("마이 페이지에 표시할 구독한 학습지 정보 목록을 조회합니다.")
+                            .summary(api.toIdentifier())
+                            .privateResource(false)
+                            .deprecated(false)
+                            .tag(TAG)
+                            .requestSchema(Schema.schema(api.toRequestSchema()))
+                            .requestHeaders(
+                                ResourceDocumentation.headerWithName("Authorization")
+                                    .defaultValue("{{accessToken}}")
+                                    .description("Bearer 어세스 토큰")
+                            )
+                            .responseSchema(Schema.schema(api.toResponseSchema()))
+                            .responseFields(
+                                *Description.describe(
+                                    arrayOf(
+                                        PayloadDocumentation.fieldWithPath("data")
+                                            .fieldWithObject("data"),
+                                        PayloadDocumentation.fieldWithPath("data.workbooks")
+                                            .fieldWithArray("학습지 목록"),
+                                        PayloadDocumentation.fieldWithPath("data.workbooks[].id")
+                                            .fieldWithNumber("학습지 Id"),
+                                        PayloadDocumentation.fieldWithPath("data.workbooks[].status")
+                                            .fieldWithString("구독 상태"),
+                                        PayloadDocumentation.fieldWithPath("data.workbooks[].totalDay")
+                                            .fieldWithNumber("총 일수"),
+                                        PayloadDocumentation.fieldWithPath("data.workbooks[].currentDay")
+                                            .fieldWithNumber("현재 일수"),
+                                        PayloadDocumentation.fieldWithPath("data.workbooks[].rank")
+                                            .fieldWithNumber("순위"),
+                                        PayloadDocumentation.fieldWithPath("data.workbooks[].totalSubscriber")
+                                            .fieldWithNumber("누적 구독자 수"),
+                                        PayloadDocumentation.fieldWithPath("data.workbooks[].workbookInfo")
+                                            .fieldWithString("학습지 정보(Json 타입)"),
+                                        PayloadDocumentation.fieldWithPath("data.workbooks[].subscription")
+                                            .fieldWithObject("구독 정보"),
+                                        PayloadDocumentation.fieldWithPath("data.workbooks[].subscription.time")
+                                            .fieldWithString("구독 시간"),
+                                        PayloadDocumentation.fieldWithPath("data.workbooks[].subscription.dateTimeCode")
+                                            .fieldWithString("구독 시간 코드")
                                     )
                                 )
                             )

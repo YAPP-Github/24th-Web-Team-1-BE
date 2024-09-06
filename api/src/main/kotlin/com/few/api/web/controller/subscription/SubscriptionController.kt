@@ -105,14 +105,14 @@ class SubscriptionController(
         @Min(value = 1, message = "{min.id}")
         workbookId: Long,
         @Valid @RequestBody
-        body: UnsubscribeWorkbookRequest,
+        body: UnsubscribeWorkbookRequest?,
     ): ApiResponse<ApiResponse.Success> {
         val memberId = userDetails.username.toLong()
         unsubscribeWorkbookUseCase.execute(
             UnsubscribeWorkbookUseCaseIn(
                 workbookId = workbookId,
                 memberId = memberId,
-                opinion = body.opinion
+                opinion = body?.opinion ?: "cancel"
             )
         )
 
@@ -123,11 +123,11 @@ class SubscriptionController(
     fun deactivateAllSubscriptions(
         @AuthenticationPrincipal userDetails: TokenUserDetails,
         @Valid @RequestBody
-        body: UnsubscribeAllRequest,
+        body: UnsubscribeAllRequest?,
     ): ApiResponse<ApiResponse.Success> {
         val memberId = userDetails.username.toLong()
         unsubscribeAllUseCase.execute(
-            UnsubscribeAllUseCaseIn(memberId = memberId, opinion = body.opinion)
+            UnsubscribeAllUseCaseIn(memberId = memberId, opinion = body?.opinion ?: "cancel")
         )
 
         return ApiResponseGenerator.success(HttpStatus.OK)

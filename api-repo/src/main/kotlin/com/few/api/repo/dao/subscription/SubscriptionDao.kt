@@ -207,4 +207,40 @@ class SubscriptionDao(
             .from(SUBSCRIPTION)
             .where(SUBSCRIPTION.MEMBER_ID.eq(query.memberId))
             .and(SUBSCRIPTION.TARGET_WORKBOOK_ID.`in`(query.workbookIds))
+
+    fun selectAllActiveSubscriptionWorkbookIds(query: SelectAllActiveSubscriptionWorkbookIdsQuery): List<Long> {
+        return dslContext.select(SUBSCRIPTION.TARGET_WORKBOOK_ID)
+            .from(SUBSCRIPTION)
+            .where(SUBSCRIPTION.MEMBER_ID.eq(query.memberId))
+            .and(SUBSCRIPTION.DELETED_AT.isNull)
+            .fetchInto(Long::class.java)
+    }
+
+    data class SelectAllActiveSubscriptionWorkbookIdsQuery(
+        val memberId: Long,
+    )
+
+    fun bulkUpdateSubscriptionSendTime(command: BulkUpdateSubscriptionSendTimeCommand) {
+        bulkUpdateSubscriptionSendTimeCommand(command)
+            .execute()
+    }
+
+    fun bulkUpdateSubscriptionSendTimeCommand(command: BulkUpdateSubscriptionSendTimeCommand) =
+        dslContext.update(SUBSCRIPTION)
+            .set(SUBSCRIPTION.SEND_TIME, command.time)
+            .set(SUBSCRIPTION.MODIFIED_AT, LocalDateTime.now())
+            .where(SUBSCRIPTION.MEMBER_ID.eq(command.memberId))
+            .and(SUBSCRIPTION.TARGET_WORKBOOK_ID.`in`(command.workbookIds))
+
+    fun bulkUpdateSubscriptionSendDay(command: BulkUpdateSubscriptionSendDayCommand) {
+        bulkUpdateSubscriptionSendDayCommand(command)
+            .execute()
+    }
+
+    fun bulkUpdateSubscriptionSendDayCommand(command: BulkUpdateSubscriptionSendDayCommand) =
+        dslContext.update(SUBSCRIPTION)
+            .set(SUBSCRIPTION.SEND_DAY, command.day)
+            .set(SUBSCRIPTION.MODIFIED_AT, LocalDateTime.now())
+            .where(SUBSCRIPTION.MEMBER_ID.eq(command.memberId))
+            .and(SUBSCRIPTION.TARGET_WORKBOOK_ID.`in`(command.workbookIds))
 }

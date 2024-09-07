@@ -2,6 +2,7 @@ package com.few.data.common.code
 
 /**
  * @see com.few.batch.data.common.code.BatchCategoryType
+ * @see com.few.api.web.support.WorkBookCategory
  */
 enum class CategoryType(val code: Byte, val displayName: String) {
     All(-1, "전체"), // Should not be stored in the DB

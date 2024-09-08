@@ -1,5 +1,7 @@
 package com.few.api.domain.subscription.usecase
 
+import com.few.api.domain.common.lock.LockFor
+import com.few.api.domain.common.lock.LockIdentifier
 import com.few.api.domain.subscription.event.dto.WorkbookSubscriptionEvent
 import com.few.api.repo.dao.subscription.SubscriptionDao
 import com.few.api.repo.dao.subscription.command.InsertWorkbookSubscriptionCommand
@@ -21,6 +23,7 @@ class SubscribeWorkbookUseCase(
     private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
 
+    @LockFor(LockIdentifier.SUBSCRIPTION_MEMBER_ID_WORKBOOK_ID)
     @Transactional
     fun execute(useCaseIn: SubscribeWorkbookUseCaseIn) {
         val subTargetWorkbookId = useCaseIn.workbookId

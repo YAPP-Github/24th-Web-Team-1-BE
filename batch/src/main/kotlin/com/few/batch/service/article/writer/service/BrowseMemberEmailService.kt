@@ -16,6 +16,7 @@ class BrowseMemberEmailService(
         )
             .from(Member.MEMBER)
             .where(Member.MEMBER.ID.`in`(memberIds))
+            .and(Member.MEMBER.DELETED_AT.isNull)
             .fetch()
             .intoMap(Member.MEMBER.ID, Member.MEMBER.EMAIL)
     }

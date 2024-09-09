@@ -18,6 +18,21 @@ import java.time.LocalDateTime
 class SubscriptionDao(
     private val dslContext: DSLContext,
 ) {
+    fun getLock(memberId: Long, workbookId: Long, timeout: Int = 5): Boolean {
+        return dslContext.fetch(
+            """
+            SELECT GET_LOCK(CONCAT('subscription_', $memberId, '_', $workbookId), $timeout);
+            """
+        ).into(Int::class.java).first() == 1
+    }
+
+    fun releaseLock(memberId: Long, workbookId: Long): Boolean {
+        return dslContext.fetch(
+            """
+            SELECT RELEASE_LOCK(CONCAT('subscription_', $memberId, '_', $workbookId));
+            """
+        ).into(Int::class.java).first() == 1
+    }
 
     fun insertWorkbookSubscription(command: InsertWorkbookSubscriptionCommand) {
         insertWorkbookSubscriptionCommand(command)

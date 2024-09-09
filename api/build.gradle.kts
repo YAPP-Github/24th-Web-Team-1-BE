@@ -1,6 +1,11 @@
 
 import org.hidetake.gradle.swagger.generator.GenerateSwaggerUI
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 import java.util.Random
+
+tasks.withType(BootJar::class.java) {
+    loaderImplementation = org.springframework.boot.loader.tools.LoaderImplementation.CLASSIC
+}
 
 dependencies {
     /** module */

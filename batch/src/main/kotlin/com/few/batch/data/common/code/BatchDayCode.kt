@@ -1,9 +1,9 @@
-package com.few.api.web.support
+package com.few.batch.data.common.code
 
 /**
  * @see com.few.data.common.code.DayCode
  */
-enum class DayCode(val code: String, val days: String) {
+enum class BatchDayCode(val code: String, val days: String) {
     MON("0000001", "월"),
     TUE("0000010", "화"),
     MON_TUE("0000011", "월,화"),
@@ -133,7 +133,7 @@ enum class DayCode(val code: String, val days: String) {
     MON_TUE_WED_THU_FRI_SAT_SUN("1111111", "월,화,수,목,금,토,일"),
     ;
     companion object {
-        fun fromCode(code: String): DayCode {
+        fun fromCode(code: String): BatchDayCode {
             return entries.first { it.code == code }
         }
     }

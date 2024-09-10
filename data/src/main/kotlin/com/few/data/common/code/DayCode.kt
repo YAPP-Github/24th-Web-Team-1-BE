@@ -1,7 +1,8 @@
-package com.few.api.web.support
+package com.few.data.common.code
 
 /**
- * @see com.few.data.common.code.DayCode
+ * @see com.few.api.web.support.DayCode
+ * @see com.few.batch.data.common.code.BatchDayCode
  */
 enum class DayCode(val code: String, val days: String) {
     MON("0000001", "월"),

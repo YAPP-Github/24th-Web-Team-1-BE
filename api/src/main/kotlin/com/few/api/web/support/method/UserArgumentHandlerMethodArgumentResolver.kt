@@ -26,7 +26,7 @@ class UserArgumentHandlerMethodArgumentResolver(
         mavContainer: ModelAndViewContainer?,
         webRequest: NativeWebRequest,
         binderFactory: WebDataBinderFactory?,
-    ): Any? {
+    ): UserArgumentDetails {
         val authorization: String? = webRequest.getHeader("Authorization")
 
         val memberId = authorization?.let {

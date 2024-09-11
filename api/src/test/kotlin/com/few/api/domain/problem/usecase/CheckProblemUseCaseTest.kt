@@ -26,7 +26,8 @@ class CheckProblemUseCaseTest : BehaviorSpec({
     given("특정 문제에 대한 정답 확인 요청이 온 상황에서") {
         val problemId = 1L
         val submissionVal = "1"
-        val useCaseIn = CheckProblemUseCaseIn(problemId = problemId, sub = submissionVal)
+        val useCaseIn =
+            CheckProblemUseCaseIn(memberId = 0, problemId = problemId, sub = submissionVal)
 
         `when`("제출 값과 문제 정답이 같을 경우") {
             val answer = submissionVal

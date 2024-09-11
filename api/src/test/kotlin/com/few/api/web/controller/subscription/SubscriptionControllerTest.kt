@@ -411,113 +411,113 @@ class SubscriptionControllerTest : ControllerTestSpec() {
                     )
                 )
             )
+    }
 
-        @Test
-        @DisplayName("[PATCH] /api/v1/subscriptions/time")
-        @WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
-        fun updateSubscriptionTime() {
-            // given
-            val api = "UpdateSubscriptionTime"
-            val token = "thisisaccesstoken"
-            val uri = UriComponentsBuilder.newInstance()
-                .path("$BASE_URL/subscriptions/time")
-                .build()
-                .toUriString()
+    @Test
+    @DisplayName("[PATCH] /api/v1/subscriptions/time")
+    @WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
+    fun updateSubscriptionTime() {
+        // given
+        val api = "UpdateSubscriptionTime"
+        val token = "thisisaccesstoken"
+        val uri = UriComponentsBuilder.newInstance()
+            .path("$BASE_URL/subscriptions/time")
+            .build()
+            .toUriString()
 
-            val time = LocalTime.of(8, 0)
-            val workbookId = 1L
-            val body = objectMapper.writeValueAsString(
-                UpdateSubscriptionTimeRequest(
-                    time = time,
-                    workbookId = workbookId
-                )
+        val time = LocalTime.of(8, 0)
+        val workbookId = 1L
+        val body = objectMapper.writeValueAsString(
+            UpdateSubscriptionTimeRequest(
+                time = time,
+                workbookId = workbookId
             )
+        )
 
-            // when
-            mockMvc.perform(
-                patch(uri)
-                    .header("Authorization", "Bearer $token")
-                    .content(body)
-                    .contentType(MediaType.APPLICATION_JSON)
-            ).andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
-                .andDo(
-                    document(
-                        api.toIdentifier(),
-                        ResourceDocumentation.resource(
-                            ResourceSnippetParameters.builder()
-                                .description("구독 시간을 변경합니다.")
-                                .summary(api.toIdentifier())
-                                .privateResource(false)
-                                .deprecated(false)
-                                .tag(TAG)
-                                .requestSchema(Schema.schema(api.toRequestSchema()))
-                                .requestHeaders(
-                                    ResourceDocumentation.headerWithName("Authorization")
-                                        .defaultValue("{{accessToken}}")
-                                        .description("Bearer 어세스 토큰")
-                                )
-                                .responseSchema(Schema.schema(api.toResponseSchema()))
-                                .responseFields(
-                                    *Description.describe()
-                                )
-                                .build()
-                        )
+        // when
+        mockMvc.perform(
+            patch(uri)
+                .header("Authorization", "Bearer $token")
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
+            .andDo(
+                document(
+                    api.toIdentifier(),
+                    ResourceDocumentation.resource(
+                        ResourceSnippetParameters.builder()
+                            .description("구독 시간을 변경합니다.")
+                            .summary(api.toIdentifier())
+                            .privateResource(false)
+                            .deprecated(false)
+                            .tag(TAG)
+                            .requestSchema(Schema.schema(api.toRequestSchema()))
+                            .requestHeaders(
+                                ResourceDocumentation.headerWithName("Authorization")
+                                    .defaultValue("{{accessToken}}")
+                                    .description("Bearer 어세스 토큰")
+                            )
+                            .responseSchema(Schema.schema(api.toResponseSchema()))
+                            .responseFields(
+                                *Description.describe()
+                            )
+                            .build()
                     )
                 )
-        }
-
-        @Test
-        @DisplayName("[PATCH] /api/v1/subscriptions/day")
-        @WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
-        fun updateSubscriptionDay() {
-            // given
-            val api = "UpdateSubscriptionDay"
-            val token = "thisisaccesstoken"
-            val uri = UriComponentsBuilder.newInstance()
-                .path("$BASE_URL/subscriptions/day")
-                .build()
-                .toUriString()
-
-            val dateTimeCode = DayCode.MON_TUE_WED_THU_FRI_SAT_SUN
-            val workbookId = 1L
-            val body = objectMapper.writeValueAsString(
-                UpdateSubscriptionDayRequest(
-                    workbookId = workbookId,
-                    dayCode = dateTimeCode.code
-                )
             )
+    }
 
-            // when
-            mockMvc.perform(
-                patch(uri)
-                    .header("Authorization", "Bearer $token")
-                    .content(body)
-                    .contentType(MediaType.APPLICATION_JSON)
-            ).andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
-                .andDo(
-                    document(
-                        api.toIdentifier(),
-                        ResourceDocumentation.resource(
-                            ResourceSnippetParameters.builder()
-                                .description("구독 요일을 변경합니다.")
-                                .summary(api.toIdentifier())
-                                .privateResource(false)
-                                .deprecated(false)
-                                .tag(TAG)
-                                .requestSchema(Schema.schema(api.toRequestSchema()))
-                                .requestHeaders(
-                                    ResourceDocumentation.headerWithName("Authorization")
-                                        .defaultValue("{{accessToken}}")
-                                        .description("Bearer 어세스 토큰")
-                                )
-                                .responseSchema(Schema.schema(api.toResponseSchema()))
-                                .responseFields(
-                                    *Description.describe()
-                                )
-                                .build()
-                        )
+    @Test
+    @DisplayName("[PATCH] /api/v1/subscriptions/day")
+    @WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
+    fun updateSubscriptionDay() {
+        // given
+        val api = "UpdateSubscriptionDay"
+        val token = "thisisaccesstoken"
+        val uri = UriComponentsBuilder.newInstance()
+            .path("$BASE_URL/subscriptions/day")
+            .build()
+            .toUriString()
+
+        val dateTimeCode = DayCode.MON_TUE_WED_THU_FRI_SAT_SUN
+        val workbookId = 1L
+        val body = objectMapper.writeValueAsString(
+            UpdateSubscriptionDayRequest(
+                workbookId = workbookId,
+                dayCode = dateTimeCode.code
+            )
+        )
+
+        // when
+        mockMvc.perform(
+            patch(uri)
+                .header("Authorization", "Bearer $token")
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
+            .andDo(
+                document(
+                    api.toIdentifier(),
+                    ResourceDocumentation.resource(
+                        ResourceSnippetParameters.builder()
+                            .description("구독 요일을 변경합니다.")
+                            .summary(api.toIdentifier())
+                            .privateResource(false)
+                            .deprecated(false)
+                            .tag(TAG)
+                            .requestSchema(Schema.schema(api.toRequestSchema()))
+                            .requestHeaders(
+                                ResourceDocumentation.headerWithName("Authorization")
+                                    .defaultValue("{{accessToken}}")
+                                    .description("Bearer 어세스 토큰")
+                            )
+                            .responseSchema(Schema.schema(api.toResponseSchema()))
+                            .responseFields(
+                                *Description.describe()
+                            )
+                            .build()
                     )
                 )
-        }
+            )
     }
 }

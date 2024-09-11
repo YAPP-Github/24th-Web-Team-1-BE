@@ -19,16 +19,16 @@ class CheckProblemUseCase(
 
     @Transactional
     fun execute(useCaseIn: CheckProblemUseCaseIn): CheckProblemUseCaseOut {
+        val memberId = useCaseIn.memberId
         val problemId = useCaseIn.problemId
         val submitAns = useCaseIn.sub
 
         val record = problemDao.selectProblemAnswer(SelectProblemAnswerQuery(problemId)) ?: throw NotFoundException("problem.notfound.id")
         val isSolved = record.answer == submitAns
 
-        val submitHistoryId = submitHistoryDao.insertSubmitHistory(
-            InsertSubmitHistoryCommand(problemId, 1L, submitAns, isSolved)
+        submitHistoryDao.insertSubmitHistory(
+            InsertSubmitHistoryCommand(problemId, memberId, submitAns, isSolved)
         ) ?: throw InsertException("submit.insertfail.record")
-        // not used 'submitHistoryId'
 
         return CheckProblemUseCaseOut(
             explanation = record.explanation,

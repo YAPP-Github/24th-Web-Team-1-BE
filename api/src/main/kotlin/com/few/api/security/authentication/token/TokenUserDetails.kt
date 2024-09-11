@@ -3,7 +3,7 @@ package com.few.api.security.authentication.token
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
-class TokenUserDetails(
+open class TokenUserDetails(
     val authorities: List<GrantedAuthority>,
     val id: String,
     val email: String,

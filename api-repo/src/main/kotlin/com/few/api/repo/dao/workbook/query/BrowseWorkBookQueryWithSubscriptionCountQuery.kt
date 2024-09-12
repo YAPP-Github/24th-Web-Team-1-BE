@@ -1,6 +1,6 @@
 package com.few.api.repo.dao.workbook.query
 
-data class BrowseWorkBookQueryWithSubscriptionCount(
+data class BrowseWorkBookQueryWithSubscriptionCountQuery(
     /**
      * @see com.few.api.web.support.WorkBookCategory
      */

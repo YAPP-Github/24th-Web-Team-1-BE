@@ -1,10 +1,8 @@
 package com.few.api.domain.subscription.service
 
-import com.few.api.domain.subscription.service.dto.ReadWorkbookLastArticleIdInDto
-import com.few.api.domain.subscription.service.dto.ReadWorkbookLastArticleIdOutDto
-import com.few.api.domain.subscription.service.dto.ReadWorkbookTitleInDto
-import com.few.api.domain.subscription.service.dto.ReadWorkbookTitleOutDto
+import com.few.api.domain.subscription.service.dto.*
 import com.few.api.repo.dao.workbook.WorkbookDao
+import com.few.api.repo.dao.workbook.query.SelectAllWorkbookTitleQuery
 import com.few.api.repo.dao.workbook.query.SelectWorkBookLastArticleIdQuery
 import com.few.api.repo.dao.workbook.query.SelectWorkBookRecordQuery
 import org.springframework.stereotype.Service
@@ -15,16 +13,28 @@ class SubscriptionWorkbookService(
 ) {
 
     fun readWorkbookTitle(dto: ReadWorkbookTitleInDto): ReadWorkbookTitleOutDto? {
-        return SelectWorkBookRecordQuery(dto.workbookId).let { query ->
-            workbookDao.selectWorkBook(query)?.title?.let { ReadWorkbookTitleOutDto(it) }
-        }
+        return workbookDao.selectWorkBook(SelectWorkBookRecordQuery(dto.workbookId))
+            ?.title
+            ?.let {
+                ReadWorkbookTitleOutDto(
+                    it
+                )
+            }
+    }
+
+    /**
+     * key: workbookId
+     * value: title
+     */
+    fun readAllWorkbookTitle(dto: ReadAllWorkbookTitleInDto): Map<Long, String> {
+        return workbookDao.selectAllWorkbookTitle(SelectAllWorkbookTitleQuery(dto.workbookIds))
+            .associateBy({ it.workbookId }, { it.title })
     }
 
     fun readWorkbookLastArticleId(dto: ReadWorkbookLastArticleIdInDto): ReadWorkbookLastArticleIdOutDto? {
-        return SelectWorkBookLastArticleIdQuery(dto.workbookId).let { query ->
-            workbookDao.selectWorkBookLastArticleId(query)
-        }?.let {
-            ReadWorkbookLastArticleIdOutDto(it)
-        }
+        return workbookDao.selectWorkBookLastArticleId(SelectWorkBookLastArticleIdQuery(dto.workbookId))
+            ?.let {
+                ReadWorkbookLastArticleIdOutDto(it)
+            }
     }
 }

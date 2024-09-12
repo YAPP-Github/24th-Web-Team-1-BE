@@ -1,29 +1,17 @@
 package com.few.api.web.controller.subscription
 
-import com.few.api.domain.subscription.usecase.BrowseSubscribeWorkbooksUseCase
+import com.few.api.domain.subscription.usecase.*
 import com.few.api.web.controller.subscription.request.UnsubscribeWorkbookRequest
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
-import com.few.api.domain.subscription.usecase.SubscribeWorkbookUseCase
-import com.few.api.domain.subscription.usecase.UnsubscribeAllUseCase
-import com.few.api.domain.subscription.usecase.UnsubscribeWorkbookUseCase
-import com.few.api.domain.subscription.usecase.dto.BrowseSubscribeWorkbooksUseCaseIn
-import com.few.api.domain.subscription.usecase.dto.SubscribeWorkbookUseCaseIn
-import com.few.api.domain.subscription.usecase.dto.UnsubscribeAllUseCaseIn
-import com.few.api.domain.subscription.usecase.dto.UnsubscribeWorkbookUseCaseIn
-import com.few.api.domain.workbook.usecase.BrowseWorkbooksUseCase
-import com.few.api.domain.workbook.usecase.dto.BrowseWorkbooksUseCaseIn
+import com.few.api.domain.subscription.usecase.dto.*
 import com.few.api.security.authentication.token.TokenUserDetails
-import com.few.api.security.filter.token.AccessTokenResolver
-import com.few.api.security.token.TokenResolver
 import com.few.api.web.controller.subscription.request.UnsubscribeAllRequest
-import com.few.api.web.controller.subscription.response.MainViewBrowseSubscribeWorkbooksResponse
-import com.few.api.web.controller.subscription.response.MainViewSubscribeWorkbookInfo
-import com.few.api.web.controller.subscription.response.SubscribeWorkbookInfo
-import com.few.api.web.controller.subscription.response.SubscribeWorkbooksResponse
+import com.few.api.web.controller.subscription.request.UpdateSubscriptionDayRequest
+import com.few.api.web.controller.subscription.request.UpdateSubscriptionTimeRequest
+import com.few.api.web.controller.subscription.response.*
+import com.few.api.web.support.DayCode
 import com.few.api.web.support.ViewCategory
-import com.few.api.web.support.WorkBookCategory
-import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Min
 import org.springframework.http.HttpStatus
@@ -31,6 +19,7 @@ import org.springframework.http.MediaType
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import java.lang.IllegalStateException
 
 @Validated
 @RestController
@@ -40,10 +29,8 @@ class SubscriptionController(
     private val unsubscribeWorkbookUseCase: UnsubscribeWorkbookUseCase,
     private val unsubscribeAllUseCase: UnsubscribeAllUseCase,
     private val browseSubscribeWorkbooksUseCase: BrowseSubscribeWorkbooksUseCase,
-    private val tokenResolver: TokenResolver,
-
-    // 임시 구현용
-    private val browseWorkBooksUseCase: BrowseWorkbooksUseCase,
+    private val updateSubscriptionDayUseCase: UpdateSubscriptionDayUseCase,
+    private val updateSubscriptionTimeUseCase: UpdateSubscriptionTimeUseCase,
 ) {
 
     @GetMapping("/subscriptions/workbooks")
@@ -52,110 +39,45 @@ class SubscriptionController(
         @RequestParam(
             value = "view",
             required = false
-        ) view: ViewCategory? = ViewCategory.MAIN_CARD,
+        ) view: ViewCategory?,
     ): ApiResponse<ApiResponse.SuccessBody<SubscribeWorkbooksResponse>> {
         val memberId = userDetails.username.toLong()
-        val useCaseOut = BrowseSubscribeWorkbooksUseCaseIn(memberId).let {
-            browseSubscribeWorkbooksUseCase.execute(it)
-        }
+        val useCaseOut =
+            BrowseSubscribeWorkbooksUseCaseIn(memberId, view ?: ViewCategory.MAIN_CARD).let {
+                browseSubscribeWorkbooksUseCase.execute(it)
+            }
 
+        // todo fix to facade usecase
         return SubscribeWorkbooksResponse(
-            workbooks = useCaseOut.workbooks.map {
-                SubscribeWorkbookInfo(
-                    id = it.workbookId,
-                    currentDay = it.currentDay,
-                    totalDay = it.totalDay,
-                    status = it.isActiveSub.name,
-                    rank = it.rank,
-                    totalSubscriber = it.totalSubscriber,
-                    articleInfo = it.articleInfo
-                )
+            workbooks = when (useCaseOut.clazz) {
+                MainCardSubscribeWorkbookDetail::class.java -> useCaseOut.workbooks.map { it as MainCardSubscribeWorkbookDetail }.map {
+                    MainCardSubscribeWorkbookInfo(
+                        id = it.workbookId,
+                        status = it.isActiveSub.name,
+                        totalDay = it.totalDay,
+                        currentDay = it.currentDay,
+                        rank = it.rank,
+                        totalSubscriber = it.totalSubscriber,
+                        subscription = it.subscription,
+                        articleInfo = it.articleInfo
+                    )
+                }
+                MyPageSubscribeWorkbookDetail::class.java -> useCaseOut.workbooks.map { it as MyPageSubscribeWorkbookDetail }.map {
+                    MyPageSubscribeWorkbookInfo(
+                        id = it.workbookId,
+                        status = it.isActiveSub.name,
+                        totalDay = it.totalDay,
+                        currentDay = it.currentDay,
+                        rank = it.rank,
+                        totalSubscriber = it.totalSubscriber,
+                        subscription = it.subscription,
+                        workbookInfo = it.workbookInfo
+                    )
+                }
+                else -> throw IllegalStateException("Invalid class type")
             }
         ).let {
             ApiResponseGenerator.success(it, HttpStatus.OK)
-        }
-    }
-
-    @GetMapping("/subscriptions/workbooks/main")
-    fun mainViewBrowseSubscribeWorkbooks(
-        servletRequest: HttpServletRequest,
-        @RequestParam(value = "category", required = false)
-        category: WorkBookCategory?,
-    ): ApiResponse<ApiResponse.SuccessBody<MainViewBrowseSubscribeWorkbooksResponse>> {
-        val authorization: String? = servletRequest.getHeader("Authorization")
-        val memberId = authorization?.let {
-            AccessTokenResolver.resolve(it)
-        }.let {
-            tokenResolver.resolveId(it)
-        }
-
-        if (memberId != null) {
-            val memberSubscribeWorkbooks = BrowseSubscribeWorkbooksUseCaseIn(memberId).let {
-                browseSubscribeWorkbooksUseCase.execute(it)
-            }
-            val workbooks =
-                BrowseWorkbooksUseCaseIn(
-                    category ?: WorkBookCategory.All,
-                    ViewCategory.MAIN_CARD,
-                    memberId
-                ).let { useCaseIn ->
-                    browseWorkBooksUseCase.execute(useCaseIn)
-                }
-
-            return MainViewBrowseSubscribeWorkbooksResponse(
-                workbooks = workbooks.workbooks.map {
-                    MainViewSubscribeWorkbookInfo(
-                        id = it.id,
-                        mainImageUrl = it.mainImageUrl,
-                        title = it.title,
-                        description = it.description,
-                        category = it.category,
-                        createdAt = it.createdAt,
-                        writerDetails = it.writerDetails,
-                        subscriptionCount = it.subscriptionCount,
-                        status = memberSubscribeWorkbooks.workbooks.find { subscribe -> subscribe.workbookId == it.id }?.isActiveSub?.name,
-                        totalDay = memberSubscribeWorkbooks.workbooks.find { subscribe -> subscribe.workbookId == it.id }?.totalDay,
-                        currentDay = memberSubscribeWorkbooks.workbooks.find { subscribe -> subscribe.workbookId == it.id }?.currentDay,
-                        rank = memberSubscribeWorkbooks.workbooks.find { subscribe -> subscribe.workbookId == it.id }?.rank,
-                        totalSubscriber = memberSubscribeWorkbooks.workbooks.find { subscribe -> subscribe.workbookId == it.id }?.totalSubscriber,
-                        articleInfo = memberSubscribeWorkbooks.workbooks.find { subscribe -> subscribe.workbookId == it.id }?.articleInfo
-                    )
-                }
-            ).let {
-                ApiResponseGenerator.success(it, HttpStatus.OK)
-            }
-        } else {
-            val workbooks =
-                BrowseWorkbooksUseCaseIn(
-                    category ?: WorkBookCategory.All,
-                    ViewCategory.MAIN_CARD,
-                    memberId
-                ).let { useCaseIn ->
-                    browseWorkBooksUseCase.execute(useCaseIn)
-                }
-
-            return MainViewBrowseSubscribeWorkbooksResponse(
-                workbooks = workbooks.workbooks.map {
-                    MainViewSubscribeWorkbookInfo(
-                        id = it.id,
-                        mainImageUrl = it.mainImageUrl,
-                        title = it.title,
-                        description = it.description,
-                        category = it.category,
-                        createdAt = it.createdAt,
-                        writerDetails = it.writerDetails,
-                        subscriptionCount = it.subscriptionCount,
-                        status = null,
-                        totalDay = null,
-                        currentDay = null,
-                        rank = null,
-                        totalSubscriber = null,
-                        articleInfo = null
-                    )
-                }
-            ).let {
-                ApiResponseGenerator.success(it, HttpStatus.OK)
-            }
         }
     }
 
@@ -183,14 +105,14 @@ class SubscriptionController(
         @Min(value = 1, message = "{min.id}")
         workbookId: Long,
         @Valid @RequestBody
-        body: UnsubscribeWorkbookRequest,
+        body: UnsubscribeWorkbookRequest?,
     ): ApiResponse<ApiResponse.Success> {
         val memberId = userDetails.username.toLong()
         unsubscribeWorkbookUseCase.execute(
             UnsubscribeWorkbookUseCaseIn(
                 workbookId = workbookId,
                 memberId = memberId,
-                opinion = body.opinion
+                opinion = body?.opinion ?: "cancel"
             )
         )
 
@@ -201,13 +123,51 @@ class SubscriptionController(
     fun deactivateAllSubscriptions(
         @AuthenticationPrincipal userDetails: TokenUserDetails,
         @Valid @RequestBody
-        body: UnsubscribeAllRequest,
+        body: UnsubscribeAllRequest?,
     ): ApiResponse<ApiResponse.Success> {
         val memberId = userDetails.username.toLong()
         unsubscribeAllUseCase.execute(
-            UnsubscribeAllUseCaseIn(memberId = memberId, opinion = body.opinion)
+            UnsubscribeAllUseCaseIn(memberId = memberId, opinion = body?.opinion ?: "cancel")
         )
 
+        return ApiResponseGenerator.success(HttpStatus.OK)
+    }
+
+    @PatchMapping("/subscriptions/time")
+    fun updateSubscriptionTime(
+        @AuthenticationPrincipal userDetails: TokenUserDetails,
+        @Valid @RequestBody
+        body: UpdateSubscriptionTimeRequest,
+    ): ApiResponse<ApiResponse.Success> {
+        UpdateSubscriptionTimeUseCaseIn(
+            memberId = userDetails.username.toLong(),
+            time = body.time,
+            workbookId = body.workbookId
+        ).let {
+            updateSubscriptionTimeUseCase.execute(it)
+        }
+        return ApiResponseGenerator.success(HttpStatus.OK)
+    }
+
+    @PatchMapping("/subscriptions/day")
+    fun updateSubscriptionDay(
+        @AuthenticationPrincipal userDetails: TokenUserDetails,
+        @Valid @RequestBody
+        body: UpdateSubscriptionDayRequest,
+    ): ApiResponse<ApiResponse.Success> {
+        val dayCode = DayCode.fromCode(body.dayCode)
+        dayCode.also {
+            if (!(it == (DayCode.MON_TUE_WED_THU_FRI_SAT_SUN) || it == (DayCode.MON_TUE_WED_THU_FRI))) {
+                throw IllegalArgumentException("Invalid day code")
+            }
+        }
+        UpdateSubscriptionDayUseCaseIn(
+            memberId = userDetails.username.toLong(),
+            dayCode = dayCode,
+            workbookId = body.workbookId
+        ).let {
+            updateSubscriptionDayUseCase.execute(it)
+        }
         return ApiResponseGenerator.success(HttpStatus.OK)
     }
 }

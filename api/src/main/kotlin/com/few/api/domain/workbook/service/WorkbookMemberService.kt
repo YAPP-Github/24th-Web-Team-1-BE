@@ -19,14 +19,12 @@ class WorkbookMemberService(
     private val memberDao: MemberDao,
 ) {
     fun browseWriterRecords(query: BrowseWriterRecordsInDto): List<WriterOutDto> {
-        return SelectWritersQuery(query.writerIds).let { query ->
-            memberDao.selectWriters(query).map { record ->
-                WriterOutDto(
-                    writerId = record.writerId,
-                    name = record.name,
-                    url = record.url
-                )
-            }
+        return memberDao.selectWriters(SelectWritersQuery(query.writerIds)).map { record ->
+            WriterOutDto(
+                writerId = record.writerId,
+                name = record.name,
+                url = record.url
+            )
         }
     }
 
@@ -35,8 +33,8 @@ class WorkbookMemberService(
      * value: writer list
      */
     fun browseWorkbookWriterRecords(query: BrowseWorkbookWriterRecordsInDto): Map<Long, List<WriterMappedWorkbookOutDto>> {
-        return BrowseWorkbookWritersQuery(query.workbookIds).let { query ->
-            memberDao.selectWriters(query).map { record ->
+        return memberDao.selectWriters(BrowseWorkbookWritersQuery(query.workbookIds))
+            .map { record ->
                 WriterMappedWorkbookOutDto(
                     workbookId = record.workbookId,
                     writerId = record.writerId,
@@ -44,6 +42,5 @@ class WorkbookMemberService(
                     url = record.url
                 )
             }.groupBy { it.workbookId }
-        }
     }
 }

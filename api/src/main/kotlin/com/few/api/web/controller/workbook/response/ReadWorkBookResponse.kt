@@ -1,6 +1,5 @@
 package com.few.api.web.controller.workbook.response
 
-import com.fasterxml.jackson.annotation.JsonFormat
 import com.few.api.domain.workbook.usecase.dto.ReadWorkbookUseCaseOut
 import java.net.URL
 import java.time.LocalDateTime
@@ -11,7 +10,6 @@ data class ReadWorkBookResponse(
     val title: String,
     val description: String,
     val category: String,
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     val createdAt: LocalDateTime,
     val writers: List<WriterInfo>,
     val articles: List<ArticleInfo>,

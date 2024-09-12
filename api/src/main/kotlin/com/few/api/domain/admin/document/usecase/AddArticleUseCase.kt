@@ -44,94 +44,64 @@ class AddArticleUseCase(
 ) {
     @Transactional
     fun execute(useCaseIn: AddArticleUseCaseIn): AddArticleUseCaseOut {
-        /** select writerId */
-        val writerRecord = SelectMemberByEmailQuery(useCaseIn.writerEmail).let {
-            memberDao.selectMemberByEmail(it)
-        } ?: throw NotFoundException("member.notfound.id")
+        val writerRecord = memberDao.selectMemberByEmail(SelectMemberByEmailQuery(useCaseIn.writerEmail))
+            ?: throw NotFoundException("member.notfound.id")
 
-        /**
-         * - content type: "md"
-         * put origin document to object storage
-         * and convert to html source
-         * - content type: "html"
-         * save html source
-         */
-        val htmlSource = when {
-            useCaseIn.contentType.lowercase(Locale.getDefault()) == "md" -> {
+        val htmlSource = when (useCaseIn.contentType.lowercase(Locale.getDefault())) {
+            "md" -> {
                 val mdSource = useCaseIn.contentSource
-                val htmlSource = convertDocumentService.mdToHtml(useCaseIn.contentSource)
+                val htmlSource = convertDocumentService.mdToHtml(mdSource)
 
-                val document = runCatching {
-                    File.createTempFile("temp", ".md")
-                }.onSuccess {
-                    it.writeText(mdSource)
-                }.getOrThrow()
+                val document = File.createTempFile("temp", ".md").apply {
+                    writeText(mdSource)
+                }
                 val documentName = ObjectPathGenerator.documentPath("md")
 
-                putDocumentService.execute(documentName, document)?.let { res ->
+                val url = putDocumentService.execute(documentName, document)?.let { res ->
                     val source = res.`object`
-                    GetUrlInDto(source).let { query ->
-                        getUrlService.execute(query)
-                    }.let { dto ->
-                        InsertDocumentIfoCommand(
-                            path = documentName,
-                            url = dto.url
-                        ).let { command ->
-                            documentDao.insertDocumentIfo(command)
-                        }
-                        dto.url
-                    }
-                } ?: throw ExternalIntegrationException("external.putfail.docummet")
+                    getUrlService.execute(GetUrlInDto(source)).url
+                } ?: throw ExternalIntegrationException("external.putfail.document")
 
+                documentDao.insertDocumentIfo(InsertDocumentIfoCommand(path = documentName, url = url))
                 htmlSource
             }
-
-            useCaseIn.contentType.lowercase(Locale.getDefault()) == "html" -> {
-                useCaseIn.contentSource
-            }
-
-            else -> {
-                throw IllegalArgumentException("Unsupported content type: ${useCaseIn.contentType}")
-            }
+            "html" -> useCaseIn.contentSource
+            else -> throw IllegalArgumentException("Unsupported content type: ${useCaseIn.contentType}")
         }
 
         val category = CategoryType.fromName(useCaseIn.category)
             ?: throw NotFoundException("article.invalid.category")
 
-        /** insert article */
-        val articleMstId = InsertFullArticleRecordCommand(
-            writerId = writerRecord.memberId,
-            mainImageURL = useCaseIn.articleImageUrl,
-            title = useCaseIn.title,
-            category = category.code,
-            content = htmlSource
-        ).let { articleDao.insertFullArticleRecord(it) }
+        val articleMstId = articleDao.insertFullArticleRecord(
+            InsertFullArticleRecordCommand(
+                writerId = writerRecord.memberId,
+                mainImageURL = useCaseIn.articleImageUrl,
+                title = useCaseIn.title,
+                category = category.code,
+                content = htmlSource
+            )
+        )
 
-        /** insert problems */
-        useCaseIn.problems.stream().map { problemDatum ->
+        useCaseIn.problems.map { problemDatum ->
             InsertProblemsCommand(
                 articleId = articleMstId,
                 createrId = 0L, // todo fix
                 title = problemDatum.title,
                 contents = Contents(
                     problemDatum.contents.map { detail ->
-                        Content(
-                            detail.number,
-                            detail.content
-                        )
+                        Content(detail.number, detail.content)
                     }
                 ),
                 answer = problemDatum.answer,
                 explanation = problemDatum.explanation
             )
-        }.toList().let { commands ->
+        }.also { commands ->
             problemDao.insertProblems(commands)
         }
 
-        ArticleViewCountQuery(
-            articleMstId,
-            category
-        ).let { articleViewCountDao.insertArticleViewCountToZero(it) }
+        articleViewCountDao.insertArticleViewCountToZero(
+            ArticleViewCountQuery(articleMstId, category)
+        )
 
         articleMainCardService.initialize(
             InitializeArticleMainCardInDto(

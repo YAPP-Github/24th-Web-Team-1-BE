@@ -29,41 +29,37 @@ class PutImageUseCase(
         val suffix = imageSource.originalFilename?.substringAfterLast(".") ?: "jpg"
 
         val imageName = ObjectPathGenerator.imagePath(suffix)
-        val originImage = runCatching {
-            File.createTempFile("temp", ".$suffix")
-        }.onSuccess {
-            imageSource.transferTo(it)
-        }.getOrThrow()
+        val originImage = File.createTempFile("temp", ".$suffix").apply {
+            imageSource.transferTo(this)
+        }
 
         val webpImage = ImmutableImage.loader().fromFile(originImage)
             .output(WebpWriter.DEFAULT, File.createTempFile("temp", ".webp"))
 
-        val url = putImageService.execute(imageName, originImage)?.let { res ->
-            val source = res.`object`
-            GetUrlInDto(source).let { query ->
-                getUrlService.execute(query)
-            }.let { dto ->
-                InsertImageIfoCommand(source, dto.url).let { command ->
-                    imageDao.insertImageIfo(command) ?: throw InsertException("image.insertfail.record")
+        val url = putImageService.execute(imageName, originImage)
+            ?.`object`
+            ?.let { source ->
+                getUrlService.execute(GetUrlInDto(source)).also { dto ->
+                    imageDao.insertImageIfo(InsertImageIfoCommand(source, dto.url))
+                        ?: throw InsertException("image.insertfail.record")
                 }
-                return@let dto.url
-            }
-        } ?: throw ExternalIntegrationException("external.presignedfail.image")
-
-        val webpUrl =
-            putImageService.execute(imageName.replaceAfterLast(".", "webp"), webpImage)?.let { res ->
-                val source = res.`object`
-                GetUrlInDto(source).let { query ->
-                    getUrlService.execute(query)
-                }.let { dto ->
-                    InsertImageIfoCommand(source, dto.url).let { command ->
-                        imageDao.insertImageIfo(command) ?: throw InsertException("image.insertfail.record")
+                    .let { savedImage ->
+                        savedImage.url
                     }
-                    return@let dto.url
-                }
             } ?: throw ExternalIntegrationException("external.presignedfail.image")
 
-        // todo fix if webp is default
+        val webpUrl = putImageService.execute(imageName, webpImage)
+            ?.`object`
+            ?.let { source ->
+                getUrlService.execute(GetUrlInDto(source)).also { dto ->
+                    imageDao.insertImageIfo(InsertImageIfoCommand(source, dto.url))
+                        ?: throw InsertException("image.insertfail.record")
+                }
+                    .let { savedImage ->
+                        savedImage.url
+                    }
+            } ?: throw ExternalIntegrationException("external.presignedfail.image")
+
         return PutImageUseCaseOut(url, listOf(suffix, "webp"))
     }
 }

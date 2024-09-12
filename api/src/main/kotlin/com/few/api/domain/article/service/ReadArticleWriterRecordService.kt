@@ -6,15 +6,15 @@ import com.few.api.repo.dao.member.MemberDao
 import com.few.api.repo.dao.member.query.SelectWriterQuery
 import org.springframework.stereotype.Service
 
+@Suppress("NAME_SHADOWING")
 @Service
 class ReadArticleWriterRecordService(
     private val memberDao: MemberDao,
 ) {
 
     fun execute(query: ReadWriterRecordInDto): ReadWriterOutDto? {
-        SelectWriterQuery(query.writerId).let { query: SelectWriterQuery ->
-            val record = memberDao.selectWriter(query)
-            return record?.let {
+        return memberDao.selectWriter(SelectWriterQuery(query.writerId))
+            ?.let {
                 ReadWriterOutDto(
                     writerId = it.writerId,
                     name = it.name,
@@ -22,6 +22,5 @@ class ReadArticleWriterRecordService(
                     imageUrl = it.imageUrl
                 )
             }
-        }
     }
 }

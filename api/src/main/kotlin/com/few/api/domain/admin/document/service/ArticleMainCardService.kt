@@ -42,12 +42,12 @@ class ArticleMainCardService(
 
         val articleMainCardRecord: ArticleMainCardRecord =
             articleMainCardDao.selectArticleMainCardsRecord(setOf(inDto.articleId))
-                .ifEmpty { throw NotFoundException("articlemaincard.notfound.id") }
-                .first()
+                .firstOrNull() ?: throw NotFoundException("article.notfound.id")
 
         val workbookCommands =
-            articleMainCardRecord.workbooks.map { WorkbookCommand(it.id!!, it.title!!) }.toMutableList()
-        workbookCommands.add(toBeAddedWorkbook)
+            articleMainCardRecord.workbooks.map { WorkbookCommand(it.id!!, it.title!!) }
+                .toMutableList()
+                .apply { add(toBeAddedWorkbook) }
 
         articleMainCardDao.updateArticleMainCardSetWorkbook(
             UpdateArticleMainCardWorkbookCommand(

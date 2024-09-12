@@ -1,6 +1,11 @@
 
 import org.hidetake.gradle.swagger.generator.GenerateSwaggerUI
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 import java.util.Random
+
+tasks.withType(BootJar::class.java) {
+    loaderImplementation = org.springframework.boot.loader.tools.LoaderImplementation.CLASSIC
+}
 
 dependencies {
     /** module */
@@ -13,11 +18,15 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-aop")
 
     /** jwt */
     implementation("io.jsonwebtoken:jjwt-api:${DependencyVersion.JWT}")
     implementation("io.jsonwebtoken:jjwt-impl:${DependencyVersion.JWT}")
     implementation("io.jsonwebtoken:jjwt-jackson:${DependencyVersion.JWT}")
+
+    /** aspectj */
+    implementation("org.aspectj:aspectjweaver:1.9.5")
 
     /** scrimage */
     implementation("com.sksamuel.scrimage:scrimage-core:${DependencyVersion.SCRIMAGE}")

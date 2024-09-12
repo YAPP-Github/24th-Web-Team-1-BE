@@ -13,15 +13,16 @@ class SubscriptionArticleService(
     private val articleDao: ArticleDao,
 ) {
     fun readArticleIdByWorkbookIdAndDay(dto: ReadArticleIdByWorkbookIdAndDayDto): Long? {
-        SelectArticleIdByWorkbookIdAndDayQuery(dto.workbookId, dto.day).let { query ->
-            return articleDao.selectArticleIdByWorkbookIdAndDay(query)
-        }
+        return articleDao.selectArticleIdByWorkbookIdAndDay(
+            SelectArticleIdByWorkbookIdAndDayQuery(
+                dto.workbookId,
+                dto.day
+            )
+        )
     }
 
     fun readArticleContent(dto: ReadArticleContentInDto): ReadArticleContentOutDto? {
-        return SelectArticleContentQuery(dto.articleId).let { query ->
-            articleDao.selectArticleContent(query)
-        }?.let {
+        return articleDao.selectArticleContent(SelectArticleContentQuery(dto.articleId))?.let {
             ReadArticleContentOutDto(
                 it.id,
                 it.category,

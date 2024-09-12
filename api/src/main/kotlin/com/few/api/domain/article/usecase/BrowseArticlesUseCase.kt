@@ -60,7 +60,7 @@ class BrowseArticlesUseCase(
         /**
          * ARTICLE_MAIN_CARD 테이블에서 이번 스크롤에서 보여줄 10개 아티클 조회 (TODO: 캐싱 적용)
          */
-        var articleMainCardRecords: Set<ArticleMainCardRecord> =
+        val articleMainCardRecords: Set<ArticleMainCardRecord> =
             articleMainCardDao.selectArticleMainCardsRecord(articleViewsRecords.map { it.articleId }.toSet())
 
         /**

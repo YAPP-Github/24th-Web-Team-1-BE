@@ -13,7 +13,7 @@ import com.few.api.domain.workbook.usecase.service.order.AuthMainViewWorkbookOrd
 import com.few.api.domain.workbook.usecase.service.order.BasicWorkbookOrderDelegator
 import com.few.api.domain.workbook.usecase.service.order.WorkbookOrderDelegatorExecutor
 import com.few.api.repo.dao.workbook.WorkbookDao
-import com.few.api.repo.dao.workbook.query.BrowseWorkBookQueryWithSubscriptionCount
+import com.few.api.repo.dao.workbook.query.BrowseWorkBookQueryWithSubscriptionCountQuery
 import com.few.api.web.support.ViewCategory
 import com.few.data.common.code.CategoryType
 import org.springframework.stereotype.Component
@@ -47,14 +47,14 @@ class BrowseWorkbooksUseCase(
 
     @Transactional
     fun execute(useCaseIn: BrowseWorkbooksUseCaseIn): BrowseWorkbooksUseCaseOut {
-        val workbookRecords = BrowseWorkBookQueryWithSubscriptionCount(useCaseIn.category.code).let { query ->
-            workbookDao.browseWorkBookWithSubscriptionCount(query)
-        }
+        val workbookRecords = workbookDao.browseWorkBookWithSubscriptionCount(
+            BrowseWorkBookQueryWithSubscriptionCountQuery(useCaseIn.category.code)
+        )
 
         val workbookIds = workbookRecords.map { it.id }
-        val writerRecords = BrowseWorkbookWriterRecordsInDto(workbookIds).let { query ->
-            workbookMemberService.browseWorkbookWriterRecords(query)
-        }
+        val writerRecords = workbookMemberService.browseWorkbookWriterRecords(
+            BrowseWorkbookWriterRecordsInDto(workbookIds)
+        )
 
         val workbookDetails = workbookRecords.map { record ->
             WorkBook(

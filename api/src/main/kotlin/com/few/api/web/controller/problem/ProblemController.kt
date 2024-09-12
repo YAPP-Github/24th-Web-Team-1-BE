@@ -13,6 +13,8 @@ import com.few.api.domain.problem.usecase.dto.BrowseProblemsUseCaseIn
 import com.few.api.domain.problem.usecase.dto.CheckProblemUseCaseIn
 import com.few.api.domain.problem.usecase.dto.ReadProblemUseCaseIn
 import com.few.api.web.controller.problem.response.BrowseProblemsResponse
+import com.few.api.web.support.method.UserArgument
+import com.few.api.web.support.method.UserArgumentDetails
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Min
 import org.springframework.http.HttpStatus
@@ -66,13 +68,21 @@ class ProblemController(
 
     @PostMapping("/{problemId}")
     fun checkProblem(
+        @UserArgument userArgumentDetails: UserArgumentDetails,
         @PathVariable(value = "problemId")
         @Min(value = 1, message = "{min.id}")
         problemId: Long,
         @Valid @RequestBody
         body: CheckProblemRequest,
     ): ApiResponse<ApiResponse.SuccessBody<CheckProblemResponse>> {
-        val useCaseOut = checkProblemUseCase.execute(CheckProblemUseCaseIn(problemId, body.sub))
+        val memberId = userArgumentDetails.id.toLong()
+        val useCaseOut = checkProblemUseCase.execute(
+            CheckProblemUseCaseIn(
+                memberId,
+                problemId,
+                body.sub
+            )
+        )
 
         val response = CheckProblemResponse(
             explanation = useCaseOut.explanation,

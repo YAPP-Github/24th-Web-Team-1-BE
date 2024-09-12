@@ -21,13 +21,9 @@ class GetLocalUrlService(
     private val services: Map<String, GetPreSignedObjectUrlService>,
 ) : GetUrlService {
     override fun execute(query: GetUrlInDto): GetUrlOutDto {
-        val service = services.keys.stream().filter { key ->
-            key.lowercase(Locale.getDefault())
-                .contains(query.getPreSignedUrlServiceKey())
-        }.findAny().let {
-            if (it.isEmpty) throw IllegalArgumentException("Cannot find service for ${query.getPreSignedUrlServiceKey()}")
-            services[it.get()]!!
-        }
+        val service = services.keys.firstOrNull { key ->
+            key.lowercase(Locale.getDefault()).contains(query.getPreSignedUrlServiceKey())
+        }?.let { services[it] } ?: throw IllegalArgumentException("Cannot find service for ${query.getPreSignedUrlServiceKey()}")
 
         return service.execute(query.`object`)?.let {
             GetUrlOutDto(URL(it))

@@ -9,8 +9,6 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
-import org.springframework.scheduling.annotation.EnableAsync
-import org.springframework.web.servlet.config.annotation.EnableWebMvc
 
 @Configuration
 @ComponentScan(basePackages = [ApiConfig.BASE_PACKAGE])
@@ -21,8 +19,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc
     ImageStorageConfig::class,
     DocumentStorageConfig::class
 )
-@EnableWebMvc
-@EnableAsync
 @ConfigurationPropertiesScan(basePackages = [ApiConfig.BASE_PACKAGE])
 class ApiConfig {
     companion object {

@@ -17,11 +17,10 @@ class SlowQueryEventListener(
     @Async(value = DISCORD_HOOK_EVENT_POOL)
     @EventListener
     fun handleSlowQueryEvent(event: SlowQueryEvent) {
-        RepoAlterArgs(
+        val args = RepoAlterArgs(
             requestURL = MDC.get("Request-URL") ?: "",
             query = event.slowQuery
-        ).let {
-            repoClient.announceRepoAlter(it)
-        }
+        )
+        repoClient.announceRepoAlter(args)
     }
 }

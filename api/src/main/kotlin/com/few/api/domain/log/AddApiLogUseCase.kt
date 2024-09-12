@@ -12,8 +12,6 @@ class AddApiLogUseCase(
 ) {
     @Transactional
     fun execute(useCaseIn: AddApiLogUseCaseIn) {
-        InsertLogCommand(useCaseIn.history).let {
-            logIfoDao.insertLogIfo(it)
-        }
+        logIfoDao.insertLogIfo(InsertLogCommand(useCaseIn.history))
     }
 }

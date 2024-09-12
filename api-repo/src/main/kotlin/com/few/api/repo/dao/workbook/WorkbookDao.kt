@@ -4,11 +4,13 @@ import com.few.api.repo.config.LocalCacheConfig
 import com.few.api.repo.config.LocalCacheConfig.Companion.LOCAL_CM
 import com.few.api.repo.dao.workbook.command.InsertWorkBookCommand
 import com.few.api.repo.dao.workbook.command.MapWorkBookToArticleCommand
-import com.few.api.repo.dao.workbook.query.BrowseWorkBookQueryWithSubscriptionCount
+import com.few.api.repo.dao.workbook.query.BrowseWorkBookQueryWithSubscriptionCountQuery
+import com.few.api.repo.dao.workbook.query.SelectAllWorkbookTitleQuery
 import com.few.api.repo.dao.workbook.query.SelectWorkBookLastArticleIdQuery
 import com.few.api.repo.dao.workbook.query.SelectWorkBookRecordQuery
 import com.few.api.repo.dao.workbook.record.SelectWorkBookRecord
 import com.few.api.repo.dao.workbook.record.SelectWorkBookRecordWithSubscriptionCount
+import com.few.api.repo.dao.workbook.record.WorkbookTitleRecord
 import com.few.data.common.code.CategoryType
 import jooq.jooq_dsl.tables.MappingWorkbookArticle
 import jooq.jooq_dsl.tables.Subscription
@@ -71,12 +73,12 @@ class WorkbookDao(
      * category에 따라서 조회된 구독자 수가 포함된 Workbook 목록을 반환한다.
      * 정렬 순서는 구독자 수가 많은 순서로, 구독자 수가 같다면 생성일자가 최신인 순서로 반환한다.
      */
-    fun browseWorkBookWithSubscriptionCount(query: BrowseWorkBookQueryWithSubscriptionCount): List<SelectWorkBookRecordWithSubscriptionCount> {
+    fun browseWorkBookWithSubscriptionCount(query: BrowseWorkBookQueryWithSubscriptionCountQuery): List<SelectWorkBookRecordWithSubscriptionCount> {
         return browseWorkBookQuery(query)
             .fetchInto(SelectWorkBookRecordWithSubscriptionCount::class.java)
     }
 
-    fun browseWorkBookQuery(query: BrowseWorkBookQueryWithSubscriptionCount) =
+    fun browseWorkBookQuery(query: BrowseWorkBookQueryWithSubscriptionCountQuery) =
         dslContext.select(
             Workbook.WORKBOOK.ID.`as`(SelectWorkBookRecordWithSubscriptionCount::id.name),
             Workbook.WORKBOOK.TITLE.`as`(SelectWorkBookRecordWithSubscriptionCount::title.name),
@@ -124,7 +126,7 @@ class WorkbookDao(
     /**
      * category에 따라서 조건을 생성한다.
      */
-    private fun browseWorkBookCategoryCondition(query: BrowseWorkBookQueryWithSubscriptionCount): Condition {
+    private fun browseWorkBookCategoryCondition(query: BrowseWorkBookQueryWithSubscriptionCountQuery): Condition {
         return when (query.category) {
             (-1).toByte() -> DSL.noCondition()
             else -> Workbook.WORKBOOK.CATEGORY_CD.eq(query.category)
@@ -144,4 +146,17 @@ class WorkbookDao(
             .where(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.eq(query.workbookId))
             .and(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.DELETED_AT.isNull)
             .groupBy(MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID)
+
+    fun selectAllWorkbookTitle(query: SelectAllWorkbookTitleQuery): List<WorkbookTitleRecord> {
+        return selectAllWorkbookTitleQuery(query)
+            .fetchInto(WorkbookTitleRecord::class.java)
+    }
+
+    fun selectAllWorkbookTitleQuery(query: SelectAllWorkbookTitleQuery) =
+        dslContext.select(
+            Workbook.WORKBOOK.ID.`as`(WorkbookTitleRecord::workbookId.name),
+            Workbook.WORKBOOK.TITLE.`as`(WorkbookTitleRecord::title.name)
+        )
+            .from(Workbook.WORKBOOK)
+            .where(Workbook.WORKBOOK.ID.`in`(query.workbookIds))
 }

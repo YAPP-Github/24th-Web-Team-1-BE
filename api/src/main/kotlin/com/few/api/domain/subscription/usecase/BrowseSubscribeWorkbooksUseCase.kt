@@ -2,81 +2,160 @@ package com.few.api.domain.subscription.usecase
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.few.api.domain.subscription.service.SubscriptionArticleService
+import com.few.api.domain.subscription.service.SubscriptionWorkbookService
+import com.few.api.domain.subscription.service.dto.ReadAllWorkbookTitleInDto
 import com.few.api.domain.subscription.service.dto.ReadArticleIdByWorkbookIdAndDayDto
-import com.few.api.domain.subscription.usecase.dto.BrowseSubscribeWorkbooksUseCaseIn
-import com.few.api.domain.subscription.usecase.dto.BrowseSubscribeWorkbooksUseCaseOut
-import com.few.api.domain.subscription.usecase.dto.SubscribeWorkbookDetail
+import com.few.api.domain.subscription.usecase.dto.*
 import com.few.api.repo.dao.subscription.SubscriptionDao
-import com.few.api.repo.dao.subscription.query.CountAllWorkbooksSubscription
-import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookActiveSubscription
-import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookInActiveSubscription
+import com.few.api.repo.dao.subscription.query.CountAllWorkbooksSubscriptionQuery
+import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookActiveSubscriptionQuery
+import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookInActiveSubscriptionQuery
+import com.few.api.repo.dao.subscription.query.SelectAllSubscriptionSendStatusQuery
+import com.few.api.web.support.ViewCategory
 import com.few.api.web.support.WorkBookStatus
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import org.webjars.NotFoundException
+import java.lang.IllegalStateException
 
+enum class SUBSCRIBE_WORKBOOK_STRATEGY {
+    /**
+     * 로그인 상태에서 메인 화면에 보여질 워크북을 정렬합니다.
+     * - view의 값이 MAIN_CARD이다.
+     * */
+    MAIN_CARD,
+
+    /**
+     * 마이페이지에서 보여질 워크북을 정렬합니다.
+     * - view의 값이 MY_PAGE이다.
+     * */
+    MY_PAGE,
+}
+
+data class ArticleInfo(
+    // todo fix articleId to id
+    val articleId: Long,
+)
+
+data class WorkbookInfo(
+    val id: Long,
+    val title: String,
+)
+
+// todo refactor to model
 @Component
 class BrowseSubscribeWorkbooksUseCase(
     private val subscriptionDao: SubscriptionDao,
     private val subscriptionArticleService: SubscriptionArticleService,
+    private val subscriptionWorkbookService: SubscriptionWorkbookService,
     private val objectMapper: ObjectMapper,
 ) {
     @Transactional
     fun execute(useCaseIn: BrowseSubscribeWorkbooksUseCaseIn): BrowseSubscribeWorkbooksUseCaseOut {
-        val inActiveSubscriptionRecords =
-            SelectAllMemberWorkbookInActiveSubscription(useCaseIn.memberId).let {
-                subscriptionDao.selectAllInActiveWorkbookSubscriptionStatus(it)
-            }
-
-        val activeSubscriptionRecords =
-            SelectAllMemberWorkbookActiveSubscription(useCaseIn.memberId).let {
-                subscriptionDao.selectAllActiveWorkbookSubscriptionStatus(it)
-            }
-
-        val subscriptionRecords = inActiveSubscriptionRecords + activeSubscriptionRecords
-
-        /**
-         * key: workbookId
-         * value: workbook의 currentDay에 해당하는 articleId
-         */
-        val workbookSubscriptionCurrentArticleIdRecords = subscriptionRecords.associate { it ->
-            val articleId = ReadArticleIdByWorkbookIdAndDayDto(it.workbookId, it.currentDay).let {
-                subscriptionArticleService.readArticleIdByWorkbookIdAndDay(it)
-            } ?: throw NotFoundException("article.notfound.workbookIdAndCurrentDay")
-            it.workbookId to articleId
+        val strategy = when (useCaseIn.view) {
+            ViewCategory.MAIN_CARD -> SUBSCRIBE_WORKBOOK_STRATEGY.MAIN_CARD
+            ViewCategory.MY_PAGE -> SUBSCRIBE_WORKBOOK_STRATEGY.MY_PAGE
         }
 
-        val subscriptionWorkbookIds = subscriptionRecords.map { it.workbookId }
-        val workbookSubscriptionCountRecords =
-            CountAllWorkbooksSubscription(subscriptionWorkbookIds).let {
-                subscriptionDao.countAllWorkbookSubscription(it)
+        val workbookStatusRecords = when (strategy) {
+            SUBSCRIBE_WORKBOOK_STRATEGY.MAIN_CARD -> {
+                val activeSubscriptionRecords = subscriptionDao.selectAllActiveWorkbookSubscriptionStatus(
+                    SelectAllMemberWorkbookActiveSubscriptionQuery(useCaseIn.memberId)
+                )
+                val inActiveSubscriptionRecords =
+                    subscriptionDao.selectAllInActiveWorkbookSubscriptionStatus(
+                        SelectAllMemberWorkbookInActiveSubscriptionQuery(useCaseIn.memberId)
+                    )
+                activeSubscriptionRecords + inActiveSubscriptionRecords
             }
-
-        subscriptionRecords.map {
-            /**
-             * 임시 코드
-             * Batch 코드에서 currentDay가 totalDay보다 큰 경우가 발생하여
-             * currentDay가 totalDay보다 크면 totalDay로 변경
-             * */
-            var currentDay = it.currentDay
-            if (it.currentDay > it.totalDay) {
-                currentDay = it.totalDay
+            SUBSCRIBE_WORKBOOK_STRATEGY.MY_PAGE -> {
+                subscriptionDao.selectAllActiveWorkbookSubscriptionStatus(
+                    SelectAllMemberWorkbookActiveSubscriptionQuery(useCaseIn.memberId)
+                )
             }
+        }
 
+        val subscriptionWorkbookIds = workbookStatusRecords.map { it.workbookId }
+        val subscriptionWorkbookCountRecords = subscriptionDao.countAllWorkbookSubscription(
+            CountAllWorkbooksSubscriptionQuery(subscriptionWorkbookIds)
+        )
+        val subscriptionWorkbookSendStatusRecords = subscriptionDao.selectAllSubscriptionSendStatus(
+            SelectAllSubscriptionSendStatusQuery(useCaseIn.memberId, subscriptionWorkbookIds)
+        ).associateBy { it.workbookId }
+
+        val workbookDetails = workbookStatusRecords.map {
             SubscribeWorkbookDetail(
                 workbookId = it.workbookId,
                 isActiveSub = WorkBookStatus.fromStatus(it.isActiveSub),
-                currentDay = currentDay,
+                currentDay = it.currentDay,
                 totalDay = it.totalDay,
-                totalSubscriber = workbookSubscriptionCountRecords[it.workbookId]?.toLong() ?: 0,
-                articleInfo = objectMapper.writeValueAsString(
-                    mapOf(
-                        "articleId" to workbookSubscriptionCurrentArticleIdRecords[it.workbookId]
+                totalSubscriber = subscriptionWorkbookCountRecords[it.workbookId]?.toLong() ?: 0,
+                subscription = subscriptionWorkbookSendStatusRecords[it.workbookId]?.let { record ->
+                    Subscription(
+                        time = record.sendTime,
+                        dateTimeCode = record.sendDay
                     )
-                )
+                } ?: throw IllegalStateException("${it.workbookId}'s subscription send status is null")
             )
-        }.let {
-            return BrowseSubscribeWorkbooksUseCaseOut(it)
+        }
+
+        return when (strategy) {
+            SUBSCRIBE_WORKBOOK_STRATEGY.MAIN_CARD -> {
+                val workbookSubscriptionCurrentArticleIdRecords = workbookStatusRecords.associate { record ->
+                    val articleId = subscriptionArticleService.readArticleIdByWorkbookIdAndDay(
+                        ReadArticleIdByWorkbookIdAndDayDto(record.workbookId, record.currentDay)
+                    ) ?: throw NotFoundException("article.notfound.workbookIdAndCurrentDay")
+
+                    record.workbookId to articleId
+                }
+
+                BrowseSubscribeWorkbooksUseCaseOut(
+                    clazz = MainCardSubscribeWorkbookDetail::class.java,
+                    workbooks = workbookDetails.map {
+                        MainCardSubscribeWorkbookDetail(
+                            workbookId = it.workbookId,
+                            isActiveSub = it.isActiveSub,
+                            currentDay = it.currentDay,
+                            totalDay = it.totalDay,
+                            totalSubscriber = it.totalSubscriber,
+                            subscription = it.subscription,
+                            articleInfo = objectMapper.writeValueAsString(
+                                ArticleInfo(
+                                    workbookSubscriptionCurrentArticleIdRecords[it.workbookId]
+                                        ?: throw IllegalStateException("${it.workbookId}'s articleId is null")
+                                )
+                            )
+                        )
+                    }
+                )
+            }
+
+            SUBSCRIBE_WORKBOOK_STRATEGY.MY_PAGE -> {
+                val workbookTitleRecords = subscriptionWorkbookService.readAllWorkbookTitle(
+                    ReadAllWorkbookTitleInDto(subscriptionWorkbookIds)
+                )
+
+                BrowseSubscribeWorkbooksUseCaseOut(
+                    clazz = MyPageSubscribeWorkbookDetail::class.java,
+                    workbooks = workbookDetails.map {
+                        MyPageSubscribeWorkbookDetail(
+                            workbookId = it.workbookId,
+                            isActiveSub = it.isActiveSub,
+                            currentDay = it.currentDay,
+                            totalDay = it.totalDay,
+                            totalSubscriber = it.totalSubscriber,
+                            subscription = it.subscription,
+                            workbookInfo = objectMapper.writeValueAsString(
+                                WorkbookInfo(
+                                    id = it.workbookId,
+                                    title = workbookTitleRecords[it.workbookId]
+                                        ?: throw IllegalStateException("${it.workbookId}'s title is null")
+                                )
+                            )
+                        )
+                    }
+                )
+            }
         }
     }
 }

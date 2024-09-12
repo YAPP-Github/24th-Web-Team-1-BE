@@ -18,33 +18,33 @@ class SubscriptionClient(
     private val log = KotlinLogging.logger {}
 
     fun announceWorkbookSubscription(args: WorkbookSubscriptionArgs) {
-        args.let {
+        val body = args.let { arg ->
             DiscordBodyProperty(
                 content = "🎉 신규 구독 알림 ",
                 embeds = listOf(
                     Embed(
                         title = "Total Subscriptions",
-                        description = it.totalSubscriptions.toString()
+                        description = arg.totalSubscriptions.toString()
                     ),
                     Embed(
                         title = "Active Subscriptions",
-                        description = it.activeSubscriptions.toString()
+                        description = arg.activeSubscriptions.toString()
                     ),
                     Embed(
                         title = "Workbook Title",
-                        description = it.workbookTitle
+                        description = arg.workbookTitle
                     )
                 )
             )
-        }.let { body ->
-            restTemplate.exchange(
-                discordWebhook,
-                HttpMethod.POST,
-                HttpEntity(body),
-                String::class.java
-            ).let { res ->
-                log.info { "Discord webhook response: ${res.statusCode}" }
-            }
+        }
+
+        restTemplate.exchange(
+            discordWebhook,
+            HttpMethod.POST,
+            HttpEntity(body),
+            String::class.java
+        ).let { res ->
+            log.info { "Discord webhook response: ${res.statusCode}" }
         }
     }
 }

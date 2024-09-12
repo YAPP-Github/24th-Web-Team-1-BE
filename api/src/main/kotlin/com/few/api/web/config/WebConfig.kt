@@ -1,16 +1,21 @@
 package com.few.api.web.config
 
+import com.few.api.web.config.converter.DayCodeConverter
 import com.few.api.web.config.converter.ViewConverter
 import com.few.api.web.config.converter.WorkBookCategoryConverter
+import com.few.api.web.support.method.UserArgumentHandlerMethodArgumentResolver
 import org.springframework.context.annotation.Configuration
 import org.springframework.format.FormatterRegistry
 import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
-class WebConfig : WebMvcConfigurer {
+class WebConfig(
+    private val userArgumentHandlerMethodArgumentResolver: UserArgumentHandlerMethodArgumentResolver,
+) : WebMvcConfigurer {
     override fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
             .allowedOriginPatterns(CorsConfiguration.ALL)
@@ -28,5 +33,10 @@ class WebConfig : WebMvcConfigurer {
     override fun addFormatters(registry: FormatterRegistry) {
         registry.addConverter(WorkBookCategoryConverter())
         registry.addConverter(ViewConverter())
+        registry.addConverter(DayCodeConverter())
+    }
+
+    override fun addArgumentResolvers(argumentResolvers: MutableList<HandlerMethodArgumentResolver>) {
+        argumentResolvers.add(userArgumentHandlerMethodArgumentResolver)
     }
 }

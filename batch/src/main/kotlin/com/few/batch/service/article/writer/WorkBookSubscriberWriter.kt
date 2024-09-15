@@ -89,6 +89,8 @@ class WorkBookSubscriberWriter(
             updateQueries.add(
                 dslContext.update(Subscription.SUBSCRIPTION)
                     .set(Subscription.SUBSCRIPTION.PROGRESS, updateTargetMemberRecord.updatedProgress)
+                    .set(Subscription.SUBSCRIPTION.MODIFIED_AT, LocalDateTime.now())
+                    .set(Subscription.SUBSCRIPTION.SEND_AT, LocalDateTime.now())
                     .where(Subscription.SUBSCRIPTION.MEMBER_ID.eq(updateTargetMemberRecord.memberId))
                     .and(Subscription.SUBSCRIPTION.TARGET_WORKBOOK_ID.eq(updateTargetMemberRecord.targetWorkBookId))
             )
@@ -101,6 +103,8 @@ class WorkBookSubscriberWriter(
             receiveLastDayQueries.add(
                 dslContext.update(Subscription.SUBSCRIPTION)
                     .set(Subscription.SUBSCRIPTION.DELETED_AT, LocalDateTime.now())
+                    .set(Subscription.SUBSCRIPTION.MODIFIED_AT, LocalDateTime.now())
+                    .set(Subscription.SUBSCRIPTION.SEND_AT, LocalDateTime.now())
                     .set(Subscription.SUBSCRIPTION.UNSUBS_OPINION, "receive.all")
                     .where(Subscription.SUBSCRIPTION.MEMBER_ID.eq(receiveLastDayMember.memberId))
                     .and(Subscription.SUBSCRIPTION.TARGET_WORKBOOK_ID.eq(receiveLastDayMember.targetWorkBookId))

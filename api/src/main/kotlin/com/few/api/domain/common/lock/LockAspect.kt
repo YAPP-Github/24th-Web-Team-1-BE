@@ -27,19 +27,33 @@ class LockAspect(
         getLockFor(joinPoint).run {
             when (this.identifier) {
                 LockIdentifier.SUBSCRIPTION_MEMBER_ID_WORKBOOK_ID -> {
-                    val useCaseIn = joinPoint.args[0] as SubscribeWorkbookUseCaseIn
-                    getSubscriptionMemberIdAndWorkBookIdLock(useCaseIn)
+                    getSubscriptionMemberIdAndWorkBookIdLockCase(joinPoint)
                 }
             }
         }
     }
 
+    private fun getSubscriptionMemberIdAndWorkBookIdLockCase(joinPoint: JoinPoint) {
+        if (joinPoint.args[0] is SubscribeWorkbookUseCaseIn) {
+            val useCaseIn = joinPoint.args[0] as SubscribeWorkbookUseCaseIn
+            getSubscriptionMemberIdAndWorkBookIdLock(useCaseIn)
+        } else {
+            val memberId = joinPoint.args[0] as Long
+            val workbookId = joinPoint.args[1] as Long
+            getSubscriptionMemberIdAndWorkBookIdLock(memberId, workbookId)
+        }
+    }
+
     private fun getSubscriptionMemberIdAndWorkBookIdLock(useCaseIn: SubscribeWorkbookUseCaseIn) {
-        subscriptionDao.getLock(useCaseIn.memberId, useCaseIn.workbookId).run {
+        getSubscriptionMemberIdAndWorkBookIdLock(useCaseIn.memberId, useCaseIn.workbookId)
+    }
+
+    private fun getSubscriptionMemberIdAndWorkBookIdLock(memberId: Long, workbookId: Long) {
+        subscriptionDao.getLock(memberId, workbookId).run {
             if (!this) {
-                throw IllegalStateException("Already in progress for ${useCaseIn.memberId}'s subscription to ${useCaseIn.workbookId}")
+                throw IllegalStateException("Already in progress for $memberId's subscription to $workbookId")
             }
-            log.debug { "Lock acquired for ${useCaseIn.memberId}'s subscription to ${useCaseIn.workbookId}" }
+            log.debug { "Lock acquired for $memberId's subscription to $workbookId" }
         }
     }
 
@@ -48,8 +62,7 @@ class LockAspect(
         getLockFor(joinPoint).run {
             when (this.identifier) {
                 LockIdentifier.SUBSCRIPTION_MEMBER_ID_WORKBOOK_ID -> {
-                    val useCaseIn = joinPoint.args[0] as SubscribeWorkbookUseCaseIn
-                    releaseSubscriptionMemberIdAndWorkBookIdLock(useCaseIn)
+                    releaseSubscriptionMemberIdAndWorkBookIdLockCase(joinPoint)
                 }
             }
         }
@@ -60,8 +73,7 @@ class LockAspect(
         getLockFor(joinPoint).run {
             when (this.identifier) {
                 LockIdentifier.SUBSCRIPTION_MEMBER_ID_WORKBOOK_ID -> {
-                    val useCaseIn = joinPoint.args[0] as SubscribeWorkbookUseCaseIn
-                    releaseSubscriptionMemberIdAndWorkBookIdLock(useCaseIn)
+                    releaseSubscriptionMemberIdAndWorkBookIdLockCase(joinPoint)
                 }
             }
         }
@@ -70,8 +82,23 @@ class LockAspect(
     private fun getLockFor(joinPoint: JoinPoint) =
         (joinPoint.signature as MethodSignature).method.getAnnotation(LockFor::class.java)
 
+    private fun releaseSubscriptionMemberIdAndWorkBookIdLockCase(joinPoint: JoinPoint) {
+        if (joinPoint.args[0] is SubscribeWorkbookUseCaseIn) {
+            val useCaseIn = joinPoint.args[0] as SubscribeWorkbookUseCaseIn
+            releaseSubscriptionMemberIdAndWorkBookIdLock(useCaseIn)
+        } else {
+            val memberId = joinPoint.args[0] as Long
+            val workbookId = joinPoint.args[1] as Long
+            releaseSubscriptionMemberIdAndWorkBookIdLock(memberId, workbookId)
+        }
+    }
+
     private fun releaseSubscriptionMemberIdAndWorkBookIdLock(useCaseIn: SubscribeWorkbookUseCaseIn) {
-        subscriptionDao.releaseLock(useCaseIn.memberId, useCaseIn.workbookId)
-        log.debug { "Lock released for ${useCaseIn.memberId}'s subscription to ${useCaseIn.workbookId}" }
+        releaseSubscriptionMemberIdAndWorkBookIdLock(useCaseIn.memberId, useCaseIn.workbookId)
+    }
+
+    private fun releaseSubscriptionMemberIdAndWorkBookIdLock(memberId: Long, workbookId: Long) {
+        subscriptionDao.releaseLock(memberId, workbookId)
+        log.debug { "Lock released for $memberId's subscription to $workbookId" }
     }
 }

@@ -24,8 +24,7 @@ class DeleteMemberUseCase(
 
         memberSubscriptionService.deleteSubscription(
             DeleteSubscriptionDto(
-                memberId = useCaseIn.memberId,
-                opinion = "cancel"
+                memberId = useCaseIn.memberId
             )
         )
         return DeleteMemberUseCaseOut(true)

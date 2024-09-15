@@ -201,4 +201,18 @@ class SubscriptionDaoExplainGenerateTest : JooqTestSpec() {
 
         ResultGenerator.execute(query, explain, "selectAllSubscriptionSendStatusQueryExplain")
     }
+
+    @Test
+    fun selectSubscriptionTimeRecordQueryExplain() {
+        val query = subscriptionDao.selectSubscriptionTimeRecordQuery(
+            SelectSubscriptionQuery(
+                memberId = 1L,
+                workbookId = 1L
+            )
+        )
+
+        val explain = ExplainGenerator.execute(dslContext, query)
+
+        ResultGenerator.execute(query, explain, "selectSubscriptionTimeRecordQueryExplain")
+    }
 }

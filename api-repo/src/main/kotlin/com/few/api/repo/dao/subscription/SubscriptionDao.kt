@@ -2,13 +2,11 @@ package com.few.api.repo.dao.subscription
 
 import com.few.api.repo.dao.subscription.command.*
 import com.few.api.repo.dao.subscription.query.*
-import com.few.api.repo.dao.subscription.record.WorkbookSubscriptionStatus
-import com.few.api.repo.dao.subscription.record.CountAllSubscriptionStatusRecord
-import com.few.api.repo.dao.subscription.record.MemberWorkbookSubscriptionStatusRecord
-import com.few.api.repo.dao.subscription.record.SubscriptionSendStatusRecord
+import com.few.api.repo.dao.subscription.record.*
 import jooq.jooq_dsl.Tables.MAPPING_WORKBOOK_ARTICLE
 import jooq.jooq_dsl.Tables.SUBSCRIPTION
 import jooq.jooq_dsl.tables.MappingWorkbookArticle
+import jooq.jooq_dsl.tables.Subscription
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
 import org.springframework.stereotype.Repository
@@ -54,6 +52,7 @@ class SubscriptionDao(
         dslContext.update(SUBSCRIPTION)
             .set(SUBSCRIPTION.DELETED_AT, null as LocalDateTime?)
             .set(SUBSCRIPTION.UNSUBS_OPINION, null as String?)
+            .set(SUBSCRIPTION.MODIFIED_AT, LocalDateTime.now())
             .where(SUBSCRIPTION.MEMBER_ID.eq(command.memberId))
             .and(SUBSCRIPTION.TARGET_WORKBOOK_ID.eq(command.workbookId))
 
@@ -65,6 +64,7 @@ class SubscriptionDao(
     fun updateDeletedAtInWorkbookSubscriptionCommand(command: UpdateDeletedAtInWorkbookSubscriptionCommand) =
         dslContext.update(SUBSCRIPTION)
             .set(SUBSCRIPTION.DELETED_AT, LocalDateTime.now())
+            .set(Subscription.SUBSCRIPTION.MODIFIED_AT, LocalDateTime.now())
             .set(SUBSCRIPTION.UNSUBS_OPINION, command.opinion)
             .where(SUBSCRIPTION.MEMBER_ID.eq(command.memberId))
             .and(SUBSCRIPTION.TARGET_WORKBOOK_ID.eq(command.workbookId))
@@ -140,6 +140,7 @@ class SubscriptionDao(
     fun updateDeletedAtInAllSubscriptionCommand(command: UpdateDeletedAtInAllSubscriptionCommand) =
         dslContext.update(SUBSCRIPTION)
             .set(SUBSCRIPTION.DELETED_AT, LocalDateTime.now())
+            .set(SUBSCRIPTION.MODIFIED_AT, LocalDateTime.now())
             .set(SUBSCRIPTION.UNSUBS_OPINION, command.opinion) // TODO: opinion row 마다 중복 해결
             .where(SUBSCRIPTION.MEMBER_ID.eq(command.memberId))
 
@@ -191,6 +192,8 @@ class SubscriptionDao(
         command: UpdateArticleProgressCommand,
     ) = dslContext.update(SUBSCRIPTION)
         .set(SUBSCRIPTION.PROGRESS, SUBSCRIPTION.PROGRESS.add(1))
+        .set(SUBSCRIPTION.MODIFIED_AT, LocalDateTime.now())
+        .set(SUBSCRIPTION.SEND_AT, LocalDateTime.now())
         .where(SUBSCRIPTION.MEMBER_ID.eq(command.memberId))
         .and(SUBSCRIPTION.TARGET_WORKBOOK_ID.eq(command.workbookId))
 
@@ -202,6 +205,8 @@ class SubscriptionDao(
     fun updateLastArticleProgressCommand(command: UpdateLastArticleProgressCommand) =
         dslContext.update(SUBSCRIPTION)
             .set(SUBSCRIPTION.DELETED_AT, LocalDateTime.now())
+            .set(SUBSCRIPTION.MODIFIED_AT, LocalDateTime.now())
+            .set(SUBSCRIPTION.SEND_AT, LocalDateTime.now())
             .set(SUBSCRIPTION.UNSUBS_OPINION, command.opinion)
             .where(SUBSCRIPTION.MEMBER_ID.eq(command.memberId))
             .and(SUBSCRIPTION.TARGET_WORKBOOK_ID.eq(command.workbookId))
@@ -258,4 +263,23 @@ class SubscriptionDao(
             .set(SUBSCRIPTION.MODIFIED_AT, LocalDateTime.now())
             .where(SUBSCRIPTION.MEMBER_ID.eq(command.memberId))
             .and(SUBSCRIPTION.TARGET_WORKBOOK_ID.`in`(command.workbookIds))
+
+    fun selectSubscriptionTimeRecord(
+        query: SelectSubscriptionQuery,
+    ): SubscriptionTimeRecord? {
+        return selectSubscriptionTimeRecordQuery(query)
+            .fetchOneInto(SubscriptionTimeRecord::class.java)
+    }
+
+    fun selectSubscriptionTimeRecordQuery(query: SelectSubscriptionQuery) =
+        dslContext.select(
+            SUBSCRIPTION.MEMBER_ID.`as`(SubscriptionTimeRecord::memberId.name),
+            SUBSCRIPTION.TARGET_WORKBOOK_ID.`as`(SubscriptionTimeRecord::workbookId.name),
+            SUBSCRIPTION.CREATED_AT.`as`(SubscriptionTimeRecord::createdAt.name),
+            SUBSCRIPTION.MODIFIED_AT.`as`(SubscriptionTimeRecord::modifiedAt.name),
+            SUBSCRIPTION.SEND_AT.`as`(SubscriptionTimeRecord::sendAt.name)
+        )
+            .from(SUBSCRIPTION)
+            .where(SUBSCRIPTION.MEMBER_ID.eq(query.memberId))
+            .and(SUBSCRIPTION.TARGET_WORKBOOK_ID.eq(query.workbookId))
 }

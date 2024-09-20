@@ -19,6 +19,7 @@ class SendArticleEventHistoryDao(
             .set(SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY.MESSAGE_ID, command.messageId)
             .set(SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY.EVENT_TYPE_CD, command.eventType)
             .set(SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY.SEND_TYPE_CD, command.sendType)
+            .execute()
     }
 
     fun selectEventByMessageId(query: SelectEventByMessageIdAndEventTypeQuery): SendArticleEventHistoryRecord? {

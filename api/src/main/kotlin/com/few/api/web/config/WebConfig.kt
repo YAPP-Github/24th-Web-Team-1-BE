@@ -1,8 +1,6 @@
 package com.few.api.web.config
 
-import com.few.api.web.config.converter.DayCodeConverter
-import com.few.api.web.config.converter.ViewConverter
-import com.few.api.web.config.converter.WorkBookCategoryConverter
+import com.few.api.web.config.converter.*
 import com.few.api.web.support.method.UserArgumentHandlerMethodArgumentResolver
 import org.springframework.context.annotation.Configuration
 import org.springframework.format.FormatterRegistry
@@ -34,6 +32,8 @@ class WebConfig(
         registry.addConverter(WorkBookCategoryConverter())
         registry.addConverter(ViewConverter())
         registry.addConverter(DayCodeConverter())
+        registry.addConverter(EmailLogEventTypeConverter())
+        registry.addConverter(SendTypeConverter())
     }
 
     override fun addArgumentResolvers(argumentResolvers: MutableList<HandlerMethodArgumentResolver>) {

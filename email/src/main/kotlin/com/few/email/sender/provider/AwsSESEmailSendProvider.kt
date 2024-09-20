@@ -27,7 +27,7 @@ class AwsSESEmailSendProvider(
             .withSource(from)
             .withDestination(destination)
             .withMessage(sendMessage)
-            .withConfigurationSetName("few-configuration-set")
+            .withConfigurationSetName(getWithConfigurationSetName())
 
         runCatching {
             amazonSimpleEmailService.sendEmail(sendEmailRequest).messageId
@@ -49,5 +49,12 @@ class AwsSESEmailSendProvider(
         }.let {
             return it.getOrThrow()
         }
+    }
+
+    /**
+     * Default configuration set name is "few-configuration-set"
+     */
+    fun getWithConfigurationSetName(): String {
+        return "few-configuration-set"
     }
 }

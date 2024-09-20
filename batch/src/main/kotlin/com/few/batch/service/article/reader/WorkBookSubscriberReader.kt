@@ -45,10 +45,19 @@ class WorkBookSubscriberReader(
     }
 
     private fun sendDayCondition(sendDayField: TableField<SubscriptionRecord, String>, sendDayCode: BatchDayCode): Condition {
-        return if (sendDayCode == BatchDayCode.MON_TUE_WED_THU_FRI_SAT_SUN) {
-            sendDayField.eq(BatchDayCode.MON_TUE_WED_THU_FRI.code).or(sendDayField.eq(BatchDayCode.MON_TUE_WED_THU_FRI_SAT_SUN.code))
-        } else {
-            sendDayField.eq(sendDayCode.code)
+        return when (sendDayCode) {
+            /** 평일인 경우 매일을 포함하여 전송한다 */
+            BatchDayCode.MON_TUE_WED_THU_FRI -> {
+                sendDayField.eq(BatchDayCode.MON_TUE_WED_THU_FRI.code)
+                    .or(sendDayField.eq(BatchDayCode.MON_TUE_WED_THU_FRI_SAT_SUN.code))
+            }
+            /** 매일의 경우 매일만 전송한다 */
+            BatchDayCode.MON_TUE_WED_THU_FRI_SAT_SUN -> {
+                sendDayField.eq(BatchDayCode.MON_TUE_WED_THU_FRI_SAT_SUN.code)
+            }
+            else -> {
+                throw IllegalArgumentException("Invalid sendDayCode: $sendDayCode")
+            }
         }
     }
 }

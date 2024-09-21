@@ -40,14 +40,7 @@ class AddEmailLogUseCase(
                 sendType = record.sendType
             )
         ).let {
-            when (EmailLogEventType.fromCode(record.eventType)) {
-                EmailLogEventType.DELIVERYDELAY -> {
-                    TODO("배송지연 이벤트 발생시 처리 로직 추가")
-                }
-                else -> {
-                    TODO("다른 이벤트는 필요시 추가한다.")
-                }
-            }
+//            TODO("다른 이벤트는 필요시 추가한다.")
         }
     }
 }

@@ -7,6 +7,7 @@ import com.few.api.domain.log.dto.AddEmailLogUseCaseIn
 import com.few.api.web.controller.admin.request.*
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
+import com.few.api.web.support.EmailLogEventType
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PostMapping
@@ -33,7 +34,8 @@ class ApiLogController(
     @PostMapping("/email/articles")
     fun addEmailLog(@RequestBody request: EmailLogRequest): ApiResponse<ApiResponse.Success> {
         AddEmailLogUseCaseIn(
-            eventType = request.eventType,
+            eventType = EmailLogEventType.fromType(request.eventType)
+                ?: throw IllegalArgumentException("EmailLogEventType not found. type=${request.eventType}"),
             messageId = request.messageId,
             destination = request.destination,
             mailTimestamp = request.mailTimestamp

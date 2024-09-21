@@ -36,7 +36,7 @@ class AddEmailLogUseCase(
                 memberId = memberId,
                 articleId = record.articleId,
                 messageId = record.messageId,
-                eventType = record.eventType,
+                eventType = useCaseIn.eventType.code,
                 sendType = record.sendType
             )
         ).let {

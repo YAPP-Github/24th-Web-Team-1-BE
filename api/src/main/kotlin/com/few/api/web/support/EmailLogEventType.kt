@@ -13,7 +13,7 @@ enum class EmailLogEventType(val code: Byte, val type: String) {
 
     companion object {
         fun fromType(type: String): EmailLogEventType? {
-            return entries.find { it.type == type }
+            return entries.find { it.type == type.lowercase() }
         }
 
         fun fromCode(code: Byte): EmailLogEventType? {

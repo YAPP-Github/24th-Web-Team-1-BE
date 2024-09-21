@@ -15,8 +15,8 @@ class SubscriptionEmailService(
         private const val ARTICLE_TEMPLATE = "article"
     }
 
-    fun sendArticleEmail(dto: SendArticleInDto) {
-        sendArticleEmailService.send(
+    fun sendArticleEmail(dto: SendArticleInDto): String {
+        return sendArticleEmailService.send(
             SendArticleEmailArgs(
                 dto.toEmail,
                 ARTICLE_SUBJECT_TEMPLATE.format(

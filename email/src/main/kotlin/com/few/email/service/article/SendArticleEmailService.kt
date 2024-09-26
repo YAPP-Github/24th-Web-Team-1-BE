@@ -1,7 +1,7 @@
 package com.few.email.service.article
 
 import com.few.email.sender.EmailSender
-import com.few.email.sender.provider.EmailSendProvider
+import com.few.email.sender.provider.ArticleAwsSESEmailSendProvider
 import com.few.email.service.article.dto.SendArticleEmailArgs
 import org.springframework.boot.autoconfigure.mail.MailProperties
 import org.springframework.stereotype.Component
@@ -13,7 +13,7 @@ import java.util.*
 @Component
 class SendArticleEmailService(
     mailProperties: MailProperties,
-    emailSendProvider: EmailSendProvider,
+    emailSendProvider: ArticleAwsSESEmailSendProvider,
     private val templateEngine: TemplateEngine,
 ) : EmailSender<SendArticleEmailArgs>(mailProperties, emailSendProvider) {
 

@@ -3,7 +3,9 @@ package com.few.api.domain.subscription.usecase
 import com.few.api.domain.subscription.event.dto.WorkbookSubscriptionEvent
 import com.few.api.domain.subscription.usecase.dto.SubscribeWorkbookUseCaseIn
 import com.few.api.repo.dao.subscription.SubscriptionDao
+import com.few.api.repo.dao.subscription.record.SubscriptionSendStatus
 import com.few.api.repo.dao.subscription.record.WorkbookSubscriptionStatus
+import com.few.data.common.code.DayCode
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
@@ -13,6 +15,7 @@ import io.mockk.verify
 import io.mockk.just
 import io.mockk.Runs
 import org.springframework.context.ApplicationEventPublisher
+import java.time.LocalTime
 
 class SubscribeWorkbookUseCaseTest : BehaviorSpec({
     val log = KotlinLogging.logger {}
@@ -33,6 +36,15 @@ class SubscribeWorkbookUseCaseTest : BehaviorSpec({
         val useCaseIn = SubscribeWorkbookUseCaseIn(workbookId = workbookId, memberId = memberId)
 
         `when`("멤버의 구독 히스토리가 없는 경우") {
+            every { subscriptionDao.selectSubscriptionSendStatus(any()) } returns listOf(
+                SubscriptionSendStatus(
+                    workbookId = workbookId,
+                    memberId = memberId,
+                    sendDay = DayCode.MON_TUE_WED_THU_FRI.code,
+                    sendTime = LocalTime.of(8, 0)
+                )
+            )
+
             every { subscriptionDao.selectTopWorkbookSubscriptionStatus(any()) } returns null
 
             every { subscriptionDao.insertWorkbookSubscription(any()) } just Runs
@@ -46,6 +58,7 @@ class SubscribeWorkbookUseCaseTest : BehaviorSpec({
                 useCase.execute(useCaseIn)
 
                 verify(exactly = 1) { subscriptionDao.selectTopWorkbookSubscriptionStatus(any()) }
+                verify(exactly = 1) { subscriptionDao.selectTopWorkbookSubscriptionStatus(any()) }
                 verify(exactly = 1) { subscriptionDao.insertWorkbookSubscription(any()) }
                 verify(exactly = 0) { subscriptionDao.countWorkbookMappedArticles(any()) }
                 verify(exactly = 0) { subscriptionDao.reSubscribeWorkbookSubscription(any()) }
@@ -54,6 +67,15 @@ class SubscribeWorkbookUseCaseTest : BehaviorSpec({
         }
 
         `when`("이미 구독한 히스토리가 있고 구독이 취소된 경우") {
+            every { subscriptionDao.selectSubscriptionSendStatus(any()) } returns listOf(
+                SubscriptionSendStatus(
+                    workbookId = workbookId,
+                    memberId = memberId,
+                    sendDay = DayCode.MON_TUE_WED_THU_FRI.code,
+                    sendTime = LocalTime.of(8, 0)
+                )
+            )
+
             val day = 2
             every { subscriptionDao.selectTopWorkbookSubscriptionStatus(any()) } returns WorkbookSubscriptionStatus(
                 workbookId = workbookId,
@@ -75,6 +97,7 @@ class SubscribeWorkbookUseCaseTest : BehaviorSpec({
                 useCase.execute(useCaseIn)
 
                 verify(exactly = 1) { subscriptionDao.selectTopWorkbookSubscriptionStatus(any()) }
+                verify(exactly = 1) { subscriptionDao.selectTopWorkbookSubscriptionStatus(any()) }
                 verify(exactly = 0) { subscriptionDao.insertWorkbookSubscription(any()) }
                 verify(exactly = 1) { subscriptionDao.countWorkbookMappedArticles(any()) }
                 verify(exactly = 1) { subscriptionDao.reSubscribeWorkbookSubscription(any()) }
@@ -83,6 +106,15 @@ class SubscribeWorkbookUseCaseTest : BehaviorSpec({
         }
 
         `when`("이미 구독한 히스토리가 있고 구독을 완료한 경우") {
+            every { subscriptionDao.selectSubscriptionSendStatus(any()) } returns listOf(
+                SubscriptionSendStatus(
+                    workbookId = workbookId,
+                    memberId = memberId,
+                    sendDay = DayCode.MON_TUE_WED_THU_FRI.code,
+                    sendTime = LocalTime.of(8, 0)
+                )
+            )
+
             val day = 3
             every { subscriptionDao.selectTopWorkbookSubscriptionStatus(any()) } returns WorkbookSubscriptionStatus(
                 workbookId = workbookId,
@@ -104,6 +136,7 @@ class SubscribeWorkbookUseCaseTest : BehaviorSpec({
                 shouldThrow<Exception> { useCase.execute(useCaseIn) }
 
                 verify(exactly = 1) { subscriptionDao.selectTopWorkbookSubscriptionStatus(any()) }
+                verify(exactly = 1) { subscriptionDao.selectTopWorkbookSubscriptionStatus(any()) }
                 verify(exactly = 0) { subscriptionDao.insertWorkbookSubscription(any()) }
                 verify(exactly = 1) { subscriptionDao.countWorkbookMappedArticles(any()) }
                 verify(exactly = 0) { subscriptionDao.reSubscribeWorkbookSubscription(any()) }
@@ -112,12 +145,22 @@ class SubscribeWorkbookUseCaseTest : BehaviorSpec({
         }
 
         `when`("구독 중인 경우") {
+            every { subscriptionDao.selectSubscriptionSendStatus(any()) } returns listOf(
+                SubscriptionSendStatus(
+                    workbookId = workbookId,
+                    memberId = memberId,
+                    sendDay = DayCode.MON_TUE_WED_THU_FRI.code,
+                    sendTime = LocalTime.of(8, 0)
+                )
+            )
+
             val day = 2
             every { subscriptionDao.selectTopWorkbookSubscriptionStatus(any()) } returns WorkbookSubscriptionStatus(workbookId = workbookId, isActiveSub = true, day)
 
             then("예외가 발생한다") {
                 shouldThrow<Exception> { useCase.execute(useCaseIn) }
 
+                verify(exactly = 1) { subscriptionDao.selectTopWorkbookSubscriptionStatus(any()) }
                 verify(exactly = 1) { subscriptionDao.selectTopWorkbookSubscriptionStatus(any()) }
                 verify(exactly = 0) { subscriptionDao.insertWorkbookSubscription(any()) }
                 verify(exactly = 0) { subscriptionDao.countWorkbookMappedArticles(any()) }

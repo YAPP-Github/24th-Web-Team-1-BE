@@ -13,6 +13,7 @@ import com.few.api.domain.subscription.usecase.model.WorkbookSubscriptionStatus
 import com.few.api.exception.common.NotFoundException
 import com.few.api.exception.subscribe.SubscribeIllegalArgumentException
 import com.few.api.repo.dao.subscription.query.CountWorkbookMappedArticlesQuery
+import com.few.api.repo.dao.subscription.query.SelectSubscriptionSendStatusQuery
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -28,10 +29,28 @@ class SubscribeWorkbookUseCase(
     fun execute(useCaseIn: SubscribeWorkbookUseCaseIn) {
         val subTargetWorkbookId = useCaseIn.workbookId
         val memberId = useCaseIn.memberId
-        val command = InsertWorkbookSubscriptionCommand(
-            memberId = memberId,
-            workbookId = subTargetWorkbookId
-        )
+
+        val command = subscriptionDao.selectSubscriptionSendStatus(
+            SelectSubscriptionSendStatusQuery(
+                memberId = memberId
+            )
+        ).takeIf {
+            it.isNotEmpty()
+        }?.let {
+            /** 현재 구독 중인 정보가 있다면 해당 정보를 통해 구독 정보를 생성 */
+            InsertWorkbookSubscriptionCommand(
+                memberId = memberId,
+                workbookId = subTargetWorkbookId,
+                sendDay = it[0].sendDay,
+                sendTime = it[0].sendTime
+            )
+        } ?: run {
+            /** 현재 구독 중인 정보가 없다면 기본 정보로 구독 정보를 생성 */
+            InsertWorkbookSubscriptionCommand(
+                memberId = memberId,
+                workbookId = subTargetWorkbookId
+            )
+        }
 
         val workbookSubscriptionHistory = subscriptionDao.selectTopWorkbookSubscriptionStatus(
             SelectAllWorkbookSubscriptionStatusNotConsiderDeletedAtQuery(

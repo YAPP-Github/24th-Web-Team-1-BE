@@ -42,6 +42,8 @@ class SubscriptionDao(
         dslContext.insertInto(SUBSCRIPTION)
             .set(SUBSCRIPTION.MEMBER_ID, command.memberId)
             .set(SUBSCRIPTION.TARGET_WORKBOOK_ID, command.workbookId)
+            .set(SUBSCRIPTION.SEND_DAY, command.sendDay)
+            .set(SUBSCRIPTION.SEND_TIME, command.sendTime)
 
     fun reSubscribeWorkbookSubscription(command: InsertWorkbookSubscriptionCommand) {
         reSubscribeWorkBookSubscriptionCommand(command)
@@ -53,6 +55,8 @@ class SubscriptionDao(
             .set(SUBSCRIPTION.DELETED_AT, null as LocalDateTime?)
             .set(SUBSCRIPTION.UNSUBS_OPINION, null as String?)
             .set(SUBSCRIPTION.MODIFIED_AT, LocalDateTime.now())
+            .set(SUBSCRIPTION.SEND_DAY, command.sendDay)
+            .set(SUBSCRIPTION.SEND_TIME, command.sendTime)
             .where(SUBSCRIPTION.MEMBER_ID.eq(command.memberId))
             .and(SUBSCRIPTION.TARGET_WORKBOOK_ID.eq(command.workbookId))
 
@@ -282,4 +286,20 @@ class SubscriptionDao(
             .from(SUBSCRIPTION)
             .where(SUBSCRIPTION.MEMBER_ID.eq(query.memberId))
             .and(SUBSCRIPTION.TARGET_WORKBOOK_ID.eq(query.workbookId))
+
+    fun selectSubscriptionSendStatus(query: SelectSubscriptionSendStatusQuery): List<SubscriptionSendStatus> {
+        return selectSubscriptionSendStatusQuery(query)
+            .fetchInto(SubscriptionSendStatus::class.java)
+    }
+
+    fun selectSubscriptionSendStatusQuery(query: SelectSubscriptionSendStatusQuery) =
+        dslContext.select(
+            SUBSCRIPTION.MEMBER_ID,
+            SUBSCRIPTION.TARGET_WORKBOOK_ID,
+            SUBSCRIPTION.SEND_TIME,
+            SUBSCRIPTION.SEND_DAY
+        )
+            .from(SUBSCRIPTION)
+            .where(SUBSCRIPTION.MEMBER_ID.eq(query.memberId))
+            .and(SUBSCRIPTION.DELETED_AT.isNull)
 }

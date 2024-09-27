@@ -3,16 +3,14 @@ package com.few.api.domain.subscription.handler
 import com.few.api.config.DatabaseAccessThreadPoolConfig.Companion.DATABASE_ACCESS_POOL
 import com.few.api.domain.common.lock.LockFor
 import com.few.api.domain.common.lock.LockIdentifier
-import com.few.api.domain.subscription.service.SubscriptionArticleService
-import com.few.api.domain.subscription.service.SubscriptionMemberService
-import com.few.api.domain.subscription.service.SubscriptionEmailService
-import com.few.api.domain.subscription.service.SubscriptionWorkbookService
+import com.few.api.domain.subscription.service.*
 import com.few.api.domain.subscription.service.dto.*
 import com.few.api.exception.common.NotFoundException
 import com.few.api.repo.dao.subscription.SubscriptionDao
 import com.few.api.repo.dao.subscription.command.UpdateArticleProgressCommand
 import com.few.api.repo.dao.subscription.command.UpdateLastArticleProgressCommand
 import com.few.api.repo.dao.subscription.query.SelectSubscriptionQuery
+import com.few.api.web.support.SendType
 import com.few.data.common.code.CategoryType
 import com.few.email.service.article.dto.Content
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -27,6 +25,7 @@ class SendWorkbookArticleAsyncHandler(
     private val memberService: SubscriptionMemberService,
     private val articleService: SubscriptionArticleService,
     private val workbookService: SubscriptionWorkbookService,
+    private val subscriptionLogService: SubscriptionLogService,
     private val subscriptionDao: SubscriptionDao,
     private val emailService: SubscriptionEmailService,
 ) {
@@ -80,8 +79,19 @@ class SendWorkbookArticleAsyncHandler(
             )
         )
 
-        runCatching { emailService.sendArticleEmail(sendArticleInDto) }
+        runCatching {
+            emailService.sendArticleEmail(sendArticleInDto)
+        }
             .onSuccess {
+                subscriptionLogService.insertSendEvent(
+                    InsertSendEventDto(
+                        memberId = memberId,
+                        articleId = article.id,
+                        messageId = it,
+                        sendType = SendType.AWSSES.code
+                    )
+                )
+
                 val lastDayArticleId =
                     workbookService.readWorkbookLastArticleId(
                         ReadWorkbookLastArticleIdInDto(

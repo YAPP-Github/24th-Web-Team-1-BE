@@ -2,14 +2,19 @@ package com.few.api.web.controller.article
 
 import com.few.api.domain.article.usecase.ReadArticleUseCase
 import com.few.api.domain.article.usecase.BrowseArticlesUseCase
+import com.few.api.domain.article.usecase.ReadArticleByEmailUseCase
+import com.few.api.domain.article.usecase.dto.ReadArticleByEmailUseCaseIn
 import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseIn
 import com.few.api.domain.article.usecase.dto.ReadArticlesUseCaseIn
+import com.few.api.web.controller.article.request.ReadArticleByEmailRequest
 import com.few.api.web.controller.article.response.ReadArticleResponse
 import com.few.api.web.controller.article.response.ReadArticlesResponse
 import com.few.api.web.controller.article.response.WorkbookInfo
 import com.few.api.web.controller.article.response.WriterInfo
 import com.few.api.web.support.ApiResponse
 import com.few.api.web.support.ApiResponseGenerator
+import com.few.api.web.support.EmailLogEventType
+import com.few.api.web.support.SendType
 import com.few.api.web.support.method.UserArgument
 import com.few.api.web.support.method.UserArgumentDetails
 import com.few.data.common.code.CategoryType
@@ -25,6 +30,7 @@ import org.springframework.web.bind.annotation.*
 class ArticleController(
     private val readArticleUseCase: ReadArticleUseCase,
     private val browseArticlesUseCase: BrowseArticlesUseCase,
+    private val readArticleByEmailUseCase: ReadArticleByEmailUseCase,
 ) {
 
     @GetMapping("/{articleId}")
@@ -74,7 +80,8 @@ class ArticleController(
             defaultValue = "-1"
         ) categoryCd: Byte,
     ): ApiResponse<ApiResponse.SuccessBody<ReadArticlesResponse>> {
-        val useCaseOut = browseArticlesUseCase.execute(ReadArticlesUseCaseIn(prevArticleId, categoryCd))
+        val useCaseOut =
+            browseArticlesUseCase.execute(ReadArticlesUseCaseIn(prevArticleId, categoryCd))
 
         val articles: List<ReadArticleResponse> = useCaseOut.articles.map { a ->
             ReadArticleResponse(
@@ -114,5 +121,21 @@ class ArticleController(
             ),
             HttpStatus.OK
         )
+    }
+
+    @PostMapping("/views")
+    fun readArticleByEmail(
+        @RequestParam("type") type: SendType,
+        @RequestBody request: ReadArticleByEmailRequest,
+    ): ApiResponse<ApiResponse.Success> {
+        readArticleByEmailUseCase.execute(
+            ReadArticleByEmailUseCaseIn(
+                destination = request.destination,
+                messageId = request.messageId,
+                eventType = EmailLogEventType.OPEN,
+                sendType = type
+            )
+        )
+        return ApiResponseGenerator.success(HttpStatus.OK)
     }
 }

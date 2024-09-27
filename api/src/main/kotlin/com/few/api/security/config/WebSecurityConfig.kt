@@ -144,7 +144,9 @@ class WebSecurityConfig(
 
                     /** 어드민 */
                     AntPathRequestMatcher("/api/v1/admin/**", HttpMethod.POST.name()),
+                    AntPathRequestMatcher("/api/v1/articles/views", HttpMethod.POST.name()),
                     AntPathRequestMatcher("/api/v1/logs", HttpMethod.POST.name()),
+                    AntPathRequestMatcher("/api/v1/logs/email/articles", HttpMethod.POST.name()),
                     AntPathRequestMatcher("/batch/**"),
 
                     /** 인증 불필요 */
@@ -188,6 +190,8 @@ class WebSecurityConfig(
 
                     /** 어드민 */
                     AntPathRequestMatcher("/api/v1/admin/**", HttpMethod.POST.name()),
+                    AntPathRequestMatcher("/api/v1/articles/views", HttpMethod.POST.name()),
+                    AntPathRequestMatcher("/api/v1/logs/email/articles", HttpMethod.POST.name()),
                     AntPathRequestMatcher("/api/v1/logs", HttpMethod.POST.name()),
                     AntPathRequestMatcher("/batch/**"),
 

@@ -8,6 +8,7 @@ enum class BatchCategoryType(val code: Byte, val displayName: String) {
     ECONOMY(0, "경제"),
     IT(10, "IT"),
     MARKETING(20, "마케팅"),
+    LANGUAGE(25, "외국어"),
     CULTURE(30, "교양"),
     SCIENCE(40, "과학"),
     ;

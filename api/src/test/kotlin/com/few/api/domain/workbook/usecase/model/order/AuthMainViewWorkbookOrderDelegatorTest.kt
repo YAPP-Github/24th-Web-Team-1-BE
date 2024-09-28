@@ -1,4 +1,4 @@
-package com.few.api.domain.workbook.usecase.service.order
+package com.few.api.domain.workbook.usecase.model.order
 
 import com.few.api.domain.workbook.usecase.model.MemberSubscribedWorkbook
 import com.few.api.domain.workbook.usecase.model.WorkBook
@@ -55,17 +55,16 @@ class AuthMainViewWorkbookOrderDelegatorTest {
 
         // when
         val delegator = AuthMainViewWorkbookOrderDelegator(
-            workbooksOrderBySubscriptionCount,
             memberSubscribedWorkbooksReverseOrderByCurrentDay
         )
 
         // then
-        val orderedWorkbooks = delegator.order()
-        assertEquals(totalWorkbookCount, orderedWorkbooks.size)
+        val orderedWorkbooks = delegator.order(workbooksOrderBySubscriptionCount)
+        assertEquals(totalWorkbookCount, orderedWorkbooks.workbooks.size)
 
         val expectedOrderedWorkbookIds = activeWorkbookIds + notSubscribeWorkbookIds + inActiveList
         for (i in expectedOrderedWorkbookIds.indices) {
-            assertEquals(expectedOrderedWorkbookIds[i].toLong(), orderedWorkbooks[i].id)
+            assertEquals(expectedOrderedWorkbookIds[i].toLong(), orderedWorkbooks.workbooks[i].id)
         }
     }
 
@@ -115,17 +114,16 @@ class AuthMainViewWorkbookOrderDelegatorTest {
 
         // when
         val delegator = AuthMainViewWorkbookOrderDelegator(
-            workbooksOrderBySubscriptionCount,
             memberSubscribedWorkbooksReverseOrderByCurrentDay
         )
 
         // then
-        val orderedWorkbooks = delegator.order()
-        assertEquals(totalWorkbookCount, orderedWorkbooks.size)
+        val orderedWorkbooks = delegator.order(workbooksOrderBySubscriptionCount)
+        assertEquals(totalWorkbookCount, orderedWorkbooks.workbooks.size)
 
         val expectedOrderedWorkbookIds = activeWorkbookIds + notSubscribeWorkbookIds
         for (i in expectedOrderedWorkbookIds.indices) {
-            assertEquals(expectedOrderedWorkbookIds[i].toLong(), orderedWorkbooks[i].id)
+            assertEquals(expectedOrderedWorkbookIds[i].toLong(), orderedWorkbooks.workbooks[i].id)
         }
     }
 
@@ -175,17 +173,16 @@ class AuthMainViewWorkbookOrderDelegatorTest {
 
         // when
         val delegator = AuthMainViewWorkbookOrderDelegator(
-            workbooksOrderBySubscriptionCount,
             memberSubscribedWorkbooksReverseOrderByCurrentDay
         )
 
         // then
-        val orderedWorkbooks = delegator.order()
-        assertEquals(totalWorkbookCount, orderedWorkbooks.size)
+        val orderedWorkbooks = delegator.order(workbooksOrderBySubscriptionCount)
+        assertEquals(totalWorkbookCount, orderedWorkbooks.workbooks.size)
 
         val expectedOrderedWorkbookIds = notSubscribeWorkbookIds + inActiveWorkbookIds
         for (i in expectedOrderedWorkbookIds.indices) {
-            assertEquals(expectedOrderedWorkbookIds[i].toLong(), orderedWorkbooks[i].id)
+            assertEquals(expectedOrderedWorkbookIds[i].toLong(), orderedWorkbooks.workbooks[i].id)
         }
     }
 }

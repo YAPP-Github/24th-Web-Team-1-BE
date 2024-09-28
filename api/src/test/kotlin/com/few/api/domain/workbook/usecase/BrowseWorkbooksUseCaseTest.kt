@@ -5,11 +5,6 @@ import com.few.api.domain.workbook.service.WorkbookSubscribeService
 import com.few.api.domain.workbook.service.dto.BrowseMemberSubscribeWorkbooksOutDto
 import com.few.api.domain.workbook.service.dto.WriterMappedWorkbookOutDto
 import com.few.api.domain.workbook.usecase.dto.BrowseWorkbooksUseCaseIn
-import com.few.api.domain.workbook.usecase.model.WorkBook
-import com.few.api.domain.workbook.usecase.model.WorkBookWriter
-import com.few.api.domain.workbook.usecase.service.order.AuthMainViewWorkbookOrderDelegator
-import com.few.api.domain.workbook.usecase.service.order.BasicWorkbookOrderDelegator
-import com.few.api.domain.workbook.usecase.service.order.WorkbookOrderDelegatorExecutor
 import com.few.api.repo.dao.workbook.WorkbookDao
 import com.few.api.repo.dao.workbook.record.SelectWorkBookRecordWithSubscriptionCount
 import com.few.api.web.support.ViewCategory
@@ -29,16 +24,14 @@ class BrowseWorkbooksUseCaseTest : BehaviorSpec({
     lateinit var workbookDao: WorkbookDao
     lateinit var workbookMemberService: WorkbookMemberService
     lateinit var workbookSubscribeService: WorkbookSubscribeService
-    lateinit var workbookOrderDelegatorExecutor: WorkbookOrderDelegatorExecutor
     lateinit var useCase: BrowseWorkbooksUseCase
 
     beforeContainer {
         workbookDao = mockk<WorkbookDao>()
         workbookMemberService = mockk<WorkbookMemberService>()
         workbookSubscribeService = mockk<WorkbookSubscribeService>()
-        workbookOrderDelegatorExecutor = mockk<WorkbookOrderDelegatorExecutor>()
         useCase =
-            BrowseWorkbooksUseCase(workbookDao, workbookMemberService, workbookSubscribeService, workbookOrderDelegatorExecutor)
+            BrowseWorkbooksUseCase(workbookDao, workbookMemberService, workbookSubscribeService)
     }
 
     given("메인 뷰에서 로그인 된 상태로 카테고리를 지정하여 다수 워크북 조회 요청이 온 상황에서") {
@@ -63,16 +56,16 @@ class BrowseWorkbooksUseCaseTest : BehaviorSpec({
                 1L to listOf(
                     WriterMappedWorkbookOutDto(
                         writerId = 1L,
-                        name = "hunca",
-                        url = URL("https://jh-labs.tistory.com/"),
+                        name = "writer1",
+                        url = URL("http://localhost:8080/image/writer/1"),
                         workbookId = 1L
                     )
                 ),
                 2L to listOf(
                     WriterMappedWorkbookOutDto(
                         writerId = 2L,
-                        name = "hunca",
-                        url = URL("https://jh-labs.tistory.com/"),
+                        name = "writer2",
+                        url = URL("http://localhost:8080/image/writer/2"),
                         workbookId = 2L
                     )
                 )
@@ -93,27 +86,6 @@ class BrowseWorkbooksUseCaseTest : BehaviorSpec({
                 )
             )
 
-            every {
-                workbookOrderDelegatorExecutor.execute(any(AuthMainViewWorkbookOrderDelegator::class))
-            } returns IntStream.range(1, 1 + workbookCount).mapToObj {
-                WorkBook(
-                    id = it.toLong(),
-                    title = "workbook title$it",
-                    mainImageUrl = URL("http://localhost:8080/image/main/$it"),
-                    category = WorkBookCategory.ECONOMY.displayName,
-                    description = "workbook$it description",
-                    createdAt = LocalDateTime.now(),
-                    writerDetails = listOf(
-                        WorkBookWriter(
-                            id = it.toLong(),
-                            name = "writer$it",
-                            url = URL("https://jh-labs.tistory.com/")
-                        )
-                    ),
-                    subscriptionCount = it.toLong()
-                )
-            }.toList()
-
             then("경제 카테고리의 워크북이 조회된다") {
                 val useCaseOut = useCase.execute(useCaseIn)
                 useCaseOut.workbooks.size shouldBe workbookCount
@@ -127,20 +99,13 @@ class BrowseWorkbooksUseCaseTest : BehaviorSpec({
                     browseWorkBookDetail.writerDetails.size shouldBe 1
                     browseWorkBookDetail.writerDetails[0].id shouldBe (index + 1).toLong()
                     browseWorkBookDetail.writerDetails[0].name shouldBe "writer${index + 1}"
-                    browseWorkBookDetail.writerDetails[0].url shouldBe URL("https://jh-labs.tistory.com/")
+                    browseWorkBookDetail.writerDetails[0].url shouldBe URL("http://localhost:8080/image/writer/${index + 1}")
                     browseWorkBookDetail.subscriptionCount shouldBe (index + 1).toLong()
                 }
 
                 verify(exactly = 1) { workbookDao.browseWorkBookWithSubscriptionCount(any()) }
                 verify(exactly = 1) { workbookMemberService.browseWorkbookWriterRecords(any()) }
                 verify(exactly = 1) { workbookSubscribeService.browseMemberSubscribeWorkbooks(any()) }
-                verify(exactly = 1) {
-                    workbookOrderDelegatorExecutor.execute(
-                        any(
-                            AuthMainViewWorkbookOrderDelegator::class
-                        )
-                    )
-                }
             }
         }
     }
@@ -176,28 +141,6 @@ class BrowseWorkbooksUseCaseTest : BehaviorSpec({
             }
             every { workbookMemberService.browseWorkbookWriterRecords(any()) } returns workbookWriterRecords
 
-            every {
-                workbookOrderDelegatorExecutor.execute(any(BasicWorkbookOrderDelegator::class))
-            } returns
-                IntStream.range(1, 1 + workbookCount).mapToObj {
-                    WorkBook(
-                        id = it.toLong(),
-                        title = "workbook title$it",
-                        mainImageUrl = URL("http://localhost:8080/image/main/$it"),
-                        category = WorkBookCategory.ECONOMY.displayName,
-                        description = "workbook$it description",
-                        createdAt = LocalDateTime.now(),
-                        writerDetails = listOf(
-                            WorkBookWriter(
-                                id = it.toLong(),
-                                name = "writer$it",
-                                url = URL("http://localhost:8080/image/writer/$it")
-                            )
-                        ),
-                        subscriptionCount = it.toLong()
-                    )
-                }.toList()
-
             then("경제 카테고리의 워크북이 조회된다") {
                 val useCaseOut = useCase.execute(useCaseIn)
                 useCaseOut.workbooks.size shouldBe workbookCount
@@ -218,13 +161,6 @@ class BrowseWorkbooksUseCaseTest : BehaviorSpec({
                 verify(exactly = 1) { workbookDao.browseWorkBookWithSubscriptionCount(any()) }
                 verify(exactly = 1) { workbookMemberService.browseWorkbookWriterRecords(any()) }
                 verify(exactly = 0) { workbookSubscribeService.browseMemberSubscribeWorkbooks(any()) }
-                verify(exactly = 1) {
-                    workbookOrderDelegatorExecutor.execute(
-                        any(
-                            BasicWorkbookOrderDelegator::class
-                        )
-                    )
-                }
             }
         }
     }
@@ -268,27 +204,6 @@ class BrowseWorkbooksUseCaseTest : BehaviorSpec({
                 )
             )
 
-            every {
-                workbookOrderDelegatorExecutor.execute(any(BasicWorkbookOrderDelegator::class))
-            } returns IntStream.range(1, 1 + workbookCount).mapToObj {
-                WorkBook(
-                    id = it.toLong(),
-                    title = "workbook title$it",
-                    mainImageUrl = URL("http://localhost:8080/image/main/$it"),
-                    category = WorkBookCategory.ECONOMY.displayName,
-                    description = "workbook$it description",
-                    createdAt = LocalDateTime.now(),
-                    writerDetails = listOf(
-                        WorkBookWriter(
-                            id = it.toLong(),
-                            name = "writer$it",
-                            url = URL("http://localhost:8080/image/writer/$it")
-                        )
-                    ),
-                    subscriptionCount = it.toLong()
-                )
-            }.toList()
-
             then("경제 카테고리의 워크북이 조회된다") {
                 val useCaseOut = useCase.execute(useCaseIn)
                 useCaseOut.workbooks.size shouldBe workbookCount
@@ -308,13 +223,6 @@ class BrowseWorkbooksUseCaseTest : BehaviorSpec({
                 verify(exactly = 1) { workbookDao.browseWorkBookWithSubscriptionCount(any()) }
                 verify(exactly = 1) { workbookMemberService.browseWorkbookWriterRecords(any()) }
                 verify(exactly = 0) { workbookSubscribeService.browseMemberSubscribeWorkbooks(any()) }
-                verify(exactly = 1) {
-                    workbookOrderDelegatorExecutor.execute(
-                        any(
-                            BasicWorkbookOrderDelegator::class
-                        )
-                    )
-                }
             }
         }
     }

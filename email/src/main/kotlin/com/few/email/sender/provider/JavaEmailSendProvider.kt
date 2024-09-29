@@ -13,7 +13,7 @@ class JavaEmailSendProvider(
     companion object {
         private const val UTF_8 = "utf-8"
     }
-    override fun sendEmail(from: String, to: String, subject: String, message: String) {
+    override fun sendEmail(from: String, to: String, subject: String, message: String): String {
         val sendMessage: MimeMessage = emailSender.createMimeMessage()
         val helper = MimeMessageHelper(sendMessage, UTF_8)
         try {
@@ -25,5 +25,6 @@ class JavaEmailSendProvider(
             throw RuntimeException(e)
         }
         emailSender.send(sendMessage)
+        return sendMessage.messageID
     }
 }

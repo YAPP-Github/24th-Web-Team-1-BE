@@ -1,5 +1,7 @@
 package com.few.batch.service.article.writer
 
+import com.few.batch.data.common.code.BatchSendEventType
+import com.few.batch.data.common.code.BatchSendType
 import com.few.batch.service.article.dto.WorkBookSubscriberItem
 import com.few.batch.service.article.dto.toMemberIds
 import com.few.batch.service.article.dto.toTargetWorkBookIds
@@ -11,6 +13,7 @@ import com.few.batch.service.article.writer.support.MailServiceArgsGenerator
 import com.few.email.service.article.SendArticleEmailService
 import jooq.jooq_dsl.tables.*
 import org.jooq.DSLContext
+import org.jooq.InsertSetMoreStep
 import org.jooq.UpdateConditionStep
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -56,9 +59,18 @@ class WorkBookSubscriberWriter(
 
         /** 이메일 전송 */
         val mailSendRecorder = MailSendRecorder(emailServiceArgs)
+        val insertSendArticleQueries = mutableListOf<InsertSetMoreStep<*>>()
         emailServiceArgs.forEach {
             try {
-                sendArticleEmailService.send(it.sendArticleEmailArgs)
+                val messageId = sendArticleEmailService.send(it.sendArticleEmailArgs)
+                insertSendArticleQueries.add(
+                    dslContext.insertInto(SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY)
+                        .set(SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY.MEMBER_ID, it.memberId)
+                        .set(SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY.ARTICLE_ID, it.articleId)
+                        .set(SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY.MESSAGE_ID, messageId)
+                        .set(SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY.EVENT_TYPE_CD, BatchSendEventType.SEND.code)
+                        .set(SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY.SEND_TYPE_CD, BatchSendType.AWSSES.code)
+                )
             } catch (e: Exception) {
                 mailSendRecorder.recordFail(
                     it.memberId,
@@ -67,6 +79,7 @@ class WorkBookSubscriberWriter(
                 )
             }
         }
+        dslContext.batch(insertSendArticleQueries).execute()
 
         /** 이메일 전송 결과에 따라 진행률 업데이트 및 구독 해지 처리를 위한 데이터 생성 */
         val receiveLastDayRecords =

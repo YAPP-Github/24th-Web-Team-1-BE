@@ -47,7 +47,7 @@ class SaveMemberUseCaseTest : BehaviorSpec({
             val token = "encryptedToken"
             every { idEncryption.encrypt(any()) } returns token
 
-            every { sendAuthEmailService.send(any()) } returns Unit
+            every { sendAuthEmailService.send(any()) } returns "messageId"
 
             then("인증 이메일 발송 성공 응답을 반환한다") {
                 val useCaseOut = useCase.execute(useCaseIn)
@@ -76,7 +76,7 @@ class SaveMemberUseCaseTest : BehaviorSpec({
             val token = "encryptedToken"
             every { idEncryption.encrypt(any()) } returns token
 
-            every { sendAuthEmailService.send(any()) } returns Unit
+            every { sendAuthEmailService.send(any()) } returns "messageId"
 
             then("인증 이메일 발송 성공 응답을 반환한다") {
                 val useCaseOut = useCase.execute(useCaseIn)
@@ -105,7 +105,7 @@ class SaveMemberUseCaseTest : BehaviorSpec({
             val token = "encryptedToken"
             every { idEncryption.encrypt(any()) } returns token
 
-            every { sendAuthEmailService.send(any()) } returns Unit
+            every { sendAuthEmailService.send(any()) } returns "messageId"
 
             then("인증 이메일 발송 성공 응답을 반환한다") {
                 val useCaseOut = useCase.execute(useCaseIn)

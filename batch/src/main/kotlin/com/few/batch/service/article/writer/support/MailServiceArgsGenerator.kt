@@ -13,6 +13,7 @@ import java.time.LocalDate
 data class MailServiceArg(
     val memberId: Long,
     val workbookId: Long,
+    val articleId: Long,
     val sendArticleEmailArgs: SendArticleEmailArgs,
 )
 
@@ -53,7 +54,8 @@ class MailServiceArgsGenerator(
 
             MailServiceArg(
                 it.memberId,
-                it.targetWorkBookId,
+                memberArticle.workbookId,
+                memberArticle.articleId,
                 SendArticleEmailArgs(
                     toEmail,
                     ARTICLE_SUBJECT_TEMPLATE.format(

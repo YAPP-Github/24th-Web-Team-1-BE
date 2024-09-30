@@ -72,10 +72,10 @@ class BrowseWorkbooksUseCase(
                     UnOrderedWorkBooks(
                         target,
                         delegator
-                    ).order().orderedWorkbooks
+                    ).order()
                 }
-                ?: run { OrderedWorkBooks(target).orderedWorkbooks }
-        }
+                ?: run { OrderedWorkBooks(target) }
+        }.orderedWorkbooks
 
         val orderedWorkbookData = orderedWorkbook.workbookData
         orderedWorkbookData.map { workBook ->

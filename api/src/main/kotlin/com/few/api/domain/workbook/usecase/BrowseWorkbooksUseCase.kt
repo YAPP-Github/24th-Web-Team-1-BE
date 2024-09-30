@@ -10,9 +10,7 @@ import com.few.api.domain.workbook.usecase.dto.BrowseWorkbooksUseCaseIn
 import com.few.api.domain.workbook.usecase.dto.BrowseWorkbooksUseCaseOut
 import com.few.api.domain.workbook.usecase.dto.WriterDetail
 import com.few.api.domain.workbook.usecase.model.*
-import com.few.api.domain.workbook.usecase.model.order.AuthMainViewWorkbookOrderDelegator
-import com.few.api.domain.workbook.usecase.model.order.BasicWorkbookOrderDelegator
-import com.few.api.domain.workbook.usecase.model.order.WorkbookOrderDelegator
+import com.few.api.domain.workbook.usecase.model.order.*
 import com.few.api.repo.dao.workbook.WorkbookDao
 import com.few.api.repo.dao.workbook.query.BrowseWorkBookQueryWithSubscriptionCountQuery
 import com.few.api.repo.dao.workbook.record.SelectWorkBookRecordWithSubscriptionCount
@@ -57,21 +55,30 @@ class BrowseWorkbooksUseCase(
             BrowseWorkbookWriterRecordsInDto(workbookIds)
         )
 
-        val workbooks = toWorkbooks(workbookRecords, writerRecords)
-
         val orderStrategy = getOrderStrategy(useCaseIn)
         val orderDelegator = when (orderStrategy) {
             WorkBookOrderStrategy.MAIN_VIEW_AUTH -> {
                 genAuthMainViewWorkbookOrderDelegator(useCaseIn)
             }
-            WorkBookOrderStrategy.MAIN_VIEW_UNAUTH -> {
-                genBasicWorkbookOrderDelegator()
-            }
-            else -> genBasicWorkbookOrderDelegator()
+            /** BASIC, MAIN_VIEW_UNAUTH -> 해당 경우는 DB 조회 결과를 그대로 반환 */
+            else -> null
         }
 
-        val orderedWorkbooks = workbooks.order(orderDelegator)
-        orderedWorkbooks.workbooks.map { workBook ->
+        val workbooks = toWorkbooks(workbookRecords, writerRecords)
+
+        val orderedWorkbook = OrderTargetWorkBooks(workbooks).let { target ->
+            orderDelegator
+                ?.let { delegator ->
+                    UnOrderedWorkBooks(
+                        target,
+                        delegator
+                    ).order().orderedWorkbooks
+                }
+                ?: run { OrderedWorkBooks(target).orderedWorkbooks }
+        }
+
+        val orderedWorkbookData = orderedWorkbook.workbookData
+        orderedWorkbookData.map { workBook ->
             BrowseWorkBookDetail(
                 id = workBook.id,
                 mainImageUrl = workBook.mainImageUrl,
@@ -102,6 +109,20 @@ class BrowseWorkbooksUseCase(
             else -> WorkBookOrderStrategy.BASIC
         }
 
+    private fun genAuthMainViewWorkbookOrderDelegator(useCaseIn: BrowseWorkbooksUseCaseIn): WorkbookOrderDelegator {
+        return BrowseMemberSubscribeWorkbooksInDto(useCaseIn.memberId!!).let { dto ->
+            workbookSubscribeService.browseMemberSubscribeWorkbooks(dto)
+        }.map {
+            MemberSubscribedWorkbook(
+                workbookId = it.workbookId,
+                isActiveSub = it.isActiveSub,
+                currentDay = it.currentDay
+            )
+        }.let { subscribedWorkbooks ->
+            AuthMainViewWorkbookOrderDelegator(subscribedWorkbooks)
+        }
+    }
+
     private fun toWorkbooks(
         workbookRecords: List<SelectWorkBookRecordWithSubscriptionCount>,
         writerRecords: Map<Long, List<WriterMappedWorkbookOutDto>>,
@@ -125,24 +146,6 @@ class BrowseWorkbooksUseCase(
             )
         }.let {
             WorkBooks(it)
-        }
-    }
-
-    private fun genBasicWorkbookOrderDelegator(): WorkbookOrderDelegator {
-        return BasicWorkbookOrderDelegator()
-    }
-
-    private fun genAuthMainViewWorkbookOrderDelegator(useCaseIn: BrowseWorkbooksUseCaseIn): WorkbookOrderDelegator {
-        return BrowseMemberSubscribeWorkbooksInDto(useCaseIn.memberId!!).let { dto ->
-            workbookSubscribeService.browseMemberSubscribeWorkbooks(dto)
-        }.map {
-            MemberSubscribedWorkbook(
-                workbookId = it.workbookId,
-                isActiveSub = it.isActiveSub,
-                currentDay = it.currentDay
-            )
-        }.let { subscribedWorkbooks ->
-            AuthMainViewWorkbookOrderDelegator(subscribedWorkbooks)
         }
     }
 }

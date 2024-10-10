@@ -1,5 +1,21 @@
 package com.few.api.repo.dao.article
 
+import com.few.api.repo.dao.article.TempTable.ARTICLE_ID_COLUMN
+import com.few.api.repo.dao.article.TempTable.ARTICLE_VIEW_COUNT_OFFSET_TABLE
+import com.few.api.repo.dao.article.TempTable.ARTICLE_VIEW_COUNT_OFFSET_TABLE_ARTICLE_ID
+import com.few.api.repo.dao.article.TempTable.ARTICLE_VIEW_COUNT_OFFSET_TABLE_CATEGORY_CD
+import com.few.api.repo.dao.article.TempTable.ARTICLE_VIEW_COUNT_OFFSET_TABLE_VIEW_COUNT
+import com.few.api.repo.dao.article.TempTable.EMAIL_VIEW_COUNT_TABLE
+import com.few.api.repo.dao.article.TempTable.EMAIL_VIEW_COUNT_TABLE_ARTICLE_ID
+import com.few.api.repo.dao.article.TempTable.EMAIL_VIEW_COUNT_TABLE_VIEW_COUNT
+import com.few.api.repo.dao.article.TempTable.OFFSET_COLUMN
+import com.few.api.repo.dao.article.TempTable.ROW_RANK_TABLE
+import com.few.api.repo.dao.article.TempTable.ROW_RANK_TABLE_ARTICLE_ID
+import com.few.api.repo.dao.article.TempTable.ROW_RANK_TABLE_OFFSET
+import com.few.api.repo.dao.article.TempTable.TOTAL_VIEW_COUNT_TABLE
+import com.few.api.repo.dao.article.TempTable.TOTAL_VIEW_COUNT_TABLE_ARTICLE_ID
+import com.few.api.repo.dao.article.TempTable.TOTAL_VIEW_COUNT_TABLE_VIEW_COUNT
+import com.few.api.repo.dao.article.TempTable.VIEW_COUNT_COLUMN
 import com.few.api.repo.dao.article.command.ArticleViewCountCommand
 import com.few.api.repo.dao.article.query.ArticleViewCountQuery
 import com.few.api.repo.dao.article.query.SelectArticlesOrderByViewsQuery
@@ -7,9 +23,34 @@ import com.few.api.repo.dao.article.query.SelectRankByViewsQuery
 import com.few.api.repo.dao.article.record.SelectArticleViewsRecord
 import com.few.data.common.code.CategoryType
 import jooq.jooq_dsl.tables.ArticleViewCount.ARTICLE_VIEW_COUNT
+import jooq.jooq_dsl.tables.SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY
 import org.jooq.DSLContext
 import org.jooq.impl.DSL.*
 import org.springframework.stereotype.Repository
+
+object TempTable {
+    const val ARTICLE_ID_COLUMN = "ARTICLE_ID"
+    const val VIEW_COUNT_COLUMN = "VIEW_COUNT"
+    const val OFFSET_COLUMN = "OFFSET"
+    const val CATEGORY_CD_COLUMN = "CATEGORY_CD"
+
+    const val ROW_RANK_TABLE = "row_rank_tb"
+    const val ROW_RANK_TABLE_ARTICLE_ID = "$ROW_RANK_TABLE.$ARTICLE_ID_COLUMN"
+    const val ROW_RANK_TABLE_OFFSET = "$ROW_RANK_TABLE.$OFFSET_COLUMN"
+
+    const val EMAIL_VIEW_COUNT_TABLE = "evc"
+    const val EMAIL_VIEW_COUNT_TABLE_ARTICLE_ID = "$EMAIL_VIEW_COUNT_TABLE.$ARTICLE_ID_COLUMN"
+    const val EMAIL_VIEW_COUNT_TABLE_VIEW_COUNT = "$EMAIL_VIEW_COUNT_TABLE.$VIEW_COUNT_COLUMN"
+
+    const val TOTAL_VIEW_COUNT_TABLE = "tvc"
+    const val TOTAL_VIEW_COUNT_TABLE_ARTICLE_ID = "$TOTAL_VIEW_COUNT_TABLE.$ARTICLE_ID_COLUMN"
+    const val TOTAL_VIEW_COUNT_TABLE_VIEW_COUNT = "$TOTAL_VIEW_COUNT_TABLE.$VIEW_COUNT_COLUMN"
+
+    const val ARTICLE_VIEW_COUNT_OFFSET_TABLE = "article_view_count_offset_tb"
+    const val ARTICLE_VIEW_COUNT_OFFSET_TABLE_ARTICLE_ID = "$ARTICLE_VIEW_COUNT_OFFSET_TABLE.$ARTICLE_ID_COLUMN"
+    const val ARTICLE_VIEW_COUNT_OFFSET_TABLE_VIEW_COUNT = "$ARTICLE_VIEW_COUNT_OFFSET_TABLE.$VIEW_COUNT_COLUMN"
+    const val ARTICLE_VIEW_COUNT_OFFSET_TABLE_CATEGORY_CD = "$ARTICLE_VIEW_COUNT_OFFSET_TABLE.$CATEGORY_CD_COLUMN"
+}
 
 @Repository
 class ArticleViewCountDao(
@@ -53,18 +94,40 @@ class ArticleViewCountDao(
     }
 
     fun selectRankByViewsQuery(query: SelectRankByViewsQuery) = dslContext
-        .select(field("row_rank_tb.offset", Long::class.java))
+        .select(field(ROW_RANK_TABLE_OFFSET, Long::class.java))
         .from(
             dslContext.select(
-                ARTICLE_VIEW_COUNT.ARTICLE_ID,
+                field(TOTAL_VIEW_COUNT_TABLE_ARTICLE_ID, Long::class.java).`as`(ARTICLE_ID_COLUMN),
                 rowNumber().over(
-                    orderBy(ARTICLE_VIEW_COUNT.VIEW_COUNT.desc(), ARTICLE_VIEW_COUNT.ARTICLE_ID.desc())
-                ).`as`("offset")
-            ).from(ARTICLE_VIEW_COUNT)
-                .where(ARTICLE_VIEW_COUNT.DELETED_AT.isNull)
-                .asTable("row_rank_tb")
-        )
-        .where(field("row_rank_tb.${ARTICLE_VIEW_COUNT.ARTICLE_ID.name}")!!.eq(query.articleId))
+                    orderBy(
+                        field(TOTAL_VIEW_COUNT_TABLE_VIEW_COUNT).desc(),
+                        field(TOTAL_VIEW_COUNT_TABLE_ARTICLE_ID).desc()
+                    )
+                ).`as`(OFFSET_COLUMN)
+            ).from(
+                dslContext.select(
+                    ARTICLE_VIEW_COUNT.ARTICLE_ID,
+                    ARTICLE_VIEW_COUNT.VIEW_COUNT.plus(
+                        ifnull(field(EMAIL_VIEW_COUNT_TABLE_VIEW_COUNT, Long::class.java), 0)
+                    ).`as`(VIEW_COUNT_COLUMN)
+                ).from(ARTICLE_VIEW_COUNT)
+                    .leftJoin(
+                        dslContext.select(
+                            SEND_ARTICLE_EVENT_HISTORY.ARTICLE_ID,
+                            count(SEND_ARTICLE_EVENT_HISTORY.ARTICLE_ID).`as`(VIEW_COUNT_COLUMN)
+                        ).from(
+                            SEND_ARTICLE_EVENT_HISTORY
+                        ).groupBy(
+                            SEND_ARTICLE_EVENT_HISTORY.ARTICLE_ID
+                        ).asTable(EMAIL_VIEW_COUNT_TABLE)
+                    ).on(
+                        ARTICLE_VIEW_COUNT.ARTICLE_ID.eq(
+                            field(EMAIL_VIEW_COUNT_TABLE_ARTICLE_ID, Long::class.java)
+                        )
+                    )
+                    .asTable(TOTAL_VIEW_COUNT_TABLE)
+            ).asTable(ROW_RANK_TABLE)
+        ).where(field(ROW_RANK_TABLE_ARTICLE_ID).eq(query.articleId))
         .query
 
     fun selectArticlesOrderByViews(query: SelectArticlesOrderByViewsQuery): List<SelectArticleViewsRecord> {
@@ -74,19 +137,45 @@ class ArticleViewCountDao(
 
     fun selectArticlesOrderByViewsQuery(query: SelectArticlesOrderByViewsQuery) = dslContext
         .select(
-            field("article_view_count_offset_tb.article_id").`as`(SelectArticleViewsRecord::articleId.name),
-            field("article_view_count_offset_tb.view_count").`as`(SelectArticleViewsRecord::views.name)
+            field(ARTICLE_VIEW_COUNT_OFFSET_TABLE_ARTICLE_ID).`as`(SelectArticleViewsRecord::articleId.name),
+            field(ARTICLE_VIEW_COUNT_OFFSET_TABLE_VIEW_COUNT).`as`(SelectArticleViewsRecord::views.name)
         ).from(
-            dslContext.select()
-                .from(ARTICLE_VIEW_COUNT)
-                .where(ARTICLE_VIEW_COUNT.DELETED_AT.isNull)
-                .orderBy(ARTICLE_VIEW_COUNT.VIEW_COUNT.desc(), ARTICLE_VIEW_COUNT.ARTICLE_ID.desc())
-                .limit(query.offset, Long.MAX_VALUE)
-                .asTable("article_view_count_offset_tb")
+            dslContext.select(
+                ARTICLE_VIEW_COUNT.ARTICLE_ID,
+                ARTICLE_VIEW_COUNT.VIEW_COUNT.plus(
+                    ifnull(field(EMAIL_VIEW_COUNT_TABLE_VIEW_COUNT, Long::class.java), 0)
+                ).`as`(VIEW_COUNT_COLUMN),
+                ARTICLE_VIEW_COUNT.CATEGORY_CD
+            ).from(ARTICLE_VIEW_COUNT)
+                .leftJoin(
+                    dslContext.select(
+                        SEND_ARTICLE_EVENT_HISTORY.ARTICLE_ID,
+                        count(SEND_ARTICLE_EVENT_HISTORY.ARTICLE_ID).`as`(VIEW_COUNT_COLUMN)
+                    ).from(
+                        SEND_ARTICLE_EVENT_HISTORY
+                    ).groupBy(
+                        SEND_ARTICLE_EVENT_HISTORY.ARTICLE_ID
+                    ).asTable(
+                        EMAIL_VIEW_COUNT_TABLE
+                    )
+                ).on(
+                    ARTICLE_VIEW_COUNT.ARTICLE_ID.eq(
+                        field(
+                            EMAIL_VIEW_COUNT_TABLE_ARTICLE_ID,
+                            Long::class.java
+                        )
+                    )
+                ).orderBy(
+                    ARTICLE_VIEW_COUNT.VIEW_COUNT.plus(
+                        ifnull(field(EMAIL_VIEW_COUNT_TABLE_VIEW_COUNT, Long::class.java), 0)
+                    ).desc(),
+                    ARTICLE_VIEW_COUNT.ARTICLE_ID.desc()
+                ).limit(query.offset, Long.MAX_VALUE)
+                .asTable(ARTICLE_VIEW_COUNT_OFFSET_TABLE)
         ).where(
             when {
                 (query.category == CategoryType.All) -> noCondition()
-                else -> field("article_view_count_offset_tb.category_cd").eq(query.category.code)
+                else -> field(ARTICLE_VIEW_COUNT_OFFSET_TABLE_CATEGORY_CD).eq(query.category.code)
             }
         ).limit(11)
         .query

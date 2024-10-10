@@ -1,13 +1,10 @@
-package com.few.api.domain.workbook.usecase.service.order
+package com.few.api.domain.workbook.usecase.model.order
 
 import com.few.api.domain.workbook.usecase.model.MemberSubscribedWorkbook
 import com.few.api.domain.workbook.usecase.model.WorkBook
+import com.few.api.domain.workbook.usecase.model.WorkBooks
 
 class AuthMainViewWorkbookOrderDelegator(
-    /**
-     * @see com.few.api.repo.dao.workbook.WorkbookDao.browseWorkBookWithSubscriptionCount
-     */
-    private val workbooks: List<WorkBook>,
     private val memberSubscribedWorkbooks: List<MemberSubscribedWorkbook>,
 ) : WorkbookOrderDelegator {
 
@@ -18,7 +15,8 @@ class AuthMainViewWorkbookOrderDelegator(
      * 2. 구독 기록이 없는 워크북을 보여줍니다.
      * 3. 비활성화된 구독 워크북을 보여줍니다.
      */
-    override fun order(): List<WorkBook> {
+    override fun order(targetWorkBooks: OrderTargetWorkBooks): OrderTargetWorkBooks {
+        val workbooks = targetWorkBooks.workbooks.workbookData
         val allWorkbookIds = workbooks.associate { it.id to false }.toMutableMap()
         val activeSubWorkbookIds =
             memberSubscribedWorkbooks.filter { it.isActiveSub }.sortedByDescending {
@@ -64,6 +62,6 @@ class AuthMainViewWorkbookOrderDelegator(
          */
         orderedWorkbooks.addAll(lastAddWorkbooks)
 
-        return orderedWorkbooks
+        return OrderTargetWorkBooks(WorkBooks(orderedWorkbooks))
     }
 }

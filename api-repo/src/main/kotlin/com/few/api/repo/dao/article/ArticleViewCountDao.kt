@@ -166,7 +166,7 @@ class ArticleViewCountDao(
                         )
                     )
                 ).orderBy(
-                    field(EMAIL_VIEW_COUNT_TABLE_VIEW_COUNT, Long::class.java).desc(),
+                    field(VIEW_COUNT_COLUMN, Long::class.java).desc(),
                     ARTICLE_VIEW_COUNT.ARTICLE_ID.desc()
                 ).limit(query.offset, Long.MAX_VALUE)
                 .asTable(ARTICLE_VIEW_COUNT_OFFSET_TABLE)

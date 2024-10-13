@@ -1,6 +1,7 @@
 package com.few.api.web.controller.problem
 
 import com.few.api.domain.problem.usecase.BrowseProblemsUseCase
+import com.few.api.domain.problem.usecase.BrowseUndoneProblemsUseCase
 import com.few.api.web.controller.problem.request.CheckProblemRequest
 import com.few.api.web.controller.problem.response.CheckProblemResponse
 import com.few.api.web.controller.problem.response.ProblemContents
@@ -10,6 +11,7 @@ import com.few.api.web.support.ApiResponseGenerator
 import com.few.api.domain.problem.usecase.CheckProblemUseCase
 import com.few.api.domain.problem.usecase.ReadProblemUseCase
 import com.few.api.domain.problem.usecase.dto.BrowseProblemsUseCaseIn
+import com.few.api.domain.problem.usecase.dto.BrowseUndoneProblemsUseCaseIn
 import com.few.api.domain.problem.usecase.dto.CheckProblemUseCaseIn
 import com.few.api.domain.problem.usecase.dto.ReadProblemUseCaseIn
 import com.few.api.web.controller.problem.response.BrowseProblemsResponse
@@ -30,6 +32,7 @@ class ProblemController(
     private val browseProblemsUseCase: BrowseProblemsUseCase,
     private val readProblemUseCase: ReadProblemUseCase,
     private val checkProblemUseCase: CheckProblemUseCase,
+    private val browseUndoneProblemsUseCase: BrowseUndoneProblemsUseCase,
 ) {
 
     @GetMapping
@@ -89,6 +92,19 @@ class ProblemController(
             answer = useCaseOut.answer,
             isSolved = useCaseOut.isSolved
         )
+
+        return ApiResponseGenerator.success(response, HttpStatus.OK)
+    }
+
+    @GetMapping("/unsubmitted")
+    fun browseUndoneProblems(@UserArgument userArgumentDetails: UserArgumentDetails): ApiResponse<ApiResponse.SuccessBody<BrowseProblemsResponse>> {
+        val memberId = userArgumentDetails.id.toLong()
+
+        val useCaseOut = BrowseUndoneProblemsUseCaseIn(memberId).let { useCaseIn ->
+            browseUndoneProblemsUseCase.execute(useCaseIn)
+        }
+
+        val response = BrowseProblemsResponse(useCaseOut.problemIds, useCaseOut.problemIds.size)
 
         return ApiResponseGenerator.success(response, HttpStatus.OK)
     }

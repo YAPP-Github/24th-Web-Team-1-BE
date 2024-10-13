@@ -2,6 +2,7 @@ package com.few.api.repo.dao.problem
 
 import com.few.api.repo.dao.problem.command.InsertProblemsCommand
 import com.few.api.repo.dao.problem.query.SelectProblemAnswerQuery
+import com.few.api.repo.dao.problem.query.SelectProblemIdByArticleIdsQuery
 import com.few.api.repo.dao.problem.query.SelectProblemQuery
 import com.few.api.repo.dao.problem.query.SelectProblemsByArticleIdQuery
 import com.few.api.repo.dao.problem.record.ProblemIdsRecord
@@ -77,4 +78,17 @@ class ProblemDao(
             .set(Problem.PROBLEM.CONTENTS, JSON.valueOf(contentsJsonMapper.toJson(it.contents)))
             .set(Problem.PROBLEM.ANSWER, it.answer)
             .set(Problem.PROBLEM.EXPLANATION, it.explanation)
+
+    fun selectProblemIdByArticleIds(query: SelectProblemIdByArticleIdsQuery): ProblemIdsRecord {
+        return selectProblemIdByArticleIdsQuery(query)
+            .fetch()
+            .map { it[Problem.PROBLEM.ID] }
+            .let { ProblemIdsRecord(it) }
+    }
+
+    fun selectProblemIdByArticleIdsQuery(query: SelectProblemIdByArticleIdsQuery) = dslContext
+        .select(Problem.PROBLEM.ID)
+        .from(Problem.PROBLEM)
+        .where(Problem.PROBLEM.ARTICLE_ID.`in`(query.articleIds))
+        .and(Problem.PROBLEM.DELETED_AT.isNull)
 }

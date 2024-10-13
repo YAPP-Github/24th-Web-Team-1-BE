@@ -29,7 +29,8 @@ class ProblemDao(
             Problem.PROBLEM.ID.`as`(SelectProblemRecord::id.name),
             Problem.PROBLEM.TITLE.`as`(SelectProblemRecord::title.name),
             DSL.field("JSON_UNQUOTE({0})", String::class.java, Problem.PROBLEM.CONTENTS)
-                .`as`(SelectProblemRecord::contents.name)
+                .`as`(SelectProblemRecord::contents.name),
+            Problem.PROBLEM.ARTICLE_ID.`as`(SelectProblemRecord::articleId.name)
         )
             .from(Problem.PROBLEM)
             .where(Problem.PROBLEM.ID.eq(query.problemId))

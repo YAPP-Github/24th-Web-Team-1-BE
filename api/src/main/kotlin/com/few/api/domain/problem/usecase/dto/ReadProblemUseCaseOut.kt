@@ -4,6 +4,7 @@ class ReadProblemUseCaseOut(
     val id: Long,
     val title: String,
     val contents: List<ReadProblemContentsUseCaseOutDetail>,
+    val articleId: Long,
 )
 
 data class ReadProblemContentsUseCaseOutDetail(

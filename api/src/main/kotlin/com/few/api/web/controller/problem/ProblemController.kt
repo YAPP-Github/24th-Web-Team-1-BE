@@ -63,7 +63,8 @@ class ProblemController(
             title = useCaseOut.title,
             contents = useCaseOut.contents
                 .map { c -> ProblemContents(c.number, c.content) }
-                .toCollection(LinkedList())
+                .toCollection(LinkedList()),
+            articleId = useCaseOut.articleId
         )
 
         return ApiResponseGenerator.success(response, HttpStatus.OK)

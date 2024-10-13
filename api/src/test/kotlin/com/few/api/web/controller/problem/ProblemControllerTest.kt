@@ -94,6 +94,7 @@ class ProblemControllerTest : ControllerTestSpec() {
             .toUriString()
 
         val problemId = 1L
+        val articleId = 3L
         val useCaseIn = ReadProblemUseCaseIn(problemId)
         val useCaseOut = ReadProblemUseCaseOut(
             id = problemId,
@@ -103,7 +104,8 @@ class ProblemControllerTest : ControllerTestSpec() {
                 ReadProblemContentsUseCaseOutDetail(2L, "높은 운용 비용"),
                 ReadProblemContentsUseCaseOutDetail(3L, "유동성"),
                 ReadProblemContentsUseCaseOutDetail(4L, "투명성")
-            )
+            ),
+            articleId = articleId
         )
         `when`(readProblemUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
 

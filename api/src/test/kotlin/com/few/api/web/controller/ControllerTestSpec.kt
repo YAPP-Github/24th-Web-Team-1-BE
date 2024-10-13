@@ -9,6 +9,7 @@ import com.few.api.domain.log.AddApiLogUseCase
 import com.few.api.domain.member.usecase.SaveMemberUseCase
 import com.few.api.domain.member.usecase.TokenUseCase
 import com.few.api.domain.problem.usecase.BrowseProblemsUseCase
+import com.few.api.domain.problem.usecase.BrowseUndoneProblemsUseCase
 import com.few.api.domain.problem.usecase.CheckProblemUseCase
 import com.few.api.domain.problem.usecase.ReadProblemUseCase
 import com.few.api.domain.subscription.usecase.BrowseSubscribeWorkbooksUseCase
@@ -91,6 +92,9 @@ abstract class ControllerTestSpec {
 
     @MockBean
     lateinit var checkProblemUseCase: CheckProblemUseCase
+
+    @MockBean
+    lateinit var browseUndoneProblemsUseCase: BrowseUndoneProblemsUseCase
 
     /** SubscriptionControllerTest */
     @MockBean

@@ -4,17 +4,11 @@ import com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName
 import com.epages.restdocs.apispec.ResourceDocumentation.resource
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
+import com.few.api.domain.problem.usecase.dto.*
 import com.few.api.web.controller.ControllerTestSpec
 import com.few.api.web.controller.description.Description
 import com.few.api.web.controller.helper.*
 import com.few.api.web.controller.problem.request.CheckProblemRequest
-import com.few.api.domain.problem.usecase.dto.BrowseProblemsUseCaseIn
-import com.few.api.domain.problem.usecase.dto.CheckProblemUseCaseIn
-import com.few.api.domain.problem.usecase.dto.ReadProblemUseCaseIn
-import com.few.api.domain.problem.usecase.dto.BrowseProblemsUseCaseOut
-import com.few.api.domain.problem.usecase.dto.CheckProblemUseCaseOut
-import com.few.api.domain.problem.usecase.dto.ReadProblemContentsUseCaseOutDetail
-import com.few.api.domain.problem.usecase.dto.ReadProblemUseCaseOut
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
@@ -202,6 +196,54 @@ class ProblemControllerTest : ControllerTestSpec() {
                                             .fieldWithString("문제 정답"),
                                         PayloadDocumentation.fieldWithPath("data.isSolved")
                                             .fieldWithBoolean("문제 정답 여부")
+                                    )
+                                )
+                            )
+                            .build()
+                    )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("[GET] /api/v1/problems/unsubmitted")
+    fun browseUndoneProblems() {
+        // given
+        val api = "BrowseUndoneProblems"
+        val memberId = 0L
+        val uri = UriComponentsBuilder.newInstance()
+            .path("$BASE_URL/unsubmitted").build().toUriString()
+
+        val useCaseIn = BrowseUndoneProblemsUseCaseIn(memberId)
+        val useCaseOut = BrowseProblemsUseCaseOut(listOf(1L, 2L, 3L))
+        `when`(browseUndoneProblemsUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
+
+        // when
+        mockMvc.perform(
+            get(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().is2xxSuccessful)
+            .andDo(
+                document(
+                    api.toIdentifier(),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .description("밀린 문제 ID 목록 조회")
+                            .summary(api.toIdentifier())
+                            .privateResource(false)
+                            .deprecated(false)
+                            .tag(TAG)
+                            .requestSchema(Schema.schema(api.toRequestSchema()))
+                            .responseSchema(Schema.schema(api.toResponseSchema()))
+                            .responseFields(
+                                *Description.describe(
+                                    arrayOf(
+                                        PayloadDocumentation.fieldWithPath("data")
+                                            .fieldWithObject("data"),
+                                        PayloadDocumentation.fieldWithPath("data.problemIds[]")
+                                            .fieldWithArray("밀린 문제 Id 목록"),
+                                        PayloadDocumentation.fieldWithPath("data.size")
+                                            .fieldWithNumber("밀린 문제 갯수")
                                     )
                                 )
                             )

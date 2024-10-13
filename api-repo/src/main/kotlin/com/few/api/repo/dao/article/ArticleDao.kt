@@ -162,14 +162,14 @@ class ArticleDao(
             .where(ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID.eq(query.articleId))
             .and(ArticleIfo.ARTICLE_IFO.DELETED_AT.isNull)
 
-    fun selectArticleIdByWorkbookIdAndDay(query: SelectAritlceIdByWorkbookIdAndDayQuery): ArticleIdRecord {
-        return selectArticleIdByWorkbookIdAndDayQuery(query)
+    fun selectArticleIdByWorkbookIdLimitDay(query: SelectAritlceIdByWorkbookIdAndDayQuery): ArticleIdRecord {
+        return selectArticleIdByWorkbookIdLimitDayQuery(query)
             .fetch()
             .map { it[MAPPING_WORKBOOK_ARTICLE.ARTICLE_ID] }
             .let { ArticleIdRecord(it) }
     }
 
-    fun selectArticleIdByWorkbookIdAndDayQuery(query: SelectAritlceIdByWorkbookIdAndDayQuery) =
+    fun selectArticleIdByWorkbookIdLimitDayQuery(query: SelectAritlceIdByWorkbookIdAndDayQuery) =
         dslContext
             .select(MAPPING_WORKBOOK_ARTICLE.ARTICLE_ID)
             .from(MAPPING_WORKBOOK_ARTICLE)

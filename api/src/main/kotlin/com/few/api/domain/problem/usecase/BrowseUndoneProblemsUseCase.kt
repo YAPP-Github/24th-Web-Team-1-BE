@@ -34,7 +34,7 @@ class BrowseUndoneProblemsUseCase(
          * 위에서 조회한 워크부에 속한 아티클 개수에 대해 article_id 들을 조회함
          */
         val sentArticleIds = subscriptionProgresses.flatMap { subscriptionProgress ->
-            articleDao.selectArticleIdByWorkbookIdAndDay(
+            articleDao.selectArticleIdByWorkbookIdLimitDay(
                 SelectAritlceIdByWorkbookIdAndDayQuery(
                     subscriptionProgress.workbookId,
                     subscriptionProgress.numOfReadArticle

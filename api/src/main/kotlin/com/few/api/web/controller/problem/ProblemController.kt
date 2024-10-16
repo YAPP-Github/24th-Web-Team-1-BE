@@ -42,7 +42,7 @@ class ProblemController(
                 browseProblemsUseCase.execute(useCaseIn)
             }
 
-            val response = BrowseProblemsResponse(useCaseOut.problemIds)
+            val response = BrowseProblemsResponse(useCaseOut.problemIds, useCaseOut.problemIds.size)
 
             return ApiResponseGenerator.success(response, HttpStatus.OK)
         }

@@ -17,6 +17,6 @@ class SubscriptionService(
             SelectSubscriptionSendStatusQuery(inDto.memberId)
         ).takeIf { it.isNotEmpty() } ?: throw NotFoundException("subscribe.workbook.notexist")
 
-        return subscriptionProgresses.map { SubscriptionProgressOutDto(it.workbookId, it.numOfReadArticle) }
+        return subscriptionProgresses.map { SubscriptionProgressOutDto(it.workbookId, it.day) }
     }
 }

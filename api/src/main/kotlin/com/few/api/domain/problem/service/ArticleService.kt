@@ -14,7 +14,7 @@ class ArticleService(
         return articleDao.selectArticleIdsByWorkbookIdLimitDay(
             SelectAritlceIdByWorkbookIdAndDayQuery(
                 inDto.workbookId,
-                inDto.numOfReadArticle
+                inDto.day
             )
         ).articleIds
     }

@@ -38,7 +38,7 @@ class BrowseUndoneProblemsUseCase(
             articleService.browseArticleIdByWorkbookIdLimitDay(
                 BrowseArticleIdInDto(
                     subscriptionProgress.workbookId,
-                    subscriptionProgress.numOfReadArticle
+                    subscriptionProgress.day
                 )
             )
         }.toSet()

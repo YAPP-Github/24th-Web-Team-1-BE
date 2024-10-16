@@ -178,6 +178,6 @@ class ArticleDao(
             .where(MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.eq(query.workbookId))
             .and(ArticleMst.ARTICLE_MST.DELETED_AT.isNull)
             .orderBy(MAPPING_WORKBOOK_ARTICLE.DAY_COL.asc())
-            .limit(query.numOfReadArticle)
+            .limit(query.day)
             .query
 }

@@ -311,7 +311,7 @@ class SubscriptionDao(
     fun selectWorkbookIdAndProgressByMemberQuery(query: SelectSubscriptionSendStatusQuery) =
         dslContext.select(
             SUBSCRIPTION.TARGET_WORKBOOK_ID.`as`(SubscriptionProgressRecord::workbookId.name),
-            SUBSCRIPTION.PROGRESS.add(1).`as`(SubscriptionProgressRecord::numOfReadArticle.name)
+            SUBSCRIPTION.PROGRESS.add(1).`as`(SubscriptionProgressRecord::day.name)
         )
             .from(SUBSCRIPTION)
             .where(SUBSCRIPTION.MEMBER_ID.eq(query.memberId))

@@ -1,14 +1,13 @@
 package com.few.api.domain.problem.usecase
 
+import com.few.api.domain.problem.service.ArticleService
+import com.few.api.domain.problem.service.SubscriptionService
+import com.few.api.domain.problem.service.dto.SubscriptionProgressOutDto
 import com.few.api.domain.problem.usecase.dto.BrowseUndoneProblemsUseCaseIn
-import com.few.api.repo.dao.article.ArticleDao
-import com.few.api.repo.dao.article.record.ArticleIdRecord
 import com.few.api.repo.dao.problem.ProblemDao
 import com.few.api.repo.dao.problem.SubmitHistoryDao
-import com.few.api.repo.dao.problem.record.ProblemIdsRecord
+import com.few.api.repo.dao.problem.record.ProblemIdAndArticleIdRecord
 import com.few.api.repo.dao.problem.record.SubmittedProblemIdsRecord
-import com.few.api.repo.dao.subscription.SubscriptionDao
-import com.few.api.repo.dao.subscription.record.SubscriptionProgressRecord
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.mockk.every
@@ -17,17 +16,17 @@ import io.mockk.verify
 
 class BrowseUndoneProblemsUseCaseTest : BehaviorSpec({
     lateinit var problemDao: ProblemDao
-    lateinit var subscriptionDao: SubscriptionDao
-    lateinit var articleDao: ArticleDao
+    lateinit var subscriptionService: SubscriptionService
+    lateinit var articleService: ArticleService
     lateinit var submitHistoryDao: SubmitHistoryDao
     lateinit var useCase: BrowseUndoneProblemsUseCase
 
     beforeContainer {
         problemDao = mockk<ProblemDao>()
-        subscriptionDao = mockk<SubscriptionDao>()
-        articleDao = mockk<ArticleDao>()
+        subscriptionService = mockk<SubscriptionService>()
+        articleService = mockk<ArticleService>()
         submitHistoryDao = mockk<SubmitHistoryDao>()
-        useCase = BrowseUndoneProblemsUseCase(problemDao, subscriptionDao, articleDao, submitHistoryDao)
+        useCase = BrowseUndoneProblemsUseCase(problemDao, subscriptionService, articleService, submitHistoryDao)
     }
 
     given("밀린 문제 ID 조회 요청이 온 상황에서") {
@@ -35,14 +34,19 @@ class BrowseUndoneProblemsUseCaseTest : BehaviorSpec({
         val useCaseIn = BrowseUndoneProblemsUseCaseIn(memberId = memberId)
 
         `when`("밀린 문제가 존재할 경우") {
-            every { subscriptionDao.selectWorkbookIdAndProgressByMember(any()) } returns listOf(
-                SubscriptionProgressRecord(1L, 3),
-                SubscriptionProgressRecord(2L, 3)
+            every { subscriptionService.browseWorkbookIdAndProgress(any()) } returns listOf(
+                SubscriptionProgressOutDto(1L, 3),
+                SubscriptionProgressOutDto(2L, 3),
+                SubscriptionProgressOutDto(3L, 5),
+                SubscriptionProgressOutDto(4L, 7)
             )
 
-            every { articleDao.selectArticleIdsByWorkbookIdLimitDay(any()) } returns ArticleIdRecord(listOf(1L, 2L))
+            every { articleService.browseArticleIdByWorkbookIdLimitDay(any()) } returns listOf(1L, 2L)
 
-            every { problemDao.selectProblemIdByArticleIds(any()) } returns ProblemIdsRecord(listOf(1L, 2L))
+            every { problemDao.selectProblemIdByArticleIds(any()) } returns listOf(
+                ProblemIdAndArticleIdRecord(1L, 2L),
+                ProblemIdAndArticleIdRecord(2L, 2L)
+            )
 
             every { submitHistoryDao.selectProblemIdByProblemIds(any()) } returns SubmittedProblemIdsRecord(
                 listOf(
@@ -54,19 +58,22 @@ class BrowseUndoneProblemsUseCaseTest : BehaviorSpec({
             then("밀린 문제 ID 목록을 반환한다") {
                 useCase.execute(useCaseIn)
 
-                verify(exactly = 1) { subscriptionDao.selectWorkbookIdAndProgressByMember(any()) }
-                verify(exactly = 1) { articleDao.selectArticleIdsByWorkbookIdLimitDay(any()) }
+                verify(exactly = 1) { subscriptionService.browseWorkbookIdAndProgress(any()) }
+                verify(exactly = 4) { articleService.browseArticleIdByWorkbookIdLimitDay(any()) }
                 verify(exactly = 1) { problemDao.selectProblemIdByArticleIds(any()) }
                 verify(exactly = 1) { submitHistoryDao.selectProblemIdByProblemIds(any()) }
             }
         }
 
         `when`("구독중이 워크북이 없을 경우") {
-            every { subscriptionDao.selectWorkbookIdAndProgressByMember(any()) } returns emptyList()
+            every { subscriptionService.browseWorkbookIdAndProgress(any()) } returns emptyList()
 
-            every { articleDao.selectArticleIdsByWorkbookIdLimitDay(any()) } returns ArticleIdRecord(listOf(1L, 2L))
+            every { articleService.browseArticleIdByWorkbookIdLimitDay(any()) } returns listOf(1L, 2L)
 
-            every { problemDao.selectProblemIdByArticleIds(any()) } returns ProblemIdsRecord(listOf(1L, 2L))
+            every { problemDao.selectProblemIdByArticleIds(any()) } returns listOf(
+                ProblemIdAndArticleIdRecord(1L, 2L),
+                ProblemIdAndArticleIdRecord(2L, 2L)
+            )
 
             every { submitHistoryDao.selectProblemIdByProblemIds(any()) } returns SubmittedProblemIdsRecord(
                 listOf(
@@ -78,8 +85,8 @@ class BrowseUndoneProblemsUseCaseTest : BehaviorSpec({
             then("에러를 반환한다") {
                 shouldThrow<Exception> { useCase.execute(useCaseIn) }
 
-                verify(exactly = 1) { subscriptionDao.selectWorkbookIdAndProgressByMember(any()) }
-                verify(exactly = 0) { articleDao.selectArticleIdsByWorkbookIdLimitDay(any()) }
+                verify(exactly = 1) { subscriptionService.browseWorkbookIdAndProgress(any()) }
+                verify(exactly = 0) { articleService.browseArticleIdByWorkbookIdLimitDay(any()) }
                 verify(exactly = 0) { problemDao.selectProblemIdByArticleIds(any()) }
                 verify(exactly = 0) { submitHistoryDao.selectProblemIdByProblemIds(any()) }
             }

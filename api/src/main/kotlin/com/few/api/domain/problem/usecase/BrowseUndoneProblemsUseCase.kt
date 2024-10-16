@@ -6,6 +6,7 @@ import com.few.api.domain.problem.service.dto.BrowseArticleIdInDto
 import com.few.api.domain.problem.service.dto.BrowseWorkbookIdAndProgressInDto
 import com.few.api.domain.problem.usecase.dto.BrowseProblemsUseCaseOut
 import com.few.api.domain.problem.usecase.dto.BrowseUndoneProblemsUseCaseIn
+import com.few.api.exception.common.NotFoundException
 import com.few.api.repo.dao.problem.ProblemDao
 import com.few.api.repo.dao.problem.SubmitHistoryDao
 import com.few.api.repo.dao.problem.query.SelectProblemIdByArticleIdsQuery
@@ -29,7 +30,7 @@ class BrowseUndoneProblemsUseCase(
          */
         val subscriptionProgresses = subscriptionService.browseWorkbookIdAndProgress(
             BrowseWorkbookIdAndProgressInDto(useCaseIn.memberId)
-        )
+        ).takeIf { it.isNotEmpty() } ?: throw NotFoundException("subscribe.workbook.notexist")
 
         /**
          * 위에서 조회한 워크부에 속한 아티클 개수에 대해 article_id 들을 조회함

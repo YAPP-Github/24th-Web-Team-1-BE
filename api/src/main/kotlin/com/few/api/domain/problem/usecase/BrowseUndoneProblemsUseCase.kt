@@ -12,6 +12,7 @@ import com.few.api.repo.dao.problem.query.SelectSubmittedProblemIdsQuery
 import com.few.api.repo.dao.subscription.SubscriptionDao
 import com.few.api.repo.dao.subscription.query.SelectSubscriptionSendStatusQuery
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
 @Component
 class BrowseUndoneProblemsUseCase(
@@ -21,6 +22,7 @@ class BrowseUndoneProblemsUseCase(
     private val submitHistoryDao: SubmitHistoryDao,
 ) {
 
+    @Transactional(readOnly = true)
     fun execute(useCaseIn: BrowseUndoneProblemsUseCaseIn): BrowseProblemsUseCaseOut {
         /**
          * 유저가 구독한 워크북들에 속한 아티클 개수를 조회함

@@ -8,7 +8,7 @@ import com.few.api.repo.dao.problem.SubmitHistoryDao
 import com.few.api.repo.dao.problem.record.ProblemIdsRecord
 import com.few.api.repo.dao.problem.record.SubmittedProblemIdsRecord
 import com.few.api.repo.dao.subscription.SubscriptionDao
-import com.few.api.repo.dao.subscription.record.SubscriptionProgress
+import com.few.api.repo.dao.subscription.record.SubscriptionProgressRecord
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.mockk.every
@@ -36,8 +36,8 @@ class BrowseUndoneProblemsUseCaseTest : BehaviorSpec({
 
         `when`("밀린 문제가 존재할 경우") {
             every { subscriptionDao.selectWorkbookIdAndProgressByMember(any()) } returns listOf(
-                SubscriptionProgress(1L, 3),
-                SubscriptionProgress(2L, 3)
+                SubscriptionProgressRecord(1L, 3),
+                SubscriptionProgressRecord(2L, 3)
             )
 
             every { articleDao.selectArticleIdByWorkbookIdLimitDay(any()) } returns ArticleIdRecord(listOf(1L, 2L))

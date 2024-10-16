@@ -303,15 +303,15 @@ class SubscriptionDao(
             .where(SUBSCRIPTION.MEMBER_ID.eq(query.memberId))
             .and(SUBSCRIPTION.DELETED_AT.isNull)
 
-    fun selectWorkbookIdAndProgressByMember(query: SelectSubscriptionSendStatusQuery): List<SubscriptionProgress> {
+    fun selectWorkbookIdAndProgressByMember(query: SelectSubscriptionSendStatusQuery): List<SubscriptionProgressRecord> {
         return selectWorkbookIdAndProgressByMemberQuery(query)
-            .fetchInto(SubscriptionProgress::class.java)
+            .fetchInto(SubscriptionProgressRecord::class.java)
     }
 
     fun selectWorkbookIdAndProgressByMemberQuery(query: SelectSubscriptionSendStatusQuery) =
         dslContext.select(
-            SUBSCRIPTION.TARGET_WORKBOOK_ID.`as`(SubscriptionProgress::workbookId.name),
-            SUBSCRIPTION.PROGRESS.add(1).`as`(SubscriptionProgress::numOfReadArticle.name)
+            SUBSCRIPTION.TARGET_WORKBOOK_ID.`as`(SubscriptionProgressRecord::workbookId.name),
+            SUBSCRIPTION.PROGRESS.add(1).`as`(SubscriptionProgressRecord::numOfReadArticle.name)
         )
             .from(SUBSCRIPTION)
             .where(SUBSCRIPTION.MEMBER_ID.eq(query.memberId))

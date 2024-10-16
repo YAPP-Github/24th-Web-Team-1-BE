@@ -1,24 +1,23 @@
 package com.few.api.domain.problem.usecase
 
+import com.few.api.domain.problem.service.ArticleService
+import com.few.api.domain.problem.service.SubscriptionService
+import com.few.api.domain.problem.service.dto.BrowseArticleIdInDto
+import com.few.api.domain.problem.service.dto.BrowseWorkbookIdAndProgressInDto
 import com.few.api.domain.problem.usecase.dto.BrowseProblemsUseCaseOut
 import com.few.api.domain.problem.usecase.dto.BrowseUndoneProblemsUseCaseIn
-import com.few.api.exception.common.NotFoundException
-import com.few.api.repo.dao.article.ArticleDao
-import com.few.api.repo.dao.article.query.SelectAritlceIdByWorkbookIdAndDayQuery
 import com.few.api.repo.dao.problem.ProblemDao
 import com.few.api.repo.dao.problem.SubmitHistoryDao
 import com.few.api.repo.dao.problem.query.SelectProblemIdByArticleIdsQuery
 import com.few.api.repo.dao.problem.query.SelectSubmittedProblemIdsQuery
-import com.few.api.repo.dao.subscription.SubscriptionDao
-import com.few.api.repo.dao.subscription.query.SelectSubscriptionSendStatusQuery
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
 @Component
 class BrowseUndoneProblemsUseCase(
     private val problemDao: ProblemDao,
-    private val subscriptionDao: SubscriptionDao,
-    private val articleDao: ArticleDao,
+    private val subscriptionService: SubscriptionService,
+    private val articleService: ArticleService,
     private val submitHistoryDao: SubmitHistoryDao,
 ) {
 
@@ -28,20 +27,20 @@ class BrowseUndoneProblemsUseCase(
          * 유저가 구독한 워크북들에 속한 아티클 개수를 조회함
          * 이때 아티클 개수는 현 시점 기준으로 이메일이 전송된 아티클 개수까지만 조회함
          */
-        val subscriptionProgresses = subscriptionDao.selectWorkbookIdAndProgressByMember(
-            SelectSubscriptionSendStatusQuery(useCaseIn.memberId)
-        ).takeIf { it.isNotEmpty() } ?: throw NotFoundException("subscribe.workbook.notexist")
+        val subscriptionProgresses = subscriptionService.browseWorkbookIdAndProgress(
+            BrowseWorkbookIdAndProgressInDto(useCaseIn.memberId)
+        )
 
         /**
          * 위에서 조회한 워크부에 속한 아티클 개수에 대해 article_id 들을 조회함
          */
         val sentArticleIds = subscriptionProgresses.flatMap { subscriptionProgress ->
-            articleDao.selectArticleIdByWorkbookIdLimitDay(
-                SelectAritlceIdByWorkbookIdAndDayQuery(
+            articleService.browseArticleIdByWorkbookIdLimitDay(
+                BrowseArticleIdInDto(
                     subscriptionProgress.workbookId,
                     subscriptionProgress.numOfReadArticle
                 )
-            ).articleIds
+            )
         }.toSet()
 
         /**

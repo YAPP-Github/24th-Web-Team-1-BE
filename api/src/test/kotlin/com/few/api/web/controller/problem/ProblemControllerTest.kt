@@ -67,7 +67,9 @@ class ProblemControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data")
                                             .fieldWithObject("data"),
                                         PayloadDocumentation.fieldWithPath("data.problemIds[]")
-                                            .fieldWithArray("문제 Id 목록")
+                                            .fieldWithArray("문제 Id 목록"),
+                                        PayloadDocumentation.fieldWithPath("data.size")
+                                            .fieldWithNumber("문제 갯수")
                                     )
                                 )
                             )
@@ -135,7 +137,9 @@ class ProblemControllerTest : ControllerTestSpec() {
                                         PayloadDocumentation.fieldWithPath("data.contents[].number")
                                             .fieldWithNumber("문제 선지 번호"),
                                         PayloadDocumentation.fieldWithPath("data.contents[].content")
-                                            .fieldWithString("문제 선지 내용")
+                                            .fieldWithString("문제 선지 내용"),
+                                        PayloadDocumentation.fieldWithPath("data.articleId")
+                                            .fieldWithNumber("문제가 속한 아티클 ID")
                                     )
                                 )
                             )

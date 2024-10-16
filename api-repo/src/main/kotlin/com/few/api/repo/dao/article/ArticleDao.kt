@@ -162,7 +162,7 @@ class ArticleDao(
             .where(ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID.eq(query.articleId))
             .and(ArticleIfo.ARTICLE_IFO.DELETED_AT.isNull)
 
-    fun selectArticleIdByWorkbookIdLimitDay(query: SelectAritlceIdByWorkbookIdAndDayQuery): ArticleIdRecord {
+    fun selectArticleIdsByWorkbookIdLimitDay(query: SelectAritlceIdByWorkbookIdAndDayQuery): ArticleIdRecord {
         return selectArticleIdByWorkbookIdLimitDayQuery(query)
             .fetch()
             .map { it[MAPPING_WORKBOOK_ARTICLE.ARTICLE_ID] }

@@ -11,7 +11,7 @@ class ArticleService(
 ) {
 
     fun browseArticleIdByWorkbookIdLimitDay(inDto: BrowseArticleIdInDto): List<Long> {
-        return articleDao.selectArticleIdByWorkbookIdLimitDay(
+        return articleDao.selectArticleIdsByWorkbookIdLimitDay(
             SelectAritlceIdByWorkbookIdAndDayQuery(
                 inDto.workbookId,
                 inDto.numOfReadArticle

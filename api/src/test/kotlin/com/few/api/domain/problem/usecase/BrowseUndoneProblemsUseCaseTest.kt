@@ -40,7 +40,7 @@ class BrowseUndoneProblemsUseCaseTest : BehaviorSpec({
                 SubscriptionProgressRecord(2L, 3)
             )
 
-            every { articleDao.selectArticleIdByWorkbookIdLimitDay(any()) } returns ArticleIdRecord(listOf(1L, 2L))
+            every { articleDao.selectArticleIdsByWorkbookIdLimitDay(any()) } returns ArticleIdRecord(listOf(1L, 2L))
 
             every { problemDao.selectProblemIdByArticleIds(any()) } returns ProblemIdsRecord(listOf(1L, 2L))
 
@@ -55,7 +55,7 @@ class BrowseUndoneProblemsUseCaseTest : BehaviorSpec({
                 useCase.execute(useCaseIn)
 
                 verify(exactly = 1) { subscriptionDao.selectWorkbookIdAndProgressByMember(any()) }
-                verify(exactly = 1) { articleDao.selectArticleIdByWorkbookIdLimitDay(any()) }
+                verify(exactly = 1) { articleDao.selectArticleIdsByWorkbookIdLimitDay(any()) }
                 verify(exactly = 1) { problemDao.selectProblemIdByArticleIds(any()) }
                 verify(exactly = 1) { submitHistoryDao.selectProblemIdByProblemIds(any()) }
             }
@@ -64,7 +64,7 @@ class BrowseUndoneProblemsUseCaseTest : BehaviorSpec({
         `when`("구독중이 워크북이 없을 경우") {
             every { subscriptionDao.selectWorkbookIdAndProgressByMember(any()) } returns emptyList()
 
-            every { articleDao.selectArticleIdByWorkbookIdLimitDay(any()) } returns ArticleIdRecord(listOf(1L, 2L))
+            every { articleDao.selectArticleIdsByWorkbookIdLimitDay(any()) } returns ArticleIdRecord(listOf(1L, 2L))
 
             every { problemDao.selectProblemIdByArticleIds(any()) } returns ProblemIdsRecord(listOf(1L, 2L))
 
@@ -79,7 +79,7 @@ class BrowseUndoneProblemsUseCaseTest : BehaviorSpec({
                 shouldThrow<Exception> { useCase.execute(useCaseIn) }
 
                 verify(exactly = 1) { subscriptionDao.selectWorkbookIdAndProgressByMember(any()) }
-                verify(exactly = 0) { articleDao.selectArticleIdByWorkbookIdLimitDay(any()) }
+                verify(exactly = 0) { articleDao.selectArticleIdsByWorkbookIdLimitDay(any()) }
                 verify(exactly = 0) { problemDao.selectProblemIdByArticleIds(any()) }
                 verify(exactly = 0) { submitHistoryDao.selectProblemIdByProblemIds(any()) }
             }

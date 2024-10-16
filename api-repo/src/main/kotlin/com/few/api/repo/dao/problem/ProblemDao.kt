@@ -5,6 +5,7 @@ import com.few.api.repo.dao.problem.query.SelectProblemAnswerQuery
 import com.few.api.repo.dao.problem.query.SelectProblemIdByArticleIdsQuery
 import com.few.api.repo.dao.problem.query.SelectProblemQuery
 import com.few.api.repo.dao.problem.query.SelectProblemsByArticleIdQuery
+import com.few.api.repo.dao.problem.record.ProblemIdAndArticleIdRecord
 import com.few.api.repo.dao.problem.record.ProblemIdsRecord
 import com.few.api.repo.dao.problem.record.SelectProblemAnswerRecord
 import com.few.api.repo.dao.problem.record.SelectProblemRecord
@@ -80,15 +81,16 @@ class ProblemDao(
             .set(Problem.PROBLEM.ANSWER, it.answer)
             .set(Problem.PROBLEM.EXPLANATION, it.explanation)
 
-    fun selectProblemIdByArticleIds(query: SelectProblemIdByArticleIdsQuery): ProblemIdsRecord {
+    fun selectProblemIdByArticleIds(query: SelectProblemIdByArticleIdsQuery): List<ProblemIdAndArticleIdRecord> {
         return selectProblemIdByArticleIdsQuery(query)
-            .fetch()
-            .map { it[Problem.PROBLEM.ID] }
-            .let { ProblemIdsRecord(it) }
+            .fetchInto(ProblemIdAndArticleIdRecord::class.java)
     }
 
     fun selectProblemIdByArticleIdsQuery(query: SelectProblemIdByArticleIdsQuery) = dslContext
-        .select(Problem.PROBLEM.ID)
+        .select(
+            Problem.PROBLEM.ID.`as`(ProblemIdAndArticleIdRecord::problemId.name),
+            Problem.PROBLEM.ARTICLE_ID.`as`(ProblemIdAndArticleIdRecord::articleId.name)
+        )
         .from(Problem.PROBLEM)
         .where(Problem.PROBLEM.ARTICLE_ID.`in`(query.articleIds))
         .and(Problem.PROBLEM.DELETED_AT.isNull)

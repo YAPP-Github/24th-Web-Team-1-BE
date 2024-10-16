@@ -44,22 +44,38 @@ class BrowseUndoneProblemsUseCase(
         }.toSet()
 
         /**
-         * 위에서 구한 아티클에 속한 모든 problem_id를 조회함
+         * 위에서 구한 아티클에 속한 모든 problem_id, article_id 조합을 조회함
          */
-        val allProblemIdsToBeSolved = problemDao.selectProblemIdByArticleIds(
+        val allProblemIdsAndArticleIdsToBeSolved = problemDao.selectProblemIdByArticleIds(
             SelectProblemIdByArticleIdsQuery(sentArticleIds)
-        ).problemIds
+        )
 
         /**
          * 위에서 구한 문제들에 대해 풀이 이력이 존재하는 problem_id만 추출 후
          * 유저가 풀어야 할 전체 problem_id에 대해 여집합 연산
          */
+        val allProblemIdsToBeSolved = allProblemIdsAndArticleIdsToBeSolved.map { it.problemId }
         val submittedProblemIds = submitHistoryDao.selectProblemIdByProblemIds(
             SelectSubmittedProblemIdsQuery(useCaseIn.memberId, allProblemIdsToBeSolved)
         ).problemIds
 
-        val unsubmittedProblemIds = allProblemIdsToBeSolved.filter { it !in submittedProblemIds }
+        val unsubmittedProblemIdAndArticleIds: Map<Long, List<Long>> = allProblemIdsAndArticleIdsToBeSolved
+            .filter { it.problemId !in submittedProblemIds }
+            .groupBy { it.articleId }
+            .mapValues { entry -> entry.value.map { it.problemId } }
 
-        return BrowseProblemsUseCaseOut(unsubmittedProblemIds)
+        /**
+         * 결과를 article_id를 기준으로 랜덤화한 뒤 problem_id를 순차적으로 리턴함
+         */
+        val randomArticleIds = unsubmittedProblemIdAndArticleIds.keys.shuffled()
+        val problemIdsRandomizedByArticleId = mutableListOf<Long>()
+
+        randomArticleIds.forEach { articleId ->
+            unsubmittedProblemIdAndArticleIds[articleId]?.let { problemIds ->
+                problemIdsRandomizedByArticleId.addAll(problemIds)
+            }
+        }
+
+        return BrowseProblemsUseCaseOut(problemIdsRandomizedByArticleId)
     }
 }

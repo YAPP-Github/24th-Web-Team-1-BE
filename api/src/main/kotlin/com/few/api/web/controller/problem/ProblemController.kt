@@ -101,7 +101,7 @@ class ProblemController(
     fun browseUndoneProblems(@UserArgument userArgumentDetails: UserArgumentDetails): ApiResponse<ApiResponse.SuccessBody<BrowseProblemsResponse>> {
         val memberId = userArgumentDetails.id.toLong()
 
-        val useCaseOut = BrowseUndoneProblemsUseCaseIn(memberId).let { useCaseIn ->
+        val useCaseOut = BrowseUndoneProblemsUseCaseIn(79).let { useCaseIn ->
             browseUndoneProblemsUseCase.execute(useCaseIn)
         }
 

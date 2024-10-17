@@ -33,7 +33,8 @@ class ReadProblemUseCase(
         return ReadProblemUseCaseOut(
             id = record.id,
             title = record.title,
-            contents = contents
+            contents = contents,
+            articleId = record.articleId
         )
     }
 }

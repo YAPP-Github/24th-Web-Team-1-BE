@@ -2,8 +2,10 @@ package com.few.api.repo.dao.problem
 
 import com.few.api.repo.dao.problem.command.InsertProblemsCommand
 import com.few.api.repo.dao.problem.query.SelectProblemAnswerQuery
+import com.few.api.repo.dao.problem.query.SelectProblemIdByArticleIdsQuery
 import com.few.api.repo.dao.problem.query.SelectProblemQuery
 import com.few.api.repo.dao.problem.query.SelectProblemsByArticleIdQuery
+import com.few.api.repo.dao.problem.record.ProblemIdAndArticleIdRecord
 import com.few.api.repo.dao.problem.record.ProblemIdsRecord
 import com.few.api.repo.dao.problem.record.SelectProblemAnswerRecord
 import com.few.api.repo.dao.problem.record.SelectProblemRecord
@@ -28,7 +30,8 @@ class ProblemDao(
             Problem.PROBLEM.ID.`as`(SelectProblemRecord::id.name),
             Problem.PROBLEM.TITLE.`as`(SelectProblemRecord::title.name),
             DSL.field("JSON_UNQUOTE({0})", String::class.java, Problem.PROBLEM.CONTENTS)
-                .`as`(SelectProblemRecord::contents.name)
+                .`as`(SelectProblemRecord::contents.name),
+            Problem.PROBLEM.ARTICLE_ID.`as`(SelectProblemRecord::articleId.name)
         )
             .from(Problem.PROBLEM)
             .where(Problem.PROBLEM.ID.eq(query.problemId))
@@ -77,4 +80,18 @@ class ProblemDao(
             .set(Problem.PROBLEM.CONTENTS, JSON.valueOf(contentsJsonMapper.toJson(it.contents)))
             .set(Problem.PROBLEM.ANSWER, it.answer)
             .set(Problem.PROBLEM.EXPLANATION, it.explanation)
+
+    fun selectProblemIdByArticleIds(query: SelectProblemIdByArticleIdsQuery): List<ProblemIdAndArticleIdRecord> {
+        return selectProblemIdByArticleIdsQuery(query)
+            .fetchInto(ProblemIdAndArticleIdRecord::class.java)
+    }
+
+    fun selectProblemIdByArticleIdsQuery(query: SelectProblemIdByArticleIdsQuery) = dslContext
+        .select(
+            Problem.PROBLEM.ID.`as`(ProblemIdAndArticleIdRecord::problemId.name),
+            Problem.PROBLEM.ARTICLE_ID.`as`(ProblemIdAndArticleIdRecord::articleId.name)
+        )
+        .from(Problem.PROBLEM)
+        .where(Problem.PROBLEM.ARTICLE_ID.`in`(query.articleIds))
+        .and(Problem.PROBLEM.DELETED_AT.isNull)
 }

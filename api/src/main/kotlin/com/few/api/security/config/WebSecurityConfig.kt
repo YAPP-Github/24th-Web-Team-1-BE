@@ -147,7 +147,8 @@ class WebSecurityConfig(
                     AntPathRequestMatcher("/api/v1/articles/views", HttpMethod.POST.name()),
                     AntPathRequestMatcher("/api/v1/logs", HttpMethod.POST.name()),
                     AntPathRequestMatcher("/api/v1/logs/email/articles", HttpMethod.POST.name()),
-                    AntPathRequestMatcher("/batch/**"),
+                    AntPathRequestMatcher("/batch/article", HttpMethod.POST.name()),
+                    AntPathRequestMatcher("/batch/weekly", HttpMethod.GET.name()),
 
                     /** 인증 불필요 */
                     AntPathRequestMatcher("/api/v1/members", HttpMethod.POST.name()),

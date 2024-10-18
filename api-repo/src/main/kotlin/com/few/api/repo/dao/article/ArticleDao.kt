@@ -6,10 +6,8 @@ import com.few.api.repo.dao.article.command.InsertFullArticleRecordCommand
 import com.few.api.repo.dao.article.query.*
 import com.few.api.repo.dao.article.record.*
 import com.few.data.common.code.MemberType
-import jooq.jooq_dsl.tables.ArticleIfo
-import jooq.jooq_dsl.tables.ArticleMst
-import jooq.jooq_dsl.tables.MappingWorkbookArticle
-import jooq.jooq_dsl.tables.Member
+import jooq.jooq_dsl.tables.*
+import jooq.jooq_dsl.tables.MappingWorkbookArticle.MAPPING_WORKBOOK_ARTICLE
 import org.jooq.*
 import org.jooq.impl.DSL
 import org.springframework.cache.annotation.Cacheable
@@ -163,4 +161,23 @@ class ArticleDao(
             )
             .where(ArticleIfo.ARTICLE_IFO.ARTICLE_MST_ID.eq(query.articleId))
             .and(ArticleIfo.ARTICLE_IFO.DELETED_AT.isNull)
+
+    fun selectArticleIdsByWorkbookIdLimitDay(query: SelectAritlceIdByWorkbookIdAndDayQuery): ArticleIdRecord {
+        return selectArticleIdByWorkbookIdLimitDayQuery(query)
+            .fetch()
+            .map { it[MAPPING_WORKBOOK_ARTICLE.ARTICLE_ID] }
+            .let { ArticleIdRecord(it) }
+    }
+
+    fun selectArticleIdByWorkbookIdLimitDayQuery(query: SelectAritlceIdByWorkbookIdAndDayQuery) =
+        dslContext
+            .select(MAPPING_WORKBOOK_ARTICLE.ARTICLE_ID)
+            .from(MAPPING_WORKBOOK_ARTICLE)
+            .join(ArticleMst.ARTICLE_MST)
+            .on(MAPPING_WORKBOOK_ARTICLE.ARTICLE_ID.eq(ArticleMst.ARTICLE_MST.ID))
+            .where(MAPPING_WORKBOOK_ARTICLE.WORKBOOK_ID.eq(query.workbookId))
+            .and(ArticleMst.ARTICLE_MST.DELETED_AT.isNull)
+            .orderBy(MAPPING_WORKBOOK_ARTICLE.DAY_COL.asc())
+            .limit(query.day)
+            .query
 }

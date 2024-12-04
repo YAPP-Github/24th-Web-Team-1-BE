@@ -1,11 +1,11 @@
 package com.few.api.domain.member.usecase
 
-import com.few.api.domain.member.subscription.MemberSubscriptionService
-import com.few.api.domain.member.subscription.dto.DeleteSubscriptionDto
+import com.few.api.domain.member.service.MemberSubscriptionService
+import com.few.api.domain.member.service.dto.DeleteSubscriptionDto
 import com.few.api.domain.member.usecase.dto.DeleteMemberUseCaseIn
 import com.few.api.domain.member.usecase.dto.DeleteMemberUseCaseOut
-import com.few.api.repo.dao.member.MemberDao
-import com.few.api.repo.dao.member.command.DeleteMemberCommand
+import com.few.api.domain.member.repo.MemberDao
+import com.few.api.domain.member.repo.command.DeleteMemberCommand
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 

@@ -1,16 +1,16 @@
 package com.few.api.domain.article.usecase
 
 import com.few.api.domain.article.usecase.dto.*
-import com.few.api.exception.common.NotFoundException
-import com.few.api.repo.dao.article.ArticleDao
-import com.few.api.repo.dao.article.ArticleMainCardDao
-import com.few.api.repo.dao.article.ArticleViewCountDao
-import com.few.api.repo.dao.article.query.SelectArticlesOrderByViewsQuery
-import com.few.api.repo.dao.article.query.SelectRankByViewsQuery
-import com.few.api.repo.dao.article.record.ArticleMainCardRecord
-import com.few.api.repo.dao.article.record.SelectArticleContentsRecord
-import com.few.api.repo.dao.article.record.SelectArticleViewsRecord
-import com.few.data.common.code.CategoryType
+import com.few.api.domain.common.vo.CategoryType
+import com.few.api.domain.common.exception.NotFoundException
+import com.few.api.domain.article.repo.ArticleDao
+import com.few.api.domain.article.repo.ArticleMainCardDao
+import com.few.api.domain.article.repo.ArticleViewCountDao
+import com.few.api.domain.article.repo.query.SelectArticlesOrderByViewsQuery
+import com.few.api.domain.article.repo.query.SelectRankByViewsQuery
+import com.few.api.domain.article.repo.record.ArticleMainCardRecord
+import com.few.api.domain.article.repo.record.SelectArticleContentsRecord
+import com.few.api.domain.article.repo.record.SelectArticleViewsRecord
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.util.*

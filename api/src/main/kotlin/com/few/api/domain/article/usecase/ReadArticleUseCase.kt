@@ -1,7 +1,6 @@
 package com.few.api.domain.article.usecase
 
 import com.few.api.domain.article.event.dto.ReadArticleEvent
-import com.few.api.domain.article.handler.ArticleViewCountHandler
 import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseIn
 import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseOut
 import com.few.api.domain.article.usecase.dto.WriterDetail
@@ -9,10 +8,11 @@ import com.few.api.domain.article.service.BrowseArticleProblemsService
 import com.few.api.domain.article.service.ReadArticleWriterRecordService
 import com.few.api.domain.article.service.dto.BrowseArticleProblemIdsInDto
 import com.few.api.domain.article.service.dto.ReadWriterRecordInDto
-import com.few.api.exception.common.NotFoundException
-import com.few.api.repo.dao.article.ArticleDao
-import com.few.api.repo.dao.article.query.SelectArticleRecordQuery
-import com.few.data.common.code.CategoryType
+import com.few.api.domain.common.vo.CategoryType
+import com.few.api.domain.common.exception.NotFoundException
+import com.few.api.domain.article.repo.ArticleDao
+import com.few.api.domain.article.repo.query.SelectArticleRecordQuery
+import com.few.api.domain.article.usecase.transaction.ArticleViewCountTxCase
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -22,7 +22,7 @@ class ReadArticleUseCase(
     private val articleDao: ArticleDao,
     private val readArticleWriterRecordService: ReadArticleWriterRecordService,
     private val browseArticleProblemsService: BrowseArticleProblemsService,
-    private val articleViewCountHandler: ArticleViewCountHandler,
+    private val articleViewCountTxCase: ArticleViewCountTxCase,
     private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
 
@@ -39,7 +39,7 @@ class ReadArticleUseCase(
         val problemIds =
             browseArticleProblemsService.execute(BrowseArticleProblemIdsInDto(articleRecord.articleId))
 
-        val views = articleViewCountHandler.browseArticleViewCount(useCaseIn.articleId)
+        val views = articleViewCountTxCase.browseArticleViewCount(useCaseIn.articleId)
         applicationEventPublisher.publishEvent(
             ReadArticleEvent(
                 articleId = useCaseIn.articleId,

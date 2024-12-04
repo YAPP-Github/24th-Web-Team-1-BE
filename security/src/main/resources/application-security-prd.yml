@@ -1,0 +1,13 @@
+security:
+    jwt:
+        token:
+            validtime:
+                access: ${ACCESS_TOKEN_VALIDTIME}
+                refresh: ${REFRESH_TOKEN_VALIDTIME}
+            secretkey: ${TOKEN_SECRETKEY}
+    encryption:
+        algorithm: ${ENCRYPTION_ALGORITHM}
+        secretKey: ${ENCRYPTION_SECRETKEY}
+        transformation: ${ENCRYPTION_TRANSFORMATION}
+        keySize: ${ENCRYPTION_KEY_SIZE}
+        iv: ${ENCRYPTION_IV}

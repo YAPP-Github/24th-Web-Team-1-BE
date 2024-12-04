@@ -1,15 +1,15 @@
 package com.few.api.domain.workbook.usecase
 
+import com.few.api.domain.common.vo.CategoryType
 import com.few.api.domain.workbook.service.WorkbookMemberService
 import com.few.api.domain.workbook.service.WorkbookSubscribeService
 import com.few.api.domain.workbook.service.dto.BrowseMemberSubscribeWorkbooksOutDto
 import com.few.api.domain.workbook.service.dto.WriterMappedWorkbookOutDto
 import com.few.api.domain.workbook.usecase.dto.BrowseWorkbooksUseCaseIn
-import com.few.api.repo.dao.workbook.WorkbookDao
-import com.few.api.repo.dao.workbook.record.SelectWorkBookRecordWithSubscriptionCount
-import com.few.api.web.support.ViewCategory
-import com.few.api.web.support.WorkBookCategory
-import com.few.data.common.code.CategoryType
+import com.few.api.domain.workbook.repo.WorkbookDao
+import com.few.api.domain.workbook.repo.record.SelectWorkBookRecordWithSubscriptionCount
+import com.few.api.domain.common.vo.ViewCategory
+import com.few.api.domain.common.vo.WorkBookCategory
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every

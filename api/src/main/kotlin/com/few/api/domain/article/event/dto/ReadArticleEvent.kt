@@ -1,6 +1,6 @@
 package com.few.api.domain.article.event.dto
 
-import com.few.data.common.code.CategoryType
+import com.few.api.domain.common.vo.CategoryType
 
 data class ReadArticleEvent(
     val articleId: Long,

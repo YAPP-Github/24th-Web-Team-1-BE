@@ -116,6 +116,9 @@ subprojects {
 
         /** Kotlin Logger **/
         implementation("io.github.oshai:kotlin-logging-jvm:${DependencyVersion.KOTLIN_LOGGING}")
+
+        /** apache common */
+        implementation("org.apache.commons:commons-lang3:${DependencyVersion.COMMONS_LANG3}")
     }
 
     /** copy data migration */
@@ -209,15 +212,13 @@ subprojects {
 
 /** do all copy data migration */
 tasks.register("copyDataMigrationAll") {
-    dependsOn(":api-repo:copyDataMigration")
-    dependsOn(":batch:copyDataMigration")
+    dependsOn(":api:copyDataMigration")
 }
 
 /** do all jooq codegen */
 tasks.register("jooqCodegenAll") {
     dependsOn("copyDataMigrationAll")
-    dependsOn(":api-repo:jooqCodegen")
-    dependsOn(":batch:jooqCodegen")
+    dependsOn(":api:jooqCodegen")
 }
 
 /** git hooks */

@@ -33,7 +33,8 @@ class ReadProblemUseCaseTest : BehaviorSpec({
         `when`("문제가 존재할 경우") {
             val title = "title"
             val problemContents = "{}"
-            every { problemDao.selectProblemContents(any()) } returns SelectProblemRecord(id = problemId, title = title, contents = problemContents)
+            val articleId = 3L
+            every { problemDao.selectProblemContents(any()) } returns SelectProblemRecord(id = problemId, title = title, contents = problemContents, articleId = articleId)
 
             val contentCount = 2
             every { contentsJsonMapper.toObject(any()) } returns Contents(

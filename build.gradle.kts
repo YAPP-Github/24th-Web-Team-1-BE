@@ -20,6 +20,8 @@ plugins {
     id("org.asciidoctor.jvm.convert") version DependencyVersion.ASCIIDOCTOR
     id("com.epages.restdocs-api-spec") version DependencyVersion.EPAGES_REST_DOCS_API_SPEC
     id("org.hidetake.swagger.generator") version DependencyVersion.SWAGGER_GENERATOR
+
+    id("org.jetbrains.dokka") version "1.9.20"
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_18
@@ -71,6 +73,7 @@ subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
     apply(plugin = "org.hidetake.swagger.generator")
     apply(plugin = "org.jooq.jooq-codegen-gradle")
+    apply(plugin = "org.jetbrains.dokka")
 
     /**
      * https://kotlinlang.org/docs/reference/compiler-plugins.html#spring-support

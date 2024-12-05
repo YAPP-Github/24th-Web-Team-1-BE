@@ -29,7 +29,7 @@ object DependencyVersion {
     const val KOTEST_EXTENSION = "1.1.3"
     const val COROUTINE_TEST = "1.8.0"
     const val TEST_CONTAINER = "1.19.8"
-    const val ARCH_UNIT = "1.3.0"
+    const val ARCH_UNIT_JUNIT5 = "0.22.0"
 
     /** docs */
     const val ASCIIDOCTOR = "3.3.2"

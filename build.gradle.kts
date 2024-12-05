@@ -107,6 +107,7 @@ subprojects {
         /** test **/
         testImplementation("org.springframework.boot:spring-boot-starter-test")
         testImplementation("io.mockk:mockk:${DependencyVersion.MOCKK}")
+        testImplementation("com.tngtech.archunit:archunit-junit5:${DependencyVersion.ARCH_UNIT_JUNIT5}")
 
         /** kotest */
         testImplementation("io.kotest:kotest-runner-junit5:${DependencyVersion.KOTEST}")
@@ -119,6 +120,19 @@ subprojects {
 
         /** apache common */
         implementation("org.apache.commons:commons-lang3:${DependencyVersion.COMMONS_LANG3}")
+    }
+
+    tasks {
+        test {
+            useJUnitPlatform()
+        }
+
+        register<Test>("architectureSpecTest") {
+            group = "spec"
+            useJUnitPlatform {
+                includeTags("ArchitectureSpec")
+            }
+        }
     }
 
     /** copy data migration */

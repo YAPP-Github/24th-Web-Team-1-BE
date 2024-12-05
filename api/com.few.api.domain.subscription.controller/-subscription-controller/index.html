@@ -1,0 +1,194 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>SubscriptionController</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            few
+                    </a>            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":api:dokkaHtmlPartial/main">jvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="api::com.few.api.domain.subscription.controller/SubscriptionController///PointingToDeclaration//-1197683648">
+  <div class="breadcrumbs"><a href="../../index.html">api</a><span class="delimiter">/</span><a href="../index.html">com.few.api.domain.subscription.controller</a><span class="delimiter">/</span><span class="current">SubscriptionController</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Subscription</span><wbr><span><span>Controller</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="org.springframework.validation.annotation/Validated///PointingToDeclaration/"><span class="token annotation builtin">Validated</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="org.springframework.web.bind.annotation/RestController///PointingToDeclaration/"><span class="token annotation builtin">RestController</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="org.springframework.web.bind.annotation/RequestMapping///PointingToDeclaration/"><span class="token annotation builtin">RequestMapping</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="token punctuation">[</span><span><span class="breakable-word"><span class="token string">"/api/v1"</span></span></span><wbr><span class="token punctuation">]</span><span class="token punctuation">, </span></span><wbr><span>produces<span class="token operator"> = </span><span class="token punctuation">[</span><span><span class="breakable-word"><span class="token string">"application/json"</span></span></span><wbr><span class="token punctuation">]</span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="index.html">SubscriptionController</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">subscribeWorkbookUseCase<span class="token operator">: </span><a href="../../com.few.api.domain.subscription.usecase/-subscribe-workbook-use-case/index.html">SubscribeWorkbookUseCase</a><span class="token punctuation">, </span></span><span class="parameter ">unsubscribeWorkbookUseCase<span class="token operator">: </span><a href="../../com.few.api.domain.subscription.usecase/-unsubscribe-workbook-use-case/index.html">UnsubscribeWorkbookUseCase</a><span class="token punctuation">, </span></span><span class="parameter ">unsubscribeAllUseCase<span class="token operator">: </span><a href="../../com.few.api.domain.subscription.usecase/-unsubscribe-all-use-case/index.html">UnsubscribeAllUseCase</a><span class="token punctuation">, </span></span><span class="parameter ">browseSubscribeWorkbooksUseCase<span class="token operator">: </span><a href="../../com.few.api.domain.subscription.usecase/-browse-subscribe-workbooks-use-case/index.html">BrowseSubscribeWorkbooksUseCase</a><span class="token punctuation">, </span></span><span class="parameter ">updateSubscriptionDayUseCase<span class="token operator">: </span><a href="../../com.few.api.domain.subscription.usecase/-update-subscription-day-use-case/index.html">UpdateSubscriptionDayUseCase</a><span class="token punctuation">, </span></span><span class="parameter ">updateSubscriptionTimeUseCase<span class="token operator">: </span><a href="../../com.few.api.domain.subscription.usecase/-update-subscription-time-use-case/index.html">UpdateSubscriptionTimeUseCase</a></span></span><span class="token punctuation">)</span></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="-311033489%2FConstructors%2F-1197683648" anchor-label="SubscriptionController" id="-311033489%2FConstructors%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-subscription-controller.html"><span>Subscription</span><wbr><span><span>Controller</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-311033489%2FConstructors%2F-1197683648"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">subscribeWorkbookUseCase<span class="token operator">: </span><a href="../../com.few.api.domain.subscription.usecase/-subscribe-workbook-use-case/index.html">SubscribeWorkbookUseCase</a><span class="token punctuation">, </span></span><span class="parameter ">unsubscribeWorkbookUseCase<span class="token operator">: </span><a href="../../com.few.api.domain.subscription.usecase/-unsubscribe-workbook-use-case/index.html">UnsubscribeWorkbookUseCase</a><span class="token punctuation">, </span></span><span class="parameter ">unsubscribeAllUseCase<span class="token operator">: </span><a href="../../com.few.api.domain.subscription.usecase/-unsubscribe-all-use-case/index.html">UnsubscribeAllUseCase</a><span class="token punctuation">, </span></span><span class="parameter ">browseSubscribeWorkbooksUseCase<span class="token operator">: </span><a href="../../com.few.api.domain.subscription.usecase/-browse-subscribe-workbooks-use-case/index.html">BrowseSubscribeWorkbooksUseCase</a><span class="token punctuation">, </span></span><span class="parameter ">updateSubscriptionDayUseCase<span class="token operator">: </span><a href="../../com.few.api.domain.subscription.usecase/-update-subscription-day-use-case/index.html">UpdateSubscriptionDayUseCase</a><span class="token punctuation">, </span></span><span class="parameter ">updateSubscriptionTimeUseCase<span class="token operator">: </span><a href="../../com.few.api.domain.subscription.usecase/-update-subscription-time-use-case/index.html">UpdateSubscriptionTimeUseCase</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="551423317%2FFunctions%2F-1197683648" anchor-label="browseSubscribeWorkbooks" id="551423317%2FFunctions%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="browse-subscribe-workbooks.html"><span>browse</span><wbr><span>Subscribe</span><wbr><span><span>Workbooks</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="551423317%2FFunctions%2F-1197683648"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="org.springframework.web.bind.annotation/GetMapping///PointingToDeclaration/"><span class="token annotation builtin">GetMapping</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="token punctuation">[</span><span><span class="breakable-word"><span class="token string">"/subscriptions/workbooks"</span></span></span><wbr><span class="token punctuation">]</span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">fun </span><a href="browse-subscribe-workbooks.html"><span class="token function">browseSubscribeWorkbooks</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><span data-unresolved-link="org.springframework.security.core.annotation/AuthenticationPrincipal///PointingToDeclaration/"><span class="token annotation builtin">AuthenticationPrincipal</span></span>&nbsp;</span>userDetails<span class="token operator">: </span><a href="../../../security/security/-token-user-details/index.html">TokenUserDetails</a><span class="token punctuation">, </span></span><span class="parameter "><span><span class="token annotation builtin">@</span><span data-unresolved-link="org.springframework.web.bind.annotation/RequestParam///PointingToDeclaration/"><span class="token annotation builtin">RequestParam</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"view"</span></span><span class="token punctuation">, </span></span><wbr><span>required<span class="token operator"> = </span><span class="breakable-word"><span class="token boolean">false</span></span></span><wbr><span class="token punctuation">)</span>&nbsp;</span>view<span class="token operator">: </span><a href="../../com.few.api.domain.common.vo/-view-category/index.html">ViewCategory</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../web/web/-api-response/index.html">ApiResponse</a><span class="token operator">&lt;</span><a href="../../../web/web/-api-response/-success-body/index.html">ApiResponse.SuccessBody</a><span class="token operator">&lt;</span><a href="../../com.few.api.domain.subscription.controller.response/-subscribe-workbooks-response/index.html">SubscribeWorkbooksResponse</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1373367219%2FFunctions%2F-1197683648" anchor-label="deactivateAllSubscriptions" id="1373367219%2FFunctions%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="deactivate-all-subscriptions.html"><span>deactivate</span><wbr><span>All</span><wbr><span><span>Subscriptions</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1373367219%2FFunctions%2F-1197683648"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="org.springframework.web.bind.annotation/PostMapping///PointingToDeclaration/"><span class="token annotation builtin">PostMapping</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="token punctuation">[</span><span><span class="breakable-word"><span class="token string">"/subscriptions/unsubs"</span></span></span><wbr><span class="token punctuation">]</span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">fun </span><a href="deactivate-all-subscriptions.html"><span class="token function">deactivateAllSubscriptions</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><span data-unresolved-link="org.springframework.security.core.annotation/AuthenticationPrincipal///PointingToDeclaration/"><span class="token annotation builtin">AuthenticationPrincipal</span></span>&nbsp;</span>userDetails<span class="token operator">: </span><a href="../../../security/security/-token-user-details/index.html">TokenUserDetails</a><span class="token punctuation">, </span></span><span class="parameter "><span><span class="token annotation builtin">@</span><span data-unresolved-link="jakarta.validation/Valid///PointingToDeclaration/"><span class="token annotation builtin">Valid</span></span>&nbsp;<span class="token annotation builtin">@</span><span data-unresolved-link="org.springframework.web.bind.annotation/RequestBody///PointingToDeclaration/"><span class="token annotation builtin">RequestBody</span></span>&nbsp;</span>body<span class="token operator">: </span><a href="../../com.few.api.domain.subscription.controller.request/-unsubscribe-all-request/index.html">UnsubscribeAllRequest</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../web/web/-api-response/index.html">ApiResponse</a><span class="token operator">&lt;</span><a href="../../../web/web/-api-response/-success/index.html">ApiResponse.Success</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="215007702%2FFunctions%2F-1197683648" anchor-label="subscribeWorkbook" id="215007702%2FFunctions%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="subscribe-workbook.html"><span>subscribe</span><wbr><span><span>Workbook</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="215007702%2FFunctions%2F-1197683648"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="org.springframework.web.bind.annotation/PostMapping///PointingToDeclaration/"><span class="token annotation builtin">PostMapping</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="token punctuation">[</span><span><span class="breakable-word"><span class="token string">"/workbooks/{workbookId}/subs"</span></span></span><wbr><span class="token punctuation">]</span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">fun </span><a href="subscribe-workbook.html"><span class="token function">subscribeWorkbook</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><span data-unresolved-link="org.springframework.security.core.annotation/AuthenticationPrincipal///PointingToDeclaration/"><span class="token annotation builtin">AuthenticationPrincipal</span></span>&nbsp;</span>userDetails<span class="token operator">: </span><a href="../../../security/security/-token-user-details/index.html">TokenUserDetails</a><span class="token punctuation">, </span></span><span class="parameter "><span><span class="token annotation builtin">@</span><span data-unresolved-link="org.springframework.web.bind.annotation/PathVariable///PointingToDeclaration/"><span class="token annotation builtin">PathVariable</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"workbookId"</span></span></span><wbr><span class="token punctuation">)</span>&nbsp;<span class="token annotation builtin">@</span><span data-unresolved-link="jakarta.validation.constraints/Min///PointingToDeclaration/"><span class="token annotation builtin">Min</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token constant">1</span></span><span class="token punctuation">, </span></span><wbr><span>message<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"{min.id}"</span></span></span><wbr><span class="token punctuation">)</span>&nbsp;</span>workbookId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../web/web/-api-response/index.html">ApiResponse</a><span class="token operator">&lt;</span><a href="../../../web/web/-api-response/-success/index.html">ApiResponse.Success</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="804644986%2FFunctions%2F-1197683648" anchor-label="unsubscribeWorkbook" id="804644986%2FFunctions%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="unsubscribe-workbook.html"><span>unsubscribe</span><wbr><span><span>Workbook</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="804644986%2FFunctions%2F-1197683648"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="org.springframework.web.bind.annotation/PostMapping///PointingToDeclaration/"><span class="token annotation builtin">PostMapping</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="token punctuation">[</span><span><span class="breakable-word"><span class="token string">"/workbooks/{workbookId}/unsubs"</span></span></span><wbr><span class="token punctuation">]</span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">fun </span><a href="unsubscribe-workbook.html"><span class="token function">unsubscribeWorkbook</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><span data-unresolved-link="org.springframework.security.core.annotation/AuthenticationPrincipal///PointingToDeclaration/"><span class="token annotation builtin">AuthenticationPrincipal</span></span>&nbsp;</span>userDetails<span class="token operator">: </span><a href="../../../security/security/-token-user-details/index.html">TokenUserDetails</a><span class="token punctuation">, </span></span><span class="parameter "><span><span class="token annotation builtin">@</span><span data-unresolved-link="org.springframework.web.bind.annotation/PathVariable///PointingToDeclaration/"><span class="token annotation builtin">PathVariable</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"workbookId"</span></span></span><wbr><span class="token punctuation">)</span>&nbsp;<span class="token annotation builtin">@</span><span data-unresolved-link="jakarta.validation.constraints/Min///PointingToDeclaration/"><span class="token annotation builtin">Min</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token constant">1</span></span><span class="token punctuation">, </span></span><wbr><span>message<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"{min.id}"</span></span></span><wbr><span class="token punctuation">)</span>&nbsp;</span>workbookId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="token punctuation">, </span></span><span class="parameter "><span><span class="token annotation builtin">@</span><span data-unresolved-link="jakarta.validation/Valid///PointingToDeclaration/"><span class="token annotation builtin">Valid</span></span>&nbsp;<span class="token annotation builtin">@</span><span data-unresolved-link="org.springframework.web.bind.annotation/RequestBody///PointingToDeclaration/"><span class="token annotation builtin">RequestBody</span></span>&nbsp;</span>body<span class="token operator">: </span><a href="../../com.few.api.domain.subscription.controller.request/-unsubscribe-workbook-request/index.html">UnsubscribeWorkbookRequest</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../web/web/-api-response/index.html">ApiResponse</a><span class="token operator">&lt;</span><a href="../../../web/web/-api-response/-success/index.html">ApiResponse.Success</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-90524283%2FFunctions%2F-1197683648" anchor-label="updateSubscriptionDay" id="-90524283%2FFunctions%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="update-subscription-day.html"><span>update</span><wbr><span>Subscription</span><wbr><span><span>Day</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-90524283%2FFunctions%2F-1197683648"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="org.springframework.web.bind.annotation/PatchMapping///PointingToDeclaration/"><span class="token annotation builtin">PatchMapping</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="token punctuation">[</span><span><span class="breakable-word"><span class="token string">"/subscriptions/day"</span></span></span><wbr><span class="token punctuation">]</span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">fun </span><a href="update-subscription-day.html"><span class="token function">updateSubscriptionDay</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><span data-unresolved-link="org.springframework.security.core.annotation/AuthenticationPrincipal///PointingToDeclaration/"><span class="token annotation builtin">AuthenticationPrincipal</span></span>&nbsp;</span>userDetails<span class="token operator">: </span><a href="../../../security/security/-token-user-details/index.html">TokenUserDetails</a><span class="token punctuation">, </span></span><span class="parameter "><span><span class="token annotation builtin">@</span><span data-unresolved-link="jakarta.validation/Valid///PointingToDeclaration/"><span class="token annotation builtin">Valid</span></span>&nbsp;<span class="token annotation builtin">@</span><span data-unresolved-link="org.springframework.web.bind.annotation/RequestBody///PointingToDeclaration/"><span class="token annotation builtin">RequestBody</span></span>&nbsp;</span>body<span class="token operator">: </span><a href="../../com.few.api.domain.subscription.controller.request/-update-subscription-day-request/index.html">UpdateSubscriptionDayRequest</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../web/web/-api-response/index.html">ApiResponse</a><span class="token operator">&lt;</span><a href="../../../web/web/-api-response/-success/index.html">ApiResponse.Success</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1804208521%2FFunctions%2F-1197683648" anchor-label="updateSubscriptionTime" id="1804208521%2FFunctions%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="update-subscription-time.html"><span>update</span><wbr><span>Subscription</span><wbr><span><span>Time</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1804208521%2FFunctions%2F-1197683648"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="org.springframework.web.bind.annotation/PatchMapping///PointingToDeclaration/"><span class="token annotation builtin">PatchMapping</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="token punctuation">[</span><span><span class="breakable-word"><span class="token string">"/subscriptions/time"</span></span></span><wbr><span class="token punctuation">]</span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">fun </span><a href="update-subscription-time.html"><span class="token function">updateSubscriptionTime</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><span data-unresolved-link="org.springframework.security.core.annotation/AuthenticationPrincipal///PointingToDeclaration/"><span class="token annotation builtin">AuthenticationPrincipal</span></span>&nbsp;</span>userDetails<span class="token operator">: </span><a href="../../../security/security/-token-user-details/index.html">TokenUserDetails</a><span class="token punctuation">, </span></span><span class="parameter "><span><span class="token annotation builtin">@</span><span data-unresolved-link="jakarta.validation/Valid///PointingToDeclaration/"><span class="token annotation builtin">Valid</span></span>&nbsp;<span class="token annotation builtin">@</span><span data-unresolved-link="org.springframework.web.bind.annotation/RequestBody///PointingToDeclaration/"><span class="token annotation builtin">RequestBody</span></span>&nbsp;</span>body<span class="token operator">: </span><a href="../../com.few.api.domain.subscription.controller.request/-update-subscription-time-request/index.html">UpdateSubscriptionTimeRequest</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../web/web/-api-response/index.html">ApiResponse</a><span class="token operator">&lt;</span><a href="../../../web/web/-api-response/-success/index.html">ApiResponse.Success</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

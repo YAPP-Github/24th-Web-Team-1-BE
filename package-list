@@ -3,6 +3,8 @@ $dokka.linkExtension:html
 
 module:api
 com.few.api
+com.few.api.config
+com.few.api.config.properties
 com.few.api.domain.admin.controller
 com.few.api.domain.admin.controller.request
 com.few.api.domain.admin.controller.response
@@ -120,8 +122,6 @@ com.few.api.domain.workbook.usecase
 com.few.api.domain.workbook.usecase.dto
 com.few.api.domain.workbook.usecase.model
 com.few.api.domain.workbook.usecase.model.order
-com.few.api.support
-com.few.api.support.properties
 module:data
 data.config
 module:email

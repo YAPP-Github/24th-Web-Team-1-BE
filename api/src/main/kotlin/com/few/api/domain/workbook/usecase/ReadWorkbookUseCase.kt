@@ -1,14 +1,16 @@
 package com.few.api.domain.workbook.usecase
 
+import com.few.api.domain.common.vo.CategoryType
 import com.few.api.domain.workbook.usecase.dto.ReadWorkbookUseCaseIn
 import com.few.api.domain.workbook.usecase.dto.ReadWorkbookUseCaseOut
 import com.few.api.domain.workbook.service.*
 import com.few.api.domain.workbook.service.dto.BrowseWorkbookArticlesInDto
 import com.few.api.domain.workbook.service.dto.BrowseWriterRecordsInDto
-import com.few.api.exception.common.NotFoundException
-import com.few.api.repo.dao.workbook.WorkbookDao
-import com.few.api.repo.dao.workbook.query.SelectWorkBookRecordQuery
-import com.few.data.common.code.CategoryType
+import com.few.api.domain.common.exception.NotFoundException
+import com.few.api.domain.workbook.repo.WorkbookDao
+import com.few.api.domain.workbook.repo.query.SelectWorkBookRecordQuery
+import com.few.api.domain.workbook.usecase.dto.ArticleDetail
+import com.few.api.domain.workbook.usecase.dto.WriterDetail
 import org.springframework.stereotype.Component
 
 @Component
@@ -40,8 +42,19 @@ class ReadWorkbookUseCase(
             description = workbookRecord.description,
             category = CategoryType.convertToDisplayName(workbookRecord.category),
             createdAt = workbookRecord.createdAt,
-            writers = writerRecords.toWriterDetails(),
-            articles = workbookMappedArticles.toArticleDetails()
+            writers = writerRecords.toWriterDetails().map {
+                WriterDetail(
+                    id = it.writerId,
+                    name = it.name,
+                    url = it.url
+                )
+            },
+            articles = workbookMappedArticles.toArticleDetails().map {
+                ArticleDetail(
+                    id = it.articleId,
+                    title = it.title
+                )
+            }
         )
     }
 }

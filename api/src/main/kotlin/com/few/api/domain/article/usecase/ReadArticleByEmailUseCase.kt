@@ -6,7 +6,7 @@ import com.few.api.domain.article.service.dto.InsertOpenEventDto
 import com.few.api.domain.article.service.dto.ReadMemberByEmailDto
 import com.few.api.domain.article.service.dto.SelectDeliveryEventByMessageIdDto
 import com.few.api.domain.article.usecase.dto.ReadArticleByEmailUseCaseIn
-import com.few.api.web.support.EmailLogEventType
+import com.few.api.domain.common.vo.EmailLogEventType
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import org.webjars.NotFoundException

@@ -1,9 +1,9 @@
 package com.few.api.domain.subscription.service
 
 import com.few.api.domain.subscription.service.dto.InsertSendEventDto
-import com.few.api.repo.dao.log.SendArticleEventHistoryDao
-import com.few.api.repo.dao.log.command.InsertEventCommand
-import com.few.api.web.support.EmailLogEventType
+import com.few.api.domain.log.repo.SendArticleEventHistoryDao
+import com.few.api.domain.log.repo.command.InsertEventCommand
+import com.few.api.domain.common.vo.EmailLogEventType
 import org.springframework.stereotype.Service
 
 @Service

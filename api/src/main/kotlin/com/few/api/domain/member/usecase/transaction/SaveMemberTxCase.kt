@@ -1,16 +1,15 @@
 package com.few.api.domain.member.usecase.transaction
 
+import com.few.api.domain.common.vo.MemberType
 import com.few.api.domain.member.usecase.dto.SaveMemberTxCaseIn
 import com.few.api.domain.member.usecase.dto.SaveMemberTxCaseOut
-import com.few.api.exception.common.InsertException
-import com.few.api.repo.dao.member.MemberDao
-import com.few.api.repo.dao.member.command.InsertMemberCommand
-import com.few.api.repo.dao.member.command.UpdateDeletedMemberTypeCommand
-import com.few.api.repo.dao.member.record.MemberIdAndIsDeletedRecord
-import com.few.data.common.code.MemberType
+import com.few.api.domain.common.exception.InsertException
+import com.few.api.domain.member.repo.MemberDao
+import com.few.api.domain.member.repo.command.InsertMemberCommand
+import com.few.api.domain.member.repo.command.UpdateDeletedMemberTypeCommand
+import com.few.api.domain.member.repo.record.MemberIdAndIsDeletedRecord
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 @Component
 class SaveMemberTxCase(

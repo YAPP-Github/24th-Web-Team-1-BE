@@ -1,13 +1,13 @@
 package com.few.api.domain.member.usecase
 
-import com.few.api.config.crypto.IdEncryption
+import security.IdEncryptor
 import com.few.api.domain.member.usecase.dto.SaveMemberTxCaseOut
 import com.few.api.domain.member.usecase.dto.SaveMemberUseCaseIn
 import com.few.api.domain.member.usecase.transaction.SaveMemberTxCase
-import com.few.api.repo.dao.member.MemberDao
-import com.few.api.repo.dao.member.query.SelectMemberByEmailNotConsiderDeletedAtQuery
-import com.few.api.repo.dao.member.record.MemberIdAndIsDeletedRecord
-import com.few.email.service.member.SendAuthEmailService
+import com.few.api.domain.member.repo.MemberDao
+import com.few.api.domain.member.repo.query.SelectMemberByEmailNotConsiderDeletedAtQuery
+import com.few.api.domain.member.repo.record.MemberIdAndIsDeletedRecord
+import com.few.api.domain.member.email.SendAuthEmailService
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
@@ -19,14 +19,14 @@ import org.mockito.ArgumentMatchers.any
 class SaveMemberUseCaseTest : BehaviorSpec({
     lateinit var memberDao: MemberDao
     lateinit var sendAuthEmailService: SendAuthEmailService
-    lateinit var idEncryption: IdEncryption
+    lateinit var idEncryption: IdEncryptor
     lateinit var saveMemberTxCase: SaveMemberTxCase
     lateinit var useCase: SaveMemberUseCase
 
     beforeContainer {
         memberDao = mockk<MemberDao>()
         sendAuthEmailService = mockk<SendAuthEmailService>()
-        idEncryption = mockk<IdEncryption>()
+        idEncryption = mockk<IdEncryptor>()
         saveMemberTxCase = mockk<SaveMemberTxCase>()
         useCase = SaveMemberUseCase(memberDao, sendAuthEmailService, idEncryption, saveMemberTxCase)
     }

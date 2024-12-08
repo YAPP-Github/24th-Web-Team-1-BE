@@ -12,3 +12,8 @@ data class WorkBookArticleOutDto(
     val content: String,
     val createdAt: LocalDateTime,
 )
+
+data class ArticleDetailOutDto(
+    val articleId: Long,
+    val title: String,
+)

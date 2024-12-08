@@ -7,3 +7,9 @@ data class WriterOutDto(
     val name: String,
     val url: URL,
 )
+
+data class WriterDetailDto(
+    val writerId: Long,
+    val name: String,
+    val url: URL,
+)

@@ -1,19 +1,19 @@
 package com.few.api.domain.subscription.usecase
 
-import com.few.api.domain.common.lock.LockFor
-import com.few.api.domain.common.lock.LockIdentifier
+import com.few.api.domain.common.lock.ApiLockFor
+import com.few.api.domain.common.lock.ApiLockIdentifier
 import com.few.api.domain.subscription.event.dto.WorkbookSubscriptionEvent
-import com.few.api.repo.dao.subscription.SubscriptionDao
-import com.few.api.repo.dao.subscription.command.InsertWorkbookSubscriptionCommand
-import com.few.api.repo.dao.subscription.query.SelectAllWorkbookSubscriptionStatusNotConsiderDeletedAtQuery
+import com.few.api.domain.subscription.repo.SubscriptionDao
+import com.few.api.domain.subscription.repo.command.InsertWorkbookSubscriptionCommand
+import com.few.api.domain.subscription.repo.query.SelectAllWorkbookSubscriptionStatusNotConsiderDeletedAtQuery
 import com.few.api.domain.subscription.usecase.dto.SubscribeWorkbookUseCaseIn
 import com.few.api.domain.subscription.usecase.model.CancelledWorkbookSubscriptionHistory
 import com.few.api.domain.subscription.usecase.model.WorkbookSubscriptionHistory
 import com.few.api.domain.subscription.usecase.model.WorkbookSubscriptionStatus
-import com.few.api.exception.common.NotFoundException
-import com.few.api.exception.subscribe.SubscribeIllegalArgumentException
-import com.few.api.repo.dao.subscription.query.CountWorkbookMappedArticlesQuery
-import com.few.api.repo.dao.subscription.query.SelectSubscriptionSendStatusQuery
+import com.few.api.domain.common.exception.NotFoundException
+import com.few.api.domain.subscription.exception.SubscribeIllegalArgumentException
+import com.few.api.domain.subscription.repo.query.CountWorkbookMappedArticlesQuery
+import com.few.api.domain.subscription.repo.query.SelectSubscriptionSendStatusQuery
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -24,7 +24,7 @@ class SubscribeWorkbookUseCase(
     private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
 
-    @LockFor(LockIdentifier.SUBSCRIPTION_MEMBER_ID_WORKBOOK_ID)
+    @ApiLockFor(ApiLockIdentifier.SUBSCRIPTION_MEMBER_ID_WORKBOOK_ID)
     @Transactional
     fun execute(useCaseIn: SubscribeWorkbookUseCaseIn) {
         val subTargetWorkbookId = useCaseIn.workbookId
@@ -98,11 +98,6 @@ class SubscribeWorkbookUseCase(
             }
         }
 
-        /**
-         * 구독 이벤트 발행
-         * @see com.few.api.domain.subscription.event.WorkbookSubscriptionEventListener
-         * @see com.few.api.domain.subscription.event.WorkbookSubscriptionAfterCompletionEventListener
-         */
         applicationEventPublisher.publishEvent(
             WorkbookSubscriptionEvent(
                 workbookId = subTargetWorkbookId,

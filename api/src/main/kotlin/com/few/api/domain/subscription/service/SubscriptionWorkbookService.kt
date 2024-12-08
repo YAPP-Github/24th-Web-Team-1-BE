@@ -1,10 +1,10 @@
 package com.few.api.domain.subscription.service
 
 import com.few.api.domain.subscription.service.dto.*
-import com.few.api.repo.dao.workbook.WorkbookDao
-import com.few.api.repo.dao.workbook.query.SelectAllWorkbookTitleQuery
-import com.few.api.repo.dao.workbook.query.SelectWorkBookLastArticleIdQuery
-import com.few.api.repo.dao.workbook.query.SelectWorkBookRecordQuery
+import com.few.api.domain.workbook.repo.WorkbookDao
+import com.few.api.domain.workbook.repo.query.SelectAllWorkbookTitleQuery
+import com.few.api.domain.workbook.repo.query.SelectWorkBookLastArticleIdQuery
+import com.few.api.domain.workbook.repo.query.SelectWorkBookRecordQuery
 import org.springframework.stereotype.Service
 
 @Service

@@ -9,21 +9,17 @@ tasks.withType(BootJar::class.java) {
 
 dependencies {
     /** module */
-    implementation(project(":api-repo"))
-    implementation(project(":batch"))
+    implementation(project(":repo"))
     implementation(project(":email"))
     implementation(project(":storage"))
+    implementation(project(":web"))
 
     /** spring starter */
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-aop")
 
-    /** jwt */
-    implementation("io.jsonwebtoken:jjwt-api:${DependencyVersion.JWT}")
-    implementation("io.jsonwebtoken:jjwt-impl:${DependencyVersion.JWT}")
-    implementation("io.jsonwebtoken:jjwt-jackson:${DependencyVersion.JWT}")
+    /** jooq */
+    jooqCodegen("org.jooq:jooq-meta-extensions:${DependencyVersion.JOOQ}")
 
     /** aspectj */
     implementation("org.aspectj:aspectjweaver:1.9.5")
@@ -32,6 +28,12 @@ dependencies {
     implementation("com.sksamuel.scrimage:scrimage-core:${DependencyVersion.SCRIMAGE}")
     /** for convert to webp */
     implementation("com.sksamuel.scrimage:scrimage-webp:${DependencyVersion.SCRIMAGE}")
+
+    /** commonmark - markdown to html */
+    implementation("org.commonmark:commonmark:${DependencyVersion.COMMONMARK}")
+
+    /** jsoup - html parser */
+    implementation("org.jsoup:jsoup:1.15.3")
 
     /** swagger & restdocs */
     implementation("org.springdoc:springdoc-openapi-ui:${DependencyVersion.SPRINGDOC}")

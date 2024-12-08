@@ -8,9 +8,9 @@ tasks.getByName("jar") {
 
 dependencies {
     /** starter */
-    implementation("org.springframework.boot:spring-boot-starter-mail")
-    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+    api("org.springframework.boot:spring-boot-starter-mail")
+    api("org.springframework.boot:spring-boot-starter-thymeleaf")
 
     /** aws ses */
-    implementation("com.amazonaws:aws-java-sdk-ses:1.12.765")
+    implementation("com.amazonaws:aws-java-sdk-ses:${DependencyVersion.AWS_SES}")
 }

@@ -1,8 +1,8 @@
 package com.few.api.domain.subscription.usecase.dto
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import com.few.api.web.support.DayCode
-import com.few.api.web.support.WorkBookStatus
+import com.few.api.domain.common.vo.DayCode
+import com.few.api.domain.common.vo.WorkBookStatus
 import java.time.LocalTime
 
 data class BrowseSubscribeWorkbooksUseCaseOut(

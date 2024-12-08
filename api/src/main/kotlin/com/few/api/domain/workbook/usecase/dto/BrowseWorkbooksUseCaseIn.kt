@@ -1,7 +1,7 @@
 package com.few.api.domain.workbook.usecase.dto
 
-import com.few.api.web.support.ViewCategory
-import com.few.api.web.support.WorkBookCategory
+import com.few.api.domain.common.vo.ViewCategory
+import com.few.api.domain.common.vo.WorkBookCategory
 
 data class BrowseWorkbooksUseCaseIn(
     val category: WorkBookCategory,

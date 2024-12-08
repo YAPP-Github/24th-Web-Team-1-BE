@@ -1,7 +1,7 @@
 package com.few.api.domain.subscription.usecase
 
-import com.few.api.repo.dao.subscription.SubscriptionDao
-import com.few.api.repo.dao.subscription.command.UpdateDeletedAtInWorkbookSubscriptionCommand
+import com.few.api.domain.subscription.repo.SubscriptionDao
+import com.few.api.domain.subscription.repo.command.UpdateDeletedAtInWorkbookSubscriptionCommand
 import com.few.api.domain.subscription.usecase.dto.UnsubscribeWorkbookUseCaseIn
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional

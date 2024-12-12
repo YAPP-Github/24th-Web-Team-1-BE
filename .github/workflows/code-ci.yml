@@ -48,11 +48,11 @@ jobs:
 
             - name: Generate OpenAPI3
               run: |
-                  ./gradlew  api:openapi3 -PserverUrl=https://api.fewletter.site
+                  ./gradlew  openapi3 -PserverUrl=https://api.fewletter.site
 
             - name: Generate Swagger
               run: |
-                  ./gradlew  api:generateStaticSwaggerUIApi
+                  ./gradlew  generateStaticSwaggerUI
 
             - name : Docker Login
               run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}

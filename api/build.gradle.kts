@@ -1,5 +1,4 @@
 
-import org.hidetake.gradle.swagger.generator.GenerateSwaggerUI
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 import java.util.Random
 
@@ -35,66 +34,12 @@ dependencies {
 
     /** jsoup - html parser */
     implementation("org.jsoup:jsoup:1.15.3")
-
-    swaggerUI("org.webjars:swagger-ui:${DependencyVersion.SWAGGER_UI}")
 }
 
-plugins {
-    id("org.asciidoctor.jvm.convert") version DependencyVersion.ASCIIDOCTOR
-    id("com.epages.restdocs-api-spec") version DependencyVersion.EPAGES_REST_DOCS_API_SPEC
-    id("org.hidetake.swagger.generator") version DependencyVersion.SWAGGER_GENERATOR
-}
-
-val serverUrl = project.hasProperty("serverUrl").let {
-    if (it) {
-        project.property("serverUrl") as String
-    } else {
-        "http://localhost:8080"
-    }
-}
-
-/** convert snippet to swagger */
-openapi3 {
-    this.setServer(serverUrl)
-    title = project.name
-    version = project.version.toString()
-    format = "yaml"
-    snippetsDirectory = "build/generated-snippets/"
-    outputDirectory = "src/main/resources/static/"
-    outputFileNamePrefix = "openapi3"
-}
-
-/** convert snippet to postman */
-postman {
-    title = project.name
-    version = project.version.toString()
-    baseUrl = serverUrl
-    outputDirectory = "src/main/resources/static/"
-    outputFileNamePrefix = "postman"
-}
-
-/** generate swagger ui */
-swaggerSources {
-    /** generateSwaggerUIApi */
-    register("api") {
-        setInputFile(file("$projectDir/src/main/resources/static/openapi3.yaml"))
-    }
-}
-
-/**
- * generate static swagger ui <br/>
- * need snippet to generate swagger ui
- * */
-tasks.register("generateStaticSwaggerUIApi", Copy::class) {
-    /** generateSwaggerUIApi */
-    dependsOn("generateSwaggerUIApi")
-    val generateSwaggerUISampleTask = tasks.named("generateSwaggerUIApi", GenerateSwaggerUI::class).get()
-
-    /** copy */
-    from(generateSwaggerUISampleTask.outputDir)
-    into("$projectDir/src/main/resources/static/docs/swagger-ui")
+tasks.named("generateStaticSwaggerUI") {
     doLast {
-        val swaggerSpecSource = "$projectDir/src/main/resources/static/docs/swagger-ui/swagger-spec.js"
+        val swaggerSpecSource = "$projectDir/src/main/resources/static/docs/${project.name}/swagger-ui/swagger-spec.js"
+
         file(swaggerSpecSource).writeText(
             file(swaggerSpecSource).readText().replace(
                 "operationId\" : \"PutImageApi\",",

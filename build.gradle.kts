@@ -1,3 +1,4 @@
+import org.hidetake.gradle.swagger.generator.GenerateSwaggerUI
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -77,6 +78,9 @@ subprojects {
     apply(plugin = "org.jooq.jooq-codegen-gradle")
     apply(plugin = "org.jetbrains.dokka")
     apply(plugin = "java-test-fixtures")
+    apply(plugin = "org.asciidoctor.jvm.convert")
+    apply(plugin = "com.epages.restdocs-api-spec")
+    apply(plugin = "org.hidetake.swagger.generator")
 
     /**
      * https://kotlinlang.org/docs/reference/compiler-plugins.html#spring-support
@@ -126,6 +130,9 @@ subprojects {
 
         /** apache common */
         implementation("org.apache.commons:commons-lang3:${DependencyVersion.COMMONS_LANG3}")
+
+        /** swagger ui */
+        swaggerUI("org.webjars:swagger-ui:${DependencyVersion.SWAGGER_UI}")
     }
 
     tasks {
@@ -139,6 +146,56 @@ subprojects {
                 includeTags("ArchitectureSpec")
             }
         }
+    }
+
+    /** server url */
+    val serverUrl = project.hasProperty("serverUrl").let {
+        if (it) {
+            project.property("serverUrl") as String
+        } else {
+            "http://localhost:8080"
+        }
+    }
+
+    /** convert snippet to swagger */
+    openapi3 {
+        this.setServer(serverUrl)
+        title = project.name
+        version = project.version.toString()
+        format = "yaml"
+        snippetsDirectory = "build/generated-snippets/"
+        outputDirectory = "src/main/resources/static"
+        outputFileNamePrefix = "openapi3"
+    }
+
+    /** convert snippet to postman */
+    postman {
+        title = project.name
+        version = project.version.toString()
+        baseUrl = serverUrl
+        outputDirectory = "src/main/resources/static"
+        outputFileNamePrefix = "postman"
+    }
+
+    /** generate swagger ui */
+    swaggerSources {
+        register(project.name) {
+            setInputFile(file("$projectDir/src/main/resources/static/openapi3.yaml"))
+        }
+    }
+
+    /**
+     * generate static swagger ui <br/>
+     * need snippet to generate swagger ui
+     * */
+    tasks.register("generateStaticSwaggerUI", Copy::class) {
+        val name = project.name
+        val generateSwaggerUITask = "generateSwaggerUI${name.first().uppercase() + name.substring(1)}"
+        dependsOn(generateSwaggerUITask)
+
+        val generateSwaggerUISampleTask = tasks.named(generateSwaggerUITask, GenerateSwaggerUI::class).get()
+        from(generateSwaggerUISampleTask.outputDir)
+        into("$projectDir/src/main/resources/static/docs/${project.name}/swagger-ui")
     }
 
     /** copy data migration */

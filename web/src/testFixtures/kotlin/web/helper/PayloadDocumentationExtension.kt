@@ -29,26 +29,50 @@ fun FieldDescriptor.fieldWithNull(description: String): FieldDescriptor {
 }
 
 fun FieldDescription.asObject(): FieldDescriptor {
-    return PayloadDocumentation.fieldWithPath(this.path).fieldWithObject(this.description)
+    val descriptor = PayloadDocumentation.fieldWithPath(this.path).fieldWithObject(this.description)
+    if (this.optional) {
+        return descriptor.optional()
+    }
+    return descriptor
 }
 
 fun FieldDescription.asArray(): FieldDescriptor {
-    return PayloadDocumentation.fieldWithPath(this.path).fieldWithArray(this.description)
+    val descriptor = PayloadDocumentation.fieldWithPath(this.path).fieldWithArray(this.description)
+    if (this.optional) {
+        return descriptor.optional()
+    }
+    return descriptor
 }
 
 fun FieldDescription.asString(): FieldDescriptor {
-    return PayloadDocumentation.fieldWithPath(this.path).fieldWithString(this.description)
+    val descriptor = PayloadDocumentation.fieldWithPath(this.path).fieldWithString(this.description)
+    if (this.optional) {
+        return descriptor.optional()
+    }
+    return descriptor
 }
 
 fun FieldDescription.asNumber(): FieldDescriptor {
-    return PayloadDocumentation.fieldWithPath(this.path).fieldWithNumber(this.description)
+    val descriptor = PayloadDocumentation.fieldWithPath(this.path).fieldWithNumber(this.description)
+    if (this.optional) {
+        return descriptor.optional()
+    }
+    return descriptor
 }
 
 fun FieldDescription.asBoolean(): FieldDescriptor {
-    return PayloadDocumentation.fieldWithPath(this.path).fieldWithBoolean(this.description)
+    val descriptor = PayloadDocumentation.fieldWithPath(this.path).fieldWithBoolean(this.description)
+    if (this.optional) {
+        return descriptor.optional()
+    }
+    return descriptor
 }
 
 fun FieldDescription.asNull(): FieldDescriptor {
-    return PayloadDocumentation.fieldWithPath(this.path).fieldWithNull(this.description)
+    val descriptor = PayloadDocumentation.fieldWithPath(this.path).fieldWithNull(this.description)
+    if (this.optional) {
+        return descriptor.optional()
+    }
+    return descriptor
 }
 class PayloadDocumentationExtension

@@ -67,7 +67,7 @@ class LocalDelegatedSecurityConfig(
                 .requestMatchers(
                     AntPathRequestMatcher("/actuator/health", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/error", HttpMethod.GET.name()),
-                    AntPathRequestMatcher("/docs/swagger-ui/*", HttpMethod.GET.name()),
+                    AntPathRequestMatcher("/docs/**/swagger-ui/*", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/swagger-ui/*", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/swagger-resources/**", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/v3/api-docs/**", HttpMethod.GET.name()),

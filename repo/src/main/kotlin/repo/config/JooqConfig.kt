@@ -8,9 +8,9 @@ import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator
-import repo.support.ExceptionTranslator
-import repo.support.NativeSQLLogger
-import repo.support.PerformanceListener
+import repo.flyway.support.ExceptionTranslator
+import repo.flyway.support.NativeSQLLogger
+import repo.flyway.support.PerformanceListener
 import javax.sql.DataSource
 
 @Configuration

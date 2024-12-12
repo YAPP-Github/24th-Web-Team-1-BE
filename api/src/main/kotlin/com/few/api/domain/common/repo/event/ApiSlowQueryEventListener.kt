@@ -3,7 +3,7 @@ package com.few.api.domain.common.repo.event
 import com.few.api.domain.common.repo.client.ApiRepoClient
 import com.few.api.domain.common.repo.client.dto.RepoAlterArgs
 import com.few.api.config.ApiThreadPoolConfig.Companion.DISCORD_HOOK_EVENT_POOL
-import repo.SlowQueryEvent
+import repo.event.SlowQueryEvent
 import org.slf4j.MDC
 import org.springframework.context.event.EventListener
 import org.springframework.scheduling.annotation.Async

@@ -1,4 +1,4 @@
-package repo.support
+package repo.flyway.support
 
 import org.jooq.ExecuteContext
 import org.jooq.ExecuteListener

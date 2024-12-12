@@ -1,4 +1,4 @@
-package repo.support
+package repo.flyway.support
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.jooq.ExecuteContext

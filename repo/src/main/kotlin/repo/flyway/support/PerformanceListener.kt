@@ -1,11 +1,11 @@
-package repo.support
+package repo.flyway.support
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.jooq.ExecuteContext
 import org.jooq.ExecuteListener
 import org.jooq.tools.StopWatch
 import org.springframework.context.ApplicationEventPublisher
-import repo.SlowQueryEvent
+import repo.event.SlowQueryEvent
 
 class PerformanceListener(
     private val applicationEventPublisher: ApplicationEventPublisher,

@@ -130,9 +130,9 @@ email.config
 email.config.properties
 email.provider
 module:repo
-repo
 repo.config
-repo.support
+repo.event
+repo.flyway.support
 module:security
 security
 security.authentication.token

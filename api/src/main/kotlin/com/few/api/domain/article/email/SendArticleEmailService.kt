@@ -1,12 +1,12 @@
 package com.few.api.domain.article.email
 
 import com.few.api.domain.article.email.dto.SendArticleEmailArgs
+import email.EmailContext
 import email.EmailSender
+import email.EmailTemplateProcessor
 import email.provider.ArticleAwsSESEmailSendProvider
 import org.springframework.boot.autoconfigure.mail.MailProperties
 import org.springframework.stereotype.Component
-import org.thymeleaf.TemplateEngine
-import org.thymeleaf.context.Context
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -14,11 +14,11 @@ import java.util.*
 class SendArticleEmailService(
     mailProperties: MailProperties,
     emailSendProvider: ArticleAwsSESEmailSendProvider,
-    private val templateEngine: TemplateEngine,
+    private val emailTemplateProcessor: EmailTemplateProcessor,
 ) : EmailSender<SendArticleEmailArgs>(mailProperties, emailSendProvider) {
 
     override fun getHtml(args: SendArticleEmailArgs): String {
-        val context = Context()
+        val context = EmailContext()
         context.setVariable("articleLink", args.content.articleLink.toString() + "?fromEmail=true")
         context.setVariable(
             "currentDate",
@@ -36,6 +36,6 @@ class SendArticleEmailService(
         context.setVariable("articleContent", args.content.articleContent)
         context.setVariable("problemLink", args.content.problemLink)
         context.setVariable("unsubscribeLink", args.content.unsubscribeLink)
-        return templateEngine.process(args.template, context)
+        return emailTemplateProcessor.process(args.template, context)
     }
 }

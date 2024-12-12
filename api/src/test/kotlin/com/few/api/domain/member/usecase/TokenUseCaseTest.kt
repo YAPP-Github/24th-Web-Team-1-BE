@@ -1,7 +1,7 @@
 package com.few.api.domain.member.usecase
 
 import com.few.api.domain.common.vo.MemberType
-import security.IdEncryptor
+import security.encryptor.IdEncryptor
 import com.few.api.domain.member.usecase.dto.TokenUseCaseIn
 import com.few.api.domain.member.repo.MemberDao
 import com.few.api.domain.member.repo.command.UpdateMemberTypeCommand

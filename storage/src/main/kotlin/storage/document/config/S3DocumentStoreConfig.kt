@@ -11,6 +11,10 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.context.event.ContextRefreshedEvent
+import storage.document.GetPreSignedDocumentUrlProvider
+import storage.document.PutDocumentProvider
+import storage.document.provider.s3.S3GetPreSignedDocumentUrlProvider
+import storage.document.provider.s3.S3PutDocumentProvider
 
 @Configuration
 @Import(StorageClientConfig::class)
@@ -20,6 +24,8 @@ class S3DocumentStoreConfig(
 ) : ApplicationListener<ContextRefreshedEvent> {
     companion object {
         const val S3_DOCUMENT_STORE_CLIENT = DocumentStorageConfig.BEAN_NAME_PREFIX + "S3DocumentStoreClient"
+        const val S3_PUT_DOCUMENT_PROVIDER = DocumentStorageConfig.BEAN_NAME_PREFIX + "S3PutDocumentProvider"
+        const val S3_GET_PRE_SIGNED_DOCUMENT_URL_PROVIDER = DocumentStorageConfig.BEAN_NAME_PREFIX + "S3GetPreSignedDocumentUrlProvider"
     }
 
     private val log = KotlinLogging.logger {}
@@ -42,5 +48,21 @@ class S3DocumentStoreConfig(
     fun s3DocumentStoreClient(s3StorageClient: AmazonS3Client): DocumentStoreClient {
         client = s3StorageClient
         return S3DocumentStoreClient(client!!, region)
+    }
+
+    @Bean(name = [S3_PUT_DOCUMENT_PROVIDER])
+    fun s3PutDocumentProvider(
+        @Value("\${document.store.bucket-name}") bucket: String,
+        documentStoreClient: DocumentStoreClient,
+    ): PutDocumentProvider {
+        return S3PutDocumentProvider(bucket, documentStoreClient)
+    }
+
+    @Bean(name = [S3_GET_PRE_SIGNED_DOCUMENT_URL_PROVIDER])
+    fun s3GetPreSignedDocumentUrlProvider(
+        @Value("\${document.store.bucket-name}") bucket: String,
+        documentStoreClient: DocumentStoreClient,
+    ): GetPreSignedDocumentUrlProvider {
+        return S3GetPreSignedDocumentUrlProvider(bucket, documentStoreClient)
     }
 }

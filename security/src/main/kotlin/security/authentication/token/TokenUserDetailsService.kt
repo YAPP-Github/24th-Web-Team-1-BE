@@ -5,13 +5,11 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.jsonwebtoken.Claims
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.stereotype.Component
 import security.exception.SecurityAccessTokenInvalidException
 import security.TokenClaim
 import security.TokenResolver
 import security.TokenUserDetails
 
-@Component
 class TokenUserDetailsService(
     private val tokenResolver: TokenResolver,
 ) : UserDetailsService {

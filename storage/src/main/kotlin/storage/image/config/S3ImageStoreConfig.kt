@@ -9,6 +9,12 @@ import org.springframework.context.ApplicationListener
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.event.ContextRefreshedEvent
+import storage.image.GetPreSignedImageUrlProvider
+import storage.image.PutImageProvider
+import storage.image.RemoveImageProvider
+import storage.image.provider.s3.S3GetPreSignedImageUrlProvider
+import storage.image.provider.s3.S3PutImageProvider
+import storage.image.provider.s3.S3RemoveImageProvider
 
 @Configuration
 class S3ImageStoreConfig(
@@ -18,6 +24,9 @@ class S3ImageStoreConfig(
     private val log = KotlinLogging.logger {}
     companion object {
         const val S3_IMAGE_STORE_CLIENT = ImageStorageConfig.BEAN_NAME_PREFIX + "S3ImageStoreClient"
+        const val S3_PUT_IMAGE_PROVIDER = ImageStorageConfig.BEAN_NAME_PREFIX + "S3PutImageProvider"
+        const val S3_GET_PRE_SIGNED_IMAGE_URL_PROVIDER = ImageStorageConfig.BEAN_NAME_PREFIX + "S3GetPreSignedImageUrlProvider"
+        const val S3_REMOVE_IMAGE_PROVIDER = ImageStorageConfig.BEAN_NAME_PREFIX + "S3RemoveImageProvider"
     }
 
     private var client: AmazonS3Client? = null
@@ -38,5 +47,29 @@ class S3ImageStoreConfig(
     fun s3ImageStoreClient(s3StorageClient: AmazonS3Client): ImageStoreClient {
         client = s3StorageClient
         return S3ImageStoreClient(client!!, region)
+    }
+
+    @Bean(name = [S3_PUT_IMAGE_PROVIDER])
+    fun s3PutImageProvider(
+        @Value("\${image.store.bucket-name}") bucket: String,
+        imageStoreClient: ImageStoreClient,
+    ): PutImageProvider {
+        return S3PutImageProvider(bucket, imageStoreClient)
+    }
+
+    @Bean(name = [S3_GET_PRE_SIGNED_IMAGE_URL_PROVIDER])
+    fun s3GetPreSignedImageUrlProvider(
+        @Value("\${image.store.bucket-name}") bucket: String,
+        imageStoreClient: ImageStoreClient,
+    ): GetPreSignedImageUrlProvider {
+        return S3GetPreSignedImageUrlProvider(bucket, imageStoreClient)
+    }
+
+    @Bean(name = [S3_REMOVE_IMAGE_PROVIDER])
+    fun s3DeleteImageProvider(
+        @Value("\${image.store.bucket-name}") bucket: String,
+        imageStoreClient: ImageStoreClient,
+    ): RemoveImageProvider {
+        return S3RemoveImageProvider(bucket, imageStoreClient)
     }
 }

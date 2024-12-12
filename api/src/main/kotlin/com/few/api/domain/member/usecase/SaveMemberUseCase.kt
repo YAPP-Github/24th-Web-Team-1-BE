@@ -11,7 +11,7 @@ import com.few.api.domain.member.email.dto.Content
 import com.few.api.domain.member.email.dto.SendAuthEmailArgs
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import security.IdEncryptor
+import security.encryptor.IdEncryptor
 import java.net.URL
 
 @Component

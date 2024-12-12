@@ -10,9 +10,7 @@ import jakarta.servlet.http.HttpServletRequest
 import org.apache.commons.lang3.RandomStringUtils
 import org.slf4j.MDC
 import org.springframework.http.HttpHeaders
-import org.springframework.stereotype.Component
 
-@Component
 class MDCLogFilter(private val mapper: ObjectMapper) : Filter {
     private val log = KotlinLogging.logger {}
 

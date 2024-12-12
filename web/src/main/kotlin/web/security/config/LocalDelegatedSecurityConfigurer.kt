@@ -1,28 +1,24 @@
 package web.security.config
 
-import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpMethod
+import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.DefaultSecurityFilterChain
+import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
-import org.springframework.stereotype.Component
-import security.authentication.token.TokenAuthProvider
 import web.security.config.properties.CorsConfigurationSourceProperties
-import web.security.handler.DelegatedAccessDeniedHandler
-import web.security.handler.DelegatedAuthenticationEntryPoint
 
-@Component
-@Profile("!prod")
-class LocalDelegatedSecurityConfig(
-    private val authenticationEntryPoint: DelegatedAuthenticationEntryPoint,
-    private val accessDeniedHandler: DelegatedAccessDeniedHandler,
-    private val tokenAuthProvider: TokenAuthProvider,
+class LocalDelegatedSecurityConfigurer(
+    private val authenticationEntryPoint: AuthenticationEntryPoint,
+    private val accessDeniedHandler: AccessDeniedHandler,
+    private val tokenAuthProvider: AuthenticationProvider,
     private val corsProperties: CorsConfigurationSourceProperties,
-) : AbstractDelegatedSecurityConfig {
+) : AbstractDelegatedSecurityConfigurer {
 
     override fun securityFilterChain(http: HttpSecurity): DefaultSecurityFilterChain {
         http.csrf {
@@ -105,7 +101,7 @@ class LocalDelegatedSecurityConfig(
         }
     }
 
-    override fun getTokenAuthProvider(): TokenAuthProvider {
+    override fun getTokenAuthProvider(): AuthenticationProvider {
         return tokenAuthProvider
     }
 

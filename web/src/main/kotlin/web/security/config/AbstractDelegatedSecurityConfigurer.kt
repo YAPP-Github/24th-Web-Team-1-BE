@@ -1,5 +1,6 @@
 package web.security.config
 
+import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.ProviderManager
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
@@ -8,7 +9,6 @@ import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import org.springframework.web.filter.OncePerRequestFilter
-import security.authentication.token.TokenAuthProvider
 import web.security.config.properties.CorsConfigurationSourceProperties
 import web.security.exception.WebTokenInvalidExceptionHandlerFilter
 import web.security.filter.token.TokenAuthenticationFilter
@@ -16,7 +16,7 @@ import web.security.filter.token.TokenAuthenticationFilter
 /**
  * Security 설정을 위임하는 인터페이스.
  */
-interface AbstractDelegatedSecurityConfig {
+interface AbstractDelegatedSecurityConfigurer {
 
     /**
      * Security 설정을 반환한다.
@@ -36,7 +36,7 @@ interface AbstractDelegatedSecurityConfig {
             return tokenAuthenticationFilter
         }
 
-    fun getTokenAuthProvider(): TokenAuthProvider
+    fun getTokenAuthProvider(): AuthenticationProvider
 
     val webTokenInvalidExceptionHandlerFilter: OncePerRequestFilter
         get() {

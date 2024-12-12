@@ -1,19 +1,17 @@
-package security
+package security.encryptor
 
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.stereotype.Component
+import security.Encryptor
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
-@Component
 class IdEncryptor(
-    @Value("\${security.encryption.algorithm}") private val algorithm: String,
-    @Value("\${security.encryption.secretKey}") private val secretKey: String,
-    @Value("\${security.encryption.transformation}") private val transformation: String,
-    @Value("\${security.encryption.keySize}") private val keySize: Int,
-    @Value("\${security.encryption.iv}") private val iv: String,
+    private val algorithm: String,
+    private val secretKey: String,
+    private val transformation: String,
+    private val keySize: Int,
+    private val iv: String,
 ) : Encryptor<String, String> {
 
     private var key: SecretKeySpec = KeyGenerator.getInstance(algorithm).apply {

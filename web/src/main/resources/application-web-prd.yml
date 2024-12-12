@@ -8,6 +8,12 @@ web:
             exposed-headers: ${CORS_EXPOSED_HEADERS}
             allow-credentials: ${CORS_ALLOW_CREDENTIALS}
             max-age: ${CORS_MAX_AGE}
+        jwt:
+            token:
+                validtime:
+                    access: ${ACCESS_TOKEN_VALIDTIME}
+                    refresh: ${REFRESH_TOKEN_VALIDTIME}
+                secretkey: ${TOKEN_SECRETKEY}
     client:
         timeout:
             connect: ${TIMEOUT_CONNECT:5000}

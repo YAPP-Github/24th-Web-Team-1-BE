@@ -2,7 +2,7 @@ package com.few.api.domain.member.usecase
 
 import com.few.api.domain.common.exception.NotFoundException
 import com.few.api.domain.common.vo.MemberType
-import security.IdEncryptor
+import security.encryptor.IdEncryptor
 import com.few.api.domain.member.usecase.dto.TokenUseCaseIn
 import com.few.api.domain.member.usecase.dto.TokenUseCaseOut
 import com.few.api.domain.member.exception.NotValidTokenException

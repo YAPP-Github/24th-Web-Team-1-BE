@@ -2,9 +2,7 @@ package web.handler
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.servlet.http.HttpServletRequest
-import org.springframework.stereotype.Component
 
-@Component
 class LoggingHandler {
     private val log = KotlinLogging.logger {}
 

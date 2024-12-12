@@ -1,6 +1,6 @@
 package com.few.api.domain.member.usecase
 
-import security.IdEncryptor
+import security.encryptor.IdEncryptor
 import com.few.api.domain.member.usecase.dto.SaveMemberTxCaseOut
 import com.few.api.domain.member.usecase.dto.SaveMemberUseCaseIn
 import com.few.api.domain.member.usecase.transaction.SaveMemberTxCase

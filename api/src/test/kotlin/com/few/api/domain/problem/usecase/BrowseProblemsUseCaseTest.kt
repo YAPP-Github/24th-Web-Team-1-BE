@@ -1,8 +1,8 @@
 package com.few.api.domain.problem.usecase
 
 import com.few.api.domain.problem.usecase.dto.BrowseProblemsUseCaseIn
-import com.few.api.repo.dao.problem.ProblemDao
-import com.few.api.repo.dao.problem.record.ProblemIdsRecord
+import com.few.api.domain.problem.repo.ProblemDao
+import com.few.api.domain.problem.repo.record.ProblemIdsRecord
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe

@@ -1,5 +1,6 @@
 package com.few.api.domain.workbook.usecase
 
+import com.few.api.domain.common.vo.CategoryType
 import com.few.api.domain.workbook.service.WorkbookMemberService
 import com.few.api.domain.workbook.service.WorkbookSubscribeService
 import com.few.api.domain.workbook.service.dto.BrowseMemberSubscribeWorkbooksInDto
@@ -11,11 +12,10 @@ import com.few.api.domain.workbook.usecase.dto.BrowseWorkbooksUseCaseOut
 import com.few.api.domain.workbook.usecase.dto.WriterDetail
 import com.few.api.domain.workbook.usecase.model.*
 import com.few.api.domain.workbook.usecase.model.order.*
-import com.few.api.repo.dao.workbook.WorkbookDao
-import com.few.api.repo.dao.workbook.query.BrowseWorkBookQueryWithSubscriptionCountQuery
-import com.few.api.repo.dao.workbook.record.SelectWorkBookRecordWithSubscriptionCount
-import com.few.api.web.support.ViewCategory
-import com.few.data.common.code.CategoryType
+import com.few.api.domain.workbook.repo.WorkbookDao
+import com.few.api.domain.workbook.repo.query.BrowseWorkBookQueryWithSubscriptionCountQuery
+import com.few.api.domain.workbook.repo.record.SelectWorkBookRecordWithSubscriptionCount
+import com.few.api.domain.common.vo.ViewCategory
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 

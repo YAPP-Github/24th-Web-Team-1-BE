@@ -1,0 +1,47 @@
+name: Build and Publish Dokka Documentation
+
+on:
+    pull_request:
+        branches: [ "main", "dev" ]
+    workflow_dispatch:
+
+permissions: write-all
+
+jobs:
+    dokka:
+        runs-on: ubuntu-latest
+        steps:
+            # 1. Checkout the code
+            - uses: actions/checkout@v4
+
+            # 2. Set up JDK
+            - name: Set up JDK
+              uses: actions/setup-java@v4
+              with:
+                  distribution: zulu
+                  java-version: 17
+
+            # 3. Run dokkaHtmlMultiModule
+            - name: Generate Dokka Documentation
+              run: ./gradlew dokkaHtmlMultiModule
+
+            # 4. Checkout gh-pages branch to publish documentation
+            - name: Checkout gh-pages
+              uses: actions/checkout@v4
+              with:
+                  ref: gh-pages  # Use the `gh-pages` branch
+                  path: gh-pages # Specify the path where `gh-pages` branch will be checked out
+
+            # 5. Copy generated documentation to gh-pages directory
+            - name: Copy Dokka Documentation
+              run: |
+                  rm -rf gh-pages/*  # Clear existing files
+                  cp -R build/dokka/htmlMultiModule/* gh-pages/ # Copy the newly generated documentation
+
+            # 6. Publish documentation to GitHub Pages
+            - name: Publish Documentation
+              uses: peaceiris/actions-gh-pages@v4
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  publish_branch: gh-pages
+                  publish_dir: gh-pages

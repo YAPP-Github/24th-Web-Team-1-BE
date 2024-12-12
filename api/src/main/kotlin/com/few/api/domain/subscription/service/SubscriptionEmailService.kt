@@ -1,8 +1,9 @@
 package com.few.api.domain.subscription.service
 
 import com.few.api.domain.subscription.service.dto.SendArticleInDto
-import com.few.email.service.article.SendArticleEmailService
-import com.few.email.service.article.dto.SendArticleEmailArgs
+import com.few.api.domain.article.email.SendArticleEmailService
+import com.few.api.domain.article.email.dto.Content
+import com.few.api.domain.article.email.dto.SendArticleEmailArgs
 import org.springframework.stereotype.Service
 
 @Service
@@ -24,7 +25,18 @@ class SubscriptionEmailService(
                     dto.articleTitle
                 ),
                 ARTICLE_TEMPLATE,
-                dto.articleContent
+                Content.create(
+                    dto.articleContent.memberEmail,
+                    dto.articleContent.workbookId,
+                    dto.articleContent.articleId,
+                    dto.articleContent.currentDate,
+                    dto.articleContent.category,
+                    dto.articleContent.articleDay,
+                    dto.articleContent.articleTitle,
+                    dto.articleContent.writerName,
+                    dto.articleContent.writerLink,
+                    dto.articleContent.articleContent
+                )
             )
         )
     }

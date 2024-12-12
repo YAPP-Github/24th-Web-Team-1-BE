@@ -1,21 +1,21 @@
 package com.few.api.domain.subscription.usecase
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.few.api.domain.common.exception.NotFoundException
 import com.few.api.domain.subscription.service.SubscriptionArticleService
 import com.few.api.domain.subscription.service.SubscriptionWorkbookService
 import com.few.api.domain.subscription.service.dto.ReadAllWorkbookTitleInDto
 import com.few.api.domain.subscription.service.dto.ReadArticleIdByWorkbookIdAndDayDto
 import com.few.api.domain.subscription.usecase.dto.*
-import com.few.api.repo.dao.subscription.SubscriptionDao
-import com.few.api.repo.dao.subscription.query.CountAllWorkbooksSubscriptionQuery
-import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookActiveSubscriptionQuery
-import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookInActiveSubscriptionQuery
-import com.few.api.repo.dao.subscription.query.SelectAllSubscriptionSendStatusQuery
-import com.few.api.web.support.ViewCategory
-import com.few.api.web.support.WorkBookStatus
+import com.few.api.domain.subscription.repo.SubscriptionDao
+import com.few.api.domain.subscription.repo.query.CountAllWorkbooksSubscriptionQuery
+import com.few.api.domain.subscription.repo.query.SelectAllMemberWorkbookActiveSubscriptionQuery
+import com.few.api.domain.subscription.repo.query.SelectAllMemberWorkbookInActiveSubscriptionQuery
+import com.few.api.domain.subscription.repo.query.SelectAllSubscriptionSendStatusQuery
+import com.few.api.domain.common.vo.ViewCategory
+import com.few.api.domain.common.vo.WorkBookStatus
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import org.webjars.NotFoundException
 import java.lang.IllegalStateException
 
 enum class SUBSCRIBE_WORKBOOK_STRATEGY {

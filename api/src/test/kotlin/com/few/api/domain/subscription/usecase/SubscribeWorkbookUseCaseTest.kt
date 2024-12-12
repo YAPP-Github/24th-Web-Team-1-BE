@@ -1,11 +1,11 @@
 package com.few.api.domain.subscription.usecase
 
+import com.few.api.domain.common.vo.DayCode
 import com.few.api.domain.subscription.event.dto.WorkbookSubscriptionEvent
 import com.few.api.domain.subscription.usecase.dto.SubscribeWorkbookUseCaseIn
-import com.few.api.repo.dao.subscription.SubscriptionDao
-import com.few.api.repo.dao.subscription.record.SubscriptionSendStatus
-import com.few.api.repo.dao.subscription.record.WorkbookSubscriptionStatus
-import com.few.data.common.code.DayCode
+import com.few.api.domain.subscription.repo.SubscriptionDao
+import com.few.api.domain.subscription.repo.record.SubscriptionSendStatus
+import com.few.api.domain.subscription.repo.record.WorkbookSubscriptionStatus
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec

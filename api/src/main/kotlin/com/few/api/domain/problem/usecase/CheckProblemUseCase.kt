@@ -1,13 +1,13 @@
 package com.few.api.domain.problem.usecase
 
-import com.few.api.repo.dao.problem.ProblemDao
-import com.few.api.repo.dao.problem.SubmitHistoryDao
-import com.few.api.repo.dao.problem.command.InsertSubmitHistoryCommand
-import com.few.api.repo.dao.problem.query.SelectProblemAnswerQuery
+import com.few.api.domain.problem.repo.ProblemDao
+import com.few.api.domain.problem.repo.SubmitHistoryDao
+import com.few.api.domain.problem.repo.command.InsertSubmitHistoryCommand
+import com.few.api.domain.problem.repo.query.SelectProblemAnswerQuery
 import com.few.api.domain.problem.usecase.dto.CheckProblemUseCaseIn
 import com.few.api.domain.problem.usecase.dto.CheckProblemUseCaseOut
-import com.few.api.exception.common.InsertException
-import com.few.api.exception.common.NotFoundException
+import com.few.api.domain.common.exception.InsertException
+import com.few.api.domain.common.exception.NotFoundException
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 

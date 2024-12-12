@@ -5,18 +5,23 @@ spring:
     profiles:
         group:
             local:
+                # module
                 - security-local
-                - client-local
-                - api-repo-local
+                - web-local
                 - email-local
                 - storage-local
+                - api-repo-local
+                # api
+                - thread-local
             prd:
+                # module
                 - security-prd
-                - client-prd
-                - api-repo-prd
+                - web-prd
                 - email-prd
                 - storage-prd
-
+                - api-repo-prd
+                # api
+                - thread-prd
 auth:
     batch: ${AUTH_BATCH:0518}
 

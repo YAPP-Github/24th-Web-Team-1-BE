@@ -9,21 +9,18 @@ tasks.withType(BootJar::class.java) {
 
 dependencies {
     /** module */
-    implementation(project(":api-repo"))
-    implementation(project(":batch"))
+    implementation(project(":repo"))
     implementation(project(":email"))
     implementation(project(":storage"))
+    implementation(project(":web"))
+    testImplementation(testFixtures(project(":web")))
 
     /** spring starter */
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-aop")
 
-    /** jwt */
-    implementation("io.jsonwebtoken:jjwt-api:${DependencyVersion.JWT}")
-    implementation("io.jsonwebtoken:jjwt-impl:${DependencyVersion.JWT}")
-    implementation("io.jsonwebtoken:jjwt-jackson:${DependencyVersion.JWT}")
+    /** jooq */
+    jooqCodegen("org.jooq:jooq-meta-extensions:${DependencyVersion.JOOQ}")
 
     /** aspectj */
     implementation("org.aspectj:aspectjweaver:1.9.5")
@@ -33,17 +30,13 @@ dependencies {
     /** for convert to webp */
     implementation("com.sksamuel.scrimage:scrimage-webp:${DependencyVersion.SCRIMAGE}")
 
-    /** swagger & restdocs */
-    implementation("org.springdoc:springdoc-openapi-ui:${DependencyVersion.SPRINGDOC}")
-    implementation("org.springframework.restdocs:spring-restdocs-webtestclient")
-    implementation("org.springframework.restdocs:spring-restdocs-mockmvc")
-    implementation("com.epages:restdocs-api-spec-mockmvc:${DependencyVersion.EPAGES_REST_DOCS_API_SPEC}")
-    swaggerUI("org.webjars:swagger-ui:${DependencyVersion.SWAGGER_UI}")
+    /** commonmark - markdown to html */
+    implementation("org.commonmark:commonmark:${DependencyVersion.COMMONMARK}")
 
-    /** test container */
-    implementation(platform("org.testcontainers:testcontainers-bom:${DependencyVersion.TEST_CONTAINER}"))
-    testImplementation("org.springframework.security:spring-security-test")
-    testImplementation("org.testcontainers:mysql")
+    /** jsoup - html parser */
+    implementation("org.jsoup:jsoup:1.15.3")
+
+    swaggerUI("org.webjars:swagger-ui:${DependencyVersion.SWAGGER_UI}")
 }
 
 plugins {

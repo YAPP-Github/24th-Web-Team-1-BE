@@ -1,18 +1,18 @@
 package com.few.api.domain.workbook.service
 
-import com.few.api.domain.workbook.usecase.dto.ArticleDetail
 import com.few.api.domain.workbook.service.dto.BrowseWorkbookArticlesInDto
 import com.few.api.domain.workbook.service.dto.WorkBookArticleOutDto
-import com.few.api.repo.dao.article.ArticleDao
-import com.few.api.repo.dao.article.query.SelectWorkbookMappedArticleRecordsQuery
+import com.few.api.domain.article.repo.ArticleDao
+import com.few.api.domain.article.repo.query.SelectWorkbookMappedArticleRecordsQuery
+import com.few.api.domain.workbook.service.dto.ArticleDetailOutDto
 import org.springframework.stereotype.Service
 
 fun List<WorkBookArticleOutDto>.writerIds(): List<Long> {
     return this.map { it.writerId }
 }
 
-fun List<WorkBookArticleOutDto>.toArticleDetails(): List<ArticleDetail> {
-    return this.map { ArticleDetail(it.articleId, it.title) }
+fun List<WorkBookArticleOutDto>.toArticleDetails(): List<ArticleDetailOutDto> {
+    return this.map { ArticleDetailOutDto(it.articleId, it.title) }
 }
 
 @Service

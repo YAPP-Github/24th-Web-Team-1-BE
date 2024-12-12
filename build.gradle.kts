@@ -10,6 +10,8 @@ plugins {
     id("org.springframework.boot") version DependencyVersion.SPRING_BOOT
     id("io.spring.dependency-management") version DependencyVersion.SPRING_DEPENDENCY_MANAGEMENT
 
+    id("java-test-fixtures")
+
     /** jooq */
     id("org.jooq.jooq-codegen-gradle") version DependencyVersion.JOOQ
 
@@ -20,6 +22,8 @@ plugins {
     id("org.asciidoctor.jvm.convert") version DependencyVersion.ASCIIDOCTOR
     id("com.epages.restdocs-api-spec") version DependencyVersion.EPAGES_REST_DOCS_API_SPEC
     id("org.hidetake.swagger.generator") version DependencyVersion.SWAGGER_GENERATOR
+
+    id("org.jetbrains.dokka") version "1.9.20"
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_18
@@ -71,6 +75,8 @@ subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
     apply(plugin = "org.hidetake.swagger.generator")
     apply(plugin = "org.jooq.jooq-codegen-gradle")
+    apply(plugin = "org.jetbrains.dokka")
+    apply(plugin = "java-test-fixtures")
 
     /**
      * https://kotlinlang.org/docs/reference/compiler-plugins.html#spring-support
@@ -107,6 +113,7 @@ subprojects {
         /** test **/
         testImplementation("org.springframework.boot:spring-boot-starter-test")
         testImplementation("io.mockk:mockk:${DependencyVersion.MOCKK}")
+        testImplementation("com.tngtech.archunit:archunit-junit5:${DependencyVersion.ARCH_UNIT_JUNIT5}")
 
         /** kotest */
         testImplementation("io.kotest:kotest-runner-junit5:${DependencyVersion.KOTEST}")
@@ -116,6 +123,22 @@ subprojects {
 
         /** Kotlin Logger **/
         implementation("io.github.oshai:kotlin-logging-jvm:${DependencyVersion.KOTLIN_LOGGING}")
+
+        /** apache common */
+        implementation("org.apache.commons:commons-lang3:${DependencyVersion.COMMONS_LANG3}")
+    }
+
+    tasks {
+        test {
+            useJUnitPlatform()
+        }
+
+        register<Test>("architectureSpecTest") {
+            group = "spec"
+            useJUnitPlatform {
+                includeTags("ArchitectureSpec")
+            }
+        }
     }
 
     /** copy data migration */
@@ -209,15 +232,13 @@ subprojects {
 
 /** do all copy data migration */
 tasks.register("copyDataMigrationAll") {
-    dependsOn(":api-repo:copyDataMigration")
-    dependsOn(":batch:copyDataMigration")
+    dependsOn(":api:copyDataMigration")
 }
 
 /** do all jooq codegen */
 tasks.register("jooqCodegenAll") {
     dependsOn("copyDataMigrationAll")
-    dependsOn(":api-repo:jooqCodegen")
-    dependsOn(":batch:jooqCodegen")
+    dependsOn(":api:jooqCodegen")
 }
 
 /** git hooks */

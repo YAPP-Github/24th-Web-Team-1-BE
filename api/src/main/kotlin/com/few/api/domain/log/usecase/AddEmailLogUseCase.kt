@@ -1,5 +1,6 @@
 package com.few.api.domain.log.usecase
 
+import com.few.api.domain.common.exception.NotFoundException
 import com.few.api.domain.log.dto.AddEmailLogUseCaseIn
 import com.few.api.domain.log.repo.SendArticleEventHistoryDao
 import com.few.api.domain.log.repo.command.InsertEventCommand
@@ -9,7 +10,6 @@ import com.few.api.domain.member.repo.query.SelectMemberByEmailQuery
 import com.few.api.domain.common.vo.EmailLogEventType
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import org.webjars.NotFoundException
 
 @Component
 class AddEmailLogUseCase(

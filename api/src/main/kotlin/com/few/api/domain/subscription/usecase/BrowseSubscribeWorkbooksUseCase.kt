@@ -1,6 +1,7 @@
 package com.few.api.domain.subscription.usecase
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.few.api.domain.common.exception.NotFoundException
 import com.few.api.domain.subscription.service.SubscriptionArticleService
 import com.few.api.domain.subscription.service.SubscriptionWorkbookService
 import com.few.api.domain.subscription.service.dto.ReadAllWorkbookTitleInDto
@@ -15,7 +16,6 @@ import com.few.api.domain.common.vo.ViewCategory
 import com.few.api.domain.common.vo.WorkBookStatus
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import org.webjars.NotFoundException
 import java.lang.IllegalStateException
 
 enum class SUBSCRIBE_WORKBOOK_STRATEGY {

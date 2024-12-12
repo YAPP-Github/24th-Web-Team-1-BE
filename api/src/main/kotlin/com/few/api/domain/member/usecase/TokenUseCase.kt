@@ -1,5 +1,6 @@
 package com.few.api.domain.member.usecase
 
+import com.few.api.domain.common.exception.NotFoundException
 import com.few.api.domain.common.vo.MemberType
 import security.IdEncryptor
 import com.few.api.domain.member.usecase.dto.TokenUseCaseIn
@@ -9,7 +10,6 @@ import com.few.api.domain.member.repo.MemberDao
 import com.few.api.domain.member.repo.command.UpdateMemberTypeCommand
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import org.webjars.NotFoundException
 import security.Roles
 import security.TokenGenerator
 import security.TokenResolver

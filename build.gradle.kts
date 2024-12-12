@@ -10,6 +10,8 @@ plugins {
     id("org.springframework.boot") version DependencyVersion.SPRING_BOOT
     id("io.spring.dependency-management") version DependencyVersion.SPRING_DEPENDENCY_MANAGEMENT
 
+    id("java-test-fixtures")
+
     /** jooq */
     id("org.jooq.jooq-codegen-gradle") version DependencyVersion.JOOQ
 
@@ -74,6 +76,7 @@ subprojects {
     apply(plugin = "org.hidetake.swagger.generator")
     apply(plugin = "org.jooq.jooq-codegen-gradle")
     apply(plugin = "org.jetbrains.dokka")
+    apply(plugin = "java-test-fixtures")
 
     /**
      * https://kotlinlang.org/docs/reference/compiler-plugins.html#spring-support

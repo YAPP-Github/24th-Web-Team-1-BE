@@ -137,7 +137,9 @@ module:security
 security
 security.authentication.token
 security.config
+security.encryptor
 security.exception
+security.token
 module:storage
 storage
 storage.config

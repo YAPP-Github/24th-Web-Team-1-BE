@@ -25,7 +25,13 @@ object Description {
         )
     }
 
-    fun authHeader(): HeaderDescriptorWithType {
+    fun authHeader(optional: Boolean = false): HeaderDescriptorWithType {
+        if (optional) {
+            return headerWithName("Authorization")
+                .optional()
+                .defaultValue("{{accessToken}}")
+                .description("Bearer 어세스 토큰")
+        }
         return headerWithName("Authorization")
             .defaultValue("{{accessToken}}")
             .description("Bearer 어세스 토큰")

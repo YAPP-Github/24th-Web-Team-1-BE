@@ -1,6 +1,5 @@
 package com.few.api.domain.article.controller
 
-import com.epages.restdocs.apispec.ResourceDocumentation
 import com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName
 import com.epages.restdocs.apispec.ResourceDocumentation.resource
 import com.epages.restdocs.apispec.ResourceSnippetParameters
@@ -87,10 +86,7 @@ class ArticleApiControllerTest : ApiControllerTestSpec() {
                             .summary(api.toIdentifier()).privateResource(false).deprecated(false)
                             .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))
                             .requestHeaders(
-                                ResourceDocumentation.headerWithName("Authorization")
-                                    .defaultValue("{{accessToken}}")
-                                    .description("Bearer 어세스 토큰")
-                                    .optional()
+                                Description.authHeader(true)
                             )
                             .pathParameters(parameterWithName("articleId").description("아티클 Id"))
                             .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(

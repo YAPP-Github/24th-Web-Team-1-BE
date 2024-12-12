@@ -1,6 +1,5 @@
 package com.few.api.domain.workbook.controller
 
-import com.epages.restdocs.apispec.ResourceDocumentation
 import com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName
 import com.epages.restdocs.apispec.ResourceDocumentation.resource
 import com.epages.restdocs.apispec.ResourceSnippetParameters
@@ -143,12 +142,7 @@ class WorkBookApiControllerTest : ApiControllerTestSpec() {
                             parameterWithName("category").description("학습지 카테고리").optional(),
                             parameterWithName("view").description("뷰 카테고리").optional()
                         )
-                        .requestHeaders(
-                            ResourceDocumentation.headerWithName("Authorization")
-                                .defaultValue("{{accessToken}}")
-                                .description("Bearer 어세스 토큰")
-                                .optional()
-                        )
+                        .requestHeaders(Description.authHeader(true))
                         .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
                             *Description.describe(
                                 arrayOf(

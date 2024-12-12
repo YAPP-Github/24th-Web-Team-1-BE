@@ -110,11 +110,7 @@ class SubscriptionApiControllerTest : ApiControllerTestSpec() {
                             .deprecated(false)
                             .tag(TAG)
                             .requestSchema(Schema.schema(api.toRequestSchema()))
-                            .requestHeaders(
-                                ResourceDocumentation.headerWithName("Authorization")
-                                    .defaultValue("{{accessToken}}")
-                                    .description("Bearer 어세스 토큰")
-                            )
+                            .requestHeaders(Description.authHeader())
                             .responseSchema(Schema.schema(api.toResponseSchema()))
                             .responseFields(
                                 *Description.describe(
@@ -212,11 +208,7 @@ class SubscriptionApiControllerTest : ApiControllerTestSpec() {
                             .deprecated(false)
                             .tag(TAG)
                             .requestSchema(Schema.schema(api.toRequestSchema()))
-                            .requestHeaders(
-                                ResourceDocumentation.headerWithName("Authorization")
-                                    .defaultValue("{{accessToken}}")
-                                    .description("Bearer 어세스 토큰")
-                            )
+                            .requestHeaders(Description.authHeader())
                             .responseSchema(Schema.schema(api.toResponseSchema()))
                             .responseFields(
                                 *Description.describe(
@@ -287,11 +279,7 @@ class SubscriptionApiControllerTest : ApiControllerTestSpec() {
                             .deprecated(false)
                             .tag(TAG)
                             .requestSchema(Schema.schema(api.toRequestSchema()))
-                            .requestHeaders(
-                                ResourceDocumentation.headerWithName("Authorization")
-                                    .defaultValue("{{accessToken}}")
-                                    .description("Bearer 어세스 토큰")
-                            )
+                            .requestHeaders(Description.authHeader())
                             .pathParameters(parameterWithName("workbookId").description("학습지 Id"))
                             .responseSchema(Schema.schema(api.toResponseSchema()))
                             .responseFields(
@@ -347,11 +335,7 @@ class SubscriptionApiControllerTest : ApiControllerTestSpec() {
                             .tag(TAG)
                             .requestSchema(Schema.schema(api.toRequestSchema()))
                             .pathParameters(parameterWithName("workbookId").description("학습지 Id"))
-                            .requestHeaders(
-                                ResourceDocumentation.headerWithName("Authorization")
-                                    .defaultValue("{{accessToken}}")
-                                    .description("Bearer 어세스 토큰")
-                            )
+                            .requestHeaders(Description.authHeader())
                             .responseSchema(Schema.schema(api.toResponseSchema()))
                             .responseFields(
                                 *Description.describe()
@@ -404,11 +388,7 @@ class SubscriptionApiControllerTest : ApiControllerTestSpec() {
                             .deprecated(false)
                             .tag(TAG)
                             .requestSchema(Schema.schema(api.toRequestSchema()))
-                            .requestHeaders(
-                                ResourceDocumentation.headerWithName("Authorization")
-                                    .defaultValue("{{accessToken}}")
-                                    .description("Bearer 어세스 토큰")
-                            )
+                            .requestHeaders(Description.authHeader())
                             .responseSchema(Schema.schema(api.toResponseSchema()))
                             .responseFields(
                                 *Description.describe()
@@ -458,11 +438,7 @@ class SubscriptionApiControllerTest : ApiControllerTestSpec() {
                             .deprecated(false)
                             .tag(TAG)
                             .requestSchema(Schema.schema(api.toRequestSchema()))
-                            .requestHeaders(
-                                ResourceDocumentation.headerWithName("Authorization")
-                                    .defaultValue("{{accessToken}}")
-                                    .description("Bearer 어세스 토큰")
-                            )
+                            .requestHeaders(Description.authHeader())
                             .responseSchema(Schema.schema(api.toResponseSchema()))
                             .responseFields(
                                 *Description.describe()
@@ -512,11 +488,7 @@ class SubscriptionApiControllerTest : ApiControllerTestSpec() {
                             .deprecated(false)
                             .tag(TAG)
                             .requestSchema(Schema.schema(api.toRequestSchema()))
-                            .requestHeaders(
-                                ResourceDocumentation.headerWithName("Authorization")
-                                    .defaultValue("{{accessToken}}")
-                                    .description("Bearer 어세스 토큰")
-                            )
+                            .requestHeaders(Description.authHeader())
                             .responseSchema(Schema.schema(api.toResponseSchema()))
                             .responseFields(
                                 *Description.describe()

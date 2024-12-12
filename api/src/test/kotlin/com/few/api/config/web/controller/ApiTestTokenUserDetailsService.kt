@@ -7,7 +7,7 @@ import security.Roles
 import security.TokenUserDetails
 
 @TestComponent
-class TestTokenUserDetailsService : UserDetailsService {
+class ApiTestTokenUserDetailsService : UserDetailsService {
     override fun loadUserByUsername(username: String): UserDetails {
         return TokenUserDetails(
             authorities = listOf(

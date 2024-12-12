@@ -7,7 +7,7 @@ import com.epages.restdocs.apispec.Schema
 import com.few.api.domain.workbook.article.dto.ReadWorkBookArticleUseCaseIn
 import com.few.api.domain.workbook.article.dto.ReadWorkBookArticleOut
 import com.few.api.domain.workbook.article.dto.WriterDetail
-import com.few.api.config.web.controller.ControllerTestSpec
+import com.few.api.config.web.controller.ApiControllerTestSpec
 import web.description.Description
 import web.helper.toIdentifier
 import web.helper.toRequestSchema
@@ -29,7 +29,7 @@ import org.springframework.web.util.UriComponentsBuilder
 import java.net.URL
 import java.time.LocalDateTime
 
-class WorkBookArticleControllerTest : ControllerTestSpec() {
+class WorkBookArticleApiControllerTest : ApiControllerTestSpec() {
 
     companion object {
         private const val BASE_URL = "/api/v1/workbooks/{workbookId}/articles"
@@ -38,7 +38,7 @@ class WorkBookArticleControllerTest : ControllerTestSpec() {
 
     @Test
     @DisplayName("[GET] /api/v1/workbooks/{workbookId}/articles/{articleId}")
-    @WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
+    @WithUserDetails(userDetailsServiceBeanName = "apiTestTokenUserDetailsService")
     fun readWorkBookArticle() {
         // given
         val api = "ReadWorkBookArticle"

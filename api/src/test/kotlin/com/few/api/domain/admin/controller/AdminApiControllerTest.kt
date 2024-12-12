@@ -4,7 +4,7 @@ import com.epages.restdocs.apispec.ResourceDocumentation.resource
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
 import com.few.api.domain.admin.controller.request.*
-import com.few.api.config.web.controller.ControllerTestSpec
+import com.few.api.config.web.controller.ApiControllerTestSpec
 import com.few.api.domain.admin.usecase.dto.*
 import com.few.api.domain.common.vo.CategoryType
 import web.helper.fieldWithArray
@@ -30,7 +30,7 @@ import web.helper.toResponseSchema
 import java.net.URL
 import java.util.stream.IntStream
 
-class AdminControllerTest : ControllerTestSpec() {
+class AdminApiControllerTest : ApiControllerTestSpec() {
 
     companion object {
         private const val BASE_URL = "/api/v1/admin"

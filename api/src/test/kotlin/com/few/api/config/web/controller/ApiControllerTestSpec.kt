@@ -47,7 +47,7 @@ import web.config.WebConfig
 @Import(
     WebConfig::class,
     SecurityConfig::class,
-    ControllerTestComponentConfig::class
+    ApiControllerTestComponentConfig::class
 )
 @WebMvcTest(
     controllers = [
@@ -62,7 +62,7 @@ import web.config.WebConfig
     ]
 )
 @ExtendWith(RestDocumentationExtension::class)
-abstract class ControllerTestSpec {
+abstract class ApiControllerTestSpec {
 
     /** WebConfig */
     @MockBean

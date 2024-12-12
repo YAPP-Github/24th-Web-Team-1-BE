@@ -6,7 +6,7 @@ import com.epages.restdocs.apispec.ResourceDocumentation.resource
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
 import com.few.api.domain.article.usecase.dto.*
-import com.few.api.config.web.controller.ControllerTestSpec
+import com.few.api.config.web.controller.ApiControllerTestSpec
 import web.description.Description
 import web.helper.toIdentifier
 import web.helper.toRequestSchema
@@ -30,7 +30,7 @@ import java.net.URL
 import java.time.LocalDateTime
 import java.util.stream.IntStream
 
-class ArticleControllerTest : ControllerTestSpec() {
+class ArticleApiControllerTest : ApiControllerTestSpec() {
 
     companion object {
         private const val BASE_URL = "/api/v1/articles"

@@ -5,4 +5,4 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 @ComponentScan(basePackages = ["com.few.api.config.web.controller"])
-class ControllerTestComponentConfig
+class ApiControllerTestComponentConfig

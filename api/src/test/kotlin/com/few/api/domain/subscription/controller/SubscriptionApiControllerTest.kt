@@ -4,7 +4,7 @@ import com.epages.restdocs.apispec.ResourceDocumentation
 import com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
-import com.few.api.config.web.controller.ControllerTestSpec
+import com.few.api.config.web.controller.ApiControllerTestSpec
 import web.description.Description
 import web.helper.toIdentifier
 import web.helper.toRequestSchema
@@ -33,7 +33,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.web.util.UriComponentsBuilder
 import java.time.LocalTime
 
-class SubscriptionControllerTest : ControllerTestSpec() {
+class SubscriptionApiControllerTest : ApiControllerTestSpec() {
 
     companion object {
         private const val BASE_URL = "/api/v1/"
@@ -42,7 +42,7 @@ class SubscriptionControllerTest : ControllerTestSpec() {
 
     @Test
     @DisplayName("[GET] /api/v1/subscriptions/workbooks?view=mainCard")
-    @WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
+    @WithUserDetails(userDetailsServiceBeanName = "apiTestTokenUserDetailsService")
     fun browseSubscribeWorkbooksViewMainCard() {
         // given
         val api = "BrowseSubscribeWorkBooksViewMainCard"
@@ -154,7 +154,7 @@ class SubscriptionControllerTest : ControllerTestSpec() {
 
     @Test
     @DisplayName("[GET] /api/v1/subscriptions/workbooks?view=myPage")
-    @WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
+    @WithUserDetails(userDetailsServiceBeanName = "apiTestTokenUserDetailsService")
     fun browseSubscribeWorkbooksViewMyPage() {
         // given
         val api = "BrowseSubscribeWorkBooksViewMyPage"
@@ -256,7 +256,7 @@ class SubscriptionControllerTest : ControllerTestSpec() {
 
     @Test
     @DisplayName("[POST] /api/v1/workbooks/{workbookId}/subs")
-    @WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
+    @WithUserDetails(userDetailsServiceBeanName = "apiTestTokenUserDetailsService")
     fun subscribeWorkbook() {
         // given
         val api = "SubscribeWorkBook"
@@ -305,7 +305,7 @@ class SubscriptionControllerTest : ControllerTestSpec() {
 
     @Test
     @DisplayName("[POST] /api/v1/workbooks/{workbookId}/unsubs")
-    @WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
+    @WithUserDetails(userDetailsServiceBeanName = "apiTestTokenUserDetailsService")
     fun unsubscribeWorkbook() {
         // given
         val api = "UnsubscribeWorkBook"
@@ -364,7 +364,7 @@ class SubscriptionControllerTest : ControllerTestSpec() {
 
     @Test
     @DisplayName("[POST] /api/v1/subscriptions/unsubs")
-    @WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
+    @WithUserDetails(userDetailsServiceBeanName = "apiTestTokenUserDetailsService")
     fun deactivateAllSubscriptions() {
         // given
         val api = "UnsubscribeAll"
@@ -421,7 +421,7 @@ class SubscriptionControllerTest : ControllerTestSpec() {
 
     @Test
     @DisplayName("[PATCH] /api/v1/subscriptions/time")
-    @WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
+    @WithUserDetails(userDetailsServiceBeanName = "apiTestTokenUserDetailsService")
     fun updateSubscriptionTime() {
         // given
         val api = "UpdateSubscriptionTime"
@@ -475,7 +475,7 @@ class SubscriptionControllerTest : ControllerTestSpec() {
 
     @Test
     @DisplayName("[PATCH] /api/v1/subscriptions/day")
-    @WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
+    @WithUserDetails(userDetailsServiceBeanName = "apiTestTokenUserDetailsService")
     fun updateSubscriptionDay() {
         // given
         val api = "UpdateSubscriptionDay"

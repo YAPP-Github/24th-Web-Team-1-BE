@@ -5,7 +5,7 @@ import com.epages.restdocs.apispec.ResourceDocumentation.resource
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
 import com.few.api.domain.problem.usecase.dto.*
-import com.few.api.config.web.controller.ControllerTestSpec
+import com.few.api.config.web.controller.ApiControllerTestSpec
 import web.description.Description
 import web.helper.toIdentifier
 import web.helper.toRequestSchema
@@ -27,7 +27,7 @@ import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
 
-class ProblemControllerTest : ControllerTestSpec() {
+class ProblemApiControllerTest : ApiControllerTestSpec() {
 
     companion object {
         private const val BASE_URL = "/api/v1/problems"

@@ -8,7 +8,7 @@ import com.few.api.domain.member.usecase.dto.SaveMemberUseCaseIn
 import com.few.api.domain.member.usecase.dto.SaveMemberUseCaseOut
 import com.few.api.domain.member.usecase.dto.TokenUseCaseIn
 import com.few.api.domain.member.usecase.dto.TokenUseCaseOut
-import com.few.api.config.web.controller.ControllerTestSpec
+import com.few.api.config.web.controller.ApiControllerTestSpec
 import web.description.Description
 import web.helper.toIdentifier
 import web.helper.toRequestSchema
@@ -28,7 +28,7 @@ import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
 
-class MemberControllerTest : ControllerTestSpec() {
+class MemberApiControllerTest : ApiControllerTestSpec() {
 
     companion object {
         private const val BASE_URL = "/api/v1/members"

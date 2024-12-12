@@ -7,7 +7,7 @@ import web.helper.toIdentifier
 import web.helper.toRequestSchema
 import web.helper.toResponseSchema
 import com.few.api.domain.log.dto.AddApiLogUseCaseIn
-import com.few.api.config.web.controller.ControllerTestSpec
+import com.few.api.config.web.controller.ApiControllerTestSpec
 import com.few.api.domain.log.controller.request.ApiLogRequest
 import web.description.Description
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
@@ -19,7 +19,7 @@ import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-class ApiLogControllerTest : ControllerTestSpec() {
+class ApiLogApiControllerTest : ApiControllerTestSpec() {
 
     companion object {
         private const val BASE_URL = "/api/v1/logs"

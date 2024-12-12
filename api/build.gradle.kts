@@ -13,6 +13,7 @@ dependencies {
     implementation(project(":email"))
     implementation(project(":storage"))
     implementation(project(":web"))
+    testImplementation(testFixtures(project(":web")))
 
     /** spring starter */
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -35,15 +36,7 @@ dependencies {
     /** jsoup - html parser */
     implementation("org.jsoup:jsoup:1.15.3")
 
-    /** swagger & restdocs */
-    implementation("org.springdoc:springdoc-openapi-ui:${DependencyVersion.SPRINGDOC}")
-    implementation("org.springframework.restdocs:spring-restdocs-webtestclient")
-    implementation("org.springframework.restdocs:spring-restdocs-mockmvc")
-    implementation("com.epages:restdocs-api-spec-mockmvc:${DependencyVersion.EPAGES_REST_DOCS_API_SPEC}")
     swaggerUI("org.webjars:swagger-ui:${DependencyVersion.SWAGGER_UI}")
-
-    testImplementation("org.springframework.security:spring-security-test")
-    testImplementation("org.testcontainers:mysql")
 }
 
 plugins {

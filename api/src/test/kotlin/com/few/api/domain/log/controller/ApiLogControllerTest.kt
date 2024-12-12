@@ -3,13 +3,13 @@ package com.few.api.domain.log.controller
 import com.epages.restdocs.apispec.ResourceDocumentation.resource
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
-import com.few.api.config.web.controller.helper.toIdentifier
-import com.few.api.config.web.controller.helper.toRequestSchema
-import com.few.api.config.web.controller.helper.toResponseSchema
+import web.helper.toIdentifier
+import web.helper.toRequestSchema
+import web.helper.toResponseSchema
 import com.few.api.domain.log.dto.AddApiLogUseCaseIn
 import com.few.api.config.web.controller.ControllerTestSpec
 import com.few.api.domain.log.controller.request.ApiLogRequest
-import com.few.api.config.web.controller.description.Description
+import web.description.Description
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
 
 import org.junit.jupiter.api.DisplayName

@@ -1,4 +1,4 @@
-package com.few.api.config.web.controller.helper
+package web.helper
 
 fun String.toIdentifier(): String {
     return this + "Api"

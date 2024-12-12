@@ -3,12 +3,14 @@ package com.few.api.domain.admin.controller
 import com.epages.restdocs.apispec.ResourceDocumentation.resource
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
-import com.few.api.config.web.controller.helper.*
 import com.few.api.domain.admin.controller.request.*
 import com.few.api.config.web.controller.ControllerTestSpec
-import com.few.api.config.web.controller.description.Description
 import com.few.api.domain.admin.usecase.dto.*
 import com.few.api.domain.common.vo.CategoryType
+import web.helper.fieldWithArray
+import web.helper.fieldWithNumber
+import web.helper.fieldWithObject
+import web.helper.fieldWithString
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.doNothing
@@ -21,6 +23,10 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.pos
 import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
+import web.description.Description
+import web.helper.toIdentifier
+import web.helper.toRequestSchema
+import web.helper.toResponseSchema
 import java.net.URL
 import java.util.stream.IntStream
 

@@ -4,9 +4,11 @@ import com.epages.restdocs.apispec.ResourceDocumentation
 import com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
-import com.few.api.config.web.controller.helper.*
 import com.few.api.config.web.controller.ControllerTestSpec
-import com.few.api.config.web.controller.description.Description
+import web.description.Description
+import web.helper.toIdentifier
+import web.helper.toRequestSchema
+import web.helper.toResponseSchema
 import com.few.api.domain.subscription.controller.request.UnsubscribeWorkbookRequest
 import com.few.api.domain.subscription.usecase.dto.*
 import com.few.api.domain.subscription.controller.request.UpdateSubscriptionDayRequest
@@ -14,6 +16,10 @@ import com.few.api.domain.subscription.controller.request.UpdateSubscriptionTime
 import com.few.api.domain.common.vo.DayCode
 import com.few.api.domain.common.vo.ViewCategory
 import com.few.api.domain.common.vo.WorkBookStatus
+import web.helper.fieldWithArray
+import web.helper.fieldWithNumber
+import web.helper.fieldWithObject
+import web.helper.fieldWithString
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.doNothing

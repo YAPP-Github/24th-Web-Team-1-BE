@@ -1,4 +1,4 @@
-package com.few.api.config.web.controller.helper
+package web.helper
 
 import org.springframework.restdocs.payload.FieldDescriptor
 import org.springframework.restdocs.payload.JsonFieldType

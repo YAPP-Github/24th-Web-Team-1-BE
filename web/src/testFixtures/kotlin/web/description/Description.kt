@@ -1,4 +1,4 @@
-package com.few.api.config.web.controller.description
+package web.description
 
 import com.epages.restdocs.apispec.HeaderDescriptorWithType
 import com.epages.restdocs.apispec.ResourceDocumentation.headerWithName
@@ -24,6 +24,7 @@ object Description {
             messageDescriptor
         )
     }
+
     fun authHeader(): HeaderDescriptorWithType {
         return headerWithName("Authorization")
             .defaultValue("{{accessToken}}")

@@ -42,8 +42,6 @@ dependencies {
     implementation("com.epages:restdocs-api-spec-mockmvc:${DependencyVersion.EPAGES_REST_DOCS_API_SPEC}")
     swaggerUI("org.webjars:swagger-ui:${DependencyVersion.SWAGGER_UI}")
 
-    /** test container */
-    implementation(platform("org.testcontainers:testcontainers-bom:${DependencyVersion.TEST_CONTAINER}"))
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.testcontainers:mysql")
 }

@@ -7,15 +7,7 @@ import com.epages.restdocs.apispec.Schema
 import com.few.api.domain.problem.usecase.dto.*
 import com.few.api.config.web.controller.ApiControllerTestSpec
 import web.description.Description
-import web.helper.toIdentifier
-import web.helper.toRequestSchema
-import web.helper.toResponseSchema
 import com.few.api.domain.problem.controller.request.CheckProblemRequest
-import web.helper.fieldWithArray
-import web.helper.fieldWithBoolean
-import web.helper.fieldWithNumber
-import web.helper.fieldWithObject
-import web.helper.fieldWithString
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
@@ -23,9 +15,9 @@ import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
-import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
+import web.helper.*
 
 class ProblemApiControllerTest : ApiControllerTestSpec() {
 
@@ -69,15 +61,10 @@ class ProblemApiControllerTest : ApiControllerTestSpec() {
                             .queryParameters(parameterWithName("articleId").description("아티클 Id").optional())
                             .responseSchema(Schema.schema(api.toResponseSchema()))
                             .responseFields(
-                                *Description.describe(
-                                    arrayOf(
-                                        PayloadDocumentation.fieldWithPath("data")
-                                            .fieldWithObject("data"),
-                                        PayloadDocumentation.fieldWithPath("data.problemIds[]")
-                                            .fieldWithArray("문제 Id 목록"),
-                                        PayloadDocumentation.fieldWithPath("data.size")
-                                            .fieldWithNumber("문제 갯수")
-                                    )
+                                *Description.fields(
+                                    FieldDescription("data", "data").asObject(),
+                                    FieldDescription("data.problemIds[]", "문제 Id 목록").asArray(),
+                                    FieldDescription("data.size", "문제 갯수").asNumber()
                                 )
                             )
                             .build()
@@ -131,23 +118,14 @@ class ProblemApiControllerTest : ApiControllerTestSpec() {
                             .pathParameters(parameterWithName("problemId").description("문제 Id"))
                             .responseSchema(Schema.schema(api.toResponseSchema()))
                             .responseFields(
-                                *Description.describe(
-                                    arrayOf(
-                                        PayloadDocumentation.fieldWithPath("data")
-                                            .fieldWithObject("data"),
-                                        PayloadDocumentation.fieldWithPath("data.id")
-                                            .fieldWithNumber("문제 Id"),
-                                        PayloadDocumentation.fieldWithPath("data.title")
-                                            .fieldWithString("문제"),
-                                        PayloadDocumentation.fieldWithPath("data.contents[]")
-                                            .fieldWithArray("문제 선지 목록"),
-                                        PayloadDocumentation.fieldWithPath("data.contents[].number")
-                                            .fieldWithNumber("문제 선지 번호"),
-                                        PayloadDocumentation.fieldWithPath("data.contents[].content")
-                                            .fieldWithString("문제 선지 내용"),
-                                        PayloadDocumentation.fieldWithPath("data.articleId")
-                                            .fieldWithNumber("문제가 속한 아티클 ID")
-                                    )
+                                *Description.fields(
+                                    FieldDescription("data", "data").asObject(),
+                                    FieldDescription("data.id", "문제 Id").asNumber(),
+                                    FieldDescription("data.title", "문제").asString(),
+                                    FieldDescription("data.contents[]", "문제 선지 목록").asArray(),
+                                    FieldDescription("data.contents[].number", "문제 선지 번호").asNumber(),
+                                    FieldDescription("data.contents[].content", "문제 선지 내용").asString(),
+                                    FieldDescription("data.articleId", "문제가 속한 아티클 ID").asNumber()
                                 )
                             )
                             .build()
@@ -197,17 +175,11 @@ class ProblemApiControllerTest : ApiControllerTestSpec() {
                             .pathParameters(parameterWithName("problemId").description("학습지 Id"))
                             .responseSchema(Schema.schema(api.toResponseSchema()))
                             .responseFields(
-                                *Description.describe(
-                                    arrayOf(
-                                        PayloadDocumentation.fieldWithPath("data")
-                                            .fieldWithObject("data"),
-                                        PayloadDocumentation.fieldWithPath("data.explanation")
-                                            .fieldWithString("문제 해설"),
-                                        PayloadDocumentation.fieldWithPath("data.answer")
-                                            .fieldWithString("문제 정답"),
-                                        PayloadDocumentation.fieldWithPath("data.isSolved")
-                                            .fieldWithBoolean("문제 정답 여부")
-                                    )
+                                *Description.fields(
+                                    FieldDescription("data", "data").asObject(),
+                                    FieldDescription("data.explanation", "문제 해설").asString(),
+                                    FieldDescription("data.answer", "문제 정답").asString(),
+                                    FieldDescription("data.isSolved", "문제 정답 여부").asBoolean()
                                 )
                             )
                             .build()
@@ -247,15 +219,10 @@ class ProblemApiControllerTest : ApiControllerTestSpec() {
                             .requestSchema(Schema.schema(api.toRequestSchema()))
                             .responseSchema(Schema.schema(api.toResponseSchema()))
                             .responseFields(
-                                *Description.describe(
-                                    arrayOf(
-                                        PayloadDocumentation.fieldWithPath("data")
-                                            .fieldWithObject("data"),
-                                        PayloadDocumentation.fieldWithPath("data.problemIds[]")
-                                            .fieldWithArray("밀린 문제 Id 목록"),
-                                        PayloadDocumentation.fieldWithPath("data.size")
-                                            .fieldWithNumber("밀린 문제 갯수")
-                                    )
+                                *Description.fields(
+                                    FieldDescription("data", "data").asObject(),
+                                    FieldDescription("data.problemIds[]", "밀린 문제 Id 목록").asArray(),
+                                    FieldDescription("data.size", "밀린 문제 갯수").asNumber()
                                 )
                             )
                             .build()

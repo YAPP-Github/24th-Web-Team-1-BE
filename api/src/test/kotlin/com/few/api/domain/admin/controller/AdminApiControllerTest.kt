@@ -7,10 +7,6 @@ import com.few.api.domain.admin.controller.request.*
 import com.few.api.config.web.controller.ApiControllerTestSpec
 import com.few.api.domain.admin.usecase.dto.*
 import com.few.api.domain.common.vo.CategoryType
-import web.helper.fieldWithArray
-import web.helper.fieldWithNumber
-import web.helper.fieldWithObject
-import web.helper.fieldWithString
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.doNothing
@@ -20,13 +16,10 @@ import org.springframework.mock.web.MockMultipartFile
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
-import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
 import web.description.Description
-import web.helper.toIdentifier
-import web.helper.toRequestSchema
-import web.helper.toResponseSchema
+import web.helper.*
 import java.net.URL
 import java.util.stream.IntStream
 
@@ -70,13 +63,9 @@ class AdminApiControllerTest : ApiControllerTestSpec() {
                             .summary(api.toIdentifier()).privateResource(false).deprecated(false)
                             .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))
                             .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
-                                *Description.describe(
-                                    arrayOf(
-                                        PayloadDocumentation.fieldWithPath("data")
-                                            .fieldWithObject("data"),
-                                        PayloadDocumentation.fieldWithPath("data.workbookId")
-                                            .fieldWithNumber("워크북 Id")
-                                    )
+                                *Description.fields(
+                                    FieldDescription("data", "data").asObject(),
+                                    FieldDescription("data.workbookId", "워크북 Id").asNumber()
                                 )
                             ).build()
                     )
@@ -154,13 +143,9 @@ class AdminApiControllerTest : ApiControllerTestSpec() {
                             .summary(api.toIdentifier()).privateResource(false).deprecated(false)
                             .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))
                             .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
-                                *Description.describe(
-                                    arrayOf(
-                                        PayloadDocumentation.fieldWithPath("data")
-                                            .fieldWithObject("data"),
-                                        PayloadDocumentation.fieldWithPath("data.articleId")
-                                            .fieldWithNumber("아티클 Id")
-                                    )
+                                *Description.fields(
+                                    FieldDescription("data", "data").asObject(),
+                                    FieldDescription("data.articleId", "아티클 Id").asNumber()
                                 )
                             ).build()
                     )
@@ -238,15 +223,10 @@ class AdminApiControllerTest : ApiControllerTestSpec() {
                             .tag(TAG)
                             .requestSchema(Schema.schema(api.toRequestSchema()))
                             .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
-                                *Description.describe(
-                                    arrayOf(
-                                        PayloadDocumentation.fieldWithPath("data")
-                                            .fieldWithObject("data"),
-                                        PayloadDocumentation.fieldWithPath("data.content")
-                                            .fieldWithString("변환된 컨텐츠"),
-                                        PayloadDocumentation.fieldWithPath("data.originDownLoadUrl")
-                                            .fieldWithString("원본 컨텐츠 다운로드 URL")
-                                    )
+                                *Description.fields(
+                                    FieldDescription("data", "data").asObject(),
+                                    FieldDescription("data.content", "변환된 컨텐츠").asString(),
+                                    FieldDescription("data.originDownLoadUrl", "원본 컨텐츠 다운로드 URL").asString()
                                 )
                             ).build()
                     )
@@ -287,19 +267,10 @@ class AdminApiControllerTest : ApiControllerTestSpec() {
                             .tag(TAG)
                             .requestSchema(Schema.schema(api.toRequestSchema()))
                             .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
-                                *Description.describe(
-                                    arrayOf(
-                                        PayloadDocumentation.fieldWithPath("data")
-                                            .fieldWithObject("data"),
-                                        PayloadDocumentation.fieldWithPath("data.url")
-                                            .fieldWithString(
-                                                "이미지 URL"
-                                            ),
-                                        PayloadDocumentation.fieldWithPath("data.supportSuffix")
-                                            .fieldWithArray(
-                                                "지원하는 확장자"
-                                            )
-                                    )
+                                *Description.fields(
+                                    FieldDescription("data", "data").asObject(),
+                                    FieldDescription("data.url", "이미지 URL").asString(),
+                                    FieldDescription("data.supportSuffix", "지원하는 확장자").asArray()
                                 )
                             ).build()
                     )

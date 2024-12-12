@@ -19,6 +19,10 @@ object Description {
         )
     }
 
+    fun fields(vararg fields: FieldDescriptor): Array<FieldDescriptor> {
+        return describe(fields.toList().toTypedArray())
+    }
+
     fun describe(): Array<FieldDescriptor> {
         return arrayOf(
             messageDescriptor

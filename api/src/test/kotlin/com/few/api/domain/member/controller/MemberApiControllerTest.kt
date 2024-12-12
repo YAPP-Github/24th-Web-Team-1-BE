@@ -10,23 +10,17 @@ import com.few.api.domain.member.usecase.dto.TokenUseCaseIn
 import com.few.api.domain.member.usecase.dto.TokenUseCaseOut
 import com.few.api.config.web.controller.ApiControllerTestSpec
 import web.description.Description
-import web.helper.toIdentifier
-import web.helper.toRequestSchema
-import web.helper.toResponseSchema
 import com.few.api.domain.member.controller.request.SaveMemberRequest
 import com.few.api.domain.member.controller.request.TokenRequest
-import web.helper.fieldWithBoolean
-import web.helper.fieldWithObject
-import web.helper.fieldWithString
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
-import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
+import web.helper.*
 
 class MemberApiControllerTest : ApiControllerTestSpec() {
 
@@ -71,13 +65,9 @@ class MemberApiControllerTest : ApiControllerTestSpec() {
                             .requestSchema(Schema.schema(api.toRequestSchema()))
                             .responseSchema(Schema.schema(api.toResponseSchema()))
                             .responseFields(
-                                *Description.describe(
-                                    arrayOf(
-                                        PayloadDocumentation.fieldWithPath("data")
-                                            .fieldWithObject("data"),
-                                        PayloadDocumentation.fieldWithPath("data.isSendAuth")
-                                            .fieldWithBoolean("이메일 인증 전송 여부")
-                                    )
+                                *Description.fields(
+                                    FieldDescription("data", "data").asObject(),
+                                    FieldDescription("data.isSendAuth", "이메일 인증 전송 여부").asBoolean()
                                 )
                             )
                             .build()
@@ -145,17 +135,11 @@ class MemberApiControllerTest : ApiControllerTestSpec() {
                             )
                             .responseSchema(Schema.schema(api.toResponseSchema()))
                             .responseFields(
-                                *Description.describe(
-                                    arrayOf(
-                                        PayloadDocumentation.fieldWithPath("data")
-                                            .fieldWithObject("data"),
-                                        PayloadDocumentation.fieldWithPath("data.accessToken")
-                                            .fieldWithString("accessToken"),
-                                        PayloadDocumentation.fieldWithPath("data.refreshToken")
-                                            .fieldWithString("refreshToken"),
-                                        PayloadDocumentation.fieldWithPath("data.isLogin")
-                                            .fieldWithBoolean("로그인/회원가입 여부")
-                                    )
+                                *Description.fields(
+                                    FieldDescription("data", "data").asObject(),
+                                    FieldDescription("data.accessToken", "accessToken").asString(),
+                                    FieldDescription("data.refreshToken", "refreshToken").asString(),
+                                    FieldDescription("data.isLogin", "로그인/회원가입 여부").asBoolean()
                                 )
                             )
                             .build()

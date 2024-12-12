@@ -9,23 +9,16 @@ import com.few.api.domain.workbook.article.dto.ReadWorkBookArticleOut
 import com.few.api.domain.workbook.article.dto.WriterDetail
 import com.few.api.config.web.controller.ApiControllerTestSpec
 import web.description.Description
-import web.helper.toIdentifier
-import web.helper.toRequestSchema
-import web.helper.toResponseSchema
 import com.few.api.domain.common.vo.CategoryType
-import web.helper.fieldWithArray
-import web.helper.fieldWithNumber
-import web.helper.fieldWithObject
-import web.helper.fieldWithString
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
-import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.web.util.UriComponentsBuilder
+import web.helper.*
 import java.net.URL
 import java.time.LocalDateTime
 
@@ -93,33 +86,19 @@ class WorkBookArticleApiControllerTest : ApiControllerTestSpec() {
                             )
                             .responseSchema(Schema.schema(api.toResponseSchema()))
                             .responseFields(
-                                *Description.describe(
-                                    arrayOf(
-                                        PayloadDocumentation.fieldWithPath("data")
-                                            .fieldWithObject("data"),
-                                        PayloadDocumentation.fieldWithPath("data.id")
-                                            .fieldWithNumber("아티클 Id"),
-                                        PayloadDocumentation.fieldWithPath("data.writer")
-                                            .fieldWithObject("아티클 작가"),
-                                        PayloadDocumentation.fieldWithPath("data.writer.id")
-                                            .fieldWithNumber("아티클 작가 Id"),
-                                        PayloadDocumentation.fieldWithPath("data.writer.name")
-                                            .fieldWithString("아티클 작가 이름"),
-                                        PayloadDocumentation.fieldWithPath("data.writer.url")
-                                            .fieldWithString("아티클 작가 링크"),
-                                        PayloadDocumentation.fieldWithPath("data.title")
-                                            .fieldWithString("아티클 제목"),
-                                        PayloadDocumentation.fieldWithPath("data.content")
-                                            .fieldWithString("아티클 내용"),
-                                        PayloadDocumentation.fieldWithPath("data.problemIds")
-                                            .fieldWithArray("아티클 문제 목록"),
-                                        PayloadDocumentation.fieldWithPath("data.category")
-                                            .fieldWithString("아티클 카테고리"),
-                                        PayloadDocumentation.fieldWithPath("data.createdAt")
-                                            .fieldWithString("아티클 생성일"),
-                                        PayloadDocumentation.fieldWithPath("data.day")
-                                            .fieldWithNumber("아티클 Day 정보")
-                                    )
+                                *Description.fields(
+                                    FieldDescription("data", "data").asObject(),
+                                    FieldDescription("data.id", "아티클 Id").asNumber(),
+                                    FieldDescription("data.writer", "아티클 작가").asObject(),
+                                    FieldDescription("data.writer.id", "아티클 작가 Id").asNumber(),
+                                    FieldDescription("data.writer.name", "아티클 작가 이름").asString(),
+                                    FieldDescription("data.writer.url", "아티클 작가 링크").asString(),
+                                    FieldDescription("data.title", "아티클 제목").asString(),
+                                    FieldDescription("data.content", "아티클 내용").asString(),
+                                    FieldDescription("data.problemIds", "아티클 문제 목록").asArray(),
+                                    FieldDescription("data.category", "아티클 카테고리").asString(),
+                                    FieldDescription("data.createdAt", "아티클 생성일").asString(),
+                                    FieldDescription("data.day", "아티클 Day 정보").asNumber()
                                 )
                             )
                             .build()

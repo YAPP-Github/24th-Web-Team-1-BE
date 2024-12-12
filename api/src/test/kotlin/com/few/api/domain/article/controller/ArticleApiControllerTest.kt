@@ -7,24 +7,16 @@ import com.epages.restdocs.apispec.Schema
 import com.few.api.domain.article.usecase.dto.*
 import com.few.api.config.web.controller.ApiControllerTestSpec
 import web.description.Description
-import web.helper.toIdentifier
-import web.helper.toRequestSchema
-import web.helper.toResponseSchema
 import com.few.api.domain.common.vo.CategoryType
-import web.helper.fieldWithArray
-import web.helper.fieldWithBoolean
-import web.helper.fieldWithNumber
-import web.helper.fieldWithObject
-import web.helper.fieldWithString
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
-import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
+import web.helper.*
 import java.net.URL
 import java.time.LocalDateTime
 import java.util.stream.IntStream
@@ -90,39 +82,22 @@ class ArticleApiControllerTest : ApiControllerTestSpec() {
                             )
                             .pathParameters(parameterWithName("articleId").description("아티클 Id"))
                             .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
-                                *Description.describe(
-                                    arrayOf(
-                                        PayloadDocumentation.fieldWithPath("data")
-                                            .fieldWithObject("data"),
-                                        PayloadDocumentation.fieldWithPath("data.id")
-                                            .fieldWithNumber("아티클 Id"),
-                                        PayloadDocumentation.fieldWithPath("data.writer")
-                                            .fieldWithObject("아티클 작가"),
-                                        PayloadDocumentation.fieldWithPath("data.writer.id")
-                                            .fieldWithNumber("아티클 작가 Id"),
-                                        PayloadDocumentation.fieldWithPath("data.writer.name")
-                                            .fieldWithString("아티클 작가 이름"),
-                                        PayloadDocumentation.fieldWithPath("data.writer.url")
-                                            .fieldWithString("아티클 작가 링크"),
-                                        PayloadDocumentation.fieldWithPath("data.writer.imageUrl")
-                                            .fieldWithString("아티클 작가 이미지 링크(non-null)"),
-                                        PayloadDocumentation.fieldWithPath("data.mainImageUrl")
-                                            .fieldWithString("아티클 썸네일 이미지 링크"),
-                                        PayloadDocumentation.fieldWithPath("data.title")
-                                            .fieldWithString("아티클 제목"),
-                                        PayloadDocumentation.fieldWithPath("data.content")
-                                            .fieldWithString("아티클 내용"),
-                                        PayloadDocumentation.fieldWithPath("data.problemIds")
-                                            .fieldWithArray("아티클 문제 목록"),
-                                        PayloadDocumentation.fieldWithPath("data.category")
-                                            .fieldWithString("아티클 카테고리"),
-                                        PayloadDocumentation.fieldWithPath("data.createdAt")
-                                            .fieldWithString("아티클 생성일"),
-                                        PayloadDocumentation.fieldWithPath("data.views")
-                                            .fieldWithNumber("아티클 조회수"),
-                                        PayloadDocumentation.fieldWithPath("data.workbooks")
-                                            .fieldWithArray("아티클이 포함된 학습지 정보(해당 API에선 사용되지 않음)")
-                                    )
+                                *Description.fields(
+                                    FieldDescription("data", "data").asObject(),
+                                    FieldDescription("data.id", "아티클 Id").asNumber(),
+                                    FieldDescription("data.writer", "아티클 작가").asObject(),
+                                    FieldDescription("data.writer.id", "아티클 작가 Id").asNumber(),
+                                    FieldDescription("data.writer.name", "아티클 작가 이름").asString(),
+                                    FieldDescription("data.writer.url", "아티클 작가 링크").asString(),
+                                    FieldDescription("data.writer.imageUrl", "아티클 작가 이미지 링크(non-null)").asString(),
+                                    FieldDescription("data.mainImageUrl", "아티클 썸네일 이미지 링크").asString(),
+                                    FieldDescription("data.title", "아티클 제목").asString(),
+                                    FieldDescription("data.content", "아티클 내용").asString(),
+                                    FieldDescription("data.problemIds", "아티클 문제 목록").asArray(),
+                                    FieldDescription("data.category", "아티클 카테고리").asString(),
+                                    FieldDescription("data.createdAt", "아티클 생성일").asString(),
+                                    FieldDescription("data.views", "아티클 조회수").asNumber(),
+                                    FieldDescription("data.workbooks", "아티클이 포함된 학습지 정보(해당 API에선 사용되지 않음)").asArray()
                                 )
                             ).build()
                     )
@@ -190,47 +165,26 @@ class ArticleApiControllerTest : ApiControllerTestSpec() {
                                 parameterWithName("categoryCd").description("아티클 카테고리 코드")
                             )
                             .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
-                                *Description.describe(
-                                    arrayOf(
-                                        PayloadDocumentation.fieldWithPath("data")
-                                            .fieldWithObject("data"),
-                                        PayloadDocumentation.fieldWithPath("data.isLast")
-                                            .fieldWithBoolean("마지막 스크롤 유무"),
-                                        PayloadDocumentation.fieldWithPath("data.articles")
-                                            .fieldWithArray("아티클 목록"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].id")
-                                            .fieldWithNumber("아티클 Id"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].writer")
-                                            .fieldWithObject("아티클 작가"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].writer.id")
-                                            .fieldWithNumber("아티클 작가 Id"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].writer.name")
-                                            .fieldWithString("아티클 작가 이름"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].writer.url")
-                                            .fieldWithString("아티클 작가 링크"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].writer.imageUrl")
-                                            .fieldWithString("아티클 작가 이미지 링크(non-null)"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].mainImageUrl")
-                                            .fieldWithString("아티클 썸네일 이미지 링크"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].title")
-                                            .fieldWithString("아티클 제목"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].content")
-                                            .fieldWithString("아티클 내용"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].problemIds")
-                                            .fieldWithArray("아티클 문제 목록"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].category")
-                                            .fieldWithString("아티클 카테고리"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].createdAt")
-                                            .fieldWithString("아티클 생성일"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].views")
-                                            .fieldWithNumber("아티클 조회수"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].workbooks")
-                                            .fieldWithArray("아티클이 포함된 학습지 정보"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].workbooks[].id")
-                                            .fieldWithNumber("아티클이 포함된 학습지 정보(학습지ID)"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].workbooks[].title")
-                                            .fieldWithString("아티클이 포함된 학습지 정보(학습지 제목)")
-                                    )
+                                *Description.fields(
+                                    FieldDescription("data", "data").asObject(),
+                                    FieldDescription("data.isLast", "마지막 스크롤 유무").asBoolean(),
+                                    FieldDescription("data.articles", "아티클 목록").asArray(),
+                                    FieldDescription("data.articles[].id", "아티클 Id").asNumber(),
+                                    FieldDescription("data.articles[].writer", "아티클 작가").asObject(),
+                                    FieldDescription("data.articles[].writer.id", "아티클 작가 Id").asNumber(),
+                                    FieldDescription("data.articles[].writer.name", "아티클 작가 이름").asString(),
+                                    FieldDescription("data.articles[].writer.url", "아티클 작가 링크").asString(),
+                                    FieldDescription("data.articles[].writer.imageUrl", "아티클 작가 이미지 링크(non-null)").asString(),
+                                    FieldDescription("data.articles[].mainImageUrl", "아틸컬 썸네일 이미지 링크").asString(),
+                                    FieldDescription("data.articles[].title", "아티클 제목").asString(),
+                                    FieldDescription("data.articles[].content", "아티클 내용").asString(),
+                                    FieldDescription("data.articles[].problemIds", "아티클 문제 목록").asArray(),
+                                    FieldDescription("data.articles[].category", "아티클 카테고리").asString(),
+                                    FieldDescription("data.articles[].createdAt", "아티클 생성일").asString(),
+                                    FieldDescription("data.articles[].views", "아티클 조회수").asNumber(),
+                                    FieldDescription("data.articles[].workbooks", "아티클이 포함된 학습지 정보").asArray(),
+                                    FieldDescription("data.articles[].workbooks[].id", "아티클이 포함된 학습지 정보(학습지ID)").asNumber(),
+                                    FieldDescription("data.articles[].workbooks[].title", "아티클이 포함된 학습지 정보(학습지 제목)").asString()
                                 )
                             ).build()
                     )
@@ -260,17 +214,11 @@ class ArticleApiControllerTest : ApiControllerTestSpec() {
                             .summary(api.toIdentifier()).privateResource(false).deprecated(false)
                             .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))
                             .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
-                                *Description.describe(
-                                    arrayOf(
-                                        PayloadDocumentation.fieldWithPath("data")
-                                            .fieldWithObject("data"),
-                                        PayloadDocumentation.fieldWithPath("data.categories")
-                                            .fieldWithArray("카테고리 목록"),
-                                        PayloadDocumentation.fieldWithPath("data.categories[].code")
-                                            .fieldWithNumber("카테고리 코드"),
-                                        PayloadDocumentation.fieldWithPath("data.categories[].name")
-                                            .fieldWithString("카테고리 이름")
-                                    )
+                                *Description.fields(
+                                    FieldDescription("data", "data").asObject(),
+                                    FieldDescription("data.categories", "카테고리 목록").asArray(),
+                                    FieldDescription("data.categories[].code", "카테고리 코드").asNumber(),
+                                    FieldDescription("data.categories[].name", "카테고리 이름").asString()
                                 )
                             ).build()
                     )

@@ -6,9 +6,6 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
 import com.few.api.config.web.controller.ApiControllerTestSpec
 import web.description.Description
-import web.helper.toIdentifier
-import web.helper.toRequestSchema
-import web.helper.toResponseSchema
 import com.few.api.domain.subscription.controller.request.UnsubscribeWorkbookRequest
 import com.few.api.domain.subscription.usecase.dto.*
 import com.few.api.domain.subscription.controller.request.UpdateSubscriptionDayRequest
@@ -16,10 +13,6 @@ import com.few.api.domain.subscription.controller.request.UpdateSubscriptionTime
 import com.few.api.domain.common.vo.DayCode
 import com.few.api.domain.common.vo.ViewCategory
 import com.few.api.domain.common.vo.WorkBookStatus
-import web.helper.fieldWithArray
-import web.helper.fieldWithNumber
-import web.helper.fieldWithObject
-import web.helper.fieldWithString
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.doNothing
@@ -27,10 +20,10 @@ import org.mockito.Mockito.doReturn
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*
-import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.web.util.UriComponentsBuilder
+import web.helper.*
 import java.time.LocalTime
 
 class SubscriptionApiControllerTest : ApiControllerTestSpec() {
@@ -113,33 +106,19 @@ class SubscriptionApiControllerTest : ApiControllerTestSpec() {
                             .requestHeaders(Description.authHeader())
                             .responseSchema(Schema.schema(api.toResponseSchema()))
                             .responseFields(
-                                *Description.describe(
-                                    arrayOf(
-                                        PayloadDocumentation.fieldWithPath("data")
-                                            .fieldWithObject("data"),
-                                        PayloadDocumentation.fieldWithPath("data.workbooks")
-                                            .fieldWithArray("학습지 목록"),
-                                        PayloadDocumentation.fieldWithPath("data.workbooks[].id")
-                                            .fieldWithNumber("학습지 Id"),
-                                        PayloadDocumentation.fieldWithPath("data.workbooks[].status")
-                                            .fieldWithString("구독 상태"),
-                                        PayloadDocumentation.fieldWithPath("data.workbooks[].totalDay")
-                                            .fieldWithNumber("총 일수"),
-                                        PayloadDocumentation.fieldWithPath("data.workbooks[].currentDay")
-                                            .fieldWithNumber("현재 일수"),
-                                        PayloadDocumentation.fieldWithPath("data.workbooks[].rank")
-                                            .fieldWithNumber("순위"),
-                                        PayloadDocumentation.fieldWithPath("data.workbooks[].totalSubscriber")
-                                            .fieldWithNumber("누적 구독자 수"),
-                                        PayloadDocumentation.fieldWithPath("data.workbooks[].articleInfo")
-                                            .fieldWithString("아티클 정보(Json 타입)"),
-                                        PayloadDocumentation.fieldWithPath("data.workbooks[].subscription")
-                                            .fieldWithObject("구독 정보"),
-                                        PayloadDocumentation.fieldWithPath("data.workbooks[].subscription.time")
-                                            .fieldWithString("구독 시간"),
-                                        PayloadDocumentation.fieldWithPath("data.workbooks[].subscription.dateTimeCode")
-                                            .fieldWithString("구독 시간 코드")
-                                    )
+                                *Description.fields(
+                                    FieldDescription("data", "data").asObject(),
+                                    FieldDescription("data.workbooks", "학습지 목록").asArray(),
+                                    FieldDescription("data.workbooks[].id", "학습지 Id").asNumber(),
+                                    FieldDescription("data.workbooks[].status", "구독 상태").asString(),
+                                    FieldDescription("data.workbooks[].totalDay", "총 일수").asNumber(),
+                                    FieldDescription("data.workbooks[].currentDay", "현재 일수").asNumber(),
+                                    FieldDescription("data.workbooks[].rank", "순위").asNumber(),
+                                    FieldDescription("data.workbooks[].totalSubscriber", "누적 구독자 수").asNumber(),
+                                    FieldDescription("data.workbooks[].articleInfo", "아티클 정보(Json 타입)").asString(),
+                                    FieldDescription("data.workbooks[].subscription", "구독 정보").asObject(),
+                                    FieldDescription("data.workbooks[].subscription.time", "구독 시간").asString(),
+                                    FieldDescription("data.workbooks[].subscription.dateTimeCode", "구독 시간 코드").asString()
                                 )
                             )
                             .build()
@@ -211,33 +190,19 @@ class SubscriptionApiControllerTest : ApiControllerTestSpec() {
                             .requestHeaders(Description.authHeader())
                             .responseSchema(Schema.schema(api.toResponseSchema()))
                             .responseFields(
-                                *Description.describe(
-                                    arrayOf(
-                                        PayloadDocumentation.fieldWithPath("data")
-                                            .fieldWithObject("data"),
-                                        PayloadDocumentation.fieldWithPath("data.workbooks")
-                                            .fieldWithArray("학습지 목록"),
-                                        PayloadDocumentation.fieldWithPath("data.workbooks[].id")
-                                            .fieldWithNumber("학습지 Id"),
-                                        PayloadDocumentation.fieldWithPath("data.workbooks[].status")
-                                            .fieldWithString("구독 상태"),
-                                        PayloadDocumentation.fieldWithPath("data.workbooks[].totalDay")
-                                            .fieldWithNumber("총 일수"),
-                                        PayloadDocumentation.fieldWithPath("data.workbooks[].currentDay")
-                                            .fieldWithNumber("현재 일수"),
-                                        PayloadDocumentation.fieldWithPath("data.workbooks[].rank")
-                                            .fieldWithNumber("순위"),
-                                        PayloadDocumentation.fieldWithPath("data.workbooks[].totalSubscriber")
-                                            .fieldWithNumber("누적 구독자 수"),
-                                        PayloadDocumentation.fieldWithPath("data.workbooks[].workbookInfo")
-                                            .fieldWithString("학습지 정보(Json 타입)"),
-                                        PayloadDocumentation.fieldWithPath("data.workbooks[].subscription")
-                                            .fieldWithObject("구독 정보"),
-                                        PayloadDocumentation.fieldWithPath("data.workbooks[].subscription.time")
-                                            .fieldWithString("구독 시간"),
-                                        PayloadDocumentation.fieldWithPath("data.workbooks[].subscription.dateTimeCode")
-                                            .fieldWithString("구독 시간 코드")
-                                    )
+                                *Description.fields(
+                                    FieldDescription("data", "data").asObject(),
+                                    FieldDescription("data.workbooks", "학습지 목록").asArray(),
+                                    FieldDescription("data.workbooks[].id", "학습지 Id").asNumber(),
+                                    FieldDescription("data.workbooks[].status", "구독 상태").asString(),
+                                    FieldDescription("data.workbooks[].totalDay", "총 일수").asNumber(),
+                                    FieldDescription("data.workbooks[].currentDay", "현재 일수").asNumber(),
+                                    FieldDescription("data.workbooks[].rank", "순위").asNumber(),
+                                    FieldDescription("data.workbooks[].totalSubscriber", "누적 구독자 수").asNumber(),
+                                    FieldDescription("data.workbooks[].workbookInfo", "학습지 정보(Json 타입)").asString(),
+                                    FieldDescription("data.workbooks[].subscription", "구독 정보").asObject(),
+                                    FieldDescription("data.workbooks[].subscription.time", "구독 시간").asString(),
+                                    FieldDescription("data.workbooks[].subscription.dateTimeCode", "구독 시간 코드").asString()
                                 )
                             )
                             .build()

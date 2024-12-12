@@ -7,25 +7,18 @@ import com.epages.restdocs.apispec.Schema
 import com.few.api.domain.workbook.usecase.dto.*
 import com.few.api.config.web.controller.ApiControllerTestSpec
 import web.description.Description
-import web.helper.toIdentifier
-import web.helper.toRequestSchema
-import web.helper.toResponseSchema
 import com.few.api.domain.common.vo.CategoryType
 import com.few.api.domain.common.vo.ViewCategory
 import com.few.api.domain.common.vo.WorkBookCategory
-import web.helper.fieldWithArray
-import web.helper.fieldWithNumber
-import web.helper.fieldWithObject
-import web.helper.fieldWithString
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
-import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
+import web.helper.*
 import java.net.URL
 import java.time.LocalDateTime
 
@@ -62,17 +55,11 @@ class WorkBookApiControllerTest : ApiControllerTestSpec() {
                         .tag(TAG)
                         .responseSchema(Schema.schema(api.toResponseSchema()))
                         .responseFields(
-                            *Description.describe(
-                                arrayOf(
-                                    PayloadDocumentation.fieldWithPath("data")
-                                        .fieldWithObject("data"),
-                                    PayloadDocumentation.fieldWithPath("data.categories[]")
-                                        .fieldWithArray("카테고리 목록"),
-                                    PayloadDocumentation.fieldWithPath("data.categories[].code")
-                                        .fieldWithNumber("카테고리 코드"),
-                                    PayloadDocumentation.fieldWithPath("data.categories[].name")
-                                        .fieldWithString("카테고리 이름")
-                                )
+                            *Description.fields(
+                                FieldDescription("data", "data").asObject(),
+                                FieldDescription("data.categories[]", "카테고리 목록").asArray(),
+                                FieldDescription("data.categories[].code", "카테고리 코드").asNumber(),
+                                FieldDescription("data.categories[].name", "카테고리 이름").asString()
                             )
                         ).build()
                 )
@@ -144,35 +131,20 @@ class WorkBookApiControllerTest : ApiControllerTestSpec() {
                         )
                         .requestHeaders(Description.authHeader(true))
                         .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
-                            *Description.describe(
-                                arrayOf(
-                                    PayloadDocumentation.fieldWithPath("data")
-                                        .fieldWithObject("data"),
-                                    PayloadDocumentation.fieldWithPath("data.workbooks[]")
-                                        .fieldWithArray("워크북 목록"),
-                                    PayloadDocumentation.fieldWithPath("data.workbooks[].id")
-                                        .fieldWithNumber("워크북 Id"),
-                                    PayloadDocumentation.fieldWithPath("data.workbooks[].mainImageUrl")
-                                        .fieldWithString("워크북 대표 이미지 Url"),
-                                    PayloadDocumentation.fieldWithPath("data.workbooks[].title")
-                                        .fieldWithString("워크북 제목"),
-                                    PayloadDocumentation.fieldWithPath("data.workbooks[].description")
-                                        .fieldWithString("워크북 개요"),
-                                    PayloadDocumentation.fieldWithPath("data.workbooks[].category")
-                                        .fieldWithString("워크북 카테고리"),
-                                    PayloadDocumentation.fieldWithPath("data.workbooks[].createdAt")
-                                        .fieldWithString("워크북 생성일시"),
-                                    PayloadDocumentation.fieldWithPath("data.workbooks[].writers[]")
-                                        .fieldWithArray("워크북 작가 목록"),
-                                    PayloadDocumentation.fieldWithPath("data.workbooks[].writers[].id")
-                                        .fieldWithNumber("워크북 작가 Id"),
-                                    PayloadDocumentation.fieldWithPath("data.workbooks[].writers[].name")
-                                        .fieldWithString("워크북 작가 이름"),
-                                    PayloadDocumentation.fieldWithPath("data.workbooks[].writers[].url")
-                                        .fieldWithString("워크북 작가 외부 링크"),
-                                    PayloadDocumentation.fieldWithPath("data.workbooks[].subscriberCount")
-                                        .fieldWithNumber("워크북 현재 구독자 수")
-                                )
+                            *Description.fields(
+                                FieldDescription("data", "data").asObject(),
+                                FieldDescription("data.workbooks[]", "워크북 목록").asArray(),
+                                FieldDescription("data.workbooks[].id", "워크북 Id").asNumber(),
+                                FieldDescription("data.workbooks[].mainImageUrl", "워크북 대표 이미지 Url").asString(),
+                                FieldDescription("data.workbooks[].title", "워크북 제목").asString(),
+                                FieldDescription("data.workbooks[].description", "워크북 개요").asString(),
+                                FieldDescription("data.workbooks[].category", "워크북 카테고리").asString(),
+                                FieldDescription("data.workbooks[].createdAt", "워크북 생성일시").asString(),
+                                FieldDescription("data.workbooks[].writers[]", "워크북 작가 목록").asArray(),
+                                FieldDescription("data.workbooks[].writers[].id", "워크북 작가 Id").asNumber(),
+                                FieldDescription("data.workbooks[].writers[].name", "워크북 작가 이름").asString(),
+                                FieldDescription("data.workbooks[].writers[].url", "워크북 작가 외부 링크").asString(),
+                                FieldDescription("data.workbooks[].subscriberCount", "워크북 현재 구독자 수").asNumber()
                             )
                         ).build()
                 )
@@ -233,37 +205,21 @@ class WorkBookApiControllerTest : ApiControllerTestSpec() {
                             .pathParameters(parameterWithName("workbookId").description("학습지 Id"))
                             .responseSchema(Schema.schema(api.toResponseSchema()))
                             .responseFields(
-                                *Description.describe(
-                                    arrayOf(
-                                        PayloadDocumentation.fieldWithPath("data")
-                                            .fieldWithObject("data"),
-                                        PayloadDocumentation.fieldWithPath("data.id")
-                                            .fieldWithNumber("학습지 Id"),
-                                        PayloadDocumentation.fieldWithPath("data.mainImageUrl")
-                                            .fieldWithString("학습지 대표 이미지 Url"),
-                                        PayloadDocumentation.fieldWithPath("data.title")
-                                            .fieldWithString("학습지 제목"),
-                                        PayloadDocumentation.fieldWithPath("data.description")
-                                            .fieldWithString("학습지 개요"),
-                                        PayloadDocumentation.fieldWithPath("data.category")
-                                            .fieldWithString("학습지 카테고리"),
-                                        PayloadDocumentation.fieldWithPath("data.createdAt")
-                                            .fieldWithString("학습지 생성일시"),
-                                        PayloadDocumentation.fieldWithPath("data.writers[]")
-                                            .fieldWithArray("학습지 작가 목록"),
-                                        PayloadDocumentation.fieldWithPath("data.writers[].id")
-                                            .fieldWithNumber("학습지 작가 Id"),
-                                        PayloadDocumentation.fieldWithPath("data.writers[].name")
-                                            .fieldWithString("학습지 작가 이름"),
-                                        PayloadDocumentation.fieldWithPath("data.writers[].url")
-                                            .fieldWithString("학습지 작가 링크"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[]")
-                                            .fieldWithArray("학습지에 포함된 아티클 목록"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].id")
-                                            .fieldWithNumber("학습지에 포함된 아티클 Id"),
-                                        PayloadDocumentation.fieldWithPath("data.articles[].title")
-                                            .fieldWithString("학습지에 포함된 아티클 제목")
-                                    )
+                                *Description.fields(
+                                    FieldDescription("data", "data").asObject(),
+                                    FieldDescription("data.id", "학습지 Id").asNumber(),
+                                    FieldDescription("data.mainImageUrl", "학습지 대표 이미지 Url").asString(),
+                                    FieldDescription("data.title", "학습지 제목").asString(),
+                                    FieldDescription("data.description", "학습지 개요").asString(),
+                                    FieldDescription("data.category", "학습지 카테고리").asString(),
+                                    FieldDescription("data.createdAt", "학습지 생성일시").asString(),
+                                    FieldDescription("data.writers[]", "학습지 작가 목록").asArray(),
+                                    FieldDescription("data.writers[].id", "학습지 작가 Id").asNumber(),
+                                    FieldDescription("data.writers[].name", "학습지 작가 이름").asString(),
+                                    FieldDescription("data.writers[].url", "학습지 작가 링크").asString(),
+                                    FieldDescription("data.articles[]", "학습지에 포함된 아티클 목록").asArray(),
+                                    FieldDescription("data.articles[].id", "학습지에 포함된 아티클 Id").asNumber(),
+                                    FieldDescription("data.articles[].title", "학습지에 포함된 아티클 제목").asString()
                                 )
                             )
                             .build()

@@ -1,6 +1,13 @@
 
+import com.epages.restdocs.apispec.gradle.OpenApi3Task
 import org.springframework.boot.gradle.tasks.bundling.BootJar
-import java.util.Random
+import org.yaml.snakeyaml.DumperOptions
+import org.yaml.snakeyaml.Yaml
+import java.io.FileInputStream
+import java.io.FileWriter
+import java.io.InputStream
+import java.util.*
+
 
 tasks.withType(BootJar::class.java) {
     loaderImplementation = org.springframework.boot.loader.tools.LoaderImplementation.CLASSIC
@@ -40,63 +47,74 @@ dependencies {
     implementation("org.jsoup:jsoup:1.15.3")
 }
 
-tasks.named("generateStaticSwaggerUI") {
+tasks.withType(OpenApi3Task::class.java) {
+    val multipartformdataPaths = listOf(
+        "/api/v1/admin/utilities/conversion/image",
+        "/api/v1/admin/utilities/conversion/content"
+    )
     doLast {
-        val swaggerSpecSource = "$projectDir/src/main/resources/static/docs/${project.name}/swagger-ui/swagger-spec.js"
+        val input: InputStream = FileInputStream(File("$projectDir/src/main/resources/static/openapi3.yaml"))
+        val options = DumperOptions().apply {
+            defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
+            isPrettyFlow = true
+        }
+        val yaml = Yaml(options)
+        val yamlData = yaml.loadAll(input)
+        for (data in yamlData) {
+            val content = data as MutableMap<*, *>
+            val paths = content["paths"] as MutableMap<*, *>
+            paths.forEach { (path, _methods) ->
+                val methods = _methods as MutableMap<*, *>
+                // Add security to paths that require Authorization header
+                methods.forEach { (_, _details) ->
+                    val details = _details as MutableMap<String, Any>
+                    if (details.containsKey("parameters")) {
+                        val parameters = details["parameters"] as List<Map<String, Any>>
+                        parameters.forEach { param ->
+                            if (param["name"] == "Authorization") {
+                                details["security"] = listOf(mapOf("bearerAuth" to emptyList<String>()))
+                            }
+                        }
+                    }
+                }
 
-        file(swaggerSpecSource).writeText(
-            file(swaggerSpecSource).readText().replace(
-                "operationId\" : \"PutImageApi\",",
-                "operationId\" : \"PutImageApi\",\n" +
-                    putImageRequestScriptSource
+                // Add requestBody for multipart/form-data paths
+                if (multipartformdataPaths.contains(path)) {
+                    if (methods.containsKey("post")) {
+                        val post = methods["post"] as MutableMap<String, Any>
+                        if (!post.containsKey("requestBody")) {
+                            post["requestBody"] = mutableMapOf(
+                                "content" to mutableMapOf(
+                                    "multipart/form-data" to mutableMapOf(
+                                        "schema" to mutableMapOf(
+                                            "type" to "object",
+                                            "properties" to mutableMapOf(
+                                                "source" to mutableMapOf(
+                                                    "type" to "string",
+                                                    "format" to "binary"
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+            val components = content["components"] as MutableMap<String, MutableMap<String, Any>>
+            components["securitySchemes"] = mutableMapOf(
+                "bearerAuth" to mutableMapOf(
+                    "type" to "http",
+                    "scheme" to "bearer",
+                    "bearerFormat" to "JWT"
+                )
             )
-        )
-
-        file(swaggerSpecSource).writeText(
-            file(swaggerSpecSource).readText().replace(
-                "operationId\" : \"ConvertContentApi\",",
-                "operationId\" : \"ConvertContentApi\",\n" +
-                    putContentRequestScriptSource
-            )
-        )
+            val output = File("$projectDir/src/main/resources/static/openapi3.yaml")
+            yaml.dump(content, FileWriter(output))
+        }
     }
 }
-
-val putImageRequestScriptSource = "" +
-    "        \"requestBody\" : {\n" +
-    "            \"content\" : {\n" +
-    "                \"multipart/form-data\" : {\n" +
-    "                    \"schema\" : {\n" +
-    "                        \"type\" : \"object\",\n" +
-    "                        \"properties\" : {\n" +
-    "                            \"source\" : {\n" +
-    "                                \"type\" : \"string\",\n" +
-    "                                \"format\" : \"binary\"\n" +
-    "                            }\n" +
-    "                        }\n" +
-    "\n" +
-    "                    }\n" +
-    "                }\n" +
-    "            }\n" +
-    "        },"
-
-val putContentRequestScriptSource = "" +
-    "        \"requestBody\" : {\n" +
-    "            \"content\" : {\n" +
-    "                \"multipart/form-data\" : {\n" +
-    "                    \"schema\" : {\n" +
-    "                        \"type\" : \"object\",\n" +
-    "                        \"properties\" : {\n" +
-    "                            \"content\" : {\n" +
-    "                                \"type\" : \"string\",\n" +
-    "                                \"format\" : \"binary\"\n" +
-    "                            }\n" +
-    "                        }\n" +
-    "\n" +
-    "                    }\n" +
-    "                }\n" +
-    "            }\n" +
-    "        },"
 
 val imageName = project.hasProperty("imageName").let {
     if (it) {

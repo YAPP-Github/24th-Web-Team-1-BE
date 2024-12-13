@@ -15,8 +15,8 @@ class ConvertDocumentService {
     }
 
     fun mdToHtml(md: String): String {
-        val html = Jsoup.parse(com.few.api.domain.admin.service.ConvertDocumentService.Companion.ARTICLE)
-        val article = com.few.api.domain.admin.service.ConvertDocumentService.Companion.htmlRenderer.render(com.few.api.domain.admin.service.ConvertDocumentService.Companion.parser.parse(md))
+        val html = Jsoup.parse(ARTICLE)
+        val article = htmlRenderer.render(parser.parse(md))
         html.getElementsByTag("article").append(article)
         html.getElementsByTag("h1").forEach {
             it.attr("style", "font-size: 20px; line-height: 140%; font-weight: 600")

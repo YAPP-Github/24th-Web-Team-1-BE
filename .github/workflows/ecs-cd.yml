@@ -62,11 +62,11 @@ jobs:
 
             - name: Generate OpenAPI3
               run: |
-                  ./gradlew  openapi3 -PserverUrl=https://api.fewletter.site
+                  ./gradlew api:openapi3 -PserverUrl=https://api.fewletter.site
 
             - name: Generate Swagger
               run: |
-                  ./gradlew  generateStaticSwaggerUI
+                  ./gradlew api:generateStaticSwaggerUI
 
             - name: Build with Gradle bootBuildImage, tag, and push image to Amazon ECR
               env:

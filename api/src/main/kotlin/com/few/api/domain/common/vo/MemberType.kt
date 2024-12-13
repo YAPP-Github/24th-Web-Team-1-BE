@@ -9,7 +9,7 @@ enum class MemberType(val code: Byte, val displayName: String) {
 
     companion object {
         fun fromCode(code: Byte): MemberType? {
-            return values().find { it.code == code }
+            return entries.find { it.code == code }
         }
     }
 }

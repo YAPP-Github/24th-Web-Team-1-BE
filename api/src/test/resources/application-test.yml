@@ -69,12 +69,6 @@ thread-pool:
         await-termination-seconds: 60
 
 security:
-    jwt:
-        token:
-            validtime:
-                access: 31557600000
-                refresh: 31557600000
-            secretkey: jwtsecretKeyhastolonghowlongidontknow
     encryption:
         algorithm: AES
         secretKey: encryptionsecret
@@ -92,6 +86,12 @@ web:
             exposed-headers: "Set-Cookie, Authorization, Content-Type, X-Requested-With, Accept, Origin, Access-Control-Request-Method, Access-Control-Request-Headers, Access-Control-Allow-Origin, Access-Control-Allow-Credentials"
             allow-credentials: true
             max-age: 1800
+        jwt:
+            token:
+                validtime:
+                    access: 31557600000
+                    refresh: 31557600000
+                secretkey: jwtsecretKeyhastolonghowlongidontknow
     client:
         timeout:
             connect: 5000

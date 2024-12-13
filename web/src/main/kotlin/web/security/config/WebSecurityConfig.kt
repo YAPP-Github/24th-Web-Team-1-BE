@@ -129,6 +129,7 @@ class WebSecurityConfig {
         return SecurityTokenResolver(secretKey)
     }
 
+    @Profile("!test")
     @Bean(name = [TOKEN_USER_DETAILS_SERVICE])
     fun tokenUserDetailsService(tokenResolver: TokenResolver): UserDetailsService {
         return TokenUserDetailsService(tokenResolver)

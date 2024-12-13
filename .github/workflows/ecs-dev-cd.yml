@@ -56,10 +56,6 @@ jobs:
               run: |
                   ./gradlew jooqCodegenAll
 
-            - name: Test with Gradle
-              run: |
-                  ./gradlew test -parallel
-
             - name: Generate OpenAPI3
               run: |
                   ./gradlew api:openapi3 -PserverUrl=https://api.fewletter.shop

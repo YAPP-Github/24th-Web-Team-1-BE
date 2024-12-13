@@ -11,6 +11,9 @@ object DependencyVersion {
     /** springDependencyManagementVersion */
     const val SPRING_DEPENDENCY_MANAGEMENT = "1.1.5"
 
+    /** springModulith */
+    const val SPRING_MODULITH = "1.3.0"
+
     /** jwt */
     const val JWT = "0.11.5"
 
@@ -58,4 +61,7 @@ object DependencyVersion {
 
     /** Apache Commons **/
     const val COMMONS_LANG3 = "3.13.0"
+
+    /** AspectJ **/
+    const val ASPECTJ = "1.9.5"
 }

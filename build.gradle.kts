@@ -99,12 +99,17 @@ subprojects {
              * But jooq-codegen-gradle need over 3.19.0.
              *  */
             dependency("org.jooq:jooq:${DependencyVersion.JOOQ}")
+            imports {
+                mavenBom("org.springframework.modulith:spring-modulith-bom:${DependencyVersion.SPRING_MODULITH}")
+            }
         }
     }
 
     dependencies {
         /** spring starter */
         implementation("org.springframework.boot:spring-boot-starter-validation")
+        implementation("org.springframework.boot:spring-boot-starter-web")
+        implementation("org.springframework.modulith:spring-modulith-starter-core")
         kapt("org.springframework.boot:spring-boot-configuration-processor")
 
         /** kotlin */
@@ -118,6 +123,7 @@ subprojects {
         testImplementation("org.springframework.boot:spring-boot-starter-test")
         testImplementation("io.mockk:mockk:${DependencyVersion.MOCKK}")
         testImplementation("com.tngtech.archunit:archunit-junit5:${DependencyVersion.ARCH_UNIT_JUNIT5}")
+        testImplementation("org.springframework.modulith:spring-modulith-starter-test")
 
         /** kotest */
         testImplementation("io.kotest:kotest-runner-junit5:${DependencyVersion.KOTEST}")

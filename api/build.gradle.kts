@@ -17,12 +17,16 @@ dependencies {
     /** spring starter */
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-aop")
+    implementation("org.springframework.boot:spring-boot-starter-cache")
 
     /** jooq */
     jooqCodegen("org.jooq:jooq-meta-extensions:${DependencyVersion.JOOQ}")
 
+    /** Local Cache **/
+    implementation("org.ehcache:ehcache:${DependencyVersion.EHCACHE}")
+
     /** aspectj */
-    implementation("org.aspectj:aspectjweaver:1.9.5")
+    implementation("org.aspectj:aspectjweaver:${DependencyVersion.ASPECTJ}")
 
     /** scrimage */
     implementation("com.sksamuel.scrimage:scrimage-core:${DependencyVersion.SCRIMAGE}")

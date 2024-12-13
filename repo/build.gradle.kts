@@ -15,11 +15,6 @@ dependencies {
 
     /** jooq */
     api("org.springframework.boot:spring-boot-starter-jooq")
-    jooqCodegen("org.jooq:jooq-meta-extensions:${DependencyVersion.JOOQ}")
-
-    /** Local Cache **/
-    api("org.ehcache:ehcache:${DependencyVersion.EHCACHE}")
-    api("org.springframework.boot:spring-boot-starter-cache")
 
     /** flyway */
     implementation("org.flywaydb:flyway-core:${DependencyVersion.FLYWAY}")

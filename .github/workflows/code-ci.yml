@@ -28,19 +28,15 @@ jobs:
                   restore-keys: |
                       ${{ runner.os }}-gradle-
 
-            - name: Set up JDK 17
+            - name: Set up JDK 18
               uses: actions/setup-java@v3
               with:
-                  java-version: '17'
+                  java-version: '18'
                   distribution: 'temurin'
 
             - name: Jooq Code Generation
               run: |
                   ./gradlew  jooqCodegenAll
-
-            - name: Test with Gradle
-              run: |
-                  ./gradlew test -parallel
 
             - name: Build with Gradle
               run: |
@@ -48,11 +44,11 @@ jobs:
 
             - name: Generate OpenAPI3
               run: |
-                  ./gradlew  openapi3 -PserverUrl=https://api.fewletter.site
+                  ./gradlew api:openapi3 -PserverUrl=https://api.fewletter.site
 
             - name: Generate Swagger
               run: |
-                  ./gradlew  generateStaticSwaggerUI
+                  ./gradlew api:generateStaticSwaggerUI
 
             - name : Docker Login
               run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}

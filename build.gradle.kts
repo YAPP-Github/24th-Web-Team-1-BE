@@ -141,6 +141,10 @@ subprojects {
         swaggerUI("org.webjars:swagger-ui:${DependencyVersion.SWAGGER_UI}")
     }
 
+    kapt {
+        includeCompileClasspath = false
+    }
+
     tasks {
         test {
             useJUnitPlatform()

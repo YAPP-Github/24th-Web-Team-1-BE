@@ -1,0 +1,7 @@
+security:
+    encryption:
+        algorithm: AES
+        secretKey: encryptionsecret
+        transformation: AES/CBC/PKCS5Padding
+        keySize: 128
+        iv: AAAAAAAAAAAAAAAA

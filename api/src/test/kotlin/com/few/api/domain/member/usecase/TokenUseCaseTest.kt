@@ -1,33 +1,33 @@
 package com.few.api.domain.member.usecase
 
-import com.few.api.config.crypto.IdEncryption
+import com.few.api.domain.common.vo.MemberType
+import security.encryptor.IdEncryptor
 import com.few.api.domain.member.usecase.dto.TokenUseCaseIn
-import com.few.api.repo.dao.member.MemberDao
-import com.few.api.repo.dao.member.command.UpdateMemberTypeCommand
-import com.few.api.repo.dao.member.record.MemberEmailAndTypeRecord
-import com.few.api.security.token.AuthToken
-import com.few.api.security.token.TokenGenerator
-import com.few.api.security.token.TokenResolver
-import com.few.data.common.code.MemberType
+import com.few.api.domain.member.repo.MemberDao
+import com.few.api.domain.member.repo.command.UpdateMemberTypeCommand
+import com.few.api.domain.member.repo.record.MemberEmailAndTypeRecord
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import security.AuthToken
+import security.TokenGenerator
+import security.TokenResolver
 
 class TokenUseCaseTest : BehaviorSpec({
     lateinit var tokenGenerator: TokenGenerator
     lateinit var tokenResolver: TokenResolver
     lateinit var memberDao: MemberDao
-    lateinit var idEncryption: IdEncryption
+    lateinit var idEncryption: IdEncryptor
     lateinit var useCase: TokenUseCase
 
     beforeContainer {
         tokenGenerator = mockk<TokenGenerator>()
         tokenResolver = mockk<TokenResolver>()
         memberDao = mockk<MemberDao>()
-        idEncryption = mockk<IdEncryption>()
+        idEncryption = mockk<IdEncryptor>()
         useCase = TokenUseCase(tokenGenerator, tokenResolver, memberDao, idEncryption)
     }
 

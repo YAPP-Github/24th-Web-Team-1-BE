@@ -1,8 +1,8 @@
 package com.few.api.domain.subscription.usecase
 
 import com.few.api.domain.subscription.usecase.dto.UpdateSubscriptionTimeUseCaseIn
-import com.few.api.repo.dao.subscription.SubscriptionDao
-import com.few.api.repo.dao.subscription.command.BulkUpdateSubscriptionSendTimeCommand
+import com.few.api.domain.subscription.repo.SubscriptionDao
+import com.few.api.domain.subscription.repo.command.BulkUpdateSubscriptionSendTimeCommand
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 

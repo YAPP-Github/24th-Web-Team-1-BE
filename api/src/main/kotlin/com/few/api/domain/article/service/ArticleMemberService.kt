@@ -1,8 +1,8 @@
 package com.few.api.domain.article.service
 
 import com.few.api.domain.article.service.dto.ReadMemberByEmailDto
-import com.few.api.repo.dao.member.MemberDao
-import com.few.api.repo.dao.member.query.SelectMemberByEmailQuery
+import com.few.api.domain.member.repo.MemberDao
+import com.few.api.domain.member.repo.query.SelectMemberByEmailQuery
 import org.springframework.stereotype.Service
 
 @Service

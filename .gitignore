@@ -105,3 +105,6 @@ storage/**/*.sql
 
 # DB explain result files
 **/resources/explain/
+
+# static
+**/resources/static/

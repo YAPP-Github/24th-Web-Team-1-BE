@@ -1,24 +1,24 @@
 package com.few.api.domain.member.usecase
 
-import com.few.api.config.crypto.IdEncryption
 import com.few.api.domain.member.usecase.dto.SaveMemberTxCaseIn
 import com.few.api.domain.member.usecase.dto.SaveMemberUseCaseIn
 import com.few.api.domain.member.usecase.dto.SaveMemberUseCaseOut
 import com.few.api.domain.member.usecase.transaction.SaveMemberTxCase
-import com.few.api.repo.dao.member.MemberDao
-import com.few.api.repo.dao.member.query.SelectMemberByEmailNotConsiderDeletedAtQuery
-import com.few.email.service.member.SendAuthEmailService
-import com.few.email.service.member.dto.Content
-import com.few.email.service.member.dto.SendAuthEmailArgs
+import com.few.api.domain.member.repo.MemberDao
+import com.few.api.domain.member.repo.query.SelectMemberByEmailNotConsiderDeletedAtQuery
+import com.few.api.domain.member.email.SendAuthEmailService
+import com.few.api.domain.member.email.dto.Content
+import com.few.api.domain.member.email.dto.SendAuthEmailArgs
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import security.encryptor.IdEncryptor
 import java.net.URL
 
 @Component
 class SaveMemberUseCase(
     private val memberDao: MemberDao,
     private val sendAuthEmailService: SendAuthEmailService,
-    private val idEncryption: IdEncryption,
+    private val idEncryption: IdEncryptor,
     private val saveMemberTxCase: SaveMemberTxCase,
 ) {
     @Transactional

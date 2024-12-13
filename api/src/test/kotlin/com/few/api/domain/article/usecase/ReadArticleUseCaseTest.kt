@@ -1,15 +1,15 @@
 package com.few.api.domain.article.usecase
 
 import com.few.api.domain.article.event.dto.ReadArticleEvent
-import com.few.api.domain.article.handler.ArticleViewCountHandler
 import com.few.api.domain.article.service.BrowseArticleProblemsService
 import com.few.api.domain.article.service.ReadArticleWriterRecordService
 import com.few.api.domain.article.service.dto.BrowseArticleProblemsOutDto
 import com.few.api.domain.article.service.dto.ReadWriterOutDto
 import com.few.api.domain.article.usecase.dto.ReadArticleUseCaseIn
-import com.few.api.repo.dao.article.ArticleDao
-import com.few.api.repo.dao.article.record.SelectArticleRecord
-import com.few.data.common.code.CategoryType
+import com.few.api.domain.article.repo.ArticleDao
+import com.few.api.domain.article.repo.record.SelectArticleRecord
+import com.few.api.domain.article.usecase.transaction.ArticleViewCountTxCase
+import com.few.api.domain.common.vo.CategoryType
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
@@ -27,21 +27,21 @@ class ReadArticleUseCaseTest : BehaviorSpec({
     lateinit var readArticleWriterRecordService: ReadArticleWriterRecordService
     lateinit var browseArticleProblemsService: BrowseArticleProblemsService
     lateinit var useCase: ReadArticleUseCase
-    lateinit var articleViewCountHandler: ArticleViewCountHandler
+    lateinit var articleViewCountTxCase: ArticleViewCountTxCase
     lateinit var applicationEventPublisher: ApplicationEventPublisher
 
     beforeContainer {
         articleDao = mockk<ArticleDao>()
         readArticleWriterRecordService = mockk<ReadArticleWriterRecordService>()
         browseArticleProblemsService = mockk<BrowseArticleProblemsService>()
-        articleViewCountHandler = mockk<ArticleViewCountHandler>()
+        articleViewCountTxCase = mockk<ArticleViewCountTxCase>()
         applicationEventPublisher = mockk<ApplicationEventPublisher>()
 
         useCase = ReadArticleUseCase(
             articleDao,
             readArticleWriterRecordService,
             browseArticleProblemsService,
-            articleViewCountHandler,
+            articleViewCountTxCase,
             applicationEventPublisher
         )
     }
@@ -80,7 +80,7 @@ class ReadArticleUseCaseTest : BehaviorSpec({
             every { browseArticleProblemsService.execute(any()) } returns BrowseArticleProblemsOutDto(problemIds = problemIds)
 
             val views = 1L
-            every { articleViewCountHandler.browseArticleViewCount(any()) } returns views
+            every { articleViewCountTxCase.browseArticleViewCount(any()) } returns views
 
             every { applicationEventPublisher.publishEvent(any(ReadArticleEvent::class)) } just Runs
 
@@ -102,7 +102,7 @@ class ReadArticleUseCaseTest : BehaviorSpec({
                 verify(exactly = 1) { articleDao.selectArticleRecord(any()) }
                 verify(exactly = 1) { readArticleWriterRecordService.execute(any()) }
                 verify(exactly = 1) { browseArticleProblemsService.execute(any()) }
-                verify(exactly = 1) { articleViewCountHandler.browseArticleViewCount(any()) }
+                verify(exactly = 1) { articleViewCountTxCase.browseArticleViewCount(any()) }
                 verify(exactly = 1) { applicationEventPublisher.publishEvent(any(ReadArticleEvent::class)) }
             }
         }
@@ -116,7 +116,7 @@ class ReadArticleUseCaseTest : BehaviorSpec({
                 verify(exactly = 1) { articleDao.selectArticleRecord(any()) }
                 verify(exactly = 0) { readArticleWriterRecordService.execute(any()) }
                 verify(exactly = 0) { browseArticleProblemsService.execute(any()) }
-                verify(exactly = 0) { articleViewCountHandler.browseArticleViewCount(any()) }
+                verify(exactly = 0) { articleViewCountTxCase.browseArticleViewCount(any()) }
                 verify(exactly = 0) { applicationEventPublisher.publishEvent(any(ReadArticleEvent::class)) }
             }
         }
@@ -145,7 +145,7 @@ class ReadArticleUseCaseTest : BehaviorSpec({
                 verify(exactly = 1) { articleDao.selectArticleRecord(any()) }
                 verify(exactly = 1) { readArticleWriterRecordService.execute(any()) }
                 verify(exactly = 0) { browseArticleProblemsService.execute(any()) }
-                verify(exactly = 0) { articleViewCountHandler.browseArticleViewCount(any()) }
+                verify(exactly = 0) { articleViewCountTxCase.browseArticleViewCount(any()) }
                 verify(exactly = 0) { applicationEventPublisher.publishEvent(any(ReadArticleEvent::class)) }
             }
         }

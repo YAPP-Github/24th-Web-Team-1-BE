@@ -11,6 +11,9 @@ object DependencyVersion {
     /** springDependencyManagementVersion */
     const val SPRING_DEPENDENCY_MANAGEMENT = "1.1.5"
 
+    /** springModulith */
+    const val SPRING_MODULITH = "1.3.0"
+
     /** jwt */
     const val JWT = "0.11.5"
 
@@ -29,6 +32,7 @@ object DependencyVersion {
     const val KOTEST_EXTENSION = "1.1.3"
     const val COROUTINE_TEST = "1.8.0"
     const val TEST_CONTAINER = "1.19.8"
+    const val ARCH_UNIT_JUNIT5 = "0.22.0"
 
     /** docs */
     const val ASCIIDOCTOR = "3.3.2"
@@ -42,8 +46,9 @@ object DependencyVersion {
     /** minio */
     const val MINIO = "8.5.5"
 
-    /** aws-sdk */
+    /** aws */
     const val AWS_SDK = "1.12.220"
+    const val AWS_SES = "1.12.765"
 
     /** commonmark */
     const val COMMONMARK = "0.22.0"
@@ -53,4 +58,10 @@ object DependencyVersion {
 
     /** Local Cache **/
     const val EHCACHE = "3.10.0"
+
+    /** Apache Commons **/
+    const val COMMONS_LANG3 = "3.13.0"
+
+    /** AspectJ **/
+    const val ASPECTJ = "1.9.5"
 }

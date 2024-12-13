@@ -1,25 +1,25 @@
 package com.few.api.domain.member.usecase
 
-import com.few.api.config.crypto.IdEncryption
+import com.few.api.domain.common.exception.NotFoundException
+import com.few.api.domain.common.vo.MemberType
+import security.encryptor.IdEncryptor
 import com.few.api.domain.member.usecase.dto.TokenUseCaseIn
 import com.few.api.domain.member.usecase.dto.TokenUseCaseOut
-import com.few.api.exception.member.NotValidTokenException
-import com.few.api.repo.dao.member.MemberDao
-import com.few.api.repo.dao.member.command.UpdateMemberTypeCommand
-import com.few.api.security.authentication.authority.Roles
-import com.few.api.security.token.TokenGenerator
-import com.few.api.security.token.TokenResolver
-import com.few.data.common.code.MemberType
+import com.few.api.domain.member.exception.NotValidTokenException
+import com.few.api.domain.member.repo.MemberDao
+import com.few.api.domain.member.repo.command.UpdateMemberTypeCommand
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import org.webjars.NotFoundException
+import security.Roles
+import security.TokenGenerator
+import security.TokenResolver
 
 @Component
 class TokenUseCase(
     private val tokenGenerator: TokenGenerator,
     private val tokenResolver: TokenResolver,
     private val memberDao: MemberDao,
-    private val idEncryption: IdEncryption,
+    private val idEncryption: IdEncryptor,
 ) {
 
     @Transactional

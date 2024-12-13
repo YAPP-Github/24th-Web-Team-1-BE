@@ -1,11 +1,11 @@
 package com.few.api.domain.subscription.service
 
 import com.few.api.domain.subscription.service.dto.*
-import com.few.api.exception.common.InsertException
-import com.few.api.repo.dao.member.MemberDao
-import com.few.api.repo.dao.member.command.InsertMemberCommand
-import com.few.api.repo.dao.member.query.SelectMemberByEmailQuery
-import com.few.api.repo.dao.member.query.SelectMemberEmailQuery
+import com.few.api.domain.common.exception.InsertException
+import com.few.api.domain.member.repo.MemberDao
+import com.few.api.domain.member.repo.command.InsertMemberCommand
+import com.few.api.domain.member.repo.query.SelectMemberByEmailQuery
+import com.few.api.domain.member.repo.query.SelectMemberEmailQuery
 import org.springframework.stereotype.Service
 
 @Service

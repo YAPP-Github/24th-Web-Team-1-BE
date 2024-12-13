@@ -1,24 +1,24 @@
 package com.few.api.domain.problem.usecase
 
-import com.few.api.domain.problem.service.ArticleService
-import com.few.api.domain.problem.service.SubscriptionService
+import com.few.api.domain.problem.service.ProblemArticleService
+import com.few.api.domain.problem.service.ProblemSubscriptionService
 import com.few.api.domain.problem.service.dto.BrowseArticleIdInDto
 import com.few.api.domain.problem.service.dto.BrowseWorkbookIdAndProgressInDto
 import com.few.api.domain.problem.usecase.dto.BrowseProblemsUseCaseOut
 import com.few.api.domain.problem.usecase.dto.BrowseUndoneProblemsUseCaseIn
-import com.few.api.exception.common.NotFoundException
-import com.few.api.repo.dao.problem.ProblemDao
-import com.few.api.repo.dao.problem.SubmitHistoryDao
-import com.few.api.repo.dao.problem.query.SelectProblemIdByArticleIdsQuery
-import com.few.api.repo.dao.problem.query.SelectSubmittedProblemIdsQuery
+import com.few.api.domain.common.exception.NotFoundException
+import com.few.api.domain.problem.repo.ProblemDao
+import com.few.api.domain.problem.repo.SubmitHistoryDao
+import com.few.api.domain.problem.repo.query.SelectProblemIdByArticleIdsQuery
+import com.few.api.domain.problem.repo.query.SelectSubmittedProblemIdsQuery
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
 @Component
 class BrowseUndoneProblemsUseCase(
     private val problemDao: ProblemDao,
-    private val subscriptionService: SubscriptionService,
-    private val articleService: ArticleService,
+    private val problemSubscriptionService: ProblemSubscriptionService,
+    private val problemArticleService: ProblemArticleService,
     private val submitHistoryDao: SubmitHistoryDao,
 ) {
 
@@ -28,7 +28,7 @@ class BrowseUndoneProblemsUseCase(
          * 유저가 구독한 워크북들에 속한 아티클 개수를 조회함
          * 이때 아티클 개수는 현 시점 기준으로 이메일이 전송된 아티클 개수까지만 조회함
          */
-        val subscriptionProgresses = subscriptionService.browseWorkbookIdAndProgress(
+        val subscriptionProgresses = problemSubscriptionService.browseWorkbookIdAndProgress(
             BrowseWorkbookIdAndProgressInDto(useCaseIn.memberId)
         ).takeIf { it.isNotEmpty() } ?: throw NotFoundException("subscribe.workbook.notexist")
 
@@ -36,7 +36,7 @@ class BrowseUndoneProblemsUseCase(
          * 위에서 조회한 워크부에 속한 아티클 개수에 대해 article_id 들을 조회함
          */
         val sentArticleIds = subscriptionProgresses.flatMap { subscriptionProgress ->
-            articleService.browseArticleIdByWorkbookIdLimitDay(
+            problemArticleService.browseArticleIdByWorkbookIdLimitDay(
                 BrowseArticleIdInDto(
                     subscriptionProgress.workbookId,
                     subscriptionProgress.day

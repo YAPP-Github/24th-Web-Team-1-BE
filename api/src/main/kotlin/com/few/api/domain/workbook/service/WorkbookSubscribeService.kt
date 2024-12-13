@@ -2,9 +2,9 @@ package com.few.api.domain.workbook.service
 
 import com.few.api.domain.workbook.service.dto.BrowseMemberSubscribeWorkbooksInDto
 import com.few.api.domain.workbook.service.dto.BrowseMemberSubscribeWorkbooksOutDto
-import com.few.api.repo.dao.subscription.SubscriptionDao
-import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookActiveSubscriptionQuery
-import com.few.api.repo.dao.subscription.query.SelectAllMemberWorkbookInActiveSubscriptionQuery
+import com.few.api.domain.subscription.repo.SubscriptionDao
+import com.few.api.domain.subscription.repo.query.SelectAllMemberWorkbookActiveSubscriptionQuery
+import com.few.api.domain.subscription.repo.query.SelectAllMemberWorkbookInActiveSubscriptionQuery
 import org.springframework.stereotype.Service
 
 @Service

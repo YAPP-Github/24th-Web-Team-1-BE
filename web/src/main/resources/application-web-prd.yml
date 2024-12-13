@@ -1,0 +1,23 @@
+web:
+    security:
+        cors:
+            path-patterns: ${CORS_PATH_PATTERNS}
+            origin-patterns: ${CORS_ORIGIN_PATTERNS}
+            allowed-methods: ${CORS_ALLOWED_METHODS}
+            allowed-headers: ${CORS_ALLOWED_HEADERS}
+            exposed-headers: ${CORS_EXPOSED_HEADERS}
+            allow-credentials: ${CORS_ALLOW_CREDENTIALS}
+            max-age: ${CORS_MAX_AGE}
+        jwt:
+            token:
+                validtime:
+                    access: ${ACCESS_TOKEN_VALIDTIME}
+                    refresh: ${REFRESH_TOKEN_VALIDTIME}
+                secretkey: ${TOKEN_SECRETKEY}
+    client:
+        timeout:
+            connect: ${TIMEOUT_CONNECT:5000}
+            read: ${TIMEOUT_READ:5000}
+
+webhook:
+    discord: ${WEBHOOK_DISCORD}

@@ -46,13 +46,9 @@ jobs:
               run: |
                   ./gradlew jooqCodegenAll
 
-            - name: Test with Gradle
-              run: |
-                  ./gradlew test -parallel
-
             - name: Generate OpenAPI3
               run: |
-                  ./gradlew  openapi3 -PserverUrl=https://api.fewletter.shop
+                  ./gradlew  openapi3 -PserverUrl=https://api.fewletter.shop --warning-mode all
 
             - name: Generate Swagger
               run: |

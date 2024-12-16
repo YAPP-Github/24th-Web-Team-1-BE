@@ -1,4 +1,4 @@
-package com.few.domain.generator.crawler
+package com.few.domain.generator.core
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.jsoup.Jsoup
@@ -99,13 +99,15 @@ class NaverNewsCrawler(
             LocalDateTime.parse(dateStr, DateTimeFormatter.ofPattern("yyyy.MM.dd. HH:mm"))
         }
 
-        return NewsModel(
-            title = title.text().trim(),
-            content = content.text().trim(),
-            date = dateTime,
-            link = url,
-            originalLink = originalLink
-        )
+        return originalLink?.let {
+            NewsModel(
+                title = title.text().trim(),
+                content = content.text().trim(),
+                date = dateTime,
+                link = url,
+                originalLink = it
+            )
+        }
     }
 
     fun saveContentAsJson(content: List<NewsModel>) {

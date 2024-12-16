@@ -1,21 +1,24 @@
 package com.few.domain.generator.usecase
 
-import com.few.domain.generator.crawler.NaverNewsCrawler
-import com.few.domain.generator.crawler.NewsModel
+import com.few.domain.generator.core.Extractor
+import com.few.domain.generator.core.NaverNewsCrawler
+import com.few.domain.generator.core.NewsModel
 import com.few.domain.generator.usecase.dto.ExecuteCrawlerUseCaseIn
 import com.few.domain.generator.usecase.dto.ExecuteCrawlerUseCaseOut
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.coroutines.runBlocking
 import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
 class ExecuteCrawlerUseCase(
-    private val naverNewsCrawler: NaverNewsCrawler
+    private val naverNewsCrawler: NaverNewsCrawler,
+    private val extractor: Extractor,
 ) {
     private val log = KotlinLogging.logger {}
 
     //TODO: @Transactional
-    fun execute(useCaseIn: ExecuteCrawlerUseCaseIn): ExecuteCrawlerUseCaseOut {
+    fun execute(useCaseIn: ExecuteCrawlerUseCaseIn): ExecuteCrawlerUseCaseOut = runBlocking {
         /**
          * TODO: 아직 포스팅되지 않은 크롤링 데이터가 있는지 DB에서 확인
          * 있는 경우 조회해서 리턴
@@ -36,11 +39,13 @@ class ExecuteCrawlerUseCase(
         }
 
         naverNewsCrawler.saveContentAsJson(results)
-        log.info { "크롤링이 완료" }
+        log.info { "크롤링이 완료 및 요약 시작" }
 
-        return ExecuteCrawlerUseCaseOut(
+        extractor.extractAndSaveNews("crawled_news.json", "extracted_news.json")
+
+        ExecuteCrawlerUseCaseOut(
             useCaseIn.sid,
-            listOf(UUID.randomUUID().toString()), // TODO: DB 저장 시 크롤링 고유 ID 응답
+            listOf(UUID.randomUUID().toString()) // TODO: DB 저장 시 크롤링 고유 ID 응답
         )
     }
 }

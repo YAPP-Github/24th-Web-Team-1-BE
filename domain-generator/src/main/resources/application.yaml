@@ -1,0 +1,5 @@
+openai:
+    api:
+        key: ${OPENAI_API_TOKEN}
+        url: https://api.openai.com/v1/chat/completions
+        model: gpt-4

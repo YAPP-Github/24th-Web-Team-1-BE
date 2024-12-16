@@ -28,7 +28,4 @@ dependencies {
 
     /** gson **/
     implementation("com.google.code.gson:gson:2.10.1")
-
-    /** JSON <-> Class serializer **/
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0") //TODO: DB저장으로 로직 변경 후 삭제
 }

@@ -1,11 +1,9 @@
 package com.few.domain.generator.core
 
-import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 
-@Serializable
 data class NewsModel(
     val id: String = UUID.randomUUID().toString().substring(0, 4),
     var title: String = "",

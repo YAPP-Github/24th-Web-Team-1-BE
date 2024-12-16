@@ -1,5 +1,6 @@
 package com.few.domain.generator.core
 
+import com.google.gson.Gson
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -8,13 +9,12 @@ import java.util.regex.Pattern
 import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import kotlinx.serialization.*
-import kotlinx.serialization.json.*
 
 @Component
 class NaverNewsCrawler(
     private val maxPages: Int = 100,
     private val maxLinks: Int = 100,
+    private val fewGson: Gson,
 ) {
     private val log = KotlinLogging.logger {}
     private val regex_news_links = "https://n\\.news\\.naver\\.com/mnews/article/\\d+/\\d+$"
@@ -112,10 +112,7 @@ class NaverNewsCrawler(
 
     fun saveContentAsJson(content: List<NewsModel>) {
         // 콘텐츠를 JSON으로 직렬화
-        val jsonContent = Json {
-            prettyPrint = true
-            encodeDefaults = true
-        }.encodeToString(content)
+        val jsonContent = fewGson.toJson(content)
 
         // TODO DB에 저장
         File("crawled_news.json").writeText(jsonContent, Charsets.UTF_8)

@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component
 class ProblemSubscriptionService(
     private val subscriptionDao: SubscriptionDao,
 ) {
-
     fun browseWorkbookIdAndProgress(inDto: BrowseWorkbookIdAndProgressInDto): List<SubscriptionProgressOutDto> {
-        val subscriptionProgresses = subscriptionDao.selectWorkbookIdAndProgressByMember(
-            SelectSubscriptionSendStatusQuery(inDto.memberId)
-        )
+        val subscriptionProgresses =
+            subscriptionDao.selectWorkbookIdAndProgressByMember(
+                SelectSubscriptionSendStatusQuery(inDto.memberId),
+            )
 
         return subscriptionProgresses.map { SubscriptionProgressOutDto(it.workbookId, it.day) }
     }

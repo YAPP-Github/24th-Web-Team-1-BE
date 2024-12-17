@@ -26,14 +26,14 @@ class MainCardSubscribeWorkbookInfo(
     subscription: Subscription,
     val articleInfo: String,
 ) : SubscribeWorkbookInfo(
-    id = id,
-    status = status,
-    totalDay = totalDay,
-    currentDay = currentDay,
-    rank = rank,
-    totalSubscriber = totalSubscriber,
-    subscription = subscription
-)
+        id = id,
+        status = status,
+        totalDay = totalDay,
+        currentDay = currentDay,
+        rank = rank,
+        totalSubscriber = totalSubscriber,
+        subscription = subscription,
+    )
 
 class MyPageSubscribeWorkbookInfo(
     id: Long,
@@ -45,11 +45,11 @@ class MyPageSubscribeWorkbookInfo(
     subscription: Subscription,
     val workbookInfo: String,
 ) : SubscribeWorkbookInfo(
-    id = id,
-    status = status,
-    totalDay = totalDay,
-    currentDay = currentDay,
-    rank = rank,
-    totalSubscriber = totalSubscriber,
-    subscription = subscription
-)
+        id = id,
+        status = status,
+        totalDay = totalDay,
+        currentDay = currentDay,
+        rank = rank,
+        totalSubscriber = totalSubscriber,
+        subscription = subscription,
+    )

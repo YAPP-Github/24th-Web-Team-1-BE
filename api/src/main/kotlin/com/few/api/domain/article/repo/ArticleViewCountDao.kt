@@ -1,6 +1,5 @@
 package com.few.api.domain.article.repo
 
-import com.few.api.domain.common.vo.CategoryType
 import com.few.api.domain.article.repo.TempTable.ARTICLE_ID_COLUMN
 import com.few.api.domain.article.repo.TempTable.ARTICLE_VIEW_COUNT_OFFSET_TABLE
 import com.few.api.domain.article.repo.TempTable.ARTICLE_VIEW_COUNT_OFFSET_TABLE_ARTICLE_ID
@@ -22,6 +21,7 @@ import com.few.api.domain.article.repo.query.ArticleViewCountQuery
 import com.few.api.domain.article.repo.query.SelectArticlesOrderByViewsQuery
 import com.few.api.domain.article.repo.query.SelectRankByViewsQuery
 import com.few.api.domain.article.repo.record.SelectArticleViewsRecord
+import com.few.api.domain.common.vo.CategoryType
 import jooq.jooq_dsl.tables.ArticleViewCount.ARTICLE_VIEW_COUNT
 import jooq.jooq_dsl.tables.SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY
 import org.jooq.DSLContext
@@ -56,14 +56,14 @@ object TempTable {
 class ArticleViewCountDao(
     private val dslContext: DSLContext,
 ) {
-
     fun upsertArticleViewCount(query: ArticleViewCountQuery) {
         upsertArticleViewCountQuery(query)
             .execute()
     }
 
     fun upsertArticleViewCountQuery(query: ArticleViewCountQuery) =
-        dslContext.insertInto(ARTICLE_VIEW_COUNT)
+        dslContext
+            .insertInto(ARTICLE_VIEW_COUNT)
             .set(ARTICLE_VIEW_COUNT.ARTICLE_ID, query.articleId)
             .set(ARTICLE_VIEW_COUNT.VIEW_COUNT, 1)
             .set(ARTICLE_VIEW_COUNT.CATEGORY_CD, query.categoryType.code)
@@ -72,109 +72,119 @@ class ArticleViewCountDao(
 
     fun insertArticleViewCountToZero(query: ArticleViewCountQuery) = insertArticleViewCountToZeroQuery(query).execute()
 
-    fun insertArticleViewCountToZeroQuery(query: ArticleViewCountQuery) = dslContext.insertInto(ARTICLE_VIEW_COUNT)
-        .set(ARTICLE_VIEW_COUNT.ARTICLE_ID, query.articleId)
-        .set(ARTICLE_VIEW_COUNT.VIEW_COUNT, 0)
-        .set(ARTICLE_VIEW_COUNT.CATEGORY_CD, query.categoryType.code)
+    fun insertArticleViewCountToZeroQuery(query: ArticleViewCountQuery) =
+        dslContext
+            .insertInto(ARTICLE_VIEW_COUNT)
+            .set(ARTICLE_VIEW_COUNT.ARTICLE_ID, query.articleId)
+            .set(ARTICLE_VIEW_COUNT.VIEW_COUNT, 0)
+            .set(ARTICLE_VIEW_COUNT.CATEGORY_CD, query.categoryType.code)
 
-    fun selectArticleViewCount(command: ArticleViewCountCommand): Long? {
-        return selectArticleViewCountQuery(command).fetchOneInto(Long::class.java)
-    }
+    fun selectArticleViewCount(command: ArticleViewCountCommand): Long? =
+        selectArticleViewCountQuery(command).fetchOneInto(Long::class.java)
 
-    fun selectArticleViewCountQuery(command: ArticleViewCountCommand) = dslContext.select(
-        ARTICLE_VIEW_COUNT.VIEW_COUNT
-    ).from(ARTICLE_VIEW_COUNT)
-        .where(ARTICLE_VIEW_COUNT.ARTICLE_ID.eq(command.articleId))
-        .and(ARTICLE_VIEW_COUNT.DELETED_AT.isNull)
-        .query
+    fun selectArticleViewCountQuery(command: ArticleViewCountCommand) =
+        dslContext
+            .select(
+                ARTICLE_VIEW_COUNT.VIEW_COUNT,
+            ).from(ARTICLE_VIEW_COUNT)
+            .where(ARTICLE_VIEW_COUNT.ARTICLE_ID.eq(command.articleId))
+            .and(ARTICLE_VIEW_COUNT.DELETED_AT.isNull)
+            .query
 
-    fun selectRankByViews(query: SelectRankByViewsQuery): Long? {
-        return selectRankByViewsQuery(query)
+    fun selectRankByViews(query: SelectRankByViewsQuery): Long? =
+        selectRankByViewsQuery(query)
             .fetchOneInto(Long::class.java)
-    }
 
-    fun selectRankByViewsQuery(query: SelectRankByViewsQuery) = dslContext
-        .select(field(ROW_RANK_TABLE_OFFSET, Long::class.java))
-        .from(
-            dslContext.select(
-                field(TOTAL_VIEW_COUNT_TABLE_ARTICLE_ID, Long::class.java).`as`(ARTICLE_ID_COLUMN),
-                rowNumber().over(
-                    orderBy(
-                        field(TOTAL_VIEW_COUNT_TABLE_VIEW_COUNT).desc(),
-                        field(TOTAL_VIEW_COUNT_TABLE_ARTICLE_ID).desc()
-                    )
-                ).`as`(OFFSET_COLUMN)
+    fun selectRankByViewsQuery(query: SelectRankByViewsQuery) =
+        dslContext
+            .select(field(ROW_RANK_TABLE_OFFSET, Long::class.java))
+            .from(
+                dslContext
+                    .select(
+                        field(TOTAL_VIEW_COUNT_TABLE_ARTICLE_ID, Long::class.java).`as`(ARTICLE_ID_COLUMN),
+                        rowNumber()
+                            .over(
+                                orderBy(
+                                    field(TOTAL_VIEW_COUNT_TABLE_VIEW_COUNT).desc(),
+                                    field(TOTAL_VIEW_COUNT_TABLE_ARTICLE_ID).desc(),
+                                ),
+                            ).`as`(OFFSET_COLUMN),
+                    ).from(
+                        dslContext
+                            .select(
+                                ARTICLE_VIEW_COUNT.ARTICLE_ID,
+                                ARTICLE_VIEW_COUNT.VIEW_COUNT
+                                    .plus(
+                                        ifnull(field(EMAIL_VIEW_COUNT_TABLE_VIEW_COUNT, Long::class.java), 0),
+                                    ).`as`(VIEW_COUNT_COLUMN),
+                            ).from(ARTICLE_VIEW_COUNT)
+                            .leftJoin(
+                                dslContext
+                                    .select(
+                                        SEND_ARTICLE_EVENT_HISTORY.ARTICLE_ID,
+                                        count(SEND_ARTICLE_EVENT_HISTORY.ARTICLE_ID).`as`(VIEW_COUNT_COLUMN),
+                                    ).from(
+                                        SEND_ARTICLE_EVENT_HISTORY,
+                                    ).groupBy(
+                                        SEND_ARTICLE_EVENT_HISTORY.ARTICLE_ID,
+                                    ).asTable(EMAIL_VIEW_COUNT_TABLE),
+                            ).on(
+                                ARTICLE_VIEW_COUNT.ARTICLE_ID.eq(
+                                    field(EMAIL_VIEW_COUNT_TABLE_ARTICLE_ID, Long::class.java),
+                                ),
+                            ).asTable(TOTAL_VIEW_COUNT_TABLE),
+                    ).asTable(ROW_RANK_TABLE),
+            ).where(field(ROW_RANK_TABLE_ARTICLE_ID).eq(query.articleId))
+            .query
+
+    fun selectArticlesOrderByViews(query: SelectArticlesOrderByViewsQuery): List<SelectArticleViewsRecord> =
+        selectArticlesOrderByViewsQuery(query)
+            .fetchInto(SelectArticleViewsRecord::class.java)
+
+    fun selectArticlesOrderByViewsQuery(query: SelectArticlesOrderByViewsQuery) =
+        dslContext
+            .select(
+                field(ARTICLE_VIEW_COUNT_OFFSET_TABLE_ARTICLE_ID).`as`(SelectArticleViewsRecord::articleId.name),
+                field(ARTICLE_VIEW_COUNT_OFFSET_TABLE_VIEW_COUNT).`as`(SelectArticleViewsRecord::views.name),
             ).from(
-                dslContext.select(
-                    ARTICLE_VIEW_COUNT.ARTICLE_ID,
-                    ARTICLE_VIEW_COUNT.VIEW_COUNT.plus(
-                        ifnull(field(EMAIL_VIEW_COUNT_TABLE_VIEW_COUNT, Long::class.java), 0)
-                    ).`as`(VIEW_COUNT_COLUMN)
-                ).from(ARTICLE_VIEW_COUNT)
+                dslContext
+                    .select(
+                        ARTICLE_VIEW_COUNT.ARTICLE_ID,
+                        ARTICLE_VIEW_COUNT.VIEW_COUNT
+                            .plus(
+                                ifnull(field(EMAIL_VIEW_COUNT_TABLE_VIEW_COUNT, Long::class.java), 0),
+                            ).`as`(VIEW_COUNT_COLUMN),
+                        ARTICLE_VIEW_COUNT.CATEGORY_CD,
+                    ).from(ARTICLE_VIEW_COUNT)
                     .leftJoin(
-                        dslContext.select(
-                            SEND_ARTICLE_EVENT_HISTORY.ARTICLE_ID,
-                            count(SEND_ARTICLE_EVENT_HISTORY.ARTICLE_ID).`as`(VIEW_COUNT_COLUMN)
-                        ).from(
-                            SEND_ARTICLE_EVENT_HISTORY
-                        ).groupBy(
-                            SEND_ARTICLE_EVENT_HISTORY.ARTICLE_ID
-                        ).asTable(EMAIL_VIEW_COUNT_TABLE)
+                        dslContext
+                            .select(
+                                SEND_ARTICLE_EVENT_HISTORY.ARTICLE_ID,
+                                count(SEND_ARTICLE_EVENT_HISTORY.ARTICLE_ID).`as`(VIEW_COUNT_COLUMN),
+                            ).from(
+                                SEND_ARTICLE_EVENT_HISTORY,
+                            ).groupBy(
+                                SEND_ARTICLE_EVENT_HISTORY.ARTICLE_ID,
+                            ).asTable(
+                                EMAIL_VIEW_COUNT_TABLE,
+                            ),
                     ).on(
                         ARTICLE_VIEW_COUNT.ARTICLE_ID.eq(
-                            field(EMAIL_VIEW_COUNT_TABLE_ARTICLE_ID, Long::class.java)
-                        )
-                    )
-                    .asTable(TOTAL_VIEW_COUNT_TABLE)
-            ).asTable(ROW_RANK_TABLE)
-        ).where(field(ROW_RANK_TABLE_ARTICLE_ID).eq(query.articleId))
-        .query
-
-    fun selectArticlesOrderByViews(query: SelectArticlesOrderByViewsQuery): List<SelectArticleViewsRecord> {
-        return selectArticlesOrderByViewsQuery(query)
-            .fetchInto(SelectArticleViewsRecord::class.java)
-    }
-
-    fun selectArticlesOrderByViewsQuery(query: SelectArticlesOrderByViewsQuery) = dslContext
-        .select(
-            field(ARTICLE_VIEW_COUNT_OFFSET_TABLE_ARTICLE_ID).`as`(SelectArticleViewsRecord::articleId.name),
-            field(ARTICLE_VIEW_COUNT_OFFSET_TABLE_VIEW_COUNT).`as`(SelectArticleViewsRecord::views.name)
-        ).from(
-            dslContext.select(
-                ARTICLE_VIEW_COUNT.ARTICLE_ID,
-                ARTICLE_VIEW_COUNT.VIEW_COUNT.plus(
-                    ifnull(field(EMAIL_VIEW_COUNT_TABLE_VIEW_COUNT, Long::class.java), 0)
-                ).`as`(VIEW_COUNT_COLUMN),
-                ARTICLE_VIEW_COUNT.CATEGORY_CD
-            ).from(ARTICLE_VIEW_COUNT)
-                .leftJoin(
-                    dslContext.select(
-                        SEND_ARTICLE_EVENT_HISTORY.ARTICLE_ID,
-                        count(SEND_ARTICLE_EVENT_HISTORY.ARTICLE_ID).`as`(VIEW_COUNT_COLUMN)
-                    ).from(
-                        SEND_ARTICLE_EVENT_HISTORY
-                    ).groupBy(
-                        SEND_ARTICLE_EVENT_HISTORY.ARTICLE_ID
-                    ).asTable(
-                        EMAIL_VIEW_COUNT_TABLE
-                    )
-                ).on(
-                    ARTICLE_VIEW_COUNT.ARTICLE_ID.eq(
-                        field(
-                            EMAIL_VIEW_COUNT_TABLE_ARTICLE_ID,
-                            Long::class.java
-                        )
-                    )
-                ).orderBy(
-                    field(VIEW_COUNT_COLUMN, Long::class.java).desc(),
-                    ARTICLE_VIEW_COUNT.ARTICLE_ID.desc()
-                ).limit(query.offset, Long.MAX_VALUE)
-                .asTable(ARTICLE_VIEW_COUNT_OFFSET_TABLE)
-        ).where(
-            when {
-                (query.category == CategoryType.All) -> noCondition()
-                else -> field(ARTICLE_VIEW_COUNT_OFFSET_TABLE_CATEGORY_CD).eq(query.category.code)
-            }
-        ).limit(11)
-        .query
+                            field(
+                                EMAIL_VIEW_COUNT_TABLE_ARTICLE_ID,
+                                Long::class.java,
+                            ),
+                        ),
+                    ).orderBy(
+                        field(VIEW_COUNT_COLUMN, Long::class.java).desc(),
+                        ARTICLE_VIEW_COUNT.ARTICLE_ID.desc(),
+                    ).limit(query.offset, Long.MAX_VALUE)
+                    .asTable(ARTICLE_VIEW_COUNT_OFFSET_TABLE),
+            ).where(
+                when {
+                    (query.category == CategoryType.All) -> noCondition()
+                    else -> field(ARTICLE_VIEW_COUNT_OFFSET_TABLE_CATEGORY_CD).eq(query.category.code)
+                },
+            ).limit(11)
+            .query
 }

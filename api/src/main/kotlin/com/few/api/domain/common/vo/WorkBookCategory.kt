@@ -1,6 +1,10 @@
 package com.few.api.domain.common.vo
 
-enum class WorkBookCategory(val code: Byte, val parameterName: String, val displayName: String) {
+enum class WorkBookCategory(
+    val code: Byte,
+    val parameterName: String,
+    val displayName: String,
+) {
     All(-1, "all", "전체"),
     ECONOMY(0, "economy", "경제"),
     IT(10, "it", "IT"),
@@ -11,12 +15,10 @@ enum class WorkBookCategory(val code: Byte, val parameterName: String, val displ
     ;
 
     companion object {
-        fun fromCode(code: Byte): WorkBookCategory? {
-            return entries.find { it.code == code }
-        }
+        fun fromCode(code: Byte): WorkBookCategory? = entries.find { it.code == code }
 
-        fun convertToCode(parameterName: String): Byte {
-            return entries.find { it.parameterName == parameterName }?.code ?: throw IllegalArgumentException("Invalid category name $parameterName")
-        }
+        fun convertToCode(parameterName: String): Byte =
+            entries.find { it.parameterName == parameterName }?.code
+                ?: throw IllegalArgumentException("Invalid category name $parameterName")
     }
 }

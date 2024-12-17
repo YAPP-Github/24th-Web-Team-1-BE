@@ -11,16 +11,15 @@ import org.springframework.stereotype.Service
 class ReadArticleWriterRecordService(
     private val memberDao: MemberDao,
 ) {
-
-    fun execute(query: ReadWriterRecordInDto): ReadWriterOutDto? {
-        return memberDao.selectWriter(SelectWriterQuery(query.writerId))
+    fun execute(query: ReadWriterRecordInDto): ReadWriterOutDto? =
+        memberDao
+            .selectWriter(SelectWriterQuery(query.writerId))
             ?.let {
                 ReadWriterOutDto(
                     writerId = it.writerId,
                     name = it.name,
                     url = it.url,
-                    imageUrl = it.imageUrl
+                    imageUrl = it.imageUrl,
                 )
             }
-    }
 }

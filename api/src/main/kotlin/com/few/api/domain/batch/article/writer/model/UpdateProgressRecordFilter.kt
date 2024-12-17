@@ -12,7 +12,9 @@ class UpdateProgressRecordFilter(
     private val successMemberIds: Set<Long>,
     private val receiveLastDayArticleRecordMemberIds: Set<Long>,
 ) {
-    fun filter(): List<WorkBookSubscriberItem> {
-        return items.filter { it.memberId in successMemberIds }.filterNot { it.memberId in receiveLastDayArticleRecordMemberIds }
-    }
+    fun filter(): List<WorkBookSubscriberItem> =
+        items
+            .filter {
+                it.memberId in successMemberIds
+            }.filterNot { it.memberId in receiveLastDayArticleRecordMemberIds }
 }

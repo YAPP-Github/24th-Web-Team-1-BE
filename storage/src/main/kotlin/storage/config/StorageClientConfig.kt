@@ -17,25 +17,25 @@ class StorageClientConfig(
     @Value("\${storage.secret-key}") val secretKey: String,
     @Value("\${storage.region}") val region: String,
 ) {
-
     @Profile("!prd")
     @Bean
     fun localS3StorageClient(): AmazonS3Client {
-        val builder = AmazonS3ClientBuilder.standard()
-            .withCredentials(
-                AWSStaticCredentialsProvider(
-                    BasicAWSCredentials(
-                        accessKey,
-                        secretKey
-                    )
+        val builder =
+            AmazonS3ClientBuilder
+                .standard()
+                .withCredentials(
+                    AWSStaticCredentialsProvider(
+                        BasicAWSCredentials(
+                            accessKey,
+                            secretKey,
+                        ),
+                    ),
+                ).withEndpointConfiguration(
+                    AwsClientBuilder.EndpointConfiguration(
+                        url,
+                        region,
+                    ),
                 )
-            )
-            .withEndpointConfiguration(
-                AwsClientBuilder.EndpointConfiguration(
-                    url,
-                    region
-                )
-            )
 
         builder.build().let { client ->
             return client as AmazonS3Client
@@ -45,16 +45,18 @@ class StorageClientConfig(
     @Profile("prd")
     @Bean
     fun prdS3StorageClient(): AmazonS3Client {
-        AmazonS3Client.builder()
+        AmazonS3Client
+            .builder()
             .withRegion(region)
             .withCredentials(
                 AWSStaticCredentialsProvider(
                     BasicAWSCredentials(
                         accessKey,
-                        secretKey
-                    )
-                )
-            ).build().let { client ->
+                        secretKey,
+                    ),
+                ),
+            ).build()
+            .let { client ->
                 return client as AmazonS3Client
             }
     }

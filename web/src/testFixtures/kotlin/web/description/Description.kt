@@ -9,25 +9,24 @@ import org.springframework.restdocs.payload.PayloadDocumentation
 
 object Description {
     private val messageDescriptor: FieldDescriptor
-        private get() = PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING)
-            .description("메시지")
+        private get() =
+            PayloadDocumentation
+                .fieldWithPath("message")
+                .type(JsonFieldType.STRING)
+                .description("메시지")
 
-    fun describe(data: Array<FieldDescriptor>?): Array<FieldDescriptor> {
-        return ArrayUtils.addAll(
+    fun describe(data: Array<FieldDescriptor>?): Array<FieldDescriptor> =
+        ArrayUtils.addAll(
             data,
-            messageDescriptor
+            messageDescriptor,
         )
-    }
 
-    fun fields(vararg fields: FieldDescriptor): Array<FieldDescriptor> {
-        return describe(fields.toList().toTypedArray())
-    }
+    fun fields(vararg fields: FieldDescriptor): Array<FieldDescriptor> = describe(fields.toList().toTypedArray())
 
-    fun describe(): Array<FieldDescriptor> {
-        return arrayOf(
-            messageDescriptor
+    fun describe(): Array<FieldDescriptor> =
+        arrayOf(
+            messageDescriptor,
         )
-    }
 
     fun authHeader(optional: Boolean = false): HeaderDescriptorWithType {
         if (optional) {

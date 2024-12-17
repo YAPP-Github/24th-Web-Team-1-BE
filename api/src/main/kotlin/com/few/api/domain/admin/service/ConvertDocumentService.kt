@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service
 
 @Service
 class ConvertDocumentService {
-
     companion object {
         val parser = Parser.builder().build()!!
         val htmlRenderer = HtmlRenderer.builder().build()!!
@@ -28,7 +27,10 @@ class ConvertDocumentService {
             it.attr("style", "font-size: 20px; line-height: 140%; font-weight: 600")
         }
         html.getElementsByTag("img").forEach {
-            it.attr("style", "max-height: 280px; object-fit: contain; max-width: 480px; margin-left: auto; margin-right: auto; width: 100%;")
+            it.attr(
+                "style",
+                "max-height: 280px; object-fit: contain; max-width: 480px; margin-left: auto; margin-right: auto; width: 100%;",
+            )
         }
         html.getElementsByTag("article").forEach {
             it.attr("style", "max-width: 480px; font-size: 15px; line-height: 170%; font-weight: 400;")

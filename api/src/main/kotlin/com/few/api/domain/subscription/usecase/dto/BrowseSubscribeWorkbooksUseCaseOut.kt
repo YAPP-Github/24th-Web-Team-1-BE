@@ -36,14 +36,14 @@ class MainCardSubscribeWorkbookDetail(
     subscription: Subscription,
     val articleInfo: String = "{}",
 ) : SubscribeWorkbookDetail(
-    workbookId = workbookId,
-    isActiveSub = isActiveSub,
-    currentDay = currentDay,
-    totalDay = totalDay,
-    rank = rank,
-    totalSubscriber = totalSubscriber,
-    subscription = subscription
-)
+        workbookId = workbookId,
+        isActiveSub = isActiveSub,
+        currentDay = currentDay,
+        totalDay = totalDay,
+        rank = rank,
+        totalSubscriber = totalSubscriber,
+        subscription = subscription,
+    )
 
 class MyPageSubscribeWorkbookDetail(
     workbookId: Long,
@@ -55,11 +55,11 @@ class MyPageSubscribeWorkbookDetail(
     subscription: Subscription,
     val workbookInfo: String = "{}",
 ) : SubscribeWorkbookDetail(
-    workbookId = workbookId,
-    isActiveSub = isActiveSub,
-    currentDay = currentDay,
-    totalDay = totalDay,
-    rank = rank,
-    totalSubscriber = totalSubscriber,
-    subscription = subscription
-)
+        workbookId = workbookId,
+        isActiveSub = isActiveSub,
+        currentDay = currentDay,
+        totalDay = totalDay,
+        rank = rank,
+        totalSubscriber = totalSubscriber,
+        subscription = subscription,
+    )

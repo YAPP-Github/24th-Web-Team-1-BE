@@ -14,18 +14,20 @@ class SecurityTokenGenerator(
     private val accessTokenValidTime: Long,
     private val refreshTokenValidTime: Long,
 ) : TokenGenerator {
-
-    override fun generateAuthToken(memberId: Long?, memberEmail: String?, memberRoles: List<Roles>): AuthToken {
-        return AuthToken(
+    override fun generateAuthToken(
+        memberId: Long?,
+        memberEmail: String?,
+        memberRoles: List<Roles>,
+    ): AuthToken =
+        AuthToken(
             generateAccessToken(
                 memberId,
                 memberEmail,
                 memberRoles,
-                accessTokenValidTime
+                accessTokenValidTime,
             ),
-            generateRefreshToken(memberId, memberEmail, memberRoles, refreshTokenValidTime)
+            generateRefreshToken(memberId, memberEmail, memberRoles, refreshTokenValidTime),
         )
-    }
 
     override fun generateAuthToken(
         memberId: Long?,
@@ -33,12 +35,11 @@ class SecurityTokenGenerator(
         memberRoles: List<Roles>,
         accessTokenValidTime: Long?,
         refreshTokenValidTime: Long?,
-    ): AuthToken {
-        return AuthToken(
+    ): AuthToken =
+        AuthToken(
             generateAccessToken(memberId, memberEmail, memberRoles, accessTokenValidTime),
-            generateRefreshToken(memberId, memberEmail, memberRoles, refreshTokenValidTime)
+            generateRefreshToken(memberId, memberEmail, memberRoles, refreshTokenValidTime),
         )
-    }
 
     override fun generateAccessToken(
         memberId: Long?,
@@ -49,7 +50,8 @@ class SecurityTokenGenerator(
         val now = Date()
         val roles = convertToStringList(memberRoles)
         val acValidTime = accessTokenValidTime ?: this.accessTokenValidTime
-        return Jwts.builder()
+        return Jwts
+            .builder()
             .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
             .claim(TokenClaim.MEMBER_ID_CLAIM.key, memberId)
             .claim(TokenClaim.MEMBER_EMAIL_CLAIM.key, memberEmail)
@@ -69,7 +71,8 @@ class SecurityTokenGenerator(
         val now = Date()
         val roles = convertToStringList(memberRoles)
         val rfValidTime = refreshTokenValidTime ?: this.refreshTokenValidTime
-        return Jwts.builder()
+        return Jwts
+            .builder()
             .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
             .claim(TokenClaim.MEMBER_ID_CLAIM.key, memberId)
             .claim(TokenClaim.MEMBER_EMAIL_CLAIM.key, memberEmail)

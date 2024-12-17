@@ -1,21 +1,22 @@
 package storage.image.client
 
 import com.amazonaws.services.s3.AmazonS3Client
-import storage.image.client.dto.*
 import io.github.oshai.kotlinlogging.KotlinLogging
+import storage.image.client.dto.*
 
 class S3ImageStoreClient(
     private val s3client: AmazonS3Client,
     private val region: String,
 ) : ImageStoreClient {
-
     private val log = KotlinLogging.logger {}
 
     override fun getPreSignedObjectUrl(args: ImageGetPreSignedObjectUrlArgs): String? {
-        args.toS3Args()
+        args
+            .toS3Args()
             .let { s3 ->
                 try {
-                    s3client.generatePresignedUrl(s3)
+                    s3client
+                        .generatePresignedUrl(s3)
                         .let { url ->
                             return url.toString()
                         }
@@ -29,7 +30,8 @@ class S3ImageStoreClient(
     }
 
     override fun removeObject(args: ImageRemoveObjectArgs): Boolean {
-        args.toS3Args()
+        args
+            .toS3Args()
             .let { s3 ->
                 try {
                     s3client.deleteObject(s3)
@@ -44,7 +46,8 @@ class S3ImageStoreClient(
     }
 
     override fun putObject(args: ImagePutObjectArgs): ImageWriteResponse? {
-        args.toS3Args()
+        args
+            .toS3Args()
             .let { s3 ->
                 try {
                     s3client.putObject(s3).let { owr ->
@@ -53,7 +56,7 @@ class S3ImageStoreClient(
                             region,
                             args.imagePath,
                             owr.eTag ?: "",
-                            owr.versionId ?: ""
+                            owr.versionId ?: "",
                         )
                     }
                 } catch (e: Exception) {

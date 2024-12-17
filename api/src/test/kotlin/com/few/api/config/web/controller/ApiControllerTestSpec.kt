@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.few.api.domain.admin.controller.AdminController
 import com.few.api.domain.admin.usecase.*
 import com.few.api.domain.article.controller.ArticleController
-import com.few.api.domain.article.usecase.ReadArticleUseCase
 import com.few.api.domain.article.usecase.BrowseArticlesUseCase
 import com.few.api.domain.article.usecase.ReadArticleByEmailUseCase
+import com.few.api.domain.article.usecase.ReadArticleUseCase
 import com.few.api.domain.log.controller.ApiLogController
 import com.few.api.domain.log.usecase.AddApiLogUseCase
 import com.few.api.domain.log.usecase.AddEmailLogUseCase
@@ -47,7 +47,7 @@ import web.config.WebConfig
 @Import(
     WebConfig::class,
     SecurityConfig::class,
-    ApiControllerTestComponentConfig::class
+    ApiControllerTestComponentConfig::class,
 )
 @WebMvcTest(
     controllers = [
@@ -58,12 +58,11 @@ import web.config.WebConfig
         ProblemController::class,
         SubscriptionController::class,
         WorkBookArticleController::class,
-        WorkBookController::class
-    ]
+        WorkBookController::class,
+    ],
 )
 @ExtendWith(RestDocumentationExtension::class)
 abstract class ApiControllerTestSpec {
-
     /** WebConfig */
     @MockBean
     lateinit var restTemplate: RestTemplate

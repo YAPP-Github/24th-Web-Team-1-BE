@@ -9,25 +9,28 @@ import java.util.*
 @Component
 class ApiMessageSourceAccessor : MessageSourceAware {
     override fun setMessageSource(messageSource: MessageSource) {
-        messageSourceAccessor = MessageSourceAccessor(
-            messageSource,
-            Locale.getDefault()
-        )
+        messageSourceAccessor =
+            MessageSourceAccessor(
+                messageSource,
+                Locale.getDefault(),
+            )
     }
 
     companion object {
         private var messageSourceAccessor: MessageSourceAccessor? = null
-        fun getMessage(code: String?): String {
-            return messageSourceAccessor!!.getMessage(
-                code!!
-            )
-        }
 
-        fun getMessage(code: String?, vararg args: Any?): String {
-            return messageSourceAccessor!!.getMessage(
+        fun getMessage(code: String?): String =
+            messageSourceAccessor!!.getMessage(
                 code!!,
-                args
             )
-        }
+
+        fun getMessage(
+            code: String?,
+            vararg args: Any?,
+        ): String =
+            messageSourceAccessor!!.getMessage(
+                code!!,
+                args,
+            )
     }
 }

@@ -2,10 +2,10 @@ package storage.image.config
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
-import storage.config.StorageClientConfig
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
+import storage.config.StorageClientConfig
 import storage.image.config.properties.CdnProperty
 
 @Configuration
@@ -21,7 +21,5 @@ class ImageStorageConfig {
     @Bean(name = [CDN_PROPERTY])
     fun cdnProperty(
         @Value("\${cdn.url}") url: String,
-    ): CdnProperty {
-        return CdnProperty(url)
-    }
+    ): CdnProperty = CdnProperty(url)
 }

@@ -19,7 +19,6 @@ class LocalDelegatedSecurityConfigurer(
     private val tokenAuthProvider: AuthenticationProvider,
     private val corsProperties: CorsConfigurationSourceProperties,
 ) : AbstractDelegatedSecurityConfigurer {
-
     override fun securityFilterChain(http: HttpSecurity): DefaultSecurityFilterChain {
         http.csrf {
             it.disable()
@@ -34,17 +33,20 @@ class LocalDelegatedSecurityConfigurer(
             it.configurationSource(corsConfigurationSource)
         }
         http.authorizeHttpRequests {
-            it.requestMatchers(
-                AntPathRequestMatcher("/api/v1/**")
-            ).authenticated().anyRequest().denyAll()
+            it
+                .requestMatchers(
+                    AntPathRequestMatcher("/api/v1/**"),
+                ).authenticated()
+                .anyRequest()
+                .denyAll()
         }
         http.addFilterBefore(
             webTokenInvalidExceptionHandlerFilter,
-            AbstractPreAuthenticatedProcessingFilter::class.java
+            AbstractPreAuthenticatedProcessingFilter::class.java,
         )
         http.addFilterAt(
             authenticationFilter,
-            AbstractPreAuthenticatedProcessingFilter::class.java
+            AbstractPreAuthenticatedProcessingFilter::class.java,
         )
         http.exceptionHandling {
             it.authenticationEntryPoint(authenticationEntryPoint)
@@ -57,9 +59,10 @@ class LocalDelegatedSecurityConfigurer(
         return http.build()
     }
 
-    override fun ignoreCustomizer(): WebSecurityCustomizer {
-        return WebSecurityCustomizer { web: WebSecurity ->
-            web.ignoring()
+    override fun ignoreCustomizer(): WebSecurityCustomizer =
+        WebSecurityCustomizer { web: WebSecurity ->
+            web
+                .ignoring()
                 .requestMatchers(
                     AntPathRequestMatcher("/actuator/health", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/error", HttpMethod.GET.name()),
@@ -69,23 +72,20 @@ class LocalDelegatedSecurityConfigurer(
                     AntPathRequestMatcher("/v3/api-docs/**", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/openapi3.yaml", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/reports/**", HttpMethod.GET.name()),
-
                     /** 인증/비인증 모두 허용 */
                     AntPathRequestMatcher(
                         "/api/v1/subscriptions/workbooks/main",
-                        HttpMethod.GET.name()
+                        HttpMethod.GET.name(),
                     ),
                     AntPathRequestMatcher("/api/v1/workbooks", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/api/v1/articles/*", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/api/v1/workbooks/*/articles/*", HttpMethod.GET.name()),
-
                     /** 어드민 */
                     AntPathRequestMatcher("/api/v1/admin/**", HttpMethod.POST.name()),
                     AntPathRequestMatcher("/api/v1/articles/views", HttpMethod.POST.name()),
                     AntPathRequestMatcher("/api/v1/logs", HttpMethod.POST.name()),
                     AntPathRequestMatcher("/api/v1/logs/email/articles", HttpMethod.POST.name()),
                     AntPathRequestMatcher("/batch/**"),
-
                     /** 인증 불필요 */
                     AntPathRequestMatcher("/api/v1/members", HttpMethod.POST.name()),
                     AntPathRequestMatcher("/api/v1/members/token", HttpMethod.POST.name()),
@@ -96,16 +96,11 @@ class LocalDelegatedSecurityConfigurer(
                     AntPathRequestMatcher("/api/v1/workbooks/categories", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/api/v1/workbooks/*/articles/*", HttpMethod.GET.name()),
                     AntPathRequestMatcher("/api/v1/problems/**", HttpMethod.GET.name()),
-                    AntPathRequestMatcher("/api/v1/problems/*", HttpMethod.POST.name())
+                    AntPathRequestMatcher("/api/v1/problems/*", HttpMethod.POST.name()),
                 )
         }
-    }
 
-    override fun getTokenAuthProvider(): AuthenticationProvider {
-        return tokenAuthProvider
-    }
+    override fun getTokenAuthProvider(): AuthenticationProvider = tokenAuthProvider
 
-    override fun getCorsProperties(): CorsConfigurationSourceProperties {
-        return corsProperties
-    }
+    override fun getCorsProperties(): CorsConfigurationSourceProperties = corsProperties
 }

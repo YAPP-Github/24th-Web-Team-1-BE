@@ -7,7 +7,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
 class ApiWebConfigurer : WebMvcConfigurer {
-
     override fun addFormatters(registry: FormatterRegistry) {
         registry.addConverter(WorkBookCategoryConverter())
         registry.addConverter(ViewConverter())

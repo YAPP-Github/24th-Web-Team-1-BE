@@ -25,32 +25,20 @@ class FlywayConfig {
     }
 
     @Bean(name = [FLYWAY])
-    fun flyway(
-        configuration: org.flywaydb.core.api.configuration.Configuration?,
-    ): Flyway {
-        return Flyway(configuration)
-    }
+    fun flyway(configuration: org.flywaydb.core.api.configuration.Configuration?): Flyway = Flyway(configuration)
 
     @Profile("!new")
     @Bean(name = [FLYWAY_VALIDATE_INITIALIZER])
-    fun flywayValidateInitializer(
-        flyway: Flyway?,
-    ): FlywayMigrationInitializer {
-        return FlywayMigrationInitializer(flyway) { obj: Flyway -> obj.validate() }
-    }
+    fun flywayValidateInitializer(flyway: Flyway?): FlywayMigrationInitializer =
+        FlywayMigrationInitializer(flyway) { obj: Flyway -> obj.validate() }
 
     @Bean(name = [FLYWAY_MIGRATION_INITIALIZER])
-    fun flywayMigrationInitializer(
-        flyway: Flyway?,
-    ): FlywayMigrationInitializer {
-        return FlywayMigrationInitializer(flyway) { obj: Flyway -> obj.migrate() }
-    }
+    fun flywayMigrationInitializer(flyway: Flyway?): FlywayMigrationInitializer =
+        FlywayMigrationInitializer(flyway) { obj: Flyway -> obj.migrate() }
 
     @Bean(name = [FLYWAY_PROPERTIES])
     @ConfigurationProperties(prefix = "spring.flyway")
-    fun flywayProperties(): FlywayProperties {
-        return FlywayProperties()
-    }
+    fun flywayProperties(): FlywayProperties = FlywayProperties()
 
     @Bean(name = [FLYWAY_CONFIGURATION])
     fun configuration(
@@ -61,9 +49,9 @@ class FlywayConfig {
         flywayProperties().locations.forEach(
             Consumer { locations: String? ->
                 configuration.locations(
-                    locations
+                    locations,
                 )
-            }
+            },
         )
         return configuration
     }

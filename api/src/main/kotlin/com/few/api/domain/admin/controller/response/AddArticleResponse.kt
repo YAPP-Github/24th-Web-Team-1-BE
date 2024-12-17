@@ -6,6 +6,6 @@ data class AddArticleResponse(
     val articleId: Long,
 ) {
     constructor(useCaseOut: AddArticleUseCaseOut) : this(
-        articleId = useCaseOut.articleId
+        articleId = useCaseOut.articleId,
     )
 }

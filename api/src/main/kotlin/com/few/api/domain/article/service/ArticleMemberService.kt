@@ -9,10 +9,9 @@ import org.springframework.stereotype.Service
 class ArticleMemberService(
     private val memberDao: MemberDao,
 ) {
-
-    fun readMemberByEmail(dto: ReadMemberByEmailDto): Long? {
-        return memberDao.selectMemberByEmail(
-            SelectMemberByEmailQuery(dto.email)
-        )?.memberId
-    }
+    fun readMemberByEmail(dto: ReadMemberByEmailDto): Long? =
+        memberDao
+            .selectMemberByEmail(
+                SelectMemberByEmailQuery(dto.email),
+            )?.memberId
 }

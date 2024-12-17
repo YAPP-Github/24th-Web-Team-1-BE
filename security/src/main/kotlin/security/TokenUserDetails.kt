@@ -12,31 +12,17 @@ open class TokenUserDetails(
         private const val NOT_USE_PASSWORD_VALUE = "0"
     }
 
-    override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        return authorities.toMutableList()
-    }
+    override fun getAuthorities(): MutableCollection<out GrantedAuthority> = authorities.toMutableList()
 
-    override fun getPassword(): String {
-        return NOT_USE_PASSWORD_VALUE
-    }
+    override fun getPassword(): String = NOT_USE_PASSWORD_VALUE
 
-    override fun getUsername(): String {
-        return id
-    }
+    override fun getUsername(): String = id
 
-    override fun isAccountNonExpired(): Boolean {
-        return true
-    }
+    override fun isAccountNonExpired(): Boolean = true
 
-    override fun isAccountNonLocked(): Boolean {
-        return true
-    }
+    override fun isAccountNonLocked(): Boolean = true
 
-    override fun isCredentialsNonExpired(): Boolean {
-        return true
-    }
+    override fun isCredentialsNonExpired(): Boolean = true
 
-    override fun isEnabled(): Boolean {
-        return true
-    }
+    override fun isEnabled(): Boolean = true
 }

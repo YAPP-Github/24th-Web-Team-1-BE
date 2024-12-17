@@ -19,13 +19,12 @@ class MapArticleUseCase(
             MapWorkBookToArticleCommand(
                 useCaseIn.workbookId,
                 useCaseIn.articleId,
-                useCaseIn.dayCol
-            )
-
+                useCaseIn.dayCol,
+            ),
         )
 
         adminArticleMainCardService.appendWorkbook(
-            AppendWorkbookToArticleMainCardInDto(useCaseIn.articleId, useCaseIn.workbookId)
+            AppendWorkbookToArticleMainCardInDto(useCaseIn.articleId, useCaseIn.workbookId),
         )
     }
 }

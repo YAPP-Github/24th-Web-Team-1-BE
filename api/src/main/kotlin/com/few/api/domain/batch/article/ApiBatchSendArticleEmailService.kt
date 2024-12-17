@@ -14,7 +14,6 @@ class ApiBatchSendArticleEmailService(
     private val batchCallExecutionService: ApiBatchCallExecutionService,
     private val objectMapper: ObjectMapper,
 ) {
-
     @Transactional
     fun execute() {
         val startTime = System.currentTimeMillis()

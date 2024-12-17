@@ -1,6 +1,9 @@
 package com.few.api.domain.common.vo
 
-enum class DayCode(val code: String, val days: String) {
+enum class DayCode(
+    val code: String,
+    val days: String,
+) {
     MON("0000001", "월"),
     TUE("0000010", "화"),
     MON_TUE("0000011", "월,화"),
@@ -129,9 +132,8 @@ enum class DayCode(val code: String, val days: String) {
     TUE_WED_THU_FRI_SAT_SUN("1111110", "화,수,목,금,토,일"),
     MON_TUE_WED_THU_FRI_SAT_SUN("1111111", "월,화,수,목,금,토,일"),
     ;
+
     companion object {
-        fun fromCode(code: String): DayCode {
-            return entries.first { it.code == code }
-        }
+        fun fromCode(code: String): DayCode = entries.first { it.code == code }
     }
 }

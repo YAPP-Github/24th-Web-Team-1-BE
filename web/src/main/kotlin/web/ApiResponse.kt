@@ -8,7 +8,9 @@ class ApiResponse<B> : ResponseEntity<B> {
     constructor(status: HttpStatus?) : super(status!!)
     constructor(body: B, status: HttpStatus?) : super(body, status!!)
 
-    class FailureBody(val message: String) : Serializable
+    class FailureBody(
+        val message: String,
+    ) : Serializable
 
     class SuccessBody<D>(
         val data: D,

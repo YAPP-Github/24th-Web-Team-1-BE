@@ -11,9 +11,9 @@ import org.springframework.stereotype.Repository
 class SendArticleEventHistoryDao(
     private val dslContext: DSLContext,
 ) {
-
     fun insertEvent(command: InsertEventCommand) {
-        dslContext.insertInto(SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY)
+        dslContext
+            .insertInto(SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY)
             .set(SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY.MEMBER_ID, command.memberId)
             .set(SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY.ARTICLE_ID, command.articleId)
             .set(SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY.MESSAGE_ID, command.messageId)
@@ -22,27 +22,27 @@ class SendArticleEventHistoryDao(
             .execute()
     }
 
-    fun selectEventByMessageId(query: SelectEventByMessageIdAndEventTypeQuery): SendArticleEventHistoryRecord? {
-        return dslContext.select(
-            SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY.MEMBER_ID.`as`(
-                SendArticleEventHistoryRecord::memberId.name
-            ),
-            SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY.ARTICLE_ID.`as`(
-                SendArticleEventHistoryRecord::articleId.name
-            ),
-            SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY.MESSAGE_ID.`as`(
-                SendArticleEventHistoryRecord::messageId.name
-            ),
-            SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY.EVENT_TYPE_CD.`as`(
-                SendArticleEventHistoryRecord::eventType.name
-            ),
-            SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY.SEND_TYPE_CD.`as`(
-                SendArticleEventHistoryRecord::sendType.name
-            )
-        )
-            .from(SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY)
+    fun selectEventByMessageId(query: SelectEventByMessageIdAndEventTypeQuery): SendArticleEventHistoryRecord? =
+        dslContext
+            .select(
+                SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY.MEMBER_ID.`as`(
+                    SendArticleEventHistoryRecord::memberId.name,
+                ),
+                SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY.ARTICLE_ID.`as`(
+                    SendArticleEventHistoryRecord::articleId.name,
+                ),
+                SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY.MESSAGE_ID.`as`(
+                    SendArticleEventHistoryRecord::messageId.name,
+                ),
+                SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY.EVENT_TYPE_CD.`as`(
+                    SendArticleEventHistoryRecord::eventType.name,
+                ),
+                SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY.SEND_TYPE_CD.`as`(
+                    SendArticleEventHistoryRecord::sendType.name,
+                ),
+            ).from(SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY)
             .where(SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY.MESSAGE_ID.eq(query.messageId))
             .and(SendArticleEventHistory.SEND_ARTICLE_EVENT_HISTORY.EVENT_TYPE_CD.eq(query.eventType))
-            .fetchOne()?.into(SendArticleEventHistoryRecord::class.java)
-    }
+            .fetchOne()
+            ?.into(SendArticleEventHistoryRecord::class.java)
 }

@@ -11,7 +11,6 @@ import javax.cache.Cache
 class MemberCacheManager(
     private val cacheManager: CacheManager,
 ) {
-
     private var selectWriterCache: Cache<Any, Any> = cacheManager.getCache(SELECT_WRITER_CACHE)?.nativeCache as Cache<Any, Any>
 
     fun getAllWriterValues(): List<WriterRecord> {

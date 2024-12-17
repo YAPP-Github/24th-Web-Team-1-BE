@@ -1,11 +1,11 @@
 package com.few.api.domain.common.lock
 
-import com.few.api.domain.subscription.usecase.dto.SubscribeWorkbookUseCaseIn
 import com.few.api.domain.subscription.repo.SubscriptionDao
+import com.few.api.domain.subscription.usecase.dto.SubscribeWorkbookUseCaseIn
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.annotation.AfterReturning
 import org.aspectj.lang.annotation.AfterThrowing
-import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Before
 import org.aspectj.lang.annotation.Pointcut
@@ -48,7 +48,10 @@ class ApiLockAspect(
         getSubscriptionMemberIdAndWorkBookIdLock(useCaseIn.memberId, useCaseIn.workbookId)
     }
 
-    private fun getSubscriptionMemberIdAndWorkBookIdLock(memberId: Long, workbookId: Long) {
+    private fun getSubscriptionMemberIdAndWorkBookIdLock(
+        memberId: Long,
+        workbookId: Long,
+    ) {
         subscriptionDao.getLock(memberId, workbookId).run {
             if (!this) {
                 throw IllegalStateException("Already in progress for $memberId's subscription to $workbookId")
@@ -79,8 +82,7 @@ class ApiLockAspect(
         }
     }
 
-    private fun getLockFor(joinPoint: JoinPoint) =
-        (joinPoint.signature as MethodSignature).method.getAnnotation(ApiLockFor::class.java)
+    private fun getLockFor(joinPoint: JoinPoint) = (joinPoint.signature as MethodSignature).method.getAnnotation(ApiLockFor::class.java)
 
     private fun releaseSubscriptionMemberIdAndWorkBookIdLockCase(joinPoint: JoinPoint) {
         if (joinPoint.args[0] is SubscribeWorkbookUseCaseIn) {
@@ -97,7 +99,10 @@ class ApiLockAspect(
         releaseSubscriptionMemberIdAndWorkBookIdLock(useCaseIn.memberId, useCaseIn.workbookId)
     }
 
-    private fun releaseSubscriptionMemberIdAndWorkBookIdLock(memberId: Long, workbookId: Long) {
+    private fun releaseSubscriptionMemberIdAndWorkBookIdLock(
+        memberId: Long,
+        workbookId: Long,
+    ) {
         subscriptionDao.releaseLock(memberId, workbookId)
         log.debug { "Lock released for $memberId's subscription to $workbookId" }
     }

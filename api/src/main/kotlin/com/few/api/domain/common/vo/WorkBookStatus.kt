@@ -9,8 +9,6 @@ enum class WorkBookStatus {
         /**
          * status ture -> ACTIVE, false -> DONE
          */
-        fun fromStatus(status: Boolean): WorkBookStatus {
-            return if (status) ACTIVE else DONE
-        }
+        fun fromStatus(status: Boolean): WorkBookStatus = if (status) ACTIVE else DONE
     }
 }

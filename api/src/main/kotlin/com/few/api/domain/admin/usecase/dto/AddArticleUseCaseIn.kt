@@ -12,7 +12,6 @@ data class AddArticleUseCaseIn(
     val contentType: String,
     val contentSource: String,
     val problems: List<ProblemDetail>,
-
 )
 
 data class ProblemDetail(

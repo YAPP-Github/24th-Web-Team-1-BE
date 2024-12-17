@@ -4,7 +4,6 @@ open class WorkbookSubscriptionHistory(
     val isNew: Boolean,
     protected val workbookSubscriptionStatus: WorkbookSubscriptionStatus? = null,
 ) {
-
     init {
         if (isNew) {
             require(workbookSubscriptionStatus == null) {
@@ -19,7 +18,7 @@ open class WorkbookSubscriptionHistory(
 
     constructor(workbookSubscriptionHistory: WorkbookSubscriptionHistory) : this(
         workbookSubscriptionHistory.isNew,
-        workbookSubscriptionHistory.workbookSubscriptionStatus
+        workbookSubscriptionHistory.workbookSubscriptionStatus,
     )
 
     /**

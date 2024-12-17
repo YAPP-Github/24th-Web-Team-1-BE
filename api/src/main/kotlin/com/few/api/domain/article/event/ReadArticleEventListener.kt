@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component
 class ReadArticleEventListener(
     private val articleViewHisAsyncHandler: ArticleViewHisAsyncHandler,
 ) {
-
     @EventListener
     fun handleEvent(event: ReadArticleEvent) {
         articleViewHisAsyncHandler.addArticleViewHis(event.articleId, event.memberId, event.category)

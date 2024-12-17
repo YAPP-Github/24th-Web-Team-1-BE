@@ -11,7 +11,9 @@ import org.apache.commons.lang3.RandomStringUtils
 import org.slf4j.MDC
 import org.springframework.http.HttpHeaders
 
-class MDCLogFilter(private val mapper: ObjectMapper) : Filter {
+class MDCLogFilter(
+    private val mapper: ObjectMapper,
+) : Filter {
     private val log = KotlinLogging.logger {}
 
     override fun doFilter(

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component
 class WorkbookSubscriptionEventListener(
     private val workbookSubscriptionClientAsyncHandler: WorkbookSubscriptionClientAsyncHandler,
 ) {
-
     @EventListener
     fun handleEvent(event: WorkbookSubscriptionEvent) {
         workbookSubscriptionClientAsyncHandler.sendSubscriptionEvent(event.workbookId)

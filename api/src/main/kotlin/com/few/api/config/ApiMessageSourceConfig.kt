@@ -18,16 +18,17 @@ class ApiMessageSourceConfig {
     }
 
     companion object {
-        private val MESSAGE_SOURCE_CLASSPATH_LIST = listOf(
-            "classpath:messages/api/article",
-            "classpath:messages/api/document",
-            "classpath:messages/api/external",
-            "classpath:messages/api/image",
-            "classpath:messages/api/member",
-            "classpath:messages/api/problem",
-            "classpath:messages/api/submit",
-            "classpath:messages/api/subscribe",
-            "classpath:messages/api/workbook"
-        )
+        private val MESSAGE_SOURCE_CLASSPATH_LIST =
+            listOf(
+                "classpath:messages/api/article",
+                "classpath:messages/api/document",
+                "classpath:messages/api/external",
+                "classpath:messages/api/image",
+                "classpath:messages/api/member",
+                "classpath:messages/api/problem",
+                "classpath:messages/api/submit",
+                "classpath:messages/api/subscribe",
+                "classpath:messages/api/workbook",
+            )
     }
 }

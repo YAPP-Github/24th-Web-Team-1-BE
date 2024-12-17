@@ -12,6 +12,7 @@ class PerformanceListener(
     private var watch: StopWatch = StopWatch(),
 ) : ExecuteListener {
     private val log = KotlinLogging.logger {}
+
     companion object {
         const val SLOW_QUERY_STANDARD = 5000000000L // 5 seconds
     }

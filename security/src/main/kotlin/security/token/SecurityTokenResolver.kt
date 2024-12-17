@@ -6,12 +6,15 @@ import io.jsonwebtoken.Jwts
 import security.TokenClaim
 import security.TokenResolver
 
-class SecurityTokenResolver(private val secretKey: String) : TokenResolver {
+class SecurityTokenResolver(
+    private val secretKey: String,
+) : TokenResolver {
     private val log = KotlinLogging.logger {}
 
-    override fun resolve(token: String?): Claims? {
-        return try {
-            Jwts.parserBuilder()
+    override fun resolve(token: String?): Claims? =
+        try {
+            Jwts
+                .parserBuilder()
                 .setSigningKey(secretKey.toByteArray())
                 .build()
                 .parseClaimsJws(token)
@@ -20,11 +23,11 @@ class SecurityTokenResolver(private val secretKey: String) : TokenResolver {
             log.warn { "${"Failed to get memberId. token: {}"} $token" }
             null
         }
-    }
 
     override fun resolveId(token: String?): Long? {
         return try {
-            Jwts.parserBuilder()
+            Jwts
+                .parserBuilder()
                 .setSigningKey(secretKey.toByteArray())
                 .build()
                 .parseClaimsJws(token)
@@ -39,7 +42,8 @@ class SecurityTokenResolver(private val secretKey: String) : TokenResolver {
 
     override fun resolveEmail(token: String?): String? {
         return try {
-            Jwts.parserBuilder()
+            Jwts
+                .parserBuilder()
                 .setSigningKey(secretKey.toByteArray())
                 .build()
                 .parseClaimsJws(token)
@@ -53,7 +57,8 @@ class SecurityTokenResolver(private val secretKey: String) : TokenResolver {
 
     override fun resolveRole(token: String?): String? {
         return try {
-            Jwts.parserBuilder()
+            Jwts
+                .parserBuilder()
                 .setSigningKey(secretKey.toByteArray())
                 .build()
                 .parseClaimsJws(token)

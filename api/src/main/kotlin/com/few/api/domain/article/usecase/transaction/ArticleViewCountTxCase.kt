@@ -11,9 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 class ArticleViewCountTxCase(
     private val articleViewCountDao: ArticleViewCountDao,
 ) {
-
     @Transactional(isolation = Isolation.READ_UNCOMMITTED, propagation = Propagation.REQUIRES_NEW)
-    fun browseArticleViewCount(articleId: Long): Long {
-        return (articleViewCountDao.selectArticleViewCount(ArticleViewCountCommand(articleId)) ?: 0L) + 1L
-    }
+    fun browseArticleViewCount(articleId: Long): Long =
+        (articleViewCountDao.selectArticleViewCount(ArticleViewCountCommand(articleId)) ?: 0L) + 1L
 }

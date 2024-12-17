@@ -7,10 +7,7 @@ import org.springframework.stereotype.Component
 class ContentsJsonMapper(
     private val objectMapper: ObjectMapper,
 ) {
-
-    fun toJson(contents: Contents): String {
-        return objectMapper.writeValueAsString(contents)
-    }
+    fun toJson(contents: Contents): String = objectMapper.writeValueAsString(contents)
 
     fun toObject(value: String): Contents {
         val contents = objectMapper.readTree(value).get("contents")

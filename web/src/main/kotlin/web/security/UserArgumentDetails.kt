@@ -9,7 +9,7 @@ class UserArgumentDetails(
     id: String,
     email: String,
 ) : TokenUserDetails(
-    authorities = authorities,
-    id = id,
-    email = email
-)
+        authorities = authorities,
+        id = id,
+        email = email,
+    )

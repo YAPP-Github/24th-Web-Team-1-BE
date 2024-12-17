@@ -14,5 +14,5 @@ import org.springframework.web.bind.annotation.RequestBody
 )
 interface OpenAiClient {
     @PostMapping
-    fun summarizeNews(@RequestBody request: OpenAiRequest): OpenAiResponse
+    fun send(@RequestBody request: OpenAiRequest): OpenAiResponse
 }

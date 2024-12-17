@@ -25,6 +25,7 @@ class ExecuteCrawlerUseCase(
          * 없는 경우 크롤링 시작
          */
 
+        //  1. 네이버 뉴스 크롤링
         log.info { "크롤링이 시작" }
         val newsUrls = naverNewsCrawler.getNaverNewsUrls(useCaseIn.sid)
 
@@ -41,7 +42,10 @@ class ExecuteCrawlerUseCase(
         naverNewsCrawler.saveContentAsJson(results)
         log.info { "크롤링이 완료 및 요약 시작" }
 
+        // 2. 뉴스 추출 및 요약
         extractor.extractAndSaveNews("crawled_news.json", "extracted_news.json")
+
+        // 3. 뉴스 그룹화
 
         ExecuteCrawlerUseCaseOut(
             useCaseIn.sid,

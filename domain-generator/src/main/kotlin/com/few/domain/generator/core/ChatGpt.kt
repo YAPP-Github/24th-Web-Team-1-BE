@@ -3,6 +3,7 @@ package com.few.domain.generator.core
 import com.few.domain.generator.client.OpenAiClient
 import com.few.domain.generator.client.request.OpenAiRequest
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import org.springframework.stereotype.Component
 
@@ -11,7 +12,7 @@ class ChatGpt(
     private val openAiClient: OpenAiClient,
     private val fewGson: Gson,
 ) {
-    fun makeSummaryPrompt(news: NewsModel): List<Map<String, String>> {
+    private fun makeSummaryPrompt(news: NewsModel): List<Map<String, String>> {
         val command = """
             다음 뉴스 기사를 분석하고 요약해주세요:
 
@@ -55,10 +56,64 @@ class ChatGpt(
             messages = prompt
         )
 
-        val response = openAiClient.summarizeNews(request)
+        val response = openAiClient.send(request)
         val resultContent = response.choices.firstOrNull()?.message?.content
             ?: throw Exception("요약 결과를 찾을 수 없습니다.")
 
         return fewGson.fromJson(resultContent, object : TypeToken<Map<String, Any>>() {}.type)
+    }
+
+    fun groupNewsWithChatGPT(newsList: List<NewsModel>): JsonObject {
+        val promptMessages = makeGroupingPrompt(newsList)
+
+        val request = OpenAiRequest(
+            model = "gpt-4",
+            messages = promptMessages
+        )
+
+        val response = openAiClient.send(request)
+        val resultContent = response.choices[0].message.content.trim()
+
+        // JSON 형태로 변환
+        return fewGson.fromJson(resultContent, JsonObject::class.java) // TODO 리턴타입 변경
+    }
+
+    private fun makeGroupingPrompt(newsList: List<NewsModel>): List<Map<String, String>> {
+        val newsSummaries = newsList.joinToString("\n") { "${it.id}: ${it.summary}" }
+        val command = """
+            다음은 여러 뉴스 기사의 요약입니다. 이 뉴스들을 비슷한 주제끼리 그룹핑해주세요:
+            
+            $newsSummaries
+            
+            # 지침:
+            1. 뉴스 요약들을 분석하고 비슷한 주제끼리 그룹화하세요.
+            2. 각 그룹에 적절한 주제를 부여하세요.
+            3. topic은 구체적인 문장으로 작성해주세요.
+            4. 응답은 반드시 다음 JSON 형식을 따라야 합니다:
+
+            {
+                "groups": [
+                    {
+                        "topic": "그룹의 주제",
+                        "news_ids": ["id1", "id3", "id5" ...]
+                    },
+                    {
+                        "topic": "다른 그룹의 주제",
+                        "news_ids": ["id2", "id4", "id6" ...]
+                    }
+                ]
+            }
+
+            # 주의사항:
+            - 응답은 오직 위의 JSON 형식만 포함해야 합니다. 다른 설명이나 내용을 추가하지 마세요.
+            - 각 그룹의 "news_ids"는 위 목록의 뉴스 ID를 나타냅니다.
+            - 그룹의 수에는 제한이 없지만, 너무 많은 그룹을 만들지 않도록 주의하세요. 뉴스 총 개수의 10% 이상의 그룹을 만들지 않도록 주의하세요.
+            - 그룹의 주제는 추상적인 문장을 사용하지 말고 구체적인 문장으로 작성해주세요.
+        """.trimIndent()
+
+        return listOf( // TODO 클래스 정의
+            mapOf("role" to "system", "content" to "당신은 뉴스 기사를 주제별로 그룹핑하는 전문가입니다. 주어진 뉴스 요약들을 분석하고 비슷한 주제끼리 그룹화해야 합니다."),
+            mapOf("role" to "user", "content" to command)
+        )
     }
 }

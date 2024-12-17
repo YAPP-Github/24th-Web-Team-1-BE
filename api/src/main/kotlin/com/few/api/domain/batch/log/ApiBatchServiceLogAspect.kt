@@ -21,7 +21,9 @@ class ApiBatchServiceLogAspect {
     fun requestLogging(joinPoint: ProceedingJoinPoint): Any? {
         val signature = joinPoint.signature
         val splitByDot =
-            signature.declaringTypeName.split(regex = "\\.".toRegex()).dropLastWhile { it.isEmpty() }
+            signature.declaringTypeName
+                .split(regex = "\\.".toRegex())
+                .dropLastWhile { it.isEmpty() }
                 .toTypedArray()
         val serviceName = splitByDot[splitByDot.size - 1]
         val args = joinPoint.args

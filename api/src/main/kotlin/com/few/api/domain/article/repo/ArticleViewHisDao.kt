@@ -10,28 +10,29 @@ import org.springframework.stereotype.Repository
 class ArticleViewHisDao(
     private val dslContext: DSLContext,
 ) {
-
     fun insertArticleViewHis(command: ArticleViewHisCommand) {
         insertArticleViewHisCommand(command).execute()
     }
 
     fun insertArticleViewHisCommand(command: ArticleViewHisCommand) =
-        dslContext.insertInto(
-            ArticleViewHis.ARTICLE_VIEW_HIS,
-            ArticleViewHis.ARTICLE_VIEW_HIS.ARTICLE_MST_ID,
-            ArticleViewHis.ARTICLE_VIEW_HIS.MEMBER_ID
-        ).values(
-            command.articleId,
-            command.memberId
-        )
+        dslContext
+            .insertInto(
+                ArticleViewHis.ARTICLE_VIEW_HIS,
+                ArticleViewHis.ARTICLE_VIEW_HIS.ARTICLE_MST_ID,
+                ArticleViewHis.ARTICLE_VIEW_HIS.MEMBER_ID,
+            ).values(
+                command.articleId,
+                command.memberId,
+            )
 
-    fun countArticleViews(query: ArticleViewHisCountQuery): Long? {
-        return countArticleViewsQuery(query)
+    fun countArticleViews(query: ArticleViewHisCountQuery): Long? =
+        countArticleViewsQuery(query)
             .fetchOne(0, Long::class.java)
-    }
 
     fun countArticleViewsQuery(query: ArticleViewHisCountQuery) =
-        dslContext.selectCount()
+        dslContext
+            .selectCount()
             .from(ArticleViewHis.ARTICLE_VIEW_HIS)
-            .where(ArticleViewHis.ARTICLE_VIEW_HIS.ARTICLE_MST_ID.eq(query.articleId)).query
+            .where(ArticleViewHis.ARTICLE_VIEW_HIS.ARTICLE_MST_ID.eq(query.articleId))
+            .query
 }

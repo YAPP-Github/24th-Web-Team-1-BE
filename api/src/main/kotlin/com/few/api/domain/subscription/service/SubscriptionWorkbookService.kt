@@ -11,30 +11,29 @@ import org.springframework.stereotype.Service
 class SubscriptionWorkbookService(
     private val workbookDao: WorkbookDao,
 ) {
-
-    fun readWorkbookTitle(dto: ReadWorkbookTitleInDto): ReadWorkbookTitleOutDto? {
-        return workbookDao.selectWorkBook(SelectWorkBookRecordQuery(dto.workbookId))
+    fun readWorkbookTitle(dto: ReadWorkbookTitleInDto): ReadWorkbookTitleOutDto? =
+        workbookDao
+            .selectWorkBook(SelectWorkBookRecordQuery(dto.workbookId))
             ?.title
             ?.let {
                 ReadWorkbookTitleOutDto(
-                    it
+                    it,
                 )
             }
-    }
 
     /**
      * key: workbookId
      * value: title
      */
-    fun readAllWorkbookTitle(dto: ReadAllWorkbookTitleInDto): Map<Long, String> {
-        return workbookDao.selectAllWorkbookTitle(SelectAllWorkbookTitleQuery(dto.workbookIds))
+    fun readAllWorkbookTitle(dto: ReadAllWorkbookTitleInDto): Map<Long, String> =
+        workbookDao
+            .selectAllWorkbookTitle(SelectAllWorkbookTitleQuery(dto.workbookIds))
             .associateBy({ it.workbookId }, { it.title })
-    }
 
-    fun readWorkbookLastArticleId(dto: ReadWorkbookLastArticleIdInDto): ReadWorkbookLastArticleIdOutDto? {
-        return workbookDao.selectWorkBookLastArticleId(SelectWorkBookLastArticleIdQuery(dto.workbookId))
+    fun readWorkbookLastArticleId(dto: ReadWorkbookLastArticleIdInDto): ReadWorkbookLastArticleIdOutDto? =
+        workbookDao
+            .selectWorkBookLastArticleId(SelectWorkBookLastArticleIdQuery(dto.workbookId))
             ?.let {
                 ReadWorkbookLastArticleIdOutDto(it)
             }
-    }
 }

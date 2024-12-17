@@ -8,17 +8,14 @@ import com.amazonaws.services.s3.model.PutObjectRequest
 import org.apache.http.entity.ContentType
 import java.io.InputStream
 
-fun ImageGetPreSignedObjectUrlArgs.toS3Args(): GeneratePresignedUrlRequest {
-    return GeneratePresignedUrlRequest(
+fun ImageGetPreSignedObjectUrlArgs.toS3Args(): GeneratePresignedUrlRequest =
+    GeneratePresignedUrlRequest(
         this.bucket,
         this.imagePath,
-        HttpMethod.valueOf(this.method)
+        HttpMethod.valueOf(this.method),
     )
-}
 
-fun ImageRemoveObjectArgs.toS3Args(): DeleteObjectRequest {
-    return DeleteObjectRequest(this.bucket, this.imagePath)
-}
+fun ImageRemoveObjectArgs.toS3Args(): DeleteObjectRequest = DeleteObjectRequest(this.bucket, this.imagePath)
 
 fun ImagePutObjectArgs.toS3Args(): PutObjectRequest {
     val objectSize = this.objectSize
@@ -30,7 +27,7 @@ fun ImagePutObjectArgs.toS3Args(): PutObjectRequest {
         ObjectMetadata().apply {
             this.contentType = contentType
             this.contentLength = objectSize
-        }
+        },
     )
 }
 

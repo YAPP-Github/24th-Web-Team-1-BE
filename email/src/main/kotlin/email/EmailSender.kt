@@ -7,8 +7,10 @@ abstract class EmailSender<T : SendMailArgs<*, *>>(
     private val mailProperties: MailProperties,
     private val defaultEmailSendProvider: EmailSendProvider,
 ) {
-
-    fun send(args: T, emailSendProvider: EmailSendProvider? = null): String {
+    fun send(
+        args: T,
+        emailSendProvider: EmailSendProvider? = null,
+    ): String {
         val from = mailProperties.username
         val to = args.to
         val subject = args.subject
@@ -19,7 +21,7 @@ abstract class EmailSender<T : SendMailArgs<*, *>>(
                     "FEW Letter <$from>",
                     to,
                     subject,
-                    message
+                    message,
                 )
             }
     }

@@ -20,8 +20,8 @@ class AddWorkbookUseCase(
                     title = useCaseIn.title,
                     mainImageUrl = useCaseIn.mainImageUrl,
                     category = useCaseIn.category,
-                    description = useCaseIn.description
-                )
+                    description = useCaseIn.description,
+                ),
             ) ?: throw InsertException("workbook.insertfail.record")
 
         return AddWorkbookUseCaseOut(workbookId)

@@ -14,7 +14,7 @@ import web.handler.LoggingHandler
 @Configuration
 @ComponentScan(basePackages = [WebConfig.BASE_PACKAGE])
 @Import(
-    SecurityConfig::class
+    SecurityConfig::class,
 )
 class WebConfig {
     companion object {
@@ -26,17 +26,11 @@ class WebConfig {
     }
 
     @Bean(name = [WEB_CONFIGURER])
-    fun webConfigurer(): WebMvcConfigurer {
-        return WebConfigurer()
-    }
+    fun webConfigurer(): WebMvcConfigurer = WebConfigurer()
 
     @Bean(name = [MDC_LOG_FILTER])
-    fun mdcLogFilter(objectMapper: ObjectMapper): Filter {
-        return MDCLogFilter(objectMapper)
-    }
+    fun mdcLogFilter(objectMapper: ObjectMapper): Filter = MDCLogFilter(objectMapper)
 
     @Bean(name = [LOGGING_HANDLER])
-    fun loggingHandler(): LoggingHandler {
-        return LoggingHandler()
-    }
+    fun loggingHandler(): LoggingHandler = LoggingHandler()
 }

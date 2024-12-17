@@ -8,13 +8,9 @@ import security.exception.SecurityAccessTokenInvalidException
 class TokenAuthenticationFilter : AbstractPreAuthenticatedProcessingFilter() {
     private val log = KotlinLogging.logger {}
 
-    override fun getPreAuthenticatedPrincipal(request: HttpServletRequest): Any {
-        return resolveAccessToken(request)
-    }
+    override fun getPreAuthenticatedPrincipal(request: HttpServletRequest): Any = resolveAccessToken(request)
 
-    override fun getPreAuthenticatedCredentials(request: HttpServletRequest): Any {
-        return resolveAccessToken(request)
-    }
+    override fun getPreAuthenticatedCredentials(request: HttpServletRequest): Any = resolveAccessToken(request)
 
     private fun resolveAccessToken(request: HttpServletRequest): String {
         val authorization: String? = request.getHeader("Authorization")

@@ -9,12 +9,11 @@ class ReceiveLastArticleRecordFilter(
     private val items: List<WorkBookSubscriberItem>,
     private val workbooksMappedLastDayCol: Map<Long, Int>,
 ) {
-
-    fun filter(): List<WorkBookSubscriberItem> {
-        return items.filter {
-            it.targetWorkBookId in workbooksMappedLastDayCol.keys
-        }.filter {
-            (it.progress.toInt() + 1) == workbooksMappedLastDayCol[it.targetWorkBookId]
-        }
-    }
+    fun filter(): List<WorkBookSubscriberItem> =
+        items
+            .filter {
+                it.targetWorkBookId in workbooksMappedLastDayCol.keys
+            }.filter {
+                (it.progress.toInt() + 1) == workbooksMappedLastDayCol[it.targetWorkBookId]
+            }
 }

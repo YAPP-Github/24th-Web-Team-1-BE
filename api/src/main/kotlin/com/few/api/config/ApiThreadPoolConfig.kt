@@ -10,7 +10,6 @@ import web.config.ClonedTaskDecorator
 
 @Configuration
 class ApiThreadPoolConfig {
-
     private val log = KotlinLogging.logger {}
 
     companion object {
@@ -19,23 +18,22 @@ class ApiThreadPoolConfig {
 
     @Bean
     @ConfigurationProperties(prefix = "thread-pool.discord")
-    fun disCordThreadPoolProperties(): ApiThreadPoolProperties {
-        return ApiThreadPoolProperties()
-    }
+    fun disCordThreadPoolProperties(): ApiThreadPoolProperties = ApiThreadPoolProperties()
 
     @Bean(DISCORD_HOOK_EVENT_POOL)
-    fun discordHookThreadPool() = ThreadPoolTaskExecutor().apply {
-        val properties = disCordThreadPoolProperties()
-        corePoolSize = properties.getCorePoolSize()
-        maxPoolSize = properties.getMaxPoolSize()
-        queueCapacity = properties.getQueueCapacity()
-        setWaitForTasksToCompleteOnShutdown(properties.getWaitForTasksToCompleteOnShutdown())
-        setAwaitTerminationSeconds(properties.getAwaitTerminationSeconds())
-        setThreadNamePrefix("discordHookThreadPool-")
-        setRejectedExecutionHandler { r, _ ->
-            log.warn { "Discord Hook Event Task Rejected: $r" }
+    fun discordHookThreadPool() =
+        ThreadPoolTaskExecutor().apply {
+            val properties = disCordThreadPoolProperties()
+            corePoolSize = properties.getCorePoolSize()
+            maxPoolSize = properties.getMaxPoolSize()
+            queueCapacity = properties.getQueueCapacity()
+            setWaitForTasksToCompleteOnShutdown(properties.getWaitForTasksToCompleteOnShutdown())
+            setAwaitTerminationSeconds(properties.getAwaitTerminationSeconds())
+            setThreadNamePrefix("discordHookThreadPool-")
+            setRejectedExecutionHandler { r, _ ->
+                log.warn { "Discord Hook Event Task Rejected: $r" }
+            }
+            setTaskDecorator(ClonedTaskDecorator())
+            initialize()
         }
-        setTaskDecorator(ClonedTaskDecorator())
-        initialize()
-    }
 }

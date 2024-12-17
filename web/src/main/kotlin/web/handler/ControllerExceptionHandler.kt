@@ -22,7 +22,6 @@ import java.nio.file.AccessDeniedException
 class ControllerExceptionHandler(
     private val loggingHandler: LoggingHandler,
 ) {
-
     @ExceptionHandler(IllegalArgumentException::class)
     fun handleBadRequest(
         ex: IllegalArgumentException,
@@ -41,7 +40,7 @@ class ControllerExceptionHandler(
         DecodingException::class,
         ConstraintViolationException::class,
         ServerWebInputException::class,
-        HttpMessageNotReadableException::class
+        HttpMessageNotReadableException::class,
     )
     fun handleBadRequest(
         ex: Exception,
@@ -60,7 +59,7 @@ class ControllerExceptionHandler(
         }
         return ApiResponseGenerator.fail(
             ExceptionMessage.FAIL_REQUEST.message,
-            HttpStatus.BAD_REQUEST
+            HttpStatus.BAD_REQUEST,
         )
     }
 
@@ -74,7 +73,7 @@ class ControllerExceptionHandler(
         val messageDetail = ExceptionMessage.REQUEST_INVALID.message + " : " + filedErrors
         return ApiResponseGenerator.fail(
             messageDetail,
-            HttpStatus.BAD_REQUEST
+            HttpStatus.BAD_REQUEST,
         )
     }
 
@@ -86,7 +85,7 @@ class ControllerExceptionHandler(
         loggingHandler.writeLog(ex, request)
         return ApiResponseGenerator.fail(
             ExceptionMessage.FAIL.message,
-            HttpStatus.INTERNAL_SERVER_ERROR
+            HttpStatus.INTERNAL_SERVER_ERROR,
         )
     }
 
@@ -98,7 +97,7 @@ class ControllerExceptionHandler(
         loggingHandler.writeLog(ex, request)
         return ApiResponseGenerator.fail(
             ExceptionMessage.ACCESS_DENIED.message,
-            HttpStatus.FORBIDDEN
+            HttpStatus.FORBIDDEN,
         )
     }
 
@@ -110,7 +109,7 @@ class ControllerExceptionHandler(
         loggingHandler.writeLog(ex, request)
         return ApiResponseGenerator.fail(
             ExceptionMessage.FAIL.message,
-            HttpStatus.INTERNAL_SERVER_ERROR
+            HttpStatus.INTERNAL_SERVER_ERROR,
         )
     }
 }

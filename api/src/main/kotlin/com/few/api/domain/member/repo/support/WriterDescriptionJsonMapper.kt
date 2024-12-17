@@ -12,11 +12,7 @@ class WriterDescriptionJsonMapper(
         objectMapper.registerKotlinModule()
     }
 
-    fun toJson(writerDescription: WriterDescription): String {
-        return objectMapper.writeValueAsString(writerDescription)
-    }
+    fun toJson(writerDescription: WriterDescription): String = objectMapper.writeValueAsString(writerDescription)
 
-    fun toObject(value: String): WriterDescription {
-        return objectMapper.readValue(value, WriterDescription::class.java)
-    }
+    fun toObject(value: String): WriterDescription = objectMapper.readValue(value, WriterDescription::class.java)
 }

@@ -48,16 +48,18 @@ dependencies {
 }
 
 tasks.withType(OpenApi3Task::class.java) {
-    val multipartformdataPaths = listOf(
-        "/api/v1/admin/utilities/conversion/image",
-        "/api/v1/admin/utilities/conversion/content"
-    )
+    val multipartformdataPaths =
+        listOf(
+            "/api/v1/admin/utilities/conversion/image",
+            "/api/v1/admin/utilities/conversion/content",
+        )
     doLast {
         val input: InputStream = FileInputStream(File("$projectDir/src/main/resources/static/openapi3.yaml"))
-        val options = DumperOptions().apply {
-            defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
-            isPrettyFlow = true
-        }
+        val options =
+            DumperOptions().apply {
+                defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
+                isPrettyFlow = true
+            }
         val yaml = Yaml(options)
         val yamlData = yaml.loadAll(input)
         for (data in yamlData) {
@@ -83,53 +85,63 @@ tasks.withType(OpenApi3Task::class.java) {
                     if (methods.containsKey("post")) {
                         val post = methods["post"] as MutableMap<String, Any>
                         if (!post.containsKey("requestBody")) {
-                            post["requestBody"] = mutableMapOf(
-                                "content" to mutableMapOf(
-                                    "multipart/form-data" to mutableMapOf(
-                                        "schema" to mutableMapOf(
-                                            "type" to "object",
-                                            "properties" to mutableMapOf(
-                                                "source" to mutableMapOf(
-                                                    "type" to "string",
-                                                    "format" to "binary"
-                                                )
-                                            )
-                                        )
-                                    )
+                            post["requestBody"] =
+                                mutableMapOf(
+                                    "content" to
+                                        mutableMapOf(
+                                            "multipart/form-data" to
+                                                mutableMapOf(
+                                                    "schema" to
+                                                        mutableMapOf(
+                                                            "type" to "object",
+                                                            "properties" to
+                                                                mutableMapOf(
+                                                                    "source" to
+                                                                        mutableMapOf(
+                                                                            "type" to "string",
+                                                                            "format" to "binary",
+                                                                        ),
+                                                                ),
+                                                        ),
+                                                ),
+                                        ),
                                 )
-                            )
                         }
                     }
                 }
             }
             val components = content["components"] as MutableMap<String, MutableMap<String, Any>>
-            components["securitySchemes"] = mutableMapOf(
-                "bearerAuth" to mutableMapOf(
-                    "type" to "http",
-                    "scheme" to "bearer",
-                    "bearerFormat" to "JWT"
+            components["securitySchemes"] =
+                mutableMapOf(
+                    "bearerAuth" to
+                        mutableMapOf(
+                            "type" to "http",
+                            "scheme" to "bearer",
+                            "bearerFormat" to "JWT",
+                        ),
                 )
-            )
             val output = File("$projectDir/src/main/resources/static/openapi3.yaml")
             yaml.dump(content, FileWriter(output))
         }
     }
 }
 
-val imageName = project.hasProperty("imageName").let {
-    if (it) {
-        project.property("imageName") as String
-    } else {
-        "fewletter/api"
+val imageName =
+    project.hasProperty("imageName").let {
+        if (it) {
+            project.property("imageName") as String
+        } else {
+            "fewletter/api"
+        }
     }
-}
-val releaseVersion = project.hasProperty("releaseVersion").let {
-    if (it) {
-        project.property("releaseVersion") as String
-    } else {
-        Random().nextInt(90000) + 10000
+val releaseVersion =
+    project.hasProperty("releaseVersion").let {
+        if (it) {
+            project.property("releaseVersion") as String
+        } else {
+            Random().nextInt(90000) + 10000
+        }
     }
-}
 
 tasks.register("buildDockerImage") {
     dependsOn("bootJar")
@@ -148,16 +160,32 @@ tasks.register("buildDockerImage") {
         exec {
             workingDir(".")
             commandLine(
-                "docker", "buildx", "build", "--platform=linux/amd64,linux/arm64", "-t",
-                "$imageName:latest", "--build-arg", "RELEASE_VERSION=$releaseVersion", ".", "--push"
+                "docker",
+                "buildx",
+                "build",
+                "--platform=linux/amd64,linux/arm64",
+                "-t",
+                "$imageName:latest",
+                "--build-arg",
+                "RELEASE_VERSION=$releaseVersion",
+                ".",
+                "--push",
             )
         }
 
         exec {
             workingDir(".")
             commandLine(
-                "docker", "buildx", "build", "--platform=linux/amd64,linux/arm64", "-t",
-                "$imageName:$releaseVersion", "--build-arg", "RELEASE_VERSION=$releaseVersion", ".", "--push"
+                "docker",
+                "buildx",
+                "build",
+                "--platform=linux/amd64,linux/arm64",
+                "-t",
+                "$imageName:$releaseVersion",
+                "--build-arg",
+                "RELEASE_VERSION=$releaseVersion",
+                ".",
+                "--push",
             )
         }
     }
@@ -176,7 +204,7 @@ tasks.register("buildEcsDockerImage") {
                 imageName,
                 "--build-arg",
                 "RELEASE_VERSION=$releaseVersion",
-                '.'
+                '.',
             )
         }
     }
@@ -197,7 +225,7 @@ tasks.register("buildPinpointEcsDockerImageDev") {
                 "RELEASE_VERSION=$releaseVersion",
                 "-f",
                 "Dockerfile.dev.pinpoint",
-                '.'
+                '.',
             )
         }
     }
@@ -218,7 +246,7 @@ tasks.register("buildPinpointEcsDockerImagePrd") {
                 "RELEASE_VERSION=$releaseVersion",
                 "-f",
                 "Dockerfile.prd.pinpoint",
-                '.'
+                '.',
             )
         }
     }

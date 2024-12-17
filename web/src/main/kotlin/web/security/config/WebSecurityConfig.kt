@@ -33,7 +33,7 @@ import web.security.handler.DelegatedAuthenticationEntryPoint
 @Configuration
 @Import(
     ProdDelegatedSecurityConfigurer::class,
-    LocalDelegatedSecurityConfigurer::class
+    LocalDelegatedSecurityConfigurer::class,
 )
 class WebSecurityConfig {
     companion object {
@@ -53,33 +53,34 @@ class WebSecurityConfig {
     }
 
     @Bean(name = [WEB_SECURITY_CONFIGURER])
-    fun webSecurityConfigurer(userArgumentHandlerMethodArgumentResolver: HandlerMethodArgumentResolver): WebMvcConfigurer {
-        return WebSecurityConfigurer(userArgumentHandlerMethodArgumentResolver)
-    }
+    fun webSecurityConfigurer(userArgumentHandlerMethodArgumentResolver: HandlerMethodArgumentResolver): WebMvcConfigurer =
+        WebSecurityConfigurer(userArgumentHandlerMethodArgumentResolver)
 
     @Profile("local")
     @Bean(name = ["local$SECURITY_FILTER_CHAIN"])
-    fun localSecurityFilterChain(@Qualifier(LOCAL_DELEGATED_SECURITY_CONFIGURER) abstractDelegatedSecurityConfigurer: AbstractDelegatedSecurityConfigurer, http: HttpSecurity): SecurityFilterChain {
-        return abstractDelegatedSecurityConfigurer.securityFilterChain(http)
-    }
+    fun localSecurityFilterChain(
+        @Qualifier(LOCAL_DELEGATED_SECURITY_CONFIGURER) abstractDelegatedSecurityConfigurer: AbstractDelegatedSecurityConfigurer,
+        http: HttpSecurity,
+    ): SecurityFilterChain = abstractDelegatedSecurityConfigurer.securityFilterChain(http)
 
     @Profile("local")
     @Bean(name = ["local$WEB_SECURITY_CUSTOMIZER"])
-    fun localWebSecurityFilterIgnoreCustomizer(@Qualifier(LOCAL_DELEGATED_SECURITY_CONFIGURER) abstractDelegatedSecurityConfigurer: AbstractDelegatedSecurityConfigurer): WebSecurityCustomizer {
-        return abstractDelegatedSecurityConfigurer.ignoreCustomizer()
-    }
+    fun localWebSecurityFilterIgnoreCustomizer(
+        @Qualifier(LOCAL_DELEGATED_SECURITY_CONFIGURER) abstractDelegatedSecurityConfigurer: AbstractDelegatedSecurityConfigurer,
+    ): WebSecurityCustomizer = abstractDelegatedSecurityConfigurer.ignoreCustomizer()
 
     @Profile("!local")
     @Bean(name = ["prod$SECURITY_FILTER_CHAIN"])
-    fun prodSecurityFilterChain(@Qualifier(PROD_DELEGATED_SECURITY_CONFIGURER) abstractDelegatedSecurityConfigurer: AbstractDelegatedSecurityConfigurer, http: HttpSecurity): SecurityFilterChain {
-        return abstractDelegatedSecurityConfigurer.securityFilterChain(http)
-    }
+    fun prodSecurityFilterChain(
+        @Qualifier(PROD_DELEGATED_SECURITY_CONFIGURER) abstractDelegatedSecurityConfigurer: AbstractDelegatedSecurityConfigurer,
+        http: HttpSecurity,
+    ): SecurityFilterChain = abstractDelegatedSecurityConfigurer.securityFilterChain(http)
 
     @Profile("!local")
     @Bean(name = ["prod$WEB_SECURITY_CUSTOMIZER"])
-    fun prodWebSecurityFilterIgnoreCustomizer(@Qualifier(PROD_DELEGATED_SECURITY_CONFIGURER) abstractDelegatedSecurityConfigurer: AbstractDelegatedSecurityConfigurer): WebSecurityCustomizer {
-        return abstractDelegatedSecurityConfigurer.ignoreCustomizer()
-    }
+    fun prodWebSecurityFilterIgnoreCustomizer(
+        @Qualifier(PROD_DELEGATED_SECURITY_CONFIGURER) abstractDelegatedSecurityConfigurer: AbstractDelegatedSecurityConfigurer,
+    ): WebSecurityCustomizer = abstractDelegatedSecurityConfigurer.ignoreCustomizer()
 
     @Profile("local")
     @Bean(name = [LOCAL_DELEGATED_SECURITY_CONFIGURER])
@@ -88,14 +89,13 @@ class WebSecurityConfig {
         delegatedAccessDeniedHandler: AccessDeniedHandler,
         tokenAuthProvider: AuthenticationProvider,
         corsConfigurationSourceProperties: CorsConfigurationSourceProperties,
-    ): LocalDelegatedSecurityConfigurer {
-        return LocalDelegatedSecurityConfigurer(
+    ): LocalDelegatedSecurityConfigurer =
+        LocalDelegatedSecurityConfigurer(
             delegatedAuthenticationEntryPoint,
             delegatedAccessDeniedHandler,
             tokenAuthProvider,
-            corsConfigurationSourceProperties
+            corsConfigurationSourceProperties,
         )
-    }
 
     @Profile("!local")
     @Bean(name = [PROD_DELEGATED_SECURITY_CONFIGURER])
@@ -104,56 +104,44 @@ class WebSecurityConfig {
         delegatedAccessDeniedHandler: AccessDeniedHandler,
         tokenAuthProvider: AuthenticationProvider,
         corsConfigurationSourceProperties: CorsConfigurationSourceProperties,
-    ): ProdDelegatedSecurityConfigurer {
-        return ProdDelegatedSecurityConfigurer(
+    ): ProdDelegatedSecurityConfigurer =
+        ProdDelegatedSecurityConfigurer(
             delegatedAuthenticationEntryPoint,
             delegatedAccessDeniedHandler,
             tokenAuthProvider,
-            corsConfigurationSourceProperties
+            corsConfigurationSourceProperties,
         )
-    }
 
     @Bean(name = [TOKEN_GENERATOR])
     fun tokenGenerator(
         @Value("\${web.security.jwt.token.secretkey}") secretKey: String,
         @Value("\${web.security.jwt.token.validtime.access}") accessTokenValidTime: Long,
         @Value("\${web.security.jwt.token.validtime.refresh}") refreshTokenValidTime: Long,
-    ): TokenGenerator {
-        return SecurityTokenGenerator(secretKey, accessTokenValidTime, refreshTokenValidTime)
-    }
+    ): TokenGenerator = SecurityTokenGenerator(secretKey, accessTokenValidTime, refreshTokenValidTime)
 
     @Bean(name = [TOKEN_RESOLVER])
     fun tokenResolver(
         @Value("\${web.security.jwt.token.secretkey}") secretKey: String,
-    ): TokenResolver {
-        return SecurityTokenResolver(secretKey)
-    }
+    ): TokenResolver = SecurityTokenResolver(secretKey)
 
     @Profile("!test")
     @Bean(name = [TOKEN_USER_DETAILS_SERVICE])
-    fun tokenUserDetailsService(tokenResolver: TokenResolver): UserDetailsService {
-        return TokenUserDetailsService(tokenResolver)
-    }
+    fun tokenUserDetailsService(tokenResolver: TokenResolver): UserDetailsService = TokenUserDetailsService(tokenResolver)
 
     @Bean(name = [TOKEN_AUTH_PROVIDER])
-    fun tokenAuthProvider(tokenUserDetailsService: UserDetailsService): AuthenticationProvider {
-        return TokenAuthProvider(tokenUserDetailsService)
-    }
+    fun tokenAuthProvider(tokenUserDetailsService: UserDetailsService): AuthenticationProvider = TokenAuthProvider(tokenUserDetailsService)
 
     @Bean(name = [USER_ARGUMENT_HANDLER_METHOD_ARGUMENT_RESOLVER])
-    fun userArgumentHandlerMethodArgumentResolver(tokenResolver: TokenResolver): HandlerMethodArgumentResolver {
-        return UserArgumentHandlerMethodArgumentResolver(tokenResolver)
-    }
+    fun userArgumentHandlerMethodArgumentResolver(tokenResolver: TokenResolver): HandlerMethodArgumentResolver =
+        UserArgumentHandlerMethodArgumentResolver(tokenResolver)
 
     @Bean(name = [DELEGATED_AUTHENTICATION_ENTRY_POINT])
-    fun delegatedAuthenticationEntryPoint(handlerExceptionResolver: HandlerExceptionResolver): AuthenticationEntryPoint {
-        return DelegatedAuthenticationEntryPoint(handlerExceptionResolver)
-    }
+    fun delegatedAuthenticationEntryPoint(handlerExceptionResolver: HandlerExceptionResolver): AuthenticationEntryPoint =
+        DelegatedAuthenticationEntryPoint(handlerExceptionResolver)
 
     @Bean(name = [DELEGATED_ACCESS_DENIED_HANDLER])
-    fun delegatedAccessDeniedHandler(handlerExceptionResolver: HandlerExceptionResolver): AccessDeniedHandler {
-        return DelegatedAccessDeniedHandler(handlerExceptionResolver)
-    }
+    fun delegatedAccessDeniedHandler(handlerExceptionResolver: HandlerExceptionResolver): AccessDeniedHandler =
+        DelegatedAccessDeniedHandler(handlerExceptionResolver)
 
     @Bean(name = [CORS_CONFIGURATION_SOURCE_PROPERTIES])
     fun corsConfigurationSourceProperties(
@@ -164,15 +152,14 @@ class WebSecurityConfig {
         @Value("\${web.security.cors.exposed-headers}") exposedHeaders: String,
         @Value("\${web.security.cors.allow-credentials}") allowCredentials: Boolean,
         @Value("\${web.security.cors.max-age}") maxAge: Long,
-    ): CorsConfigurationSourceProperties {
-        return CorsConfigurationSourceProperties(
+    ): CorsConfigurationSourceProperties =
+        CorsConfigurationSourceProperties(
             pathPattern,
             originPatterns,
             allowedMethods,
             allowedHeaders,
             exposedHeaders,
             allowCredentials,
-            maxAge
+            maxAge,
         )
-    }
 }

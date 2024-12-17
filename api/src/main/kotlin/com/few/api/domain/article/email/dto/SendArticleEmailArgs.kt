@@ -46,7 +46,7 @@ data class Content(
             writerLink,
             articleContent,
             problemLink = URL("https://www.fewletter.com/problem?articleId=$articleId"),
-            unsubscribeLink = URL("https://www.fewletter.com/unsubscribe?user=$memberEmail&workbookId=$workbookId&articleId=$articleId")
+            unsubscribeLink = URL("https://www.fewletter.com/unsubscribe?user=$memberEmail&workbookId=$workbookId&articleId=$articleId"),
         )
     }
 }

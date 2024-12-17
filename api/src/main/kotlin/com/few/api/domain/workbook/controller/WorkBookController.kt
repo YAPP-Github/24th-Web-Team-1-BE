@@ -1,19 +1,15 @@
 package com.few.api.domain.workbook.controller
 
-import com.few.api.domain.workbook.usecase.BrowseWorkbooksUseCase
-import com.few.api.domain.workbook.usecase.dto.ReadWorkbookUseCaseIn
-import com.few.api.domain.workbook.usecase.ReadWorkbookUseCase
-import com.few.api.domain.workbook.usecase.dto.BrowseWorkbooksUseCaseIn
 import com.few.api.domain.common.vo.ViewCategory
 import com.few.api.domain.common.vo.WorkBookCategory
 import com.few.api.domain.workbook.controller.response.BrowseWorkBookInfo
 import com.few.api.domain.workbook.controller.response.BrowseWorkBooksResponse
 import com.few.api.domain.workbook.controller.response.ReadWorkBookResponse
 import com.few.api.domain.workbook.controller.response.WriterInfo
-import web.ApiResponse
-import web.ApiResponseGenerator
-import web.security.UserArgument
-import web.security.UserArgumentDetails
+import com.few.api.domain.workbook.usecase.BrowseWorkbooksUseCase
+import com.few.api.domain.workbook.usecase.ReadWorkbookUseCase
+import com.few.api.domain.workbook.usecase.dto.BrowseWorkbooksUseCaseIn
+import com.few.api.domain.workbook.usecase.dto.ReadWorkbookUseCaseIn
 import jakarta.validation.constraints.Min
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -23,6 +19,10 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import web.ApiResponse
+import web.ApiResponseGenerator
+import web.security.UserArgument
+import web.security.UserArgumentDetails
 
 @Validated
 @RestController
@@ -31,21 +31,20 @@ class WorkBookController(
     private val readWorkbookUseCase: ReadWorkbookUseCase,
     private val browseWorkBooksUseCase: BrowseWorkbooksUseCase,
 ) {
-
     @GetMapping("/categories")
-    fun browseWorkBookCategories(): ApiResponse<ApiResponse.SuccessBody<Map<String, Any>>> {
-        return ApiResponseGenerator.success(
+    fun browseWorkBookCategories(): ApiResponse<ApiResponse.SuccessBody<Map<String, Any>>> =
+        ApiResponseGenerator.success(
             mapOf(
-                "categories" to WorkBookCategory.entries.map {
-                    mapOf(
-                        "code" to it.code,
-                        "name" to it.displayName
-                    )
-                }
+                "categories" to
+                    WorkBookCategory.entries.map {
+                        mapOf(
+                            "code" to it.code,
+                            "name" to it.displayName,
+                        )
+                    },
             ),
-            HttpStatus.OK
+            HttpStatus.OK,
         )
-    }
 
     @GetMapping
     fun browseWorkBooks(
@@ -75,12 +74,12 @@ class WorkBookController(
                         WriterInfo(
                             writerDetail.id,
                             writerDetail.name,
-                            writerDetail.url
+                            writerDetail.url,
                         )
                     },
-                    workBookDetail.subscriptionCount
+                    workBookDetail.subscriptionCount,
                 )
-            }
+            },
         ).let { response ->
             return ApiResponseGenerator.success(response, HttpStatus.OK)
         }
@@ -92,9 +91,10 @@ class WorkBookController(
         @Min(value = 1, message = "{min.id}")
         workbookId: Long,
     ): ApiResponse<ApiResponse.SuccessBody<ReadWorkBookResponse>> {
-        val useCaseOut = ReadWorkbookUseCaseIn(workbookId).let { useCaseIn ->
-            readWorkbookUseCase.execute(useCaseIn)
-        }
+        val useCaseOut =
+            ReadWorkbookUseCaseIn(workbookId).let { useCaseIn ->
+                readWorkbookUseCase.execute(useCaseIn)
+            }
 
         ReadWorkBookResponse(useCaseOut).let { response ->
             return ApiResponseGenerator.success(response, HttpStatus.OK)

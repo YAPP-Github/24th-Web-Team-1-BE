@@ -10,7 +10,6 @@ import java.time.Duration
 
 @Configuration
 class ClientConfig {
-
     companion object {
         const val REST_TEMPLATE = WebConfig.BEAN_NAME_PREFIX + "RestTemplate"
     }
@@ -20,10 +19,9 @@ class ClientConfig {
         restTemplateBuilder: RestTemplateBuilder,
         @Value("\${web.client.timeout.connect}") connectTimeout: Int,
         @Value("\${web.client.timeout.read}") readTimeout: Int,
-    ): RestTemplate {
-        return restTemplateBuilder
+    ): RestTemplate =
+        restTemplateBuilder
             .setConnectTimeout(Duration.ofSeconds(connectTimeout.toLong()))
             .setReadTimeout(Duration.ofSeconds(readTimeout.toLong()))
             .build()
-    }
 }

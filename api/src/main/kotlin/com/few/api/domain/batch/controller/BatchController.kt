@@ -15,9 +15,10 @@ class BatchController(
     private val batchSendArticleEmailService: ApiBatchSendArticleEmailService,
     @Value("\${auth.batch}") private val auth: String,
 ) {
-
     @PostMapping("/article")
-    fun batchArticle(@RequestParam(value = "auth") auth: String) {
+    fun batchArticle(
+        @RequestParam(value = "auth") auth: String,
+    ) {
         if (this.auth != auth) {
             throw IllegalAccessException("Invalid Permission")
         }

@@ -17,7 +17,6 @@ import web.security.filter.token.TokenAuthenticationFilter
  * Security 설정을 위임하는 인터페이스.
  */
 interface AbstractDelegatedSecurityConfigurer {
-
     /**
      * Security 설정을 반환한다.
      */

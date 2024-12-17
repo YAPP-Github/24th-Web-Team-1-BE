@@ -1,8 +1,8 @@
 package storage.image.provider.s3
 
+import storage.image.GetPreSignedImageUrlProvider
 import storage.image.client.ImageStoreClient
 import storage.image.client.util.ImageArgsGenerator
-import storage.image.GetPreSignedImageUrlProvider
 
 class S3GetPreSignedImageUrlProvider(
     val bucket: String,

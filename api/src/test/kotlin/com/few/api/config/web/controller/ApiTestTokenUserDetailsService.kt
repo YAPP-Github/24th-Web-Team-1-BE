@@ -8,13 +8,13 @@ import security.TokenUserDetails
 
 @TestComponent
 class ApiTestTokenUserDetailsService : UserDetailsService {
-    override fun loadUserByUsername(username: String): UserDetails {
-        return TokenUserDetails(
-            authorities = listOf(
-                Roles.ROLE_USER.authority
-            ),
+    override fun loadUserByUsername(username: String): UserDetails =
+        TokenUserDetails(
+            authorities =
+                listOf(
+                    Roles.ROLE_USER.authority,
+                ),
             id = "1",
-            email = "test@gmail.com"
+            email = "test@gmail.com",
         )
-    }
 }

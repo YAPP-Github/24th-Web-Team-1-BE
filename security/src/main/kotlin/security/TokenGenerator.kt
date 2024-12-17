@@ -1,7 +1,12 @@
 package security
 
 interface TokenGenerator {
-    fun generateAuthToken(memberId: Long?, memberEmail: String?, memberRoles: List<Roles>): AuthToken
+    fun generateAuthToken(
+        memberId: Long?,
+        memberEmail: String?,
+        memberRoles: List<Roles>,
+    ): AuthToken
+
     fun generateAuthToken(
         memberId: Long?,
         memberEmail: String?,

@@ -6,7 +6,6 @@ import storage.image.client.dto.ImageRemoveObjectArgs
 import storage.image.client.dto.ImageWriteResponse
 
 interface ImageStoreClient {
-
     fun getPreSignedObjectUrl(args: ImageGetPreSignedObjectUrlArgs): String?
 
     fun removeObject(args: ImageRemoveObjectArgs): Boolean

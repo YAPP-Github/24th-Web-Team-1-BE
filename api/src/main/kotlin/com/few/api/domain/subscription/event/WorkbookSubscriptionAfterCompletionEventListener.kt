@@ -10,13 +10,12 @@ import org.springframework.transaction.event.TransactionalEventListener
 class WorkbookSubscriptionAfterCompletionEventListener(
     private val sendWorkbookArticleAsyncHandler: SendWorkbookArticleAsyncHandler,
 ) {
-
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMPLETION)
     fun handleEvent(event: WorkbookSubscriptionEvent) {
         sendWorkbookArticleAsyncHandler.sendWorkbookArticle(
             event.memberId,
             event.workbookId,
-            event.articleDayCol.toByte()
+            event.articleDayCol.toByte(),
         )
     }
 }

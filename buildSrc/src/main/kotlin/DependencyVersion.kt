@@ -4,6 +4,7 @@ object DependencyVersion {
 
     /** ktlint */
     const val KTLINT = "11.6.1"
+    const val PINTEREST_KTLINT = "1.5.0"
 
     /** springBootVersion */
     const val SPRING_BOOT = "3.2.5"

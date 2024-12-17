@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional
 class UnsubscribeWorkbookUseCase(
     private val subscriptionDao: SubscriptionDao,
 ) {
-
     // todo add test
     @Transactional
     fun execute(useCaseIn: UnsubscribeWorkbookUseCaseIn) {
@@ -24,8 +23,8 @@ class UnsubscribeWorkbookUseCase(
             UpdateDeletedAtInWorkbookSubscriptionCommand(
                 memberId = useCaseIn.memberId,
                 workbookId = useCaseIn.workbookId,
-                opinion = opinion
-            )
+                opinion = opinion,
+            ),
         )
     }
 }

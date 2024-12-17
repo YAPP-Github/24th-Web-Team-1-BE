@@ -8,10 +8,8 @@ class ArticleAwsSESEmailSendProvider(
     amazonSimpleEmailService: AmazonSimpleEmailService,
     javaEmailSendProvider: JavaEmailSendProvider,
 ) : AwsSESEmailSendProvider(
-    amazonSimpleEmailService,
-    javaEmailSendProvider
-) {
-    override fun getWithConfigurationSetName(): String {
-        return "few-article-configuration-set"
-    }
+        amazonSimpleEmailService,
+        javaEmailSendProvider,
+    ) {
+    override fun getWithConfigurationSetName(): String = "few-article-configuration-set"
 }

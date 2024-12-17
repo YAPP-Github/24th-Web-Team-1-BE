@@ -9,13 +9,13 @@ import org.springframework.stereotype.Repository
 class DocumentDao(
     private val dslContext: DSLContext,
 ) {
-
-    fun insertDocumentIfo(command: InsertDocumentIfoCommand): Long? {
-        return dslContext.insertInto(DocumentIfo.DOCUMENT_IFO)
+    fun insertDocumentIfo(command: InsertDocumentIfoCommand): Long? =
+        dslContext
+            .insertInto(DocumentIfo.DOCUMENT_IFO)
             .set(DocumentIfo.DOCUMENT_IFO.PATH, command.path)
             .set(DocumentIfo.DOCUMENT_IFO.URL, command.url.toString())
             .set(DocumentIfo.DOCUMENT_IFO.ALIAS, command.alias)
             .returning(DocumentIfo.DOCUMENT_IFO.ID)
-            .fetchOne()?.id
-    }
+            .fetchOne()
+            ?.id
 }

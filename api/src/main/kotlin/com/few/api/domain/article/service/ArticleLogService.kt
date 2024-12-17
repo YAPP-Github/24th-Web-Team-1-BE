@@ -12,15 +12,13 @@ import org.springframework.stereotype.Service
 class ArticleLogService(
     private val sendArticleEventHistoryDao: SendArticleEventHistoryDao,
 ) {
-
-    fun selectDeliveryEventByMessageId(dto: SelectDeliveryEventByMessageIdDto): SendArticleEventHistoryRecord? {
-        return sendArticleEventHistoryDao.selectEventByMessageId(
+    fun selectDeliveryEventByMessageId(dto: SelectDeliveryEventByMessageIdDto): SendArticleEventHistoryRecord? =
+        sendArticleEventHistoryDao.selectEventByMessageId(
             SelectEventByMessageIdAndEventTypeQuery(
                 dto.messageId,
-                dto.eventType
-            )
+                dto.eventType,
+            ),
         )
-    }
 
     fun insertOpenEvent(dto: InsertOpenEventDto) {
         sendArticleEventHistoryDao.insertEvent(
@@ -29,8 +27,8 @@ class ArticleLogService(
                 articleId = dto.articleId,
                 messageId = dto.messageId,
                 eventType = dto.eventType,
-                sendType = dto.sendType
-            )
+                sendType = dto.sendType,
+            ),
         )
     }
 }

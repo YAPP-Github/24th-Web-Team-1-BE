@@ -13,18 +13,22 @@ class IdEncryptor(
     private val keySize: Int,
     private val iv: String,
 ) : Encryptor<String, String> {
-
-    private var key: SecretKeySpec = KeyGenerator.getInstance(algorithm).apply {
-        init(keySize)
-    }.run {
-        SecretKeySpec(secretKey.toByteArray(), this@IdEncryptor.algorithm)
-    }
-    private var encodeCipher: Cipher = Cipher.getInstance(transformation).apply {
-        init(Cipher.ENCRYPT_MODE, key, IvParameterSpec(this@IdEncryptor.iv.toByteArray()))
-    }
-    private var decodeCipher: Cipher = Cipher.getInstance(transformation).apply {
-        init(Cipher.DECRYPT_MODE, key, IvParameterSpec(this@IdEncryptor.iv.toByteArray()))
-    }
+    private var key: SecretKeySpec =
+        KeyGenerator
+            .getInstance(algorithm)
+            .apply {
+                init(keySize)
+            }.run {
+                SecretKeySpec(secretKey.toByteArray(), this@IdEncryptor.algorithm)
+            }
+    private var encodeCipher: Cipher =
+        Cipher.getInstance(transformation).apply {
+            init(Cipher.ENCRYPT_MODE, key, IvParameterSpec(this@IdEncryptor.iv.toByteArray()))
+        }
+    private var decodeCipher: Cipher =
+        Cipher.getInstance(transformation).apply {
+            init(Cipher.DECRYPT_MODE, key, IvParameterSpec(this@IdEncryptor.iv.toByteArray()))
+        }
 
     override fun encrypt(plainText: String): String {
         val encrypted: ByteArray = encodeCipher.doFinal(plainText.toByteArray())

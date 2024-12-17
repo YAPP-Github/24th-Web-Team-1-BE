@@ -1,6 +1,9 @@
 package web
 
-enum class ExceptionMessage(val code: String, val message: String) {
+enum class ExceptionMessage(
+    val code: String,
+    val message: String,
+) {
     FAIL("fail", "알 수 없는 오류가 발생했어요."),
     FAIL_NOT_FOUND("fail.notfound", "일치하는 결과를 찾을 수 없어요."),
     FAIL_AUTHENTICATION("fail.authentication", "인증이 필요해요."),

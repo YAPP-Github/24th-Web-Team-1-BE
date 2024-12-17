@@ -18,9 +18,9 @@ class NotValidTokenException : IllegalStateException {
 
     constructor(code: String, cause: Throwable?) : super(
         ApiMessageSourceAccessor.getMessage(
-            code
+            code,
         ),
-        cause
+        cause,
     ) {
         this.code = code
     }

@@ -1,17 +1,15 @@
 package com.few.api.domain.member.controller
 
+import com.few.api.domain.member.controller.request.SaveMemberRequest
+import com.few.api.domain.member.controller.request.TokenRequest
+import com.few.api.domain.member.controller.response.SaveMemberResponse
+import com.few.api.domain.member.controller.response.TokenResponse
 import com.few.api.domain.member.usecase.DeleteMemberUseCase
 import com.few.api.domain.member.usecase.SaveMemberUseCase
 import com.few.api.domain.member.usecase.TokenUseCase
 import com.few.api.domain.member.usecase.dto.DeleteMemberUseCaseIn
 import com.few.api.domain.member.usecase.dto.SaveMemberUseCaseIn
 import com.few.api.domain.member.usecase.dto.TokenUseCaseIn
-import com.few.api.domain.member.controller.request.SaveMemberRequest
-import com.few.api.domain.member.controller.request.TokenRequest
-import com.few.api.domain.member.controller.response.SaveMemberResponse
-import com.few.api.domain.member.controller.response.TokenResponse
-import web.ApiResponse
-import web.ApiResponseGenerator
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -23,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import security.TokenUserDetails
+import web.ApiResponse
+import web.ApiResponseGenerator
 
 @Validated
 @RestController
@@ -36,14 +36,15 @@ class MemberController(
     fun saveMember(
         @RequestBody request: SaveMemberRequest,
     ): ApiResponse<ApiResponse.SuccessBody<SaveMemberResponse>> {
-        val useCaseOut = SaveMemberUseCaseIn(
-            email = request.email
-        ).let {
-            saveMemberUseCase.execute(it)
-        }
+        val useCaseOut =
+            SaveMemberUseCaseIn(
+                email = request.email,
+            ).let {
+                saveMemberUseCase.execute(it)
+            }
 
         SaveMemberResponse(
-            isSendAuth = useCaseOut.isSendAuthEmail
+            isSendAuth = useCaseOut.isSendAuthEmail,
         ).let {
             return ApiResponseGenerator.success(it, HttpStatus.OK)
         }
@@ -54,11 +55,12 @@ class MemberController(
         @AuthenticationPrincipal userDetails: TokenUserDetails,
     ): ApiResponse<ApiResponse.Success> {
         val memberId = userDetails.username.toLong()
-        val useCaseOut = DeleteMemberUseCaseIn(
-            memberId = memberId
-        ).let {
-            deleteMemberUseCase.execute(it)
-        }
+        val useCaseOut =
+            DeleteMemberUseCaseIn(
+                memberId = memberId,
+            ).let {
+                deleteMemberUseCase.execute(it)
+            }
 
         return ApiResponseGenerator.success(HttpStatus.OK)
     }
@@ -70,19 +72,20 @@ class MemberController(
         @RequestParam(value = "rt", required = false) rt: Long?,
         @RequestBody request: TokenRequest?,
     ): ApiResponse<ApiResponse.SuccessBody<TokenResponse>> {
-        val useCaseOut = TokenUseCaseIn(
-            token = token,
-            at = at,
-            rt = rt,
-            refreshToken = request?.refreshToken
-        ).let {
-            tokenUseCase.execute(it)
-        }
+        val useCaseOut =
+            TokenUseCaseIn(
+                token = token,
+                at = at,
+                rt = rt,
+                refreshToken = request?.refreshToken,
+            ).let {
+                tokenUseCase.execute(it)
+            }
 
         TokenResponse(
             accessToken = useCaseOut.accessToken,
             refreshToken = useCaseOut.refreshToken,
-            isLogin = useCaseOut.isLogin
+            isLogin = useCaseOut.isLogin,
         ).let {
             return ApiResponseGenerator.success(it, HttpStatus.OK)
         }

@@ -10,11 +10,11 @@ import org.springframework.stereotype.Repository
 class LogIfoDao(
     private val dslContext: DSLContext,
 ) {
-
-    fun insertLogIfo(command: InsertLogCommand): Long? {
-        return dslContext.insertInto(LogIfo.LOG_IFO)
+    fun insertLogIfo(command: InsertLogCommand): Long? =
+        dslContext
+            .insertInto(LogIfo.LOG_IFO)
             .set(LogIfo.LOG_IFO.HISTORY, JSON.valueOf(command.history))
             .returning(LogIfo.LOG_IFO.ID)
-            .fetchOne()?.id
-    }
+            .fetchOne()
+            ?.id
 }

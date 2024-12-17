@@ -16,7 +16,6 @@ class SendArticleEmailService(
     emailSendProvider: ArticleAwsSESEmailSendProvider,
     private val emailTemplateProcessor: EmailTemplateProcessor,
 ) : EmailSender<SendArticleEmailArgs>(mailProperties, emailSendProvider) {
-
     override fun getHtml(args: SendArticleEmailArgs): String {
         val context = EmailContext()
         context.setVariable("articleLink", args.content.articleLink.toString() + "?fromEmail=true")
@@ -24,9 +23,9 @@ class SendArticleEmailService(
             "currentDate",
             args.content.currentDate.format(
                 DateTimeFormatter.ofPattern("yyyy/MM/dd EEEE").withLocale(
-                    Locale.KOREA
-                )
-            )
+                    Locale.KOREA,
+                ),
+            ),
         )
         context.setVariable("category", args.content.category)
         context.setVariable("articleDay", "Day" + args.content.articleDay)

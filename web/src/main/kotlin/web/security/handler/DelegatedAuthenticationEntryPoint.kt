@@ -9,7 +9,6 @@ import org.springframework.web.servlet.HandlerExceptionResolver
 class DelegatedAuthenticationEntryPoint(
     private val handlerExceptionResolver: HandlerExceptionResolver,
 ) : AuthenticationEntryPoint {
-
     override fun commence(
         request: HttpServletRequest,
         response: HttpServletResponse,

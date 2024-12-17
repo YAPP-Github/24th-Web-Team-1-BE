@@ -1,9 +1,9 @@
 package storage.document.config
 
-import storage.config.StorageClientConfig
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
+import storage.config.StorageClientConfig
 
 @Configuration
 @ComponentScan(basePackages = [DocumentStorageConfig.BASE_PACKAGE])

@@ -16,7 +16,6 @@ class ReadArticleByEmailUseCase(
     private val memberService: ArticleMemberService,
     private val articleLogService: ArticleLogService,
 ) {
-
     @Transactional
     fun execute(useCaseIn: ReadArticleByEmailUseCaseIn) {
         val memberId =
@@ -27,8 +26,8 @@ class ReadArticleByEmailUseCase(
             articleLogService.selectDeliveryEventByMessageId(
                 SelectDeliveryEventByMessageIdDto(
                     useCaseIn.messageId,
-                    EmailLogEventType.DELIVERY.code
-                )
+                    EmailLogEventType.DELIVERY.code,
+                ),
             )
                 ?: throw IllegalStateException("event is not found")
 
@@ -38,8 +37,8 @@ class ReadArticleByEmailUseCase(
                 articleId = record.articleId,
                 messageId = record.messageId,
                 eventType = EmailLogEventType.OPEN.code,
-                sendType = record.sendType
-            )
+                sendType = record.sendType,
+            ),
         )
     }
 }

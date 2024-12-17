@@ -2,8 +2,8 @@ package com.few.domain.generator.core
 
 import com.few.domain.generator.client.OpenAiClient
 import com.few.domain.generator.client.request.OpenAiRequest
-import com.few.domain.generator.core.model.GroupNewsModel
-import com.few.domain.generator.core.model.NewsModel
+import com.few.domain.generator.core.model.GroupNews
+import com.few.domain.generator.core.model.News
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import org.springframework.beans.factory.annotation.Value
@@ -18,16 +18,16 @@ class ChatGpt(
     @Value("\${openai.api.model.advanced}") private val AI_ADVANCED_MODEL: String,
 ) {
 
-    fun summarizeNews(news: NewsModel): JsonObject =
+    fun summarizeNews(news: News): JsonObject =
         doAsk(promptGenerator.createSummaryPrompt(news), AI_BASIC_MODEL)
 
-    fun groupNews(newsList: List<NewsModel>): JsonObject =
+    fun groupNews(newsList: List<News>): JsonObject =
         doAsk(promptGenerator.createGroupingPrompt(newsList), AI_ADVANCED_MODEL)
 
-    fun summarizeNewsGroup(group: GroupNewsModel): JsonObject =
+    fun summarizeNewsGroup(group: GroupNews): JsonObject =
         doAsk(promptGenerator.createSummaryPrompt(group), AI_BASIC_MODEL)
 
-    fun refineSummarizedNewsGroup(group: GroupNewsModel): JsonObject =
+    fun refineSummarizedNewsGroup(group: GroupNews): JsonObject =
         doAsk(promptGenerator.createRefinePrompt(group), AI_BASIC_MODEL)
 
     /**

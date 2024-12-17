@@ -1,7 +1,7 @@
 package com.few.domain.generator.core
 
-import com.few.domain.generator.core.model.GroupNewsModel
-import com.few.domain.generator.core.model.NewsModel
+import com.few.domain.generator.core.model.GroupNews
+import com.few.domain.generator.core.model.News
 import com.google.gson.Gson
 import org.springframework.stereotype.Component
 
@@ -27,7 +27,7 @@ class PromptGenerator(
         }
     """.trimIndent()
 
-    fun createSummaryPrompt(group: GroupNewsModel): List<Map<String, String>> {
+    fun createSummaryPrompt(group: GroupNews): List<Map<String, String>> {
         // 뉴스 요약 문자열 생성
         val newsSummaries = group.news.joinToString("\n") { news ->
             val importantSentences = news.importantSentences.joinToString("\n") { sentence -> "    - $sentence" }
@@ -76,7 +76,7 @@ class PromptGenerator(
         )
     }
 
-    fun createSummaryPrompt(news: NewsModel): List<Map<String, String>> {
+    fun createSummaryPrompt(news: News): List<Map<String, String>> {
         val command = """
             다음 뉴스 기사를 분석하고 요약해주세요:
 
@@ -113,7 +113,7 @@ class PromptGenerator(
         )
     }
 
-    fun createRefinePrompt(group: GroupNewsModel): List<Map<String, String>> {
+    fun createRefinePrompt(group: GroupNews): List<Map<String, String>> {
         // GroupNewsModel 객체를 JSON 문자열로 변환
         val groupJson = fewGson.toJson(group.toMap()) // JSON 문자열로 변환
 
@@ -141,7 +141,7 @@ class PromptGenerator(
         )
     }
 
-    fun createGroupingPrompt(newsList: List<NewsModel>): List<Map<String, String>> {
+    fun createGroupingPrompt(newsList: List<News>): List<Map<String, String>> {
         val newsSummaries = newsList.joinToString("\n") { "${it.id}: ${it.summary}" }
         val command = """
             다음은 여러 뉴스 기사의 요약입니다. 이 뉴스들을 비슷한 주제끼리 그룹핑해주세요:

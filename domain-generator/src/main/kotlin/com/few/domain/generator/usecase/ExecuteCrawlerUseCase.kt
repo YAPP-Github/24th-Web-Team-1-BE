@@ -1,7 +1,7 @@
 package com.few.domain.generator.usecase
 
 import com.few.domain.generator.core.*
-import com.few.domain.generator.core.model.NewsModel
+import com.few.domain.generator.core.model.News
 import com.few.domain.generator.usecase.dto.ExecuteCrawlerUseCaseIn
 import com.few.domain.generator.usecase.dto.ExecuteCrawlerUseCaseOut
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -30,7 +30,7 @@ class ExecuteCrawlerUseCase(
         log.info { "크롤링이 시작" }
         val newsUrls = crawler.getNaverNewsUrls(useCaseIn.sid)
 
-        val results = mutableListOf<NewsModel>()
+        val results = mutableListOf<News>()
         for ((i, url) in newsUrls.withIndex()) {
             val newsData = crawler.getNewsContent(url)
             if (newsData != null) {

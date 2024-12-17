@@ -1,7 +1,7 @@
 package com.few.domain.generator.core
 
-import com.few.domain.generator.core.model.GroupNewsModel
-import com.few.domain.generator.core.model.NewsModel
+import com.few.domain.generator.core.model.GroupNews
+import com.few.domain.generator.core.model.News
 import java.io.File
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -30,7 +30,7 @@ class NewsGrouper(
         log.info { "${groupedNews.size()}개의 그룹으로 뉴스가 분류되어 '$outputFilePath' 파일로 저장되었습니다." }
     }
 
-    private fun loadSummarizedNews(inputFilePath: String): List<NewsModel> {
+    private fun loadSummarizedNews(inputFilePath: String): List<News> {
         val fileContent = File(inputFilePath).readText(Charsets.UTF_8)
 
         // JSON 문자열을 List<Map<String, Any>> 형태로 변환
@@ -38,15 +38,15 @@ class NewsGrouper(
         val data: List<Map<String, Any>> = fewGson.fromJson(fileContent, typeToken)
 
         // 각 항목을 NewsModel 객체로 변환
-        return data.map { NewsModel.fromMap(it) }
+        return data.map { News.fromMap(it) }
     }
 
     private fun saveGroupedNewsToJson(
         groupedNews: JsonObject,
-        newsList: List<NewsModel>,
+        newsList: List<News>,
         outputFilePath: String,
     ) {
-        val result = mutableListOf<GroupNewsModel>()
+        val result = mutableListOf<GroupNews>()
 
         // "groups" 필드를 JsonArray로 추출
         val groupElements = groupedNews.getAsJsonArray("groups")
@@ -62,7 +62,7 @@ class NewsGrouper(
 
             // 뉴스가 3개 이상인 경우만 추가
             if (newsInGroup.size >= 3) {
-                val groupNews = GroupNewsModel(
+                val groupNews = GroupNews(
                     topic = group.getAsJsonPrimitive("topic").asString,
                     news = newsInGroup
                 )

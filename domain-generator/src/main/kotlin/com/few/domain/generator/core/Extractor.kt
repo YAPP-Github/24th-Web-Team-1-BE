@@ -1,6 +1,6 @@
 package com.few.domain.generator.core
 
-import com.few.domain.generator.core.model.NewsModel
+import com.few.domain.generator.core.model.News
 import com.google.gson.Gson
 import org.springframework.stereotype.Component
 import com.google.gson.reflect.TypeToken
@@ -21,14 +21,14 @@ class Extractor(
 
     private val log = KotlinLogging.logger {}
 
-    fun loadContentFromJson(inputFilePath: String): List<NewsModel> {
+    fun loadContentFromJson(inputFilePath: String): List<News> {
         val file = File(inputFilePath)
         if (!file.exists() || !file.canRead()) {
             throw IllegalArgumentException("파일을 찾을 수 없거나 읽을 수 없습니다: $inputFilePath")
         }
 
         // List<NewsModel> 타입 지정
-        val type = object : TypeToken<List<NewsModel>>() {}.type
+        val type = object : TypeToken<List<News>>() {}.type
 
         return fewGson.fromJson(file.readText(), type)
     }
@@ -68,7 +68,7 @@ class Extractor(
         return newsModels.size
     }
 
-    fun saveNewsToJson(newsList: List<NewsModel>, outputFilePath: String) {
+    fun saveNewsToJson(newsList: List<News>, outputFilePath: String) {
         // List<NewsModel>을 JSON 문자열로 변환
         val newsData = newsList.map { it.toMap() }
         val jsonString = fewGson.toJson(newsData)

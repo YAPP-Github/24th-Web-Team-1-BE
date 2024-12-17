@@ -1,9 +1,9 @@
 package com.few.domain.generator.core.model
 
-data class GroupNewsModel(
+data class GroupNews(
     val topic: String = "",
-    val news: List<NewsModel> = listOf(),
-    var section: SectionContentModel = SectionContentModel(),
+    val news: List<News> = listOf(),
+    var section: SectionContent = SectionContent(),
 ) {
     fun toMap(): Map<String, Any> {
         return mapOf(
@@ -14,10 +14,10 @@ data class GroupNewsModel(
     }
 
     companion object {
-        fun fromMap(data: Map<String, Any>): GroupNewsModel {
-            val newsList = (data["news"] as List<Map<String, Any>>).map { NewsModel.fromMap(it) }
-            val sectionData = SectionContentModel.fromDict(data["section"] as Map<String, Any>? ?: emptyMap())
-            return GroupNewsModel(
+        fun fromMap(data: Map<String, Any>): GroupNews {
+            val newsList = (data["news"] as List<Map<String, Any>>).map { News.fromMap(it) }
+            val sectionData = SectionContent.fromDict(data["section"] as Map<String, Any>? ?: emptyMap())
+            return GroupNews(
                 topic = data["topic"] as String,
                 news = newsList,
                 section = sectionData
@@ -26,9 +26,9 @@ data class GroupNewsModel(
     }
 }
 
-data class SectionContentModel(
+data class SectionContent(
     val title: String = "",
-    val contents: List<ContentModel> = listOf(),
+    val contents: List<Content> = listOf(),
 ) {
     fun toDict(): Map<String, Any> {
         return mapOf(
@@ -38,10 +38,10 @@ data class SectionContentModel(
     }
 
     companion object {
-        fun fromDict(data: Map<String, Any>): SectionContentModel {
+        fun fromDict(data: Map<String, Any>): SectionContent {
             val contentsList =
-                (data["contents"] as? List<Map<String, Any>>)?.map { ContentModel.fromDict(it) } ?: emptyList()
-            return SectionContentModel(
+                (data["contents"] as? List<Map<String, Any>>)?.map { Content.fromDict(it) } ?: emptyList()
+            return SectionContent(
                 title = data["title"] as? String ?: "",
                 contents = contentsList
             )
@@ -49,7 +49,7 @@ data class SectionContentModel(
     }
 }
 
-data class ContentModel(
+data class Content(
     val subTitle: String = "",
     val body: String = "",
 ) {
@@ -61,8 +61,8 @@ data class ContentModel(
     }
 
     companion object {
-        fun fromDict(data: Map<String, Any>): ContentModel {
-            return ContentModel(
+        fun fromDict(data: Map<String, Any>): Content {
+            return Content(
                 subTitle = data["subTitle"] as? String ?: "",
                 body = data["body"] as? String ?: ""
             )

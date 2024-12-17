@@ -1,6 +1,6 @@
 package com.few.domain.generator.core
 
-import com.few.domain.generator.core.model.NewsModel
+import com.few.domain.generator.core.model.News
 import com.google.gson.Gson
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.jsoup.Jsoup
@@ -60,7 +60,7 @@ class NaverNewsCrawler(
         return allLinks.take(maxLinks).toList()
     }
 
-    fun getNewsContent(url: String): NewsModel? {
+    fun getNewsContent(url: String): News? {
         log.info { "뉴스 내용을 가져오는 중: $url" }
         val soup: Document = getSoup(url)
 
@@ -101,7 +101,7 @@ class NaverNewsCrawler(
         }
 
         return originalLink?.let {
-            NewsModel(
+            News(
                 title = title.text().trim(),
                 content = content.text().trim(),
                 date = dateTime,
@@ -111,7 +111,7 @@ class NaverNewsCrawler(
         }
     }
 
-    fun saveContentAsJson(content: List<NewsModel>) {
+    fun saveContentAsJson(content: List<News>) {
         // 콘텐츠를 JSON으로 직렬화
         val jsonContent = fewGson.toJson(content)
 

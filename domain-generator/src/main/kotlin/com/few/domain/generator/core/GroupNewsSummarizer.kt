@@ -38,17 +38,11 @@ class GroupNewsSummarizer(
     private fun generateGroupSummary(group: GroupNewsModel): GroupNewsModel {
         // 첫 번째 단계: 요약 생성
         var response = chatGpt.summarizeNewsGroup(group)
-
-        // Gson을 사용해 JSON 문자열을 JsonObject로 파싱
-        val summaryData = fewGson.fromJson(response, JsonObject::class.java)
-        group.section = parseSection(summaryData)
+        group.section = parseSection(response)
 
         // 두 번째 단계: refinement
         response = chatGpt.refineSummarizedNewsGroup(group)
-
-        // Gson을 사용해 JSON 문자열을 JsonObject로 파싱
-        val refinedData = fewGson.fromJson(response, JsonObject::class.java)
-        group.section = parseSection(refinedData)
+        group.section = parseSection(response)
 
         return group
     }

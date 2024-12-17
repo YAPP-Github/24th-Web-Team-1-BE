@@ -6,7 +6,6 @@ import com.few.domain.generator.core.model.GroupNewsModel
 import com.few.domain.generator.core.model.NewsModel
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.google.gson.reflect.TypeToken
 import org.springframework.stereotype.Component
 
 @Component
@@ -16,7 +15,7 @@ class ChatGpt(
     private val promptGenerator: PromptGenerator,
 ) {
 
-    fun summarizeNewsWithChatGPT(news: NewsModel): Map<String, Any> {
+    fun summarizeNewsWithChatGPT(news: NewsModel): JsonObject {
         val prompt = promptGenerator.createSummaryPrompt(news)
         val request = OpenAiRequest(
             model = "gpt-4",
@@ -27,7 +26,7 @@ class ChatGpt(
         val resultContent = response.choices.firstOrNull()?.message?.content
             ?: throw Exception("요약 결과를 찾을 수 없습니다.")
 
-        return fewGson.fromJson(resultContent, object : TypeToken<Map<String, Any>>() {}.type)
+        return fewGson.fromJson(resultContent, JsonObject::class.java)
     }
 
     fun groupNewsWithChatGPT(newsList: List<NewsModel>): JsonObject {

@@ -43,8 +43,13 @@ class Extractor(
                 semaphore.withPermit {
                     try {
                         val summarizedNews = chatGpt.summarizeNewsWithChatGPT(newsModel)
-                        newsModel.summary = summarizedNews["summary"] as? String ?: "요약을 생성할 수 없습니다."
-                        newsModel.importantSentences = summarizedNews["important_sentences"] as? List<String> ?: emptyList()
+                        newsModel.summary = summarizedNews.get("summary")?.asString ?: "요약을 생성할 수 없습니다."
+                        newsModel.importantSentences = if (summarizedNews.has("important_sentences")) {
+                            val sentencesJsonArray = summarizedNews.getAsJsonArray("important_sentences")
+                            sentencesJsonArray.mapNotNull { it.asString }
+                        } else {
+                            emptyList()
+                        }
                     } catch (e: Exception) {
                         println("${newsModel.title}에 대한 요약 중 오류 발생: ${e.message}")
                     }

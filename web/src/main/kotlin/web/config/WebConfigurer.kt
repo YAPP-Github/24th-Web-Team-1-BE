@@ -6,9 +6,9 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 class WebConfigurer : WebMvcConfigurer {
-
     override fun addCorsMappings(registry: CorsRegistry) {
-        registry.addMapping("/**")
+        registry
+            .addMapping("/**")
             .allowedOriginPatterns(CorsConfiguration.ALL)
             .allowedMethods(CorsConfiguration.ALL)
             .allowedHeaders(CorsConfiguration.ALL)
@@ -17,7 +17,8 @@ class WebConfigurer : WebMvcConfigurer {
     }
 
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
-        registry.addResourceHandler("/**")
+        registry
+            .addResourceHandler("/**")
             .addResourceLocations("classpath:/static/")
     }
 }

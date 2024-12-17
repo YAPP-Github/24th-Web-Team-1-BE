@@ -4,7 +4,6 @@ import java.time.LocalDate
 import kotlin.random.Random
 
 object ObjectPathGenerator {
-
     fun imagePath(suffix: String): String {
         val dateDir = LocalDate.now().toString()
         return "images/$dateDir/${generateImageName()}" + ".$suffix"
@@ -15,9 +14,7 @@ object ObjectPathGenerator {
         return "documents/$dateDir/${generateImageName()}" + ".$suffix"
     }
 
-    private fun generateImageName(): String {
-        return randomString()
-    }
+    private fun generateImageName(): String = randomString()
 
     private fun randomString(): String {
         val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')

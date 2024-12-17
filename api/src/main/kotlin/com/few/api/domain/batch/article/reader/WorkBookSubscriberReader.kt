@@ -18,7 +18,6 @@ import java.time.ZoneId
 class WorkBookSubscriberReader(
     private val dslContext: DSLContext,
 ) {
-
     /** 구독 테이블에서 학습지를 구독하고 있는 회원의 정보를 조회한다.*/
     @Transactional(readOnly = true)
     fun execute(): List<WorkBookSubscriberItem> {
@@ -31,12 +30,12 @@ class WorkBookSubscriberReader(
                 DayCode.MON_TUE_WED_THU_FRI
             }
 
-        return dslContext.select(
-            SUBSCRIPTION.MEMBER_ID.`as`(WorkBookSubscriberItem::memberId.name),
-            SUBSCRIPTION.TARGET_WORKBOOK_ID.`as`(WorkBookSubscriberItem::targetWorkBookId.name),
-            SUBSCRIPTION.PROGRESS.`as`(WorkBookSubscriberItem::progress.name)
-        )
-            .from(SUBSCRIPTION)
+        return dslContext
+            .select(
+                SUBSCRIPTION.MEMBER_ID.`as`(WorkBookSubscriberItem::memberId.name),
+                SUBSCRIPTION.TARGET_WORKBOOK_ID.`as`(WorkBookSubscriberItem::targetWorkBookId.name),
+                SUBSCRIPTION.PROGRESS.`as`(WorkBookSubscriberItem::progress.name),
+            ).from(SUBSCRIPTION)
             .where(SUBSCRIPTION.SEND_TIME.eq(time))
             .and(sendDayCondition(SUBSCRIPTION.SEND_DAY, sendDay))
             .and(SUBSCRIPTION.TARGET_MEMBER_ID.isNull)
@@ -44,11 +43,15 @@ class WorkBookSubscriberReader(
             .fetchInto(WorkBookSubscriberItem::class.java)
     }
 
-    private fun sendDayCondition(sendDayField: TableField<SubscriptionRecord, String>, sendDayCode: DayCode): Condition {
-        return when (sendDayCode) {
+    private fun sendDayCondition(
+        sendDayField: TableField<SubscriptionRecord, String>,
+        sendDayCode: DayCode,
+    ): Condition =
+        when (sendDayCode) {
             /** 평일인 경우 매일을 포함하여 전송한다 */
             DayCode.MON_TUE_WED_THU_FRI -> {
-                sendDayField.eq(DayCode.MON_TUE_WED_THU_FRI.code)
+                sendDayField
+                    .eq(DayCode.MON_TUE_WED_THU_FRI.code)
                     .or(sendDayField.eq(DayCode.MON_TUE_WED_THU_FRI_SAT_SUN.code))
             }
             /** 매일의 경우 매일만 전송한다 */
@@ -59,5 +62,4 @@ class WorkBookSubscriberReader(
                 throw IllegalArgumentException("Invalid sendDayCode: $sendDayCode")
             }
         }
-    }
 }

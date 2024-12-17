@@ -1,8 +1,8 @@
 package storage.image.provider.s3
 
+import storage.image.RemoveImageProvider
 import storage.image.client.ImageStoreClient
 import storage.image.client.util.ImageArgsGenerator
-import storage.image.RemoveImageProvider
 
 class S3RemoveImageProvider(
     val bucket: String,

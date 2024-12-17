@@ -1,6 +1,9 @@
 package com.few.api.domain.common.vo
 
-enum class EmailLogEventType(val code: Byte, val type: String) {
+enum class EmailLogEventType(
+    val code: Byte,
+    val type: String,
+) {
     OPEN(0, "open"),
     DELIVERY(1, "delivery"),
     CLICK(2, "click"),
@@ -9,12 +12,8 @@ enum class EmailLogEventType(val code: Byte, val type: String) {
     ;
 
     companion object {
-        fun fromType(type: String): EmailLogEventType? {
-            return entries.find { it.type == type.lowercase() }
-        }
+        fun fromType(type: String): EmailLogEventType? = entries.find { it.type == type.lowercase() }
 
-        fun fromCode(code: Byte): EmailLogEventType? {
-            return entries.find { it.code == code }
-        }
+        fun fromCode(code: Byte): EmailLogEventType? = entries.find { it.code == code }
     }
 }

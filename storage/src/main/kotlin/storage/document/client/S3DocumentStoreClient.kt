@@ -1,24 +1,25 @@
 package storage.document.client
 
 import com.amazonaws.services.s3.AmazonS3Client
+import io.github.oshai.kotlinlogging.KotlinLogging
 import storage.document.client.dto.DocumentGetPreSignedObjectUrlArgs
 import storage.document.client.dto.DocumentPutObjectArgs
 import storage.document.client.dto.DocumentWriteResponse
 import storage.document.client.dto.toS3Args
-import io.github.oshai.kotlinlogging.KotlinLogging
 
 class S3DocumentStoreClient(
     private val s3client: AmazonS3Client,
     private val region: String,
 ) : DocumentStoreClient {
-
     private val log = KotlinLogging.logger {}
 
     override fun getPreSignedObjectUrl(args: DocumentGetPreSignedObjectUrlArgs): String? {
-        args.toS3Args()
+        args
+            .toS3Args()
             .let { s3 ->
                 try {
-                    s3client.generatePresignedUrl(s3)
+                    s3client
+                        .generatePresignedUrl(s3)
                         .let { url ->
                             return url.toString()
                         }
@@ -32,7 +33,8 @@ class S3DocumentStoreClient(
     }
 
     override fun putObject(args: DocumentPutObjectArgs): DocumentWriteResponse? {
-        args.toS3Args()
+        args
+            .toS3Args()
             .let { s3 ->
                 try {
                     s3client.putObject(s3).let { owr ->
@@ -41,7 +43,7 @@ class S3DocumentStoreClient(
                             region,
                             args.imagePath,
                             owr.eTag ?: "",
-                            owr.versionId ?: ""
+                            owr.versionId ?: "",
                         )
                     }
                 } catch (e: Exception) {

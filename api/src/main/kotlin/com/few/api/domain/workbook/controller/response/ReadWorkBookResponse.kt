@@ -23,7 +23,7 @@ data class ReadWorkBookResponse(
             category = useCaseOut.category,
             createdAt = useCaseOut.createdAt,
             writers = useCaseOut.writers.map { WriterInfo(it.id, it.name, it.url) },
-            articles = useCaseOut.articles.map { ArticleInfo(it.id, it.title) }
+            articles = useCaseOut.articles.map { ArticleInfo(it.id, it.title) },
         )
 }
 

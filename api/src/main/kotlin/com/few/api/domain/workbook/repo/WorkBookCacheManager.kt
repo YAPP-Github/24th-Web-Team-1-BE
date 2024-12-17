@@ -11,7 +11,6 @@ import javax.cache.Cache
 class WorkBookCacheManager(
     private val cacheManager: CacheManager,
 ) {
-
     private var selectWorkBookCache: Cache<Any, Any> = cacheManager.getCache(SELECT_WORKBOOK_RECORD_CACHE)?.nativeCache as Cache<Any, Any>
 
     fun getAllSelectWorkBookValues(): List<SelectWorkBookRecord> {

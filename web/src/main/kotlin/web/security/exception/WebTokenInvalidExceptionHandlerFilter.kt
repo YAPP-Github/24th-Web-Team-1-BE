@@ -25,7 +25,10 @@ class WebTokenInvalidExceptionHandlerFilter : OncePerRequestFilter() {
     }
 
     @Throws(IOException::class)
-    private fun setError(response: HttpServletResponse, e: Exception) {
+    private fun setError(
+        response: HttpServletResponse,
+        e: Exception,
+    ) {
         response.status = HttpServletResponse.SC_FORBIDDEN
         response.contentType = CONTENT_TYPE
         val errorResponse = ErrorResponse()
@@ -33,8 +36,6 @@ class WebTokenInvalidExceptionHandlerFilter : OncePerRequestFilter() {
     }
 
     private class ErrorResponse {
-        override fun toString(): String {
-            return "{ \"message\": \"Invalid access token\" }"
-        }
+        override fun toString(): String = "{ \"message\": \"Invalid access token\" }"
     }
 }

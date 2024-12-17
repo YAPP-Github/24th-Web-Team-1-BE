@@ -30,6 +30,7 @@ data class ProblemDto(
     @field:NotBlank(message = "{problem.explanation.notblank}")
     val explanation: String,
 )
+
 data class ProblemContentDto(
     @field:NotBlank(message = "{min.problem.number}")
     val number: Long,

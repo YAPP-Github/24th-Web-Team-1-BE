@@ -9,8 +9,12 @@ import org.springframework.stereotype.Service
 class ApiBatchCallExecutionService(
     private val dslContext: DSLContext,
 ) {
-    fun execute(status: Boolean, jsonDescription: String) {
-        dslContext.insertInto(BATCH_CALL_EXECUTION)
+    fun execute(
+        status: Boolean,
+        jsonDescription: String,
+    ) {
+        dslContext
+            .insertInto(BATCH_CALL_EXECUTION)
             .set(BATCH_CALL_EXECUTION.STATUS, status)
             .set(BATCH_CALL_EXECUTION.DESCRIPTION, JSON.valueOf(jsonDescription))
             .execute()

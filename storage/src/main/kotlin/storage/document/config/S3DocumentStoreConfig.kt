@@ -1,9 +1,6 @@
 package storage.document.config
 
 import com.amazonaws.services.s3.AmazonS3Client
-import storage.config.StorageClientConfig
-import storage.document.client.DocumentStoreClient
-import storage.document.client.S3DocumentStoreClient
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationListener
@@ -11,8 +8,11 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.context.event.ContextRefreshedEvent
+import storage.config.StorageClientConfig
 import storage.document.GetPreSignedDocumentUrlProvider
 import storage.document.PutDocumentProvider
+import storage.document.client.DocumentStoreClient
+import storage.document.client.S3DocumentStoreClient
 import storage.document.provider.s3.S3GetPreSignedDocumentUrlProvider
 import storage.document.provider.s3.S3PutDocumentProvider
 
@@ -54,15 +54,11 @@ class S3DocumentStoreConfig(
     fun s3PutDocumentProvider(
         @Value("\${document.store.bucket-name}") bucket: String,
         documentStoreClient: DocumentStoreClient,
-    ): PutDocumentProvider {
-        return S3PutDocumentProvider(bucket, documentStoreClient)
-    }
+    ): PutDocumentProvider = S3PutDocumentProvider(bucket, documentStoreClient)
 
     @Bean(name = [S3_GET_PRE_SIGNED_DOCUMENT_URL_PROVIDER])
     fun s3GetPreSignedDocumentUrlProvider(
         @Value("\${document.store.bucket-name}") bucket: String,
         documentStoreClient: DocumentStoreClient,
-    ): GetPreSignedDocumentUrlProvider {
-        return S3GetPreSignedDocumentUrlProvider(bucket, documentStoreClient)
-    }
+    ): GetPreSignedDocumentUrlProvider = S3GetPreSignedDocumentUrlProvider(bucket, documentStoreClient)
 }

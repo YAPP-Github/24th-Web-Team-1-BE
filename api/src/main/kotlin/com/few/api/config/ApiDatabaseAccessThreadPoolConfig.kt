@@ -17,22 +17,21 @@ class ApiDatabaseAccessThreadPoolConfig {
 
     @Bean
     @ConfigurationProperties(prefix = "thread-pool.database")
-    fun databaseAccessThreadPoolProperties(): ApiThreadPoolProperties {
-        return ApiThreadPoolProperties()
-    }
+    fun databaseAccessThreadPoolProperties(): ApiThreadPoolProperties = ApiThreadPoolProperties()
 
     @Bean(DATABASE_ACCESS_POOL)
-    fun databaseAccessThreadPool() = ThreadPoolTaskExecutor().apply {
-        val properties = databaseAccessThreadPoolProperties()
-        corePoolSize = properties.getCorePoolSize()
-        maxPoolSize = properties.getMaxPoolSize()
-        queueCapacity = properties.getQueueCapacity()
-        setWaitForTasksToCompleteOnShutdown(properties.getWaitForTasksToCompleteOnShutdown())
-        setAwaitTerminationSeconds(properties.getAwaitTerminationSeconds())
-        setThreadNamePrefix("databaseAccessThreadPool-")
-        setRejectedExecutionHandler { r, _ ->
-            log.warn { "Database Access Task Rejected: $r" }
+    fun databaseAccessThreadPool() =
+        ThreadPoolTaskExecutor().apply {
+            val properties = databaseAccessThreadPoolProperties()
+            corePoolSize = properties.getCorePoolSize()
+            maxPoolSize = properties.getMaxPoolSize()
+            queueCapacity = properties.getQueueCapacity()
+            setWaitForTasksToCompleteOnShutdown(properties.getWaitForTasksToCompleteOnShutdown())
+            setAwaitTerminationSeconds(properties.getAwaitTerminationSeconds())
+            setThreadNamePrefix("databaseAccessThreadPool-")
+            setRejectedExecutionHandler { r, _ ->
+                log.warn { "Database Access Task Rejected: $r" }
+            }
+            initialize()
         }
-        initialize()
-    }
 }

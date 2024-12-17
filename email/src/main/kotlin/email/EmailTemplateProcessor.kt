@@ -7,8 +7,8 @@ import org.thymeleaf.TemplateEngine
 class EmailTemplateProcessor(
     private val templateEngine: TemplateEngine,
 ) {
-
-    fun process(template: String, context: EmailContext): String {
-        return templateEngine.process(template, context.getContext())
-    }
+    fun process(
+        template: String,
+        context: EmailContext,
+    ): String = templateEngine.process(template, context.getContext())
 }

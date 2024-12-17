@@ -1,18 +1,16 @@
 package com.few.api.domain.subscription.controller
 
-import com.few.api.domain.subscription.usecase.*
-import com.few.api.domain.subscription.controller.request.UnsubscribeWorkbookRequest
-import web.ApiResponse
-import web.ApiResponseGenerator
-import com.few.api.domain.subscription.usecase.dto.*
-import com.few.api.domain.subscription.controller.request.UnsubscribeAllRequest
-import com.few.api.domain.subscription.controller.request.UpdateSubscriptionDayRequest
-import com.few.api.domain.subscription.controller.request.UpdateSubscriptionTimeRequest
 import com.few.api.domain.common.vo.DayCode
 import com.few.api.domain.common.vo.ViewCategory
+import com.few.api.domain.subscription.controller.request.UnsubscribeAllRequest
+import com.few.api.domain.subscription.controller.request.UnsubscribeWorkbookRequest
+import com.few.api.domain.subscription.controller.request.UpdateSubscriptionDayRequest
+import com.few.api.domain.subscription.controller.request.UpdateSubscriptionTimeRequest
 import com.few.api.domain.subscription.controller.response.MainCardSubscribeWorkbookInfo
 import com.few.api.domain.subscription.controller.response.MyPageSubscribeWorkbookInfo
 import com.few.api.domain.subscription.controller.response.SubscribeWorkbooksResponse
+import com.few.api.domain.subscription.usecase.*
+import com.few.api.domain.subscription.usecase.dto.*
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Min
 import org.springframework.http.HttpStatus
@@ -21,6 +19,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import security.TokenUserDetails
+import web.ApiResponse
+import web.ApiResponseGenerator
 import java.lang.IllegalStateException
 
 @Validated
@@ -34,13 +34,12 @@ class SubscriptionController(
     private val updateSubscriptionDayUseCase: UpdateSubscriptionDayUseCase,
     private val updateSubscriptionTimeUseCase: UpdateSubscriptionTimeUseCase,
 ) {
-
     @GetMapping("/subscriptions/workbooks")
     fun browseSubscribeWorkbooks(
         @AuthenticationPrincipal userDetails: TokenUserDetails,
         @RequestParam(
             value = "view",
-            required = false
+            required = false,
         ) view: ViewCategory?,
     ): ApiResponse<ApiResponse.SuccessBody<SubscribeWorkbooksResponse>> {
         val memberId = userDetails.username.toLong()
@@ -51,33 +50,36 @@ class SubscriptionController(
 
         // todo fix to facade usecase
         return SubscribeWorkbooksResponse(
-            workbooks = when (useCaseOut.clazz) {
-                MainCardSubscribeWorkbookDetail::class.java -> useCaseOut.workbooks.map { it as MainCardSubscribeWorkbookDetail }.map {
-                    MainCardSubscribeWorkbookInfo(
-                        id = it.workbookId,
-                        status = it.isActiveSub.name,
-                        totalDay = it.totalDay,
-                        currentDay = it.currentDay,
-                        rank = it.rank,
-                        totalSubscriber = it.totalSubscriber,
-                        subscription = it.subscription,
-                        articleInfo = it.articleInfo
-                    )
-                }
-                MyPageSubscribeWorkbookDetail::class.java -> useCaseOut.workbooks.map { it as MyPageSubscribeWorkbookDetail }.map {
-                    MyPageSubscribeWorkbookInfo(
-                        id = it.workbookId,
-                        status = it.isActiveSub.name,
-                        totalDay = it.totalDay,
-                        currentDay = it.currentDay,
-                        rank = it.rank,
-                        totalSubscriber = it.totalSubscriber,
-                        subscription = it.subscription,
-                        workbookInfo = it.workbookInfo
-                    )
-                }
-                else -> throw IllegalStateException("Invalid class type")
-            }
+            workbooks =
+                when (useCaseOut.clazz) {
+                    MainCardSubscribeWorkbookDetail::class.java ->
+                        useCaseOut.workbooks.map { it as MainCardSubscribeWorkbookDetail }.map {
+                            MainCardSubscribeWorkbookInfo(
+                                id = it.workbookId,
+                                status = it.isActiveSub.name,
+                                totalDay = it.totalDay,
+                                currentDay = it.currentDay,
+                                rank = it.rank,
+                                totalSubscriber = it.totalSubscriber,
+                                subscription = it.subscription,
+                                articleInfo = it.articleInfo,
+                            )
+                        }
+                    MyPageSubscribeWorkbookDetail::class.java ->
+                        useCaseOut.workbooks.map { it as MyPageSubscribeWorkbookDetail }.map {
+                            MyPageSubscribeWorkbookInfo(
+                                id = it.workbookId,
+                                status = it.isActiveSub.name,
+                                totalDay = it.totalDay,
+                                currentDay = it.currentDay,
+                                rank = it.rank,
+                                totalSubscriber = it.totalSubscriber,
+                                subscription = it.subscription,
+                                workbookInfo = it.workbookInfo,
+                            )
+                        }
+                    else -> throw IllegalStateException("Invalid class type")
+                },
         ).let {
             ApiResponseGenerator.success(it, HttpStatus.OK)
         }
@@ -93,7 +95,7 @@ class SubscriptionController(
     ): ApiResponse<ApiResponse.Success> {
         val memberId = userDetails.username.toLong()
         subscribeWorkbookUseCase.execute(
-            SubscribeWorkbookUseCaseIn(workbookId = workbookId, memberId = memberId)
+            SubscribeWorkbookUseCaseIn(workbookId = workbookId, memberId = memberId),
         )
 
         return ApiResponseGenerator.success(HttpStatus.OK)
@@ -114,8 +116,8 @@ class SubscriptionController(
             UnsubscribeWorkbookUseCaseIn(
                 workbookId = workbookId,
                 memberId = memberId,
-                opinion = body?.opinion ?: "cancel"
-            )
+                opinion = body?.opinion ?: "cancel",
+            ),
         )
 
         return ApiResponseGenerator.success(HttpStatus.OK)
@@ -129,7 +131,7 @@ class SubscriptionController(
     ): ApiResponse<ApiResponse.Success> {
         val memberId = userDetails.username.toLong()
         unsubscribeAllUseCase.execute(
-            UnsubscribeAllUseCaseIn(memberId = memberId, opinion = body?.opinion ?: "cancel")
+            UnsubscribeAllUseCaseIn(memberId = memberId, opinion = body?.opinion ?: "cancel"),
         )
 
         return ApiResponseGenerator.success(HttpStatus.OK)
@@ -144,7 +146,7 @@ class SubscriptionController(
         UpdateSubscriptionTimeUseCaseIn(
             memberId = userDetails.username.toLong(),
             time = body.time,
-            workbookId = body.workbookId
+            workbookId = body.workbookId,
         ).let {
             updateSubscriptionTimeUseCase.execute(it)
         }
@@ -166,7 +168,7 @@ class SubscriptionController(
         UpdateSubscriptionDayUseCaseIn(
             memberId = userDetails.username.toLong(),
             dayCode = dayCode,
-            workbookId = body.workbookId
+            workbookId = body.workbookId,
         ).let {
             updateSubscriptionDayUseCase.execute(it)
         }

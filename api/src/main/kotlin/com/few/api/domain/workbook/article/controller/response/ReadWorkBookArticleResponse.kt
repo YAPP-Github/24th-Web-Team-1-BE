@@ -16,16 +16,17 @@ data class ReadWorkBookArticleResponse(
 ) {
     constructor(useCaseOut: ReadWorkBookArticleOut) : this(
         id = useCaseOut.id,
-        writer = WriterInfo(
-            id = useCaseOut.writer.id,
-            name = useCaseOut.writer.name,
-            url = useCaseOut.writer.url
-        ),
+        writer =
+            WriterInfo(
+                id = useCaseOut.writer.id,
+                name = useCaseOut.writer.name,
+                url = useCaseOut.writer.url,
+            ),
         title = useCaseOut.title,
         content = useCaseOut.content,
         problemIds = useCaseOut.problemIds,
         category = useCaseOut.category,
         createdAt = useCaseOut.createdAt,
-        day = useCaseOut.day
+        day = useCaseOut.day,
     )
 }

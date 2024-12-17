@@ -1,5 +1,6 @@
 package com.few.api.config
 
+import com.few.api.domain.common.repo.event.ApiLocalCacheEventListener
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.ehcache.config.builders.CacheConfigurationBuilder
 import org.ehcache.config.builders.ResourcePoolsBuilder
@@ -13,7 +14,6 @@ import org.springframework.cache.annotation.EnableCaching
 import org.springframework.cache.jcache.JCacheCacheManager
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import com.few.api.domain.common.repo.event.ApiLocalCacheEventListener
 
 @Configuration
 @EnableCaching
@@ -29,34 +29,39 @@ class ApiLocalCacheConfig {
 
     @Bean(LOCAL_CM)
     fun localCacheManager(): CacheManager {
-        val cacheEventListenerConfigurationConfig = DefaultCacheEventListenerConfiguration(
-            setOf(
-                EventType.CREATED,
-                EventType.EXPIRED,
-                EventType.REMOVED,
-                EventType.UPDATED
-            ),
-            ApiLocalCacheEventListener::class.java
-        )
+        val cacheEventListenerConfigurationConfig =
+            DefaultCacheEventListenerConfiguration(
+                setOf(
+                    EventType.CREATED,
+                    EventType.EXPIRED,
+                    EventType.REMOVED,
+                    EventType.UPDATED,
+                ),
+                ApiLocalCacheEventListener::class.java,
+            )
         val cacheManager = EhcacheCachingProvider().cacheManager
 
-        val cache10Configuration = CacheConfigurationBuilder.newCacheConfigurationBuilder(
-            Any::class.java,
-            Any::class.java,
-            ResourcePoolsBuilder.newResourcePoolsBuilder()
-                .heap(10, EntryUnit.ENTRIES)
-        )
-            .withService(cacheEventListenerConfigurationConfig)
-            .build()
+        val cache10Configuration =
+            CacheConfigurationBuilder
+                .newCacheConfigurationBuilder(
+                    Any::class.java,
+                    Any::class.java,
+                    ResourcePoolsBuilder
+                        .newResourcePoolsBuilder()
+                        .heap(10, EntryUnit.ENTRIES),
+                ).withService(cacheEventListenerConfigurationConfig)
+                .build()
 
-        val cache5Configuration = CacheConfigurationBuilder.newCacheConfigurationBuilder(
-            Any::class.java,
-            Any::class.java,
-            ResourcePoolsBuilder.newResourcePoolsBuilder()
-                .heap(5, EntryUnit.ENTRIES)
-        )
-            .withService(cacheEventListenerConfigurationConfig)
-            .build()
+        val cache5Configuration =
+            CacheConfigurationBuilder
+                .newCacheConfigurationBuilder(
+                    Any::class.java,
+                    Any::class.java,
+                    ResourcePoolsBuilder
+                        .newResourcePoolsBuilder()
+                        .heap(5, EntryUnit.ENTRIES),
+                ).withService(cacheEventListenerConfigurationConfig)
+                .build()
 
         val selectArticleRecordCacheConfig: javax.cache.configuration.Configuration<Any, Any> =
             Eh107Configuration.fromEhcacheCacheConfiguration(cache10Configuration)

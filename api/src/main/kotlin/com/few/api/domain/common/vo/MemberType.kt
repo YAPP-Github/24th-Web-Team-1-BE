@@ -1,6 +1,9 @@
 package com.few.api.domain.common.vo
 
-enum class MemberType(val code: Byte, val displayName: String) {
+enum class MemberType(
+    val code: Byte,
+    val displayName: String,
+) {
     PREAUTH(30, "가입대기멤버"),
     NORMAL(60, "일반멤버"),
     ADMIN(0, "어드민멤버"),
@@ -8,8 +11,6 @@ enum class MemberType(val code: Byte, val displayName: String) {
     ;
 
     companion object {
-        fun fromCode(code: Byte): MemberType? {
-            return entries.find { it.code == code }
-        }
+        fun fromCode(code: Byte): MemberType? = entries.find { it.code == code }
     }
 }

@@ -3,8 +3,8 @@ package com.few.api.domain.admin.controller
 import com.epages.restdocs.apispec.ResourceDocumentation.resource
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
-import com.few.api.domain.admin.controller.request.*
 import com.few.api.config.web.controller.ApiControllerTestSpec
+import com.few.api.domain.admin.controller.request.*
 import com.few.api.domain.admin.usecase.dto.*
 import com.few.api.domain.common.vo.CategoryType
 import org.junit.jupiter.api.DisplayName
@@ -24,7 +24,6 @@ import java.net.URL
 import java.util.stream.IntStream
 
 class AdminApiControllerTest : ApiControllerTestSpec() {
-
     companion object {
         private const val BASE_URL = "/api/v1/admin"
         private const val TAG = "AdminController"
@@ -35,7 +34,12 @@ class AdminApiControllerTest : ApiControllerTestSpec() {
     fun addWorkbook() {
         // given
         val api = "AddWorkbook"
-        val uri = UriComponentsBuilder.newInstance().path("$BASE_URL/workbooks").build().toUriString()
+        val uri =
+            UriComponentsBuilder
+                .newInstance()
+                .path("$BASE_URL/workbooks")
+                .build()
+                .toUriString()
         val title = "title"
         val mainImageUrl = URL("http://localhost:8080")
         val category = CategoryType.fromCode(0)!!.name
@@ -49,27 +53,33 @@ class AdminApiControllerTest : ApiControllerTestSpec() {
         `when`(addWorkbookUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
 
         // when
-        mockMvc.perform(
-            post(uri)
-                .content(body)
-                .contentType(MediaType.APPLICATION_JSON)
-        )
-            .andExpect(status().isOk)
+        mockMvc
+            .perform(
+                post(uri)
+                    .content(body)
+                    .contentType(MediaType.APPLICATION_JSON),
+            ).andExpect(status().isOk)
             .andDo(
                 document(
                     api.toIdentifier(),
                     resource(
-                        ResourceSnippetParameters.builder().description("학습지 추가")
-                            .summary(api.toIdentifier()).privateResource(false).deprecated(false)
-                            .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))
-                            .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
+                        ResourceSnippetParameters
+                            .builder()
+                            .description("학습지 추가")
+                            .summary(api.toIdentifier())
+                            .privateResource(false)
+                            .deprecated(false)
+                            .tag(TAG)
+                            .requestSchema(Schema.schema(api.toRequestSchema()))
+                            .responseSchema(Schema.schema(api.toResponseSchema()))
+                            .responseFields(
                                 *Description.fields(
                                     FieldDescription("data", "data").asObject(),
-                                    FieldDescription("data.workbookId", "워크북 Id").asNumber()
-                                )
-                            ).build()
-                    )
-                )
+                                    FieldDescription("data.workbookId", "워크북 Id").asNumber(),
+                                ),
+                            ).build(),
+                    ),
+                ),
             )
     }
 
@@ -78,78 +88,95 @@ class AdminApiControllerTest : ApiControllerTestSpec() {
     fun addArticle() {
         // given
         val api = "AddArticle"
-        val uri = UriComponentsBuilder.newInstance().path("$BASE_URL/articles").build().toUriString()
+        val uri =
+            UriComponentsBuilder
+                .newInstance()
+                .path("$BASE_URL/articles")
+                .build()
+                .toUriString()
         val writerEmail = "writer@gmail.com"
         val articleImageURL = URL("http://localhost:8080")
         val title = "title"
         val category = CategoryType.fromCode(0)!!.name
         val contentType = "md"
         val contentSource = "content source"
-        val problemDTOs = IntStream.range(0, 2).mapToObj {
-            ProblemDto(
-                "title$it",
-                IntStream.range(0, 4).mapToObj { ProblemContentDto(it.toLong(), "content$it") }.toList(),
-                "$it",
-                "explanation$it"
+        val problemDTOs =
+            IntStream
+                .range(0, 2)
+                .mapToObj {
+                    ProblemDto(
+                        "title$it",
+                        IntStream.range(0, 4).mapToObj { ProblemContentDto(it.toLong(), "content$it") }.toList(),
+                        "$it",
+                        "explanation$it",
+                    )
+                }.toList()
+        val problemDetails =
+            problemDTOs.map {
+                ProblemDetail(
+                    it.title,
+                    it.contents.map { content -> ProblemContentDetail(content.number, content.content) },
+                    it.answer,
+                    it.explanation,
+                )
+            }
+        val request =
+            AddArticleRequest(
+                writerEmail,
+                articleImageURL,
+                title,
+                category,
+                contentType,
+                contentSource,
+                problemDTOs,
             )
-        }.toList()
-        val problemDetails = problemDTOs.map {
-            ProblemDetail(
-                it.title,
-                it.contents.map { content -> ProblemContentDetail(content.number, content.content) },
-                it.answer,
-                it.explanation
-            )
-        }
-        val request = AddArticleRequest(
-            writerEmail,
-            articleImageURL,
-            title,
-            category,
-            contentType,
-            contentSource,
-            problemDTOs
-        )
         val body = objectMapper.writeValueAsString(request)
 
-        val useCaseIn = AddArticleUseCaseIn(
-            writerEmail,
-            articleImageURL,
-            title,
-            category,
-            contentType,
-            contentSource,
-            problemDetails
-        )
+        val useCaseIn =
+            AddArticleUseCaseIn(
+                writerEmail,
+                articleImageURL,
+                title,
+                category,
+                contentType,
+                contentSource,
+                problemDetails,
+            )
         val useCaseOut = AddArticleUseCaseOut(1L)
         `when`(
             addArticleUseCase.execute(
-                useCaseIn
-            )
+                useCaseIn,
+            ),
         ).thenReturn(useCaseOut)
 
         // when
-        mockMvc.perform(
-            post(uri)
-                .content(body)
-                .contentType(MediaType.APPLICATION_JSON)
-        )
-            .andExpect(status().isOk)
+        mockMvc
+            .perform(
+                post(uri)
+                    .content(body)
+                    .contentType(MediaType.APPLICATION_JSON),
+            ).andExpect(status().isOk)
             .andDo(
                 document(
                     api.toIdentifier(),
                     resource(
-                        ResourceSnippetParameters.builder().description("아티클 추가")
-                            .summary(api.toIdentifier()).privateResource(false).deprecated(false)
-                            .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))
-                            .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
+                        ResourceSnippetParameters
+                            .builder()
+                            .description("아티클 추가")
+                            .summary(api.toIdentifier())
+                            .privateResource(false)
+                            .deprecated(false)
+                            .tag(TAG)
+                            .requestSchema(Schema.schema(api.toRequestSchema()))
+                            .responseSchema(Schema.schema(api.toResponseSchema()))
+                            .responseFields(
                                 *Description.fields(
                                     FieldDescription("data", "data").asObject(),
-                                    FieldDescription("data.articleId", "아티클 Id").asNumber()
-                                )
-                            ).build()
-                    )
-                )
+                                    FieldDescription("data.articleId", "아티클 Id").asNumber(),
+                                ),
+                            ).build(),
+                    ),
+                ),
             )
     }
 
@@ -158,7 +185,12 @@ class AdminApiControllerTest : ApiControllerTestSpec() {
     fun mapArticle() {
         // given
         val api = "MapArticle"
-        val uri = UriComponentsBuilder.newInstance().path("$BASE_URL/relations/articles").build().toUriString()
+        val uri =
+            UriComponentsBuilder
+                .newInstance()
+                .path("$BASE_URL/relations/articles")
+                .build()
+                .toUriString()
         val workbookId = 1L
         val articleId = 1L
         val dayCol = 1
@@ -169,24 +201,30 @@ class AdminApiControllerTest : ApiControllerTestSpec() {
         doNothing().`when`(mapArticleUseCase).execute(useCaseIn)
 
         // when
-        mockMvc.perform(
-            post(uri)
-                .content(body)
-                .contentType(MediaType.APPLICATION_JSON)
-        )
-            .andExpect(status().isOk)
+        mockMvc
+            .perform(
+                post(uri)
+                    .content(body)
+                    .contentType(MediaType.APPLICATION_JSON),
+            ).andExpect(status().isOk)
             .andDo(
                 document(
                     api.toIdentifier(),
                     resource(
-                        ResourceSnippetParameters.builder().description("아티클 매핑")
-                            .summary(api.toIdentifier()).privateResource(false).deprecated(false)
-                            .tag(TAG).requestSchema(Schema.schema(api.toRequestSchema()))
-                            .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
-                                *Description.describe()
-                            ).build()
-                    )
-                )
+                        ResourceSnippetParameters
+                            .builder()
+                            .description("아티클 매핑")
+                            .summary(api.toIdentifier())
+                            .privateResource(false)
+                            .deprecated(false)
+                            .tag(TAG)
+                            .requestSchema(Schema.schema(api.toRequestSchema()))
+                            .responseSchema(Schema.schema(api.toResponseSchema()))
+                            .responseFields(
+                                *Description.describe(),
+                            ).build(),
+                    ),
+                ),
             )
     }
 
@@ -195,7 +233,12 @@ class AdminApiControllerTest : ApiControllerTestSpec() {
     fun convertContent() {
         // given
         val api = "ConvertContent"
-        val uri = UriComponentsBuilder.newInstance().path("$BASE_URL/utilities/conversion/content").build().toUriString()
+        val uri =
+            UriComponentsBuilder
+                .newInstance()
+                .path("$BASE_URL/utilities/conversion/content")
+                .build()
+                .toUriString()
         val name = "content"
         val originalFilename = "test.md"
         val contentType = "text/markdown"
@@ -207,30 +250,32 @@ class AdminApiControllerTest : ApiControllerTestSpec() {
         `when`(convertContentUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
 
         // when
-        mockMvc.perform(
-            multipart(uri)
-                .file(request.content as MockMultipartFile)
-                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-        )
-            .andExpect(status().isOk)
+        mockMvc
+            .perform(
+                multipart(uri)
+                    .file(request.content as MockMultipartFile)
+                    .contentType(MediaType.MULTIPART_FORM_DATA_VALUE),
+            ).andExpect(status().isOk)
             .andDo(
                 document(
                     api.toIdentifier(),
                     resource(
-                        ResourceSnippetParameters.builder()
+                        ResourceSnippetParameters
+                            .builder()
                             .summary(api.toIdentifier())
                             .description("MD to HTML 변환")
                             .tag(TAG)
                             .requestSchema(Schema.schema(api.toRequestSchema()))
-                            .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
+                            .responseSchema(Schema.schema(api.toResponseSchema()))
+                            .responseFields(
                                 *Description.fields(
                                     FieldDescription("data", "data").asObject(),
                                     FieldDescription("data.content", "변환된 컨텐츠").asString(),
-                                    FieldDescription("data.originDownLoadUrl", "원본 컨텐츠 다운로드 URL").asString()
-                                )
-                            ).build()
-                    )
-                )
+                                    FieldDescription("data.originDownLoadUrl", "원본 컨텐츠 다운로드 URL").asString(),
+                                ),
+                            ).build(),
+                    ),
+                ),
             )
     }
 
@@ -239,7 +284,12 @@ class AdminApiControllerTest : ApiControllerTestSpec() {
     fun putImage() {
         // given
         val api = "PutImage"
-        val uri = UriComponentsBuilder.newInstance().path("$BASE_URL/utilities/conversion/image").build().toUriString()
+        val uri =
+            UriComponentsBuilder
+                .newInstance()
+                .path("$BASE_URL/utilities/conversion/image")
+                .build()
+                .toUriString()
         val name = "source"
         val originalFilename = "test.jpg"
         val contentType = "image/jpeg"
@@ -251,31 +301,32 @@ class AdminApiControllerTest : ApiControllerTestSpec() {
         `when`(putImageUseCase.execute(useCaseIn)).thenReturn(useCaseOut)
 
         // when
-        mockMvc.perform(
-            multipart(uri)
-                .file(request.source as MockMultipartFile)
-                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-        )
-            .andExpect(status().isOk)
+        mockMvc
+            .perform(
+                multipart(uri)
+                    .file(request.source as MockMultipartFile)
+                    .contentType(MediaType.MULTIPART_FORM_DATA_VALUE),
+            ).andExpect(status().isOk)
             .andDo(
                 document(
                     api.toIdentifier(),
                     resource(
-                        ResourceSnippetParameters.builder()
+                        ResourceSnippetParameters
+                            .builder()
                             .summary(api.toIdentifier())
                             .description("이미지 업로드")
                             .tag(TAG)
                             .requestSchema(Schema.schema(api.toRequestSchema()))
-                            .responseSchema(Schema.schema(api.toResponseSchema())).responseFields(
+                            .responseSchema(Schema.schema(api.toResponseSchema()))
+                            .responseFields(
                                 *Description.fields(
                                     FieldDescription("data", "data").asObject(),
                                     FieldDescription("data.url", "이미지 URL").asString(),
-                                    FieldDescription("data.supportSuffix", "지원하는 확장자").asArray()
-                                )
-                            ).build()
-                    )
-                )
-
+                                    FieldDescription("data.supportSuffix", "지원하는 확장자").asArray(),
+                                ),
+                            ).build(),
+                    ),
+                ),
             )
     }
 }

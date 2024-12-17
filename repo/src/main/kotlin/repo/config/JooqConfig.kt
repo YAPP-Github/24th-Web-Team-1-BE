@@ -25,9 +25,7 @@ class JooqConfig(
     }
 
     @Bean(name = [DSL])
-    fun dsl(): DefaultDSLContext {
-        return DefaultDSLContext(configuration())
-    }
+    fun dsl(): DefaultDSLContext = DefaultDSLContext(configuration())
 
     @Bean(name = [JOOQ_CONFIGURATION])
     fun configuration(): DefaultConfiguration {
@@ -41,7 +39,5 @@ class JooqConfig(
     }
 
     @Bean(name = [JOOQ_CONNECTION_PROVIDER])
-    fun connectionProvider(): DataSourceConnectionProvider {
-        return DataSourceConnectionProvider(dataSource)
-    }
+    fun connectionProvider(): DataSourceConnectionProvider = DataSourceConnectionProvider(dataSource)
 }

@@ -1,14 +1,14 @@
 package com.few.api.config
 
 import email.config.MailConfig
-import repo.config.RepoConfig
-import storage.document.config.DocumentStorageConfig
-import storage.image.config.ImageStorageConfig
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
+import repo.config.RepoConfig
 import security.config.SecurityConfig
+import storage.document.config.DocumentStorageConfig
+import storage.image.config.ImageStorageConfig
 import web.config.WebConfig
 
 @Configuration
@@ -19,7 +19,7 @@ import web.config.WebConfig
     ImageStorageConfig::class,
     DocumentStorageConfig::class,
     WebConfig::class,
-    SecurityConfig::class
+    SecurityConfig::class,
 )
 @ConfigurationPropertiesScan(basePackages = [ApiConfig.BASE_PACKAGE])
 class ApiConfig {

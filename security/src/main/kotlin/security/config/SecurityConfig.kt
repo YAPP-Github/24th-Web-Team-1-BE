@@ -22,7 +22,5 @@ class SecurityConfig {
         @Value("\${security.encryption.transformation}")transformation: String,
         @Value("\${security.encryption.keySize}")keySize: Int,
         @Value("\${security.encryption.iv}")iv: String,
-    ): IdEncryptor {
-        return IdEncryptor(algorithm, secretKey, transformation, keySize, iv)
-    }
+    ): IdEncryptor = IdEncryptor(algorithm, secretKey, transformation, keySize, iv)
 }

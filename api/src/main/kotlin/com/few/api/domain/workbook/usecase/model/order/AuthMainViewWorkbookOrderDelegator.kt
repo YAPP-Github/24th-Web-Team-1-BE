@@ -7,7 +7,6 @@ import com.few.api.domain.workbook.usecase.model.WorkBooks
 class AuthMainViewWorkbookOrderDelegator(
     private val memberSubscribedWorkbooks: List<MemberSubscribedWorkbook>,
 ) : WorkbookOrderDelegator {
-
     /**
      * 메인 화면에 보여질 워크북을 정렬합니다.
      * 1. 활성화된 구독 워크북을 먼저 보여줍니다.
@@ -19,9 +18,11 @@ class AuthMainViewWorkbookOrderDelegator(
         val workbooks = targetWorkBooks.workbooks.workbookData
         val allWorkbookIds = workbooks.associate { it.id to false }.toMutableMap()
         val activeSubWorkbookIds =
-            memberSubscribedWorkbooks.filter { it.isActiveSub }.sortedByDescending {
-                it.currentDay
-            }.map { it.workbookId }
+            memberSubscribedWorkbooks
+                .filter { it.isActiveSub }
+                .sortedByDescending {
+                    it.currentDay
+                }.map { it.workbookId }
         val inActiveSubWorkbookIds =
             memberSubscribedWorkbooks.filter { !it.isActiveSub }.map { it.workbookId }
 

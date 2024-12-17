@@ -6,9 +6,10 @@ end_of_line=lf
 indent_style=space
 indent_size=4
 insert_final_newline=true
-disabled_rules=no-wildcard-imports,import-ordering,comment-spacing
 
 [*.{kt,kts}]
 insert_final_newline=false
 # enable trailing_comma
 ij_kotlin_allow_trailing_comma=true
+# enable wildcard_imports
+ktlint_standard_no-wildcard-imports = disabled

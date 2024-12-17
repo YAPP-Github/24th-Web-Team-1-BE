@@ -12,10 +12,9 @@ import org.springframework.stereotype.Service
 class BrowseArticleProblemsService(
     private val problemDao: ProblemDao,
 ) {
-
-    fun execute(query: BrowseArticleProblemIdsInDto): BrowseArticleProblemsOutDto {
-        return problemDao.selectProblemsByArticleId(SelectProblemsByArticleIdQuery(query.articleId))
+    fun execute(query: BrowseArticleProblemIdsInDto): BrowseArticleProblemsOutDto =
+        problemDao
+            .selectProblemsByArticleId(SelectProblemsByArticleIdQuery(query.articleId))
             ?.let { BrowseArticleProblemsOutDto(it.problemIds) }
             ?: throw NotFoundException("problem.notfound.articleId")
-    }
 }

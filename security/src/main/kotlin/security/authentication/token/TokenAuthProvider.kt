@@ -13,34 +13,33 @@ import java.util.*
 class TokenAuthProvider(
     private val tokenUserDetailsService: UserDetailsService,
 ) : AuthenticationProvider {
-
     @Throws(AuthenticationException::class, AccessDeniedException::class)
     override fun authenticate(authentication: Authentication): Authentication? {
-        val token = Optional.ofNullable(authentication.principal)
-            .map { obj: Any? ->
-                String::class.java.cast(
-                    obj
-                )
-            }
-            .orElseThrow {
-                IllegalArgumentException(
-                    "token is missing"
-                )
-            }
+        val token =
+            Optional
+                .ofNullable(authentication.principal)
+                .map { obj: Any? ->
+                    String::class.java.cast(
+                        obj,
+                    )
+                }.orElseThrow {
+                    IllegalArgumentException(
+                        "token is missing",
+                    )
+                }
         val userDetails: UserDetails = tokenUserDetailsService.loadUserByUsername(token)
         SecurityContextHolder.getContext().authentication = authentication
         return if (authentication is PreAuthenticatedAuthenticationToken) {
             PreAuthenticatedAuthenticationToken(
                 userDetails,
                 userDetails.password,
-                userDetails.authorities
+                userDetails.authorities,
             )
         } else {
             null
         }
     }
 
-    override fun supports(authentication: Class<*>?): Boolean {
-        return PreAuthenticatedAuthenticationToken::class.java.isAssignableFrom(authentication)
-    }
+    override fun supports(authentication: Class<*>?): Boolean =
+        PreAuthenticatedAuthenticationToken::class.java.isAssignableFrom(authentication)
 }

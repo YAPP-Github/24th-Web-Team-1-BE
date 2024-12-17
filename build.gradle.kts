@@ -16,9 +16,6 @@ plugins {
     /** jooq */
     id("org.jooq.jooq-codegen-gradle") version DependencyVersion.JOOQ
 
-    /** ktlint */
-    id("org.jlleitschuh.gradle.ktlint") version DependencyVersion.KTLINT
-
     /** docs */
     id("org.asciidoctor.jvm.convert") version DependencyVersion.ASCIIDOCTOR
     id("com.epages.restdocs-api-spec") version DependencyVersion.EPAGES_REST_DOCS_API_SPEC
@@ -37,6 +34,46 @@ allprojects {
 
     repositories {
         mavenCentral()
+    }
+
+    val ktlint by configurations.creating
+
+    dependencies {
+        ktlint("com.pinterest.ktlint:ktlint-cli:${DependencyVersion.PINTEREST_KTLINT}") {
+            attributes {
+                attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
+            }
+        }
+    }
+
+    val ktlintCheck by tasks.registering(JavaExec::class) {
+        group = LifecycleBasePlugin.VERIFICATION_GROUP
+        description = "Check Kotlin code style"
+        classpath = ktlint
+        mainClass.set("com.pinterest.ktlint.Main")
+        args(
+            "**/src/**/*.kt",
+            "**.kts",
+            "!**/build/**",
+        )
+    }
+
+    tasks.check {
+        dependsOn(ktlintCheck)
+    }
+
+    tasks.register<JavaExec>("ktlintFormat") {
+        group = LifecycleBasePlugin.VERIFICATION_GROUP
+        description = "Check Kotlin code style and format"
+        classpath = ktlint
+        mainClass.set("com.pinterest.ktlint.Main")
+        jvmArgs("--add-opens=java.base/java.lang=ALL-UNNAMED")
+        args(
+            "-F",
+            "**/src/**/*.kt",
+            "**.kts",
+            "!**/build/**",
+        )
     }
 
     tasks.withType<KotlinCompile> {
@@ -73,7 +110,6 @@ subprojects {
     apply(plugin = "io.spring.dependency-management")
     apply(plugin = "org.jetbrains.kotlin.plugin.allopen")
     apply(plugin = "org.jetbrains.kotlin.kapt")
-    apply(plugin = "org.jlleitschuh.gradle.ktlint")
     apply(plugin = "org.hidetake.swagger.generator")
     apply(plugin = "org.jooq.jooq-codegen-gradle")
     apply(plugin = "org.jetbrains.dokka")
@@ -159,13 +195,14 @@ subprojects {
     }
 
     /** server url */
-    val serverUrl = project.hasProperty("serverUrl").let {
-        if (it) {
-            project.property("serverUrl") as String
-        } else {
-            "http://localhost:8080"
+    val serverUrl =
+        project.hasProperty("serverUrl").let {
+            if (it) {
+                project.property("serverUrl") as String
+            } else {
+                "http://localhost:8080"
+            }
         }
-    }
 
     /** convert snippet to swagger */
     openapi3 {
@@ -218,7 +255,7 @@ subprojects {
                 if (it.isFile) {
                     it.copyTo(
                         File("${project.projectDir}/src/main/resources$flyWayResourceDir/${it.name}"),
-                        true
+                        true,
                     )
                 }
             }

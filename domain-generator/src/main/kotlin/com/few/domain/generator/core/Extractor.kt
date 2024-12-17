@@ -42,7 +42,7 @@ class Extractor(
             val routine = CoroutineScope(Dispatchers.IO).async {
                 semaphore.withPermit {
                     try {
-                        val summarizedNews = chatGpt.summarizeNewsWithChatGPT(newsModel)
+                        val summarizedNews = chatGpt.summarizeNews(newsModel)
                         newsModel.summary = summarizedNews.get("summary")?.asString ?: "요약을 생성할 수 없습니다."
                         newsModel.importantSentences = if (summarizedNews.has("important_sentences")) {
                             val sentencesJsonArray = summarizedNews.getAsJsonArray("important_sentences")

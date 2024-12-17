@@ -21,7 +21,7 @@ class NewsGrouper(
 
         log.info { "뉴스 그룹화 진행 중..." }
 
-        val groupedNews = chatGpt.groupNewsWithChatGPT(newsList)
+        val groupedNews = chatGpt.groupNews(newsList)
 
         log.info { "그룹화된 뉴스 저장 중..." }
         saveGroupedNewsToJson(groupedNews, newsList, outputFilePath)

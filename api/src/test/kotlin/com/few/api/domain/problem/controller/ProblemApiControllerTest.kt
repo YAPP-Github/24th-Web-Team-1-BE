@@ -19,6 +19,7 @@ import org.springframework.web.util.UriComponentsBuilder
 import web.description.Description
 import web.helper.*
 
+@Suppress("ktlint:standard:max-line-length")
 class ProblemApiControllerTest : ApiControllerTestSpec() {
     companion object {
         private const val BASE_URL = "/api/v1/problems"

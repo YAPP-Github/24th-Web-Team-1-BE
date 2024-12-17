@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.lang.IllegalStateException
 
+@Suppress("ktlint:standard:class-naming")
 enum class SUBSCRIBE_WORKBOOK_STRATEGY {
     /**
      * 로그인 상태에서 메인 화면에 보여질 워크북을 정렬합니다.

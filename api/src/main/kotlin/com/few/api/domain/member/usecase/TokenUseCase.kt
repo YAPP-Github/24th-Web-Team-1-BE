@@ -14,6 +14,7 @@ import security.TokenGenerator
 import security.TokenResolver
 import security.encryptor.IdEncryptor
 
+@Suppress("ktlint:standard:backing-property-naming")
 @Component
 class TokenUseCase(
     private val tokenGenerator: TokenGenerator,

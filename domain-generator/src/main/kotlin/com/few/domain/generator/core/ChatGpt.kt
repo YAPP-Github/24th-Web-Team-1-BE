@@ -2,6 +2,8 @@ package com.few.domain.generator.core
 
 import com.few.domain.generator.client.OpenAiClient
 import com.few.domain.generator.client.request.OpenAiRequest
+import com.few.domain.generator.core.model.GroupNewsModel
+import com.few.domain.generator.core.model.NewsModel
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken

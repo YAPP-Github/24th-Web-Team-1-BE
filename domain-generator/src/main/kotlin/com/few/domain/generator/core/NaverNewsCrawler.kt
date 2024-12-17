@@ -1,5 +1,6 @@
 package com.few.domain.generator.core
 
+import com.few.domain.generator.core.model.NewsModel
 import com.google.gson.Gson
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.jsoup.Jsoup

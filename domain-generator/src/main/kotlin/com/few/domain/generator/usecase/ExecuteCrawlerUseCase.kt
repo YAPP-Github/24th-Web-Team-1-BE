@@ -1,6 +1,7 @@
 package com.few.domain.generator.usecase
 
 import com.few.domain.generator.core.*
+import com.few.domain.generator.core.model.NewsModel
 import com.few.domain.generator.usecase.dto.ExecuteCrawlerUseCaseIn
 import com.few.domain.generator.usecase.dto.ExecuteCrawlerUseCaseOut
 import io.github.oshai.kotlinlogging.KotlinLogging

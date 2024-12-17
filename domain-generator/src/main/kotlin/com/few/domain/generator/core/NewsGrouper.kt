@@ -1,5 +1,7 @@
 package com.few.domain.generator.core
 
+import com.few.domain.generator.core.model.GroupNewsModel
+import com.few.domain.generator.core.model.NewsModel
 import java.io.File
 import com.google.gson.Gson
 import com.google.gson.JsonObject

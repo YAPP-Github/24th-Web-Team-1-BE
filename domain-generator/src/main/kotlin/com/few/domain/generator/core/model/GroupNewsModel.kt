@@ -1,4 +1,4 @@
-package com.few.domain.generator.core
+package com.few.domain.generator.core.model
 
 data class GroupNewsModel(
     val topic: String = "",

@@ -1,4 +1,4 @@
-package com.few.domain.generator.core
+package com.few.domain.generator.core.model
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

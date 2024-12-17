@@ -1,5 +1,6 @@
 package com.few.domain.generator.core
 
+import com.few.domain.generator.core.model.GroupNewsModel
 import com.google.gson.Gson
 import org.springframework.stereotype.Component
 

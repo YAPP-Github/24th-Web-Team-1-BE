@@ -3,7 +3,7 @@ package com.few.domain.generator.core
 data class GroupNewsModel(
     val topic: String = "",
     val news: List<NewsModel> = listOf(),
-    val section: SectionContentModel = SectionContentModel(),
+    var section: SectionContentModel = SectionContentModel(),
 ) {
     fun toMap(): Map<String, Any> {
         return mapOf(

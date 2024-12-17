@@ -1,9 +1,6 @@
 package com.few.domain.generator.usecase
 
-import com.few.domain.generator.core.Extractor
-import com.few.domain.generator.core.NaverNewsCrawler
-import com.few.domain.generator.core.NewsGrouper
-import com.few.domain.generator.core.NewsModel
+import com.few.domain.generator.core.*
 import com.few.domain.generator.usecase.dto.ExecuteCrawlerUseCaseIn
 import com.few.domain.generator.usecase.dto.ExecuteCrawlerUseCaseOut
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -13,9 +10,10 @@ import java.util.*
 
 @Component
 class ExecuteCrawlerUseCase(
-    private val naverNewsCrawler: NaverNewsCrawler,
+    private val crawler: NaverNewsCrawler,
     private val extractor: Extractor,
-    private val newsGrouper: NewsGrouper,
+    private val grouper: NewsGrouper,
+    private val summarizer: GroupNewsSummarizer,
 ) {
     private val log = KotlinLogging.logger {}
 
@@ -29,11 +27,11 @@ class ExecuteCrawlerUseCase(
 
         //  1. 네이버 뉴스 크롤링
         log.info { "크롤링이 시작" }
-        val newsUrls = naverNewsCrawler.getNaverNewsUrls(useCaseIn.sid)
+        val newsUrls = crawler.getNaverNewsUrls(useCaseIn.sid)
 
         val results = mutableListOf<NewsModel>()
         for ((i, url) in newsUrls.withIndex()) {
-            val newsData = naverNewsCrawler.getNewsContent(url)
+            val newsData = crawler.getNewsContent(url)
             if (newsData != null) {
                 results.add(newsData)
             }
@@ -41,14 +39,17 @@ class ExecuteCrawlerUseCase(
             Thread.sleep(1000) // 1초 딜레이
         }
 
-        naverNewsCrawler.saveContentAsJson(results)
+        crawler.saveContentAsJson(results)
         log.info { "크롤링이 완료 및 요약 시작" }
 
         // 2. 뉴스 추출 및 요약
         extractor.extractAndSaveNews("crawled_news.json", "extracted_news.json")
 
         // 3. 뉴스 그룹화
-        newsGrouper.groupAndSaveNews("extracted_news.json", "grouped_news.json")
+        grouper.groupAndSaveNews("extracted_news.json", "grouped_news.json")
+
+        // 4. 그룹 뉴스 요약
+        summarizer.summarizeAndSaveGroupedNews("grouped_news.json", "summarized_groups.json")
 
         ExecuteCrawlerUseCaseOut(
             useCaseIn.sid,

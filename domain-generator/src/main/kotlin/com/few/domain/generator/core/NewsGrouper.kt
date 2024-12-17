@@ -2,12 +2,12 @@ package com.few.domain.generator.core
 
 import com.few.domain.generator.core.model.GroupNews
 import com.few.domain.generator.core.model.News
-import java.io.File
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Component
+import java.io.File
 
 @Component
 class NewsGrouper(
@@ -16,7 +16,10 @@ class NewsGrouper(
 ) {
     private val log = KotlinLogging.logger {}
 
-    fun groupAndSaveNews(inputFilePath: String, outputFilePath: String) {
+    fun groupAndSaveNews(
+        inputFilePath: String,
+        outputFilePath: String,
+    ) {
         val newsList = loadSummarizedNews(inputFilePath)
 
         log.info { "뉴스 그룹화 진행 중..." }
@@ -62,10 +65,11 @@ class NewsGrouper(
 
             // 뉴스가 3개 이상인 경우만 추가
             if (newsInGroup.size >= 3) {
-                val groupNews = GroupNews(
-                    topic = group.getAsJsonPrimitive("topic").asString,
-                    news = newsInGroup
-                )
+                val groupNews =
+                    GroupNews(
+                        topic = group.getAsJsonPrimitive("topic").asString,
+                        news = newsInGroup,
+                    )
                 result.add(groupNews)
                 log.info { "groupNewsIds: $groupNewsIds" }
             }

@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody
 @FeignClient(
     name = "openAiClient",
     url = "\${openai.api.url}",
-    configuration = [OpenAiFeignConfiguration::class]
+    configuration = [OpenAiFeignConfiguration::class],
 )
 interface OpenAiClient {
     @PostMapping
-    fun send(@RequestBody request: OpenAiRequest): OpenAiResponse
+    fun send(
+        @RequestBody request: OpenAiRequest,
+    ): OpenAiResponse
 }

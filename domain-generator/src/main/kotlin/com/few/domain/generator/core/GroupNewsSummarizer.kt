@@ -15,7 +15,10 @@ class GroupNewsSummarizer(
 ) {
     private val log = KotlinLogging.logger {}
 
-    fun summarizeAndSaveGroupedNews(inputFilePath: String, outputFilePath: String): Int {
+    fun summarizeAndSaveGroupedNews(
+        inputFilePath: String,
+        outputFilePath: String,
+    ): Int {
         val groupedNews = loadGroupedNews(inputFilePath)
 
         for ((index, group) in groupedNews.withIndex()) {
@@ -53,14 +56,17 @@ class GroupNewsSummarizer(
         return fewGson.fromJson(sectionData, SectionContent::class.java)
     }
 
-    private fun saveSummariesToJson(groupedNews: List<GroupNews>, outputFilePath: String) {
+    private fun saveSummariesToJson(
+        groupedNews: List<GroupNews>,
+        outputFilePath: String,
+    ) {
         // GroupNewsModel 객체 리스트를 Map 리스트로 변환
         val groupNewsData = groupedNews.map { it.toMap() }
 
         // JSON 파일로 저장
         File(outputFilePath).writeText(
             fewGson.toJson(groupNewsData),
-            Charsets.UTF_8
+            Charsets.UTF_8,
         )
     }
 }

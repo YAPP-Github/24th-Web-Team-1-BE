@@ -15,8 +15,8 @@ data class News(
     var importantSentences: List<String> = emptyList(),
     var keywords: List<String> = emptyList(),
 ) {
-    fun toMap(): Map<String, Any> {
-        return mapOf(
+    fun toMap(): Map<String, Any> =
+        mapOf(
             "id" to id,
             "title" to title,
             "content" to content,
@@ -25,13 +25,12 @@ data class News(
             "summary" to summary,
             "original_link" to originalLink,
             "important_sentences" to importantSentences,
-            "keywords" to keywords
+            "keywords" to keywords,
         )
-    }
 
     companion object {
-        fun fromMap(data: Map<String, Any>): News {
-            return News(
+        fun fromMap(data: Map<String, Any>): News =
+            News(
                 id = data["id"] as? String ?: UUID.randomUUID().toString(),
                 title = data["title"] as String,
                 content = data["content"] as String,
@@ -40,8 +39,7 @@ data class News(
                 summary = data["summary"] as? String ?: "",
                 originalLink = data["original_link"] as? String ?: "",
                 importantSentences = data["important_sentences"] as? List<String> ?: emptyList(),
-                keywords = data["keywords"] as? List<String> ?: emptyList()
+                keywords = data["keywords"] as? List<String> ?: emptyList(),
             )
-        }
     }
 }

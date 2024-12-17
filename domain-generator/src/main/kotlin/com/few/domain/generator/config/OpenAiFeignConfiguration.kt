@@ -10,10 +10,9 @@ class OpenAiFeignConfiguration(
     @Value("\${openai.api.key}") private val apiKey: String,
 ) {
     @Bean
-    fun requestInterceptor(): RequestInterceptor {
-        return RequestInterceptor { template ->
+    fun requestInterceptor(): RequestInterceptor =
+        RequestInterceptor { template ->
             template.header("Authorization", "Bearer $apiKey")
             template.header("Content-Type", "application/json")
         }
-    }
 }

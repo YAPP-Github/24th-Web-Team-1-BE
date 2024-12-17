@@ -7,13 +7,11 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class GsonConfig {
-
     @Bean
-    fun fewGson(): Gson {
-        return GsonBuilder()
+    fun fewGson(): Gson =
+        GsonBuilder()
             .setLenient()
             .disableHtmlEscaping()
             .setPrettyPrinting()
             .create()
-    }
 }

@@ -19,7 +19,6 @@ import web.ApiResponseGenerator
 class CrawlerController(
     private val executeCrawlerUseCase: ExecuteCrawlerUseCase,
 ) {
-
     /**
      * 아직 포스팅 되지 않은 크롤링 데이터 조회
      * 만약 크롤링하고 포스팅되지 않은 데이터가 있을 경우
@@ -33,14 +32,14 @@ class CrawlerController(
          */
         @RequestParam(
             required = false,
-            defaultValue = "0"
+            defaultValue = "0",
         ) sid: Int,
     ): ApiResponse<ApiResponse.SuccessBody<ExecuteCrawlerResponse>> {
         val useCaseOut = executeCrawlerUseCase.execute(ExecuteCrawlerUseCaseIn(sid))
 
         return ApiResponseGenerator.success(
             ExecuteCrawlerResponse(useCaseOut.sid, useCaseOut.crawlingIds),
-            HttpStatus.OK
+            HttpStatus.OK,
         )
     }
 }

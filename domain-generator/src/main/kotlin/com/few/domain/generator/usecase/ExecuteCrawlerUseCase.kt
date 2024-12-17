@@ -2,6 +2,7 @@ package com.few.domain.generator.usecase
 
 import com.few.domain.generator.core.Extractor
 import com.few.domain.generator.core.NaverNewsCrawler
+import com.few.domain.generator.core.NewsGrouper
 import com.few.domain.generator.core.NewsModel
 import com.few.domain.generator.usecase.dto.ExecuteCrawlerUseCaseIn
 import com.few.domain.generator.usecase.dto.ExecuteCrawlerUseCaseOut
@@ -14,6 +15,7 @@ import java.util.*
 class ExecuteCrawlerUseCase(
     private val naverNewsCrawler: NaverNewsCrawler,
     private val extractor: Extractor,
+    private val newsGrouper: NewsGrouper,
 ) {
     private val log = KotlinLogging.logger {}
 
@@ -46,6 +48,7 @@ class ExecuteCrawlerUseCase(
         extractor.extractAndSaveNews("crawled_news.json", "extracted_news.json")
 
         // 3. 뉴스 그룹화
+        newsGrouper.groupAndSaveNews("extracted_news.json", "grouped_news.json")
 
         ExecuteCrawlerUseCaseOut(
             useCaseIn.sid,

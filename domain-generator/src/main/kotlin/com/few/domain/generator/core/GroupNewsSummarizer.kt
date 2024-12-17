@@ -19,7 +19,7 @@ class GroupNewsSummarizer(
         val groupedNews = loadGroupedNews(inputFilePath)
 
         for ((index, group) in groupedNews.withIndex()) {
-            println("Processing group ${index + 1} / ${groupedNews.size}")
+            log.info { "Processing group ${index + 1} / ${groupedNews.size}" }
             generateGroupSummary(group)
         }
 

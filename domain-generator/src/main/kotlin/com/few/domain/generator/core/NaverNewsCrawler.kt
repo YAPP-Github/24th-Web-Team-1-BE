@@ -34,7 +34,7 @@ class NaverNewsCrawler(
         "https://news.naver.com/main/main.naver?mode=LSD&mid=shm&sid1=$sid#&date=%2000:00:00&page=$page"
 
     fun getNaverNewsUrls(sid: Int): List<String> {
-        println("$sid 분야의 뉴스 링크를 수집합니다.")
+        log.info { "$sid 분야의 뉴스 링크를 수집합니다." }
         val allLinks = mutableSetOf<String>()
 
         for (page in 1..maxPages) {

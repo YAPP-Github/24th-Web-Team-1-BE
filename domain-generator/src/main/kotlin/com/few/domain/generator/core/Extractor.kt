@@ -51,7 +51,7 @@ class Extractor(
                             emptyList()
                         }
                     } catch (e: Exception) {
-                        println("${newsModel.title}에 대한 요약 중 오류 발생: ${e.message}")
+                        log.error { "${newsModel.title}에 대한 요약 중 오류 발생: ${e.message}" }
                     }
                 }
             }

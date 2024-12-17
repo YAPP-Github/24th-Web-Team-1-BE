@@ -67,7 +67,7 @@ class NewsGrouper(
                     news = newsInGroup
                 )
                 result.add(groupNews)
-                println(groupNewsIds)
+                log.info { "groupNewsIds: $groupNewsIds" }
             }
         }
 

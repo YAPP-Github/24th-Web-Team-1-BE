@@ -126,6 +126,9 @@ subprojects {
      * jpa meta-annotations not automatically opened through the default settings of the plugin.spring
      */
     allOpen {
+        annotation("jakarta.persistence.Entity")
+        annotation("jakarta.persistence.MappedSuperclass")
+        annotation("jakarta.persistence.Embeddable")
     }
 
     dependencyManagement {
@@ -332,11 +335,6 @@ subprojects {
     }
 
     defaultTasks("bootRun")
-}
-
-/** do all copy data migration */
-tasks.register("copyDataMigrationAll") {
-    dependsOn(":api:copyDataMigration")
 }
 
 /** do all jooq codegen */

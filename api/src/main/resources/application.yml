@@ -5,6 +5,8 @@ spring:
     profiles:
         group:
             local:
+                # infra
+                - sentry-local
                 # module
                 - security-local
                 - web-local
@@ -14,6 +16,8 @@ spring:
                 # api
                 - thread-local
             prd:
+                # infra
+                - sentry-prd
                 # module
                 - security-prd
                 - web-prd

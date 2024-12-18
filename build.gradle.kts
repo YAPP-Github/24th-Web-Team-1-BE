@@ -21,6 +21,9 @@ plugins {
     id("com.epages.restdocs-api-spec") version DependencyVersion.EPAGES_REST_DOCS_API_SPEC
     id("org.hidetake.swagger.generator") version DependencyVersion.SWAGGER_GENERATOR
 
+    /** sentry */
+    id("io.sentry.jvm.gradle") version DependencyVersion.SENTRY_JVM_GRADLE
+
     id("org.jetbrains.dokka") version "1.9.20"
 }
 
@@ -117,6 +120,7 @@ subprojects {
     apply(plugin = "org.asciidoctor.jvm.convert")
     apply(plugin = "com.epages.restdocs-api-spec")
     apply(plugin = "org.hidetake.swagger.generator")
+    apply(plugin = "io.sentry.jvm.gradle")
 
     /**
      * https://kotlinlang.org/docs/reference/compiler-plugins.html#spring-support
@@ -175,6 +179,9 @@ subprojects {
 
         /** swagger ui */
         swaggerUI("org.webjars:swagger-ui:${DependencyVersion.SWAGGER_UI}")
+
+        /** sentry */
+        implementation("io.sentry:sentry-spring-boot-starter-jakarta:${DependencyVersion.SENTRY_SPRING_BOOT}")
     }
 
     kapt {
@@ -192,6 +199,39 @@ subprojects {
                 includeTags("ArchitectureSpec")
             }
         }
+    }
+
+    sentry {
+        // Generates a JVM (Java, Kotlin, etc.) source bundle and uploads your source code to Sentry.
+        // This enables source context, allowing you to see your source
+        // code as part of your stack traces in Sentry.
+        includeSourceContext = true
+
+        // The organization slug in Sentry.
+        org =
+            project.hasProperty("sentryProjectName").let {
+                if (it) {
+                    project.property("sentryProjectName") as String
+                } else {
+                    ""
+                }
+            }
+        projectName =
+            project.hasProperty("sentryProjectName").let {
+                if (it) {
+                    project.property("sentryProjectName") as String
+                } else {
+                    ""
+                }
+            }
+        authToken =
+            project.hasProperty("sentryAuthToken").let {
+                if (it) {
+                    project.property("sentryAuthToken") as String
+                } else {
+                    ""
+                }
+            }
     }
 
     /** server url */

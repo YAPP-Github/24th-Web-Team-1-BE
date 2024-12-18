@@ -53,8 +53,9 @@ class WebSecurityConfig {
     }
 
     @Bean(name = [WEB_SECURITY_CONFIGURER])
-    fun webSecurityConfigurer(userArgumentHandlerMethodArgumentResolver: HandlerMethodArgumentResolver): WebMvcConfigurer =
-        WebSecurityConfigurer(userArgumentHandlerMethodArgumentResolver)
+    fun webSecurityConfigurer(
+        @Qualifier(USER_ARGUMENT_HANDLER_METHOD_ARGUMENT_RESOLVER) userArgumentHandlerMethodArgumentResolver: HandlerMethodArgumentResolver,
+    ): WebMvcConfigurer = WebSecurityConfigurer(userArgumentHandlerMethodArgumentResolver)
 
     @Profile("local")
     @Bean(name = ["local$SECURITY_FILTER_CHAIN"])

@@ -15,7 +15,7 @@ import com.few.api.domain.workbook.article.dto.ReadWorkBookArticleUseCaseIn
 import com.few.api.domain.workbook.article.dto.WriterDetail
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
+import repo.jooq.DataSourceTransactional
 
 @Service
 class ReadWorkBookArticleUseCase(
@@ -25,7 +25,7 @@ class ReadWorkBookArticleUseCase(
     private val articleViewCountTxCase: ArticleViewCountTxCase,
     private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
-    @Transactional(readOnly = true)
+    @DataSourceTransactional(readOnly = true)
     fun execute(useCaseIn: ReadWorkBookArticleUseCaseIn): ReadWorkBookArticleOut {
         val articleRecord =
             articleDao.selectWorkBookArticleRecord(

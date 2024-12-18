@@ -8,7 +8,7 @@ import com.few.api.domain.member.repo.command.UpdateMemberTypeCommand
 import com.few.api.domain.member.usecase.dto.TokenUseCaseIn
 import com.few.api.domain.member.usecase.dto.TokenUseCaseOut
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
+import repo.jooq.DataSourceTransactional
 import security.Roles
 import security.TokenGenerator
 import security.TokenResolver
@@ -22,7 +22,7 @@ class TokenUseCase(
     private val memberDao: MemberDao,
     private val idEncryption: IdEncryptor,
 ) {
-    @Transactional
+    @DataSourceTransactional
     fun execute(useCaseIn: TokenUseCaseIn): TokenUseCaseOut {
         var isLogin = true
 

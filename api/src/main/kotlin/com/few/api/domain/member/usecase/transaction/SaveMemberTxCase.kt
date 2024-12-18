@@ -9,7 +9,7 @@ import com.few.api.domain.member.repo.record.MemberIdAndIsDeletedRecord
 import com.few.api.domain.member.usecase.dto.SaveMemberTxCaseIn
 import com.few.api.domain.member.usecase.dto.SaveMemberTxCaseOut
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
+import repo.jooq.DataSourceTransactional
 
 @Component
 class SaveMemberTxCase(
@@ -22,7 +22,7 @@ class SaveMemberTxCase(
         private const val SIGNUP_SUB_COMMENT = "가입하신 이메일 주소를 확인해주세요."
     }
 
-    @Transactional
+    @DataSourceTransactional
     fun execute(dto: SaveMemberTxCaseIn): SaveMemberTxCaseOut =
         dto.record?.let { signUpBeforeMember ->
             signUpBeforeMember.takeIf { it.isDeleted }?.let {

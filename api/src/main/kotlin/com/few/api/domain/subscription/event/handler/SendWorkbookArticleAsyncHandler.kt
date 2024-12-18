@@ -16,7 +16,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
-import org.springframework.transaction.annotation.Transactional
+import repo.jooq.DataSourceTransactional
 import java.time.LocalDate
 
 @Component
@@ -32,7 +32,7 @@ class SendWorkbookArticleAsyncHandler(
 
     @Async(value = DATABASE_ACCESS_POOL)
     @ApiLockFor(identifier = ApiLockIdentifier.SUBSCRIPTION_MEMBER_ID_WORKBOOK_ID)
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @DataSourceTransactional(propagation = Propagation.REQUIRES_NEW)
     fun sendWorkbookArticle(
         memberId: Long,
         workbookId: Long,

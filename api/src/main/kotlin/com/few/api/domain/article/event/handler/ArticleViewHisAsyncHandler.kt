@@ -9,7 +9,7 @@ import com.few.api.domain.common.vo.CategoryType
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
+import repo.jooq.DataSourceTransactional
 
 @Component
 class ArticleViewHisAsyncHandler(
@@ -19,7 +19,7 @@ class ArticleViewHisAsyncHandler(
     private val log = KotlinLogging.logger {}
 
     @Async(value = DATABASE_ACCESS_POOL)
-    @Transactional
+    @DataSourceTransactional
     fun addArticleViewHis(
         articleId: Long,
         memberId: Long,

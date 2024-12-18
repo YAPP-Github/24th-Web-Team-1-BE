@@ -12,14 +12,14 @@ import javax.sql.DataSource
 @Configuration
 class DataSourceConfig {
     companion object {
-        const val API_DATASOURCE = RepoConfig.BEAN_NAME_PREFIX + "DataSource"
-        const val API_TX = RepoConfig.BEAN_NAME_PREFIX + "TransactionManager"
+        const val DATASOURCE = RepoConfig.BEAN_NAME_PREFIX + "DataSource"
+        const val DATASOURCE_TX = RepoConfig.BEAN_NAME_PREFIX + "DataSourceTransactionManager"
     }
 
-    @Bean(name = [API_DATASOURCE])
+    @Bean(name = [DATASOURCE])
     @ConfigurationProperties(prefix = "spring.datasource.hikari")
-    fun apiDataSource(): DataSource = DataSourceBuilder.create().type(HikariDataSource::class.java).build()
+    fun dataSource(): DataSource = DataSourceBuilder.create().type(HikariDataSource::class.java).build()
 
-    @Bean(name = [API_TX])
-    fun apiTransactionManager(): PlatformTransactionManager = DataSourceTransactionManager(apiDataSource())
+    @Bean(name = [DATASOURCE_TX])
+    fun transactionManager(): PlatformTransactionManager = DataSourceTransactionManager(dataSource())
 }

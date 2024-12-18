@@ -36,6 +36,7 @@ class LocalDelegatedSecurityConfigurer(
             it
                 .requestMatchers(
                     AntPathRequestMatcher("/api/v1/**"),
+                    AntPathRequestMatcher("/api/v2/**"),
                 ).authenticated()
                 .anyRequest()
                 .denyAll()

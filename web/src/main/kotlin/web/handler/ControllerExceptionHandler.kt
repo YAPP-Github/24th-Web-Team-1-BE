@@ -1,5 +1,6 @@
 package web.handler
 
+import io.sentry.Sentry
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.ConstraintViolationException
 import org.springframework.beans.TypeMismatchException
@@ -28,6 +29,7 @@ class ControllerExceptionHandler(
         request: HttpServletRequest,
     ): ApiResponse<ApiResponse.FailureBody> {
         loggingHandler.writeLog(ex, request)
+        Sentry.captureException(ex)
         return ApiResponseGenerator.fail(ExceptionMessage.FAIL.message, HttpStatus.BAD_REQUEST)
     }
 
@@ -47,6 +49,7 @@ class ControllerExceptionHandler(
         request: HttpServletRequest,
     ): ApiResponse<ApiResponse.FailureBody> {
         loggingHandler.writeLog(ex, request)
+        Sentry.captureException(ex)
         return handleRequestDetails(ex)
     }
 
@@ -83,6 +86,7 @@ class ControllerExceptionHandler(
         request: HttpServletRequest,
     ): ApiResponse<ApiResponse.FailureBody> {
         loggingHandler.writeLog(ex, request)
+        Sentry.captureException(ex)
         return ApiResponseGenerator.fail(
             ExceptionMessage.FAIL.message,
             HttpStatus.INTERNAL_SERVER_ERROR,
@@ -95,6 +99,7 @@ class ControllerExceptionHandler(
         request: HttpServletRequest,
     ): ApiResponse<ApiResponse.FailureBody> {
         loggingHandler.writeLog(ex, request)
+        Sentry.captureException(ex)
         return ApiResponseGenerator.fail(
             ExceptionMessage.ACCESS_DENIED.message,
             HttpStatus.FORBIDDEN,
@@ -107,6 +112,7 @@ class ControllerExceptionHandler(
         request: HttpServletRequest,
     ): ApiResponse<ApiResponse.FailureBody> {
         loggingHandler.writeLog(ex, request)
+        Sentry.captureException(ex)
         return ApiResponseGenerator.fail(
             ExceptionMessage.FAIL.message,
             HttpStatus.INTERNAL_SERVER_ERROR,

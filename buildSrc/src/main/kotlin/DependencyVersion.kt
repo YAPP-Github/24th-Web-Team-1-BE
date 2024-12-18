@@ -65,4 +65,8 @@ object DependencyVersion {
 
     /** AspectJ **/
     const val ASPECTJ = "1.9.5"
+
+    /** sentry **/
+    const val SENTRY_JVM_GRADLE = "4.14.1"
+    const val SENTRY_SPRING_BOOT = "7.9.0"
 }

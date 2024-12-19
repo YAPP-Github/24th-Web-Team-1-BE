@@ -8,14 +8,14 @@ import com.few.api.domain.problem.usecase.dto.ReadProblemContentsUseCaseOutDetai
 import com.few.api.domain.problem.usecase.dto.ReadProblemUseCaseIn
 import com.few.api.domain.problem.usecase.dto.ReadProblemUseCaseOut
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
+import repo.jooq.DataSourceTransactional
 
 @Component
 class ReadProblemUseCase(
     private val problemDao: ProblemDao,
     private val contentsJsonMapper: ContentsJsonMapper,
 ) {
-    @Transactional(readOnly = true)
+    @DataSourceTransactional(readOnly = true)
     fun execute(useCaseIn: ReadProblemUseCaseIn): ReadProblemUseCaseOut {
         val problemId = useCaseIn.problemId
 

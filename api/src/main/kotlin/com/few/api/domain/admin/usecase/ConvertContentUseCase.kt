@@ -10,7 +10,7 @@ import com.few.api.domain.admin.utils.ObjectPathGenerator
 import com.few.api.domain.common.exception.ExternalIntegrationException
 import com.few.api.domain.common.exception.InsertException
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
+import repo.jooq.DataSourceTransactional
 import storage.document.PutDocumentProvider
 import java.io.File
 
@@ -21,7 +21,7 @@ class ConvertContentUseCase(
     private val putDocumentService: PutDocumentProvider,
     private val getUrlService: GetUrlService,
 ) {
-    @Transactional
+    @DataSourceTransactional
     fun execute(useCaseIn: ConvertContentUseCaseIn): ConvertContentUseCaseOut {
         val contentSource = useCaseIn.content
 

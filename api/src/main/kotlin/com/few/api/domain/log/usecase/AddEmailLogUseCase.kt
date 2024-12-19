@@ -9,14 +9,14 @@ import com.few.api.domain.log.repo.query.SelectEventByMessageIdAndEventTypeQuery
 import com.few.api.domain.member.repo.MemberDao
 import com.few.api.domain.member.repo.query.SelectMemberByEmailQuery
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
+import repo.jooq.DataSourceTransactional
 
 @Component
 class AddEmailLogUseCase(
     private val memberDao: MemberDao,
     private val sendArticleEventHistoryDao: SendArticleEventHistoryDao,
 ) {
-    @Transactional
+    @DataSourceTransactional
     fun execute(useCaseIn: AddEmailLogUseCaseIn) {
         val (memberId, _, _, _) =
             memberDao.selectMemberByEmail(

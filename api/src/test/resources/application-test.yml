@@ -17,6 +17,12 @@ spring:
         sql-migration-suffixes: sql
         baseline-on-migrate: true
         baseline-version: 0
+    jpa:
+        hibernate:
+            ddl-auto: validate
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.MySQL8Dialect
     mail:
         protocol: smtp
         host: smtp.gmail.com

@@ -7,14 +7,14 @@ import com.few.api.domain.member.service.dto.DeleteSubscriptionDto
 import com.few.api.domain.member.usecase.dto.DeleteMemberUseCaseIn
 import com.few.api.domain.member.usecase.dto.DeleteMemberUseCaseOut
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
+import repo.jooq.DataSourceTransactional
 
 @Component
 class DeleteMemberUseCase(
     private val memberDao: MemberDao,
     private val memberSubscriptionService: MemberSubscriptionService,
 ) {
-    @Transactional
+    @DataSourceTransactional
     fun execute(useCaseIn: DeleteMemberUseCaseIn): DeleteMemberUseCaseOut {
         memberDao.deleteMember(
             DeleteMemberCommand(

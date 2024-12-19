@@ -12,7 +12,7 @@ import com.few.api.domain.problem.service.dto.BrowseWorkbookIdAndProgressInDto
 import com.few.api.domain.problem.usecase.dto.BrowseProblemsUseCaseOut
 import com.few.api.domain.problem.usecase.dto.BrowseUndoneProblemsUseCaseIn
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
+import repo.jooq.DataSourceTransactional
 
 @Component
 class BrowseUndoneProblemsUseCase(
@@ -21,7 +21,7 @@ class BrowseUndoneProblemsUseCase(
     private val problemArticleService: ProblemArticleService,
     private val submitHistoryDao: SubmitHistoryDao,
 ) {
-    @Transactional(readOnly = true)
+    @DataSourceTransactional(readOnly = true)
     fun execute(useCaseIn: BrowseUndoneProblemsUseCaseIn): BrowseProblemsUseCaseOut {
         /**
          * 유저가 구독한 워크북들에 속한 아티클 개수를 조회함

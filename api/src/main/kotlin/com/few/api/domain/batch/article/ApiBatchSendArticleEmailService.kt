@@ -5,7 +5,7 @@ import com.few.api.domain.batch.article.reader.WorkBookSubscriberReader
 import com.few.api.domain.batch.article.writer.WorkBookSubscriberWriter
 import com.few.api.domain.batch.log.ApiBatchCallExecutionService
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
+import repo.jooq.DataSourceTransactional
 
 @Service
 class ApiBatchSendArticleEmailService(
@@ -14,7 +14,7 @@ class ApiBatchSendArticleEmailService(
     private val batchCallExecutionService: ApiBatchCallExecutionService,
     private val objectMapper: ObjectMapper,
 ) {
-    @Transactional
+    @DataSourceTransactional
     fun execute() {
         val startTime = System.currentTimeMillis()
         workBookSubscriberReader.execute().let { item ->

@@ -23,7 +23,7 @@ import com.few.api.domain.problem.repo.command.InsertProblemsCommand
 import com.few.api.domain.problem.repo.support.Content
 import com.few.api.domain.problem.repo.support.Contents
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
+import repo.jooq.DataSourceTransactional
 import storage.document.PutDocumentProvider
 import java.io.File
 import java.time.LocalDateTime
@@ -41,7 +41,7 @@ class AddArticleUseCase(
     private val getUrlService: GetUrlService,
     private val adminArticleMainCardService: AdminArticleMainCardService,
 ) {
-    @Transactional
+    @DataSourceTransactional
     fun execute(useCaseIn: AddArticleUseCaseIn): AddArticleUseCaseOut {
         val writerRecord =
             memberDao.selectMemberByEmail(SelectMemberByEmailQuery(useCaseIn.writerEmail))

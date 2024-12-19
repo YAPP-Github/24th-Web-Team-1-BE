@@ -4,13 +4,13 @@ import com.few.api.domain.subscription.repo.SubscriptionDao
 import com.few.api.domain.subscription.repo.command.UpdateDeletedAtInAllSubscriptionCommand
 import com.few.api.domain.subscription.usecase.dto.UnsubscribeAllUseCaseIn
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
+import repo.jooq.DataSourceTransactional
 
 @Component
 class UnsubscribeAllUseCase(
     private val subscriptionDao: SubscriptionDao,
 ) {
-    @Transactional
+    @DataSourceTransactional
     fun execute(useCaseIn: UnsubscribeAllUseCaseIn) {
         // TODO: request sending email
         var opinion = useCaseIn.opinion

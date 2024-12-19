@@ -19,7 +19,7 @@ import org.jooq.DSLContext
 import org.jooq.InsertSetMoreStep
 import org.jooq.UpdateConditionStep
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
+import repo.jooq.DataSourceTransactional
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -35,7 +35,7 @@ class WorkBookSubscriberWriter(
     /**
      * 구독자들에게 이메일을 전송하고 진행률을 업데이트한다.
      */
-    @Transactional
+    @DataSourceTransactional
     fun execute(items: List<WorkBookSubscriberItem>): Map<Any, Any> {
         val memberIds = items.toMemberIds()
         val targetWorkBookIds = items.toTargetWorkBookIds()

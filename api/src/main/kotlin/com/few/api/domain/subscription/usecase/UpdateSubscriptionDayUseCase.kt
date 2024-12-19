@@ -4,13 +4,13 @@ import com.few.api.domain.subscription.repo.SubscriptionDao
 import com.few.api.domain.subscription.repo.command.BulkUpdateSubscriptionSendDayCommand
 import com.few.api.domain.subscription.usecase.dto.UpdateSubscriptionDayUseCaseIn
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
+import repo.jooq.DataSourceTransactional
 
 @Component
 class UpdateSubscriptionDayUseCase(
     private val subscriptionDao: SubscriptionDao,
 ) {
-    @Transactional
+    @DataSourceTransactional
     fun execute(useCaseIn: UpdateSubscriptionDayUseCaseIn) {
         /**
          * workbookId기 없으면, memberId로 구독중인 모든 workbookId를 가져와서 해당하는 모든 workbookId의 구독요일을 변경한다.

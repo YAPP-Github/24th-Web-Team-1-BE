@@ -6,13 +6,13 @@ import com.few.api.domain.problem.repo.query.SelectProblemsByArticleIdQuery
 import com.few.api.domain.problem.usecase.dto.BrowseProblemsUseCaseIn
 import com.few.api.domain.problem.usecase.dto.BrowseProblemsUseCaseOut
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
+import repo.jooq.DataSourceTransactional
 
 @Component
 class BrowseProblemsUseCase(
     private val problemDao: ProblemDao,
 ) {
-    @Transactional(readOnly = true)
+    @DataSourceTransactional(readOnly = true)
     fun execute(useCaseIn: BrowseProblemsUseCaseIn): BrowseProblemsUseCaseOut {
         problemDao
             .selectProblemsByArticleId(SelectProblemsByArticleIdQuery(useCaseIn.articleId))

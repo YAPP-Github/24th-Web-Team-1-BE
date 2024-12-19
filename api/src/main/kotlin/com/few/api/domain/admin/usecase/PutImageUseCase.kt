@@ -12,7 +12,7 @@ import com.few.api.domain.common.exception.InsertException
 import com.sksamuel.scrimage.ImmutableImage
 import com.sksamuel.scrimage.webp.WebpWriter
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
+import repo.jooq.DataSourceTransactional
 import storage.image.PutImageProvider
 import java.io.File
 
@@ -22,7 +22,7 @@ class PutImageUseCase(
     private val putImageService: PutImageProvider,
     private val getUrlService: GetUrlService,
 ) {
-    @Transactional
+    @DataSourceTransactional
     fun execute(useCaseIn: PutImageUseCaseIn): PutImageUseCaseOut {
         val imageSource = useCaseIn.source
         val suffix = imageSource.originalFilename?.substringAfterLast(".") ?: "jpg"

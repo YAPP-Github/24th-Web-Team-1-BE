@@ -6,13 +6,13 @@ import com.few.api.domain.common.exception.InsertException
 import com.few.api.domain.workbook.repo.WorkbookDao
 import com.few.api.domain.workbook.repo.command.InsertWorkBookCommand
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
+import repo.jooq.DataSourceTransactional
 
 @Component
 class AddWorkbookUseCase(
     private val workbookDao: WorkbookDao,
 ) {
-    @Transactional
+    @DataSourceTransactional
     fun execute(useCaseIn: AddWorkbookUseCaseIn): AddWorkbookUseCaseOut {
         val workbookId =
             workbookDao.insertWorkBook(

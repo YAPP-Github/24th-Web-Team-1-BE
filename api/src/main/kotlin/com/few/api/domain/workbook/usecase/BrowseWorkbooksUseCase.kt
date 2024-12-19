@@ -17,7 +17,7 @@ import com.few.api.domain.workbook.usecase.dto.WriterDetail
 import com.few.api.domain.workbook.usecase.model.*
 import com.few.api.domain.workbook.usecase.model.order.*
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
+import repo.jooq.DataSourceTransactional
 
 enum class WorkBookOrderStrategy {
     BASIC,
@@ -43,7 +43,7 @@ class BrowseWorkbooksUseCase(
     private val workbookMemberService: WorkbookMemberService,
     private val workbookSubscribeService: WorkbookSubscribeService,
 ) {
-    @Transactional
+    @DataSourceTransactional
     fun execute(useCaseIn: BrowseWorkbooksUseCaseIn): BrowseWorkbooksUseCaseOut {
         val workbookRecords =
             workbookDao.browseWorkBookWithSubscriptionCount(

@@ -16,6 +16,9 @@ dependencies {
     /** jooq */
     api("org.springframework.boot:spring-boot-starter-jooq")
 
+    /** jpa */
+    api("org.springframework.boot:spring-boot-starter-data-jpa")
+
     /** flyway */
     implementation("org.flywaydb:flyway-core:${DependencyVersion.FLYWAY}")
     implementation("org.flywaydb:flyway-mysql")

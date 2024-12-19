@@ -4,18 +4,26 @@ import org.jooq.SQLDialect
 import org.jooq.impl.DataSourceConnectionProvider
 import org.jooq.impl.DefaultConfiguration
 import org.jooq.impl.DefaultDSLContext
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.boot.autoconfigure.jooq.SpringTransactionProvider
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
 import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator
+import org.springframework.transaction.PlatformTransactionManager
+import repo.config.DataSourceConfig.Companion.DATASOURCE
+import repo.config.TxConfig.Companion.DATASOURCE_TX
 import repo.flyway.support.ExceptionTranslator
 import repo.flyway.support.NativeSQLLogger
 import repo.flyway.support.PerformanceListener
 import javax.sql.DataSource
 
 @Configuration
+@Import(DataSourceConfig::class, TxConfig::class)
 class JooqConfig(
-    private val dataSource: DataSource,
+    @Qualifier(DATASOURCE) private val dataSource: DataSource,
+    @Qualifier(DATASOURCE_TX) private val txManager: PlatformTransactionManager,
     private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
     companion object {
@@ -40,4 +48,7 @@ class JooqConfig(
 
     @Bean(name = [JOOQ_CONNECTION_PROVIDER])
     fun connectionProvider(): DataSourceConnectionProvider = DataSourceConnectionProvider(dataSource)
+
+    @Bean
+    fun transactionProvider(): SpringTransactionProvider = SpringTransactionProvider(txManager)
 }

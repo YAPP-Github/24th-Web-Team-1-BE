@@ -42,7 +42,7 @@ class FlywayConfig {
 
     @Bean(name = [FLYWAY_CONFIGURATION])
     fun configuration(
-        @Qualifier(DataSourceConfig.API_DATASOURCE) dataSource: DataSource?,
+        @Qualifier(DataSourceConfig.DATASOURCE) dataSource: DataSource,
     ): org.flywaydb.core.api.configuration.Configuration {
         val configuration = FluentConfiguration()
         configuration.dataSource(dataSource)

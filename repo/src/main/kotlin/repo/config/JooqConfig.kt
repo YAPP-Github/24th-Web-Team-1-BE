@@ -13,14 +13,14 @@ import org.springframework.context.annotation.Import
 import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator
 import org.springframework.transaction.PlatformTransactionManager
 import repo.config.DataSourceConfig.Companion.DATASOURCE
-import repo.config.DataSourceConfig.Companion.DATASOURCE_TX
+import repo.config.TxConfig.Companion.DATASOURCE_TX
 import repo.flyway.support.ExceptionTranslator
 import repo.flyway.support.NativeSQLLogger
 import repo.flyway.support.PerformanceListener
 import javax.sql.DataSource
 
 @Configuration
-@Import(DataSourceConfig::class)
+@Import(DataSourceConfig::class, TxConfig::class)
 class JooqConfig(
     @Qualifier(DATASOURCE) private val dataSource: DataSource,
     @Qualifier(DATASOURCE_TX) private val txManager: PlatformTransactionManager,

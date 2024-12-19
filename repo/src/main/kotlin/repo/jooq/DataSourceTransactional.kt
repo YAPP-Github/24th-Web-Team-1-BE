@@ -4,7 +4,7 @@ import org.springframework.core.annotation.AliasFor
 import org.springframework.transaction.annotation.Isolation
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import repo.config.DataSourceConfig.Companion.DATASOURCE_TX
+import repo.config.TxConfig.Companion.DATASOURCE_TX
 import kotlin.reflect.KClass
 
 /**

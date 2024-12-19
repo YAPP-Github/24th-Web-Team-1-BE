@@ -8,17 +8,18 @@ import org.springframework.data.repository.config.BootstrapMode
 import org.springframework.data.repository.config.DefaultRepositoryBaseClass
 import org.springframework.data.repository.query.QueryLookupStrategy
 import repo.config.JpaConfig
+import repo.config.TxConfig
 import kotlin.reflect.KClass
 
 /**
  * org.springframework.data.jpa.repository.config.EnableJpaRepositories를 대체하는 애노테이션
- * transactionManagerRef와 entityManagerFactoryRef는 JpaConfig에서 설정한 값을 기본으로 사용한다.
+ * transactionManagerRef와 entityManagerFactoryRef는 TxConfig와 JpaConfig에서 설정한 값을 기본으로 사용한다.
  * @see EnableJpaRepositories
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 @EnableJpaRepositories(
-    transactionManagerRef = JpaConfig.JPA_TX,
+    transactionManagerRef = TxConfig.JPA_TX,
     entityManagerFactoryRef = JpaConfig.JPA_EMF,
 )
 annotation class EnableJpaRepositories(

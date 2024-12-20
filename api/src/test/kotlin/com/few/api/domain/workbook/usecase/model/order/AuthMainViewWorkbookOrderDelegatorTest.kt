@@ -3,6 +3,8 @@ package com.few.api.domain.workbook.usecase.model.order
 import com.few.api.domain.workbook.usecase.model.MemberSubscribedWorkbook
 import com.few.api.domain.workbook.usecase.model.WorkBook
 import com.few.api.domain.workbook.usecase.model.WorkBooks
+import io.qameta.allure.Epic
+import io.qameta.allure.Feature
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.net.URL
@@ -10,6 +12,8 @@ import java.time.LocalDateTime
 import java.util.stream.IntStream
 import kotlin.streams.toList
 
+@Epic("V1.0 Model")
+@Feature("AuthMainViewWorkbookOrderDelegator")
 class AuthMainViewWorkbookOrderDelegatorTest {
     @Test
     fun `워크북과 멤버 구독 워크북이 모두 주어지는 경우`() {

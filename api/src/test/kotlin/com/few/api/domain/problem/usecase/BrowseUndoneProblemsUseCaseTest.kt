@@ -13,7 +13,13 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import io.qameta.allure.Epic
+import io.qameta.allure.Feature
+import io.qameta.allure.Story
 
+@Epic("V1.0 UseCase")
+@Feature("Problem")
+@Story("BrowseUndoneProblems")
 class BrowseUndoneProblemsUseCaseTest :
     BehaviorSpec({
         lateinit var problemDao: ProblemDao

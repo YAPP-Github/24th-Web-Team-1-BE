@@ -11,6 +11,8 @@ import com.few.api.domain.member.usecase.dto.SaveMemberUseCaseIn
 import com.few.api.domain.member.usecase.dto.SaveMemberUseCaseOut
 import com.few.api.domain.member.usecase.dto.TokenUseCaseIn
 import com.few.api.domain.member.usecase.dto.TokenUseCaseOut
+import io.qameta.allure.Feature
+import io.qameta.allure.Story
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
@@ -23,6 +25,7 @@ import web.description.Description
 import web.helper.*
 
 @Suppress("ktlint:standard:property-naming", "ktlint:standard:max-line-length")
+@Feature("Member API")
 class MemberApiControllerTest : ApiControllerTestSpec() {
     companion object {
         private const val BASE_URL = "/api/v1/members"
@@ -31,6 +34,7 @@ class MemberApiControllerTest : ApiControllerTestSpec() {
 
     @Test
     @DisplayName("[POST] /api/v1/members")
+    @Story("[POST] /api/v1/members")
     fun saveMember() {
         // given
         val api = "SaveMember"
@@ -80,6 +84,7 @@ class MemberApiControllerTest : ApiControllerTestSpec() {
 
     @Test
     @DisplayName("[POST] /api/v1/members/token")
+    @Story("[POST] /api/v1/members/token")
     fun token() {
         // given
         val api = "Token"

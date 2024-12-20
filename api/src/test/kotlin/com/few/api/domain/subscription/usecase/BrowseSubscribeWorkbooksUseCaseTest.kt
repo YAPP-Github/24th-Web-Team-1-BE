@@ -18,8 +18,14 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import io.qameta.allure.Epic
+import io.qameta.allure.Feature
+import io.qameta.allure.Story
 import java.time.LocalTime
 
+@Epic("V1.0 UseCase")
+@Feature("Subscription")
+@Story("BrowseSubscribeWorkbooks")
 class BrowseSubscribeWorkbooksUseCaseTest :
     BehaviorSpec({
         val log = KotlinLogging.logger {}

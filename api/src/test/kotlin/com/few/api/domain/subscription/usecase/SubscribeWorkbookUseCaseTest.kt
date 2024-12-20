@@ -14,9 +14,15 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
+import io.qameta.allure.Epic
+import io.qameta.allure.Feature
+import io.qameta.allure.Story
 import org.springframework.context.ApplicationEventPublisher
 import java.time.LocalTime
 
+@Epic("V1.0 UseCase")
+@Feature("Subscription")
+@Story("SubscribeWorkBook")
 class SubscribeWorkbookUseCaseTest :
     BehaviorSpec({
         val log = KotlinLogging.logger {}

@@ -1,0 +1,280 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>EnableJpaRepositories</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            few
+                    </a>            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":repo:dokkaHtmlPartial/main">jvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="repo::repo.jpa/EnableJpaRepositories///PointingToDeclaration//-2054404650">
+  <div class="breadcrumbs"><a href="../../index.html">repo</a><span class="delimiter">/</span><a href="../index.html">repo.jpa</a><span class="delimiter">/</span><span class="current">EnableJpaRepositories</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Enable</span><wbr><span>Jpa</span><wbr><span><span>Repositories</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":repo:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.annotation/-target/index.html"><span class="token annotation builtin">Target</span></a><span class="token punctuation">(</span><span>allowedTargets<span class="token operator"> = </span><span class="token punctuation">[</span><span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.annotation/-annotation-target/-c-l-a-s-s/index.html">AnnotationTarget.CLASS</a></span><wbr><span class="token punctuation">]</span></span><wbr><span class="token punctuation">)</span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="org.springframework.data.jpa.repository.config/EnableJpaRepositories///PointingToDeclaration/"><span class="token annotation builtin">EnableJpaRepositories</span></span><span class="token punctuation">(</span><span>transactionManagerRef<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"repoJpaTransactionManager"</span></span><span class="token punctuation">, </span></span><wbr><span>entityManagerFactoryRef<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"repoJpaEntityManagerFactory"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">annotation class </span><a href="index.html">EnableJpaRepositories</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator"> = </span>[]<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>basePackages<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator"> = </span>[]<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>includeFilters<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span data-unresolved-link="org.springframework.context.annotation/ComponentScan.Filter///PointingToDeclaration/">ComponentScan.Filter</span><span class="token operator">&gt;</span><span class="token operator"> = </span>[]<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>excludeFilters<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span data-unresolved-link="org.springframework.context.annotation/ComponentScan.Filter///PointingToDeclaration/">ComponentScan.Filter</span><span class="token operator">&gt;</span><span class="token operator"> = </span>[]<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>repositoryImplementationPostfix<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">"Impl"</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>namedQueriesLocation<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">""</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>queryLookupStrategy<span class="token operator">: </span><span data-unresolved-link="org.springframework.data.repository.query/QueryLookupStrategy.Key///PointingToDeclaration/">QueryLookupStrategy.Key</span><span class="token operator"> = </span>QueryLookupStrategy.Key.CREATE_IF_NOT_FOUND<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>repositoryFactoryBeanClass<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator"> = </span>JpaRepositoryFactoryBean::class<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>repositoryBaseClass<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator"> = </span>DefaultRepositoryBaseClass::class<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>considerNestedRepositories<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>enableDefaultTransactions<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>bootstrapMode<span class="token operator">: </span><span data-unresolved-link="org.springframework.data.repository.config/BootstrapMode///PointingToDeclaration/">BootstrapMode</span><span class="token operator"> = </span>BootstrapMode.DEFAULT<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>escapeCharacter<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-char/index.html">Char</a><span class="token operator"> = </span>'\\'</span></span><span class="token punctuation">)</span></div><p class="paragraph">org.springframework.data.jpa.repository.config.EnableJpaRepositories를 대체하는 애노테이션 transactionManagerRef와 entityManagerFactoryRef는 TxConfig와 JpaConfig에서 설정한 값을 기본으로 사용한다.</p><h4 class="">See also</h4><div class="table"><div class="table-row" data-filterable-current=":repo:dokkaHtmlPartial/main" data-filterable-set=":repo:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><span data-unresolved-link="org.springframework.data.jpa.repository.config/EnableJpaRepositories///PointingToDeclaration/"><span>Enable</span><wbr><span>Jpa</span><wbr><span><span>Repositories</span></span></span></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-1550690848%2FProperties%2F-2054404650" anchor-label="basePackages" id="-1550690848%2FProperties%2F-2054404650" data-filterable-set=":repo:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":repo:dokkaHtmlPartial/main" data-filterable-set=":repo:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="base-packages.html"><span>base</span><wbr><span><span>Packages</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1550690848%2FProperties%2F-2054404650"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":repo:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.springframework.core.annotation/AliasFor///PointingToDeclaration/"><span class="token annotation builtin">AliasFor</span></span><span class="token punctuation">(</span><span>annotation<span class="token operator"> = </span><span data-unresolved-link="org.springframework.data.jpa.repository.config/EnableJpaRepositories///PointingToDeclaration/">EnableJpaRepositories::class</span><span class="token punctuation">, </span></span><wbr><span>attribute<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"basePackages"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">val </span><a href="base-packages.html">basePackages</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="462865547%2FProperties%2F-2054404650" anchor-label="bootstrapMode" id="462865547%2FProperties%2F-2054404650" data-filterable-set=":repo:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":repo:dokkaHtmlPartial/main" data-filterable-set=":repo:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="bootstrap-mode.html"><span>bootstrap</span><wbr><span><span>Mode</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="462865547%2FProperties%2F-2054404650"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":repo:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.springframework.core.annotation/AliasFor///PointingToDeclaration/"><span class="token annotation builtin">AliasFor</span></span><span class="token punctuation">(</span><span>annotation<span class="token operator"> = </span><span data-unresolved-link="org.springframework.data.jpa.repository.config/EnableJpaRepositories///PointingToDeclaration/">EnableJpaRepositories::class</span><span class="token punctuation">, </span></span><wbr><span>attribute<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"bootstrapMode"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">val </span><a href="bootstrap-mode.html">bootstrapMode</a><span class="token operator">: </span><span data-unresolved-link="org.springframework.data.repository.config/BootstrapMode///PointingToDeclaration/">BootstrapMode</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2019363494%2FProperties%2F-2054404650" anchor-label="considerNestedRepositories" id="2019363494%2FProperties%2F-2054404650" data-filterable-set=":repo:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":repo:dokkaHtmlPartial/main" data-filterable-set=":repo:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="consider-nested-repositories.html"><span>consider</span><wbr><span>Nested</span><wbr><span><span>Repositories</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2019363494%2FProperties%2F-2054404650"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":repo:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.springframework.core.annotation/AliasFor///PointingToDeclaration/"><span class="token annotation builtin">AliasFor</span></span><span class="token punctuation">(</span><span>annotation<span class="token operator"> = </span><span data-unresolved-link="org.springframework.data.jpa.repository.config/EnableJpaRepositories///PointingToDeclaration/">EnableJpaRepositories::class</span><span class="token punctuation">, </span></span><wbr><span>attribute<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"considerNestedRepositories"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">val </span><a href="consider-nested-repositories.html">considerNestedRepositories</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="510323145%2FProperties%2F-2054404650" anchor-label="enableDefaultTransactions" id="510323145%2FProperties%2F-2054404650" data-filterable-set=":repo:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":repo:dokkaHtmlPartial/main" data-filterable-set=":repo:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="enable-default-transactions.html"><span>enable</span><wbr><span>Default</span><wbr><span><span>Transactions</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="510323145%2FProperties%2F-2054404650"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":repo:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.springframework.core.annotation/AliasFor///PointingToDeclaration/"><span class="token annotation builtin">AliasFor</span></span><span class="token punctuation">(</span><span>annotation<span class="token operator"> = </span><span data-unresolved-link="org.springframework.data.jpa.repository.config/EnableJpaRepositories///PointingToDeclaration/">EnableJpaRepositories::class</span><span class="token punctuation">, </span></span><wbr><span>attribute<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"enableDefaultTransactions"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">val </span><a href="enable-default-transactions.html">enableDefaultTransactions</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="84780596%2FProperties%2F-2054404650" anchor-label="escapeCharacter" id="84780596%2FProperties%2F-2054404650" data-filterable-set=":repo:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":repo:dokkaHtmlPartial/main" data-filterable-set=":repo:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="escape-character.html"><span>escape</span><wbr><span><span>Character</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="84780596%2FProperties%2F-2054404650"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":repo:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.springframework.core.annotation/AliasFor///PointingToDeclaration/"><span class="token annotation builtin">AliasFor</span></span><span class="token punctuation">(</span><span>annotation<span class="token operator"> = </span><span data-unresolved-link="org.springframework.data.jpa.repository.config/EnableJpaRepositories///PointingToDeclaration/">EnableJpaRepositories::class</span><span class="token punctuation">, </span></span><wbr><span>attribute<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"escapeCharacter"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">val </span><a href="escape-character.html">escapeCharacter</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-char/index.html">Char</a><span class="token operator"> = </span>'\\'</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1399015709%2FProperties%2F-2054404650" anchor-label="excludeFilters" id="1399015709%2FProperties%2F-2054404650" data-filterable-set=":repo:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":repo:dokkaHtmlPartial/main" data-filterable-set=":repo:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="exclude-filters.html"><span>exclude</span><wbr><span><span>Filters</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1399015709%2FProperties%2F-2054404650"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":repo:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.springframework.core.annotation/AliasFor///PointingToDeclaration/"><span class="token annotation builtin">AliasFor</span></span><span class="token punctuation">(</span><span>annotation<span class="token operator"> = </span><span data-unresolved-link="org.springframework.data.jpa.repository.config/EnableJpaRepositories///PointingToDeclaration/">EnableJpaRepositories::class</span><span class="token punctuation">, </span></span><wbr><span>attribute<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"excludeFilters"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">val </span><a href="exclude-filters.html">excludeFilters</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span data-unresolved-link="org.springframework.context.annotation/ComponentScan.Filter///PointingToDeclaration/">ComponentScan.Filter</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1439889429%2FProperties%2F-2054404650" anchor-label="includeFilters" id="-1439889429%2FProperties%2F-2054404650" data-filterable-set=":repo:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":repo:dokkaHtmlPartial/main" data-filterable-set=":repo:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="include-filters.html"><span>include</span><wbr><span><span>Filters</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1439889429%2FProperties%2F-2054404650"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":repo:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.springframework.core.annotation/AliasFor///PointingToDeclaration/"><span class="token annotation builtin">AliasFor</span></span><span class="token punctuation">(</span><span>annotation<span class="token operator"> = </span><span data-unresolved-link="org.springframework.data.jpa.repository.config/EnableJpaRepositories///PointingToDeclaration/">EnableJpaRepositories::class</span><span class="token punctuation">, </span></span><wbr><span>attribute<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"includeFilters"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">val </span><a href="include-filters.html">includeFilters</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span data-unresolved-link="org.springframework.context.annotation/ComponentScan.Filter///PointingToDeclaration/">ComponentScan.Filter</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2090397828%2FProperties%2F-2054404650" anchor-label="namedQueriesLocation" id="-2090397828%2FProperties%2F-2054404650" data-filterable-set=":repo:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":repo:dokkaHtmlPartial/main" data-filterable-set=":repo:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="named-queries-location.html"><span>named</span><wbr><span>Queries</span><wbr><span><span>Location</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2090397828%2FProperties%2F-2054404650"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":repo:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.springframework.core.annotation/AliasFor///PointingToDeclaration/"><span class="token annotation builtin">AliasFor</span></span><span class="token punctuation">(</span><span>annotation<span class="token operator"> = </span><span data-unresolved-link="org.springframework.data.jpa.repository.config/EnableJpaRepositories///PointingToDeclaration/">EnableJpaRepositories::class</span><span class="token punctuation">, </span></span><wbr><span>attribute<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"namedQueriesLocation"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">val </span><a href="named-queries-location.html">namedQueriesLocation</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-951247609%2FProperties%2F-2054404650" anchor-label="queryLookupStrategy" id="-951247609%2FProperties%2F-2054404650" data-filterable-set=":repo:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":repo:dokkaHtmlPartial/main" data-filterable-set=":repo:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="query-lookup-strategy.html"><span>query</span><wbr><span>Lookup</span><wbr><span><span>Strategy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-951247609%2FProperties%2F-2054404650"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":repo:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.springframework.core.annotation/AliasFor///PointingToDeclaration/"><span class="token annotation builtin">AliasFor</span></span><span class="token punctuation">(</span><span>annotation<span class="token operator"> = </span><span data-unresolved-link="org.springframework.data.jpa.repository.config/EnableJpaRepositories///PointingToDeclaration/">EnableJpaRepositories::class</span><span class="token punctuation">, </span></span><wbr><span>attribute<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"queryLookupStrategy"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">val </span><a href="query-lookup-strategy.html">queryLookupStrategy</a><span class="token operator">: </span><span data-unresolved-link="org.springframework.data.repository.query/QueryLookupStrategy.Key///PointingToDeclaration/">QueryLookupStrategy.Key</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="478703359%2FProperties%2F-2054404650" anchor-label="repositoryBaseClass" id="478703359%2FProperties%2F-2054404650" data-filterable-set=":repo:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":repo:dokkaHtmlPartial/main" data-filterable-set=":repo:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="repository-base-class.html"><span>repository</span><wbr><span>Base</span><wbr><span><span>Class</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="478703359%2FProperties%2F-2054404650"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":repo:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.springframework.core.annotation/AliasFor///PointingToDeclaration/"><span class="token annotation builtin">AliasFor</span></span><span class="token punctuation">(</span><span>annotation<span class="token operator"> = </span><span data-unresolved-link="org.springframework.data.jpa.repository.config/EnableJpaRepositories///PointingToDeclaration/">EnableJpaRepositories::class</span><span class="token punctuation">, </span></span><wbr><span>attribute<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"repositoryBaseClass"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">val </span><a href="repository-base-class.html">repositoryBaseClass</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="474578198%2FProperties%2F-2054404650" anchor-label="repositoryFactoryBeanClass" id="474578198%2FProperties%2F-2054404650" data-filterable-set=":repo:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":repo:dokkaHtmlPartial/main" data-filterable-set=":repo:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="repository-factory-bean-class.html"><span>repository</span><wbr><span>Factory</span><wbr><span>Bean</span><wbr><span><span>Class</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="474578198%2FProperties%2F-2054404650"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":repo:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.springframework.core.annotation/AliasFor///PointingToDeclaration/"><span class="token annotation builtin">AliasFor</span></span><span class="token punctuation">(</span><span>annotation<span class="token operator"> = </span><span data-unresolved-link="org.springframework.data.jpa.repository.config/EnableJpaRepositories///PointingToDeclaration/">EnableJpaRepositories::class</span><span class="token punctuation">, </span></span><wbr><span>attribute<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"repositoryFactoryBeanClass"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">val </span><a href="repository-factory-bean-class.html">repositoryFactoryBeanClass</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2045543107%2FProperties%2F-2054404650" anchor-label="repositoryImplementationPostfix" id="2045543107%2FProperties%2F-2054404650" data-filterable-set=":repo:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":repo:dokkaHtmlPartial/main" data-filterable-set=":repo:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="repository-implementation-postfix.html"><span>repository</span><wbr><span>Implementation</span><wbr><span><span>Postfix</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2045543107%2FProperties%2F-2054404650"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":repo:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.springframework.core.annotation/AliasFor///PointingToDeclaration/"><span class="token annotation builtin">AliasFor</span></span><span class="token punctuation">(</span><span>annotation<span class="token operator"> = </span><span data-unresolved-link="org.springframework.data.jpa.repository.config/EnableJpaRepositories///PointingToDeclaration/">EnableJpaRepositories::class</span><span class="token punctuation">, </span></span><wbr><span>attribute<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"repositoryImplementationPostfix"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">val </span><a href="repository-implementation-postfix.html">repositoryImplementationPostfix</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="723672907%2FProperties%2F-2054404650" anchor-label="value" id="723672907%2FProperties%2F-2054404650" data-filterable-set=":repo:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":repo:dokkaHtmlPartial/main" data-filterable-set=":repo:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="value.html"><span><span>value</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="723672907%2FProperties%2F-2054404650"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":repo:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.springframework.core.annotation/AliasFor///PointingToDeclaration/"><span class="token annotation builtin">AliasFor</span></span><span class="token punctuation">(</span><span>annotation<span class="token operator"> = </span><span data-unresolved-link="org.springframework.data.jpa.repository.config/EnableJpaRepositories///PointingToDeclaration/">EnableJpaRepositories::class</span><span class="token punctuation">, </span></span><wbr><span>attribute<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"value"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">val </span><a href="value.html">value</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

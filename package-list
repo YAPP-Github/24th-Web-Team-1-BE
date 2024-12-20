@@ -133,6 +133,8 @@ module:repo
 repo.config
 repo.event
 repo.flyway.support
+repo.jooq
+repo.jpa
 module:security
 security
 security.authentication.token

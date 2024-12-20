@@ -1,0 +1,100 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>MessageReverseRelay</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            few
+                    </a>            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":event:dokkaHtmlPartial/main">jvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="event::event.message/MessageReverseRelay///PointingToDeclaration//-1625431680">
+  <div class="breadcrumbs"><a href="../../index.html">event</a><span class="delimiter">/</span><a href="../index.html">event.message</a><span class="delimiter">/</span><span class="current">MessageReverseRelay</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Message</span><wbr><span>Reverse</span><wbr><span><span>Relay</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":event:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">MessageReverseRelay</a><span class="token operator">&lt;</span><a href="index.html">T</a><span class="token operator"> : </span><a href="../../event/-event/index.html">Event</a><span class="token operator">&gt;</span></div><p class="paragraph">Message reverse relay</p><p class="paragraph">외부 시스템에서 전달 받은 메시지를 내부에 이벤트로 전달하기 위한 메시지 리버스 릴레이</p><p class="paragraph"><code class="lang-kotlin">Bar 메시지를 수신하여 Foo 이벤트로 변환하여 내부로 전달하는 예시</code></p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">class FooBarLocalMessageReverseRelay(<br>     private val messageSender: MessageSender&lt;BarMessage&gt;,<br>     private val messageMapper: MessageMapper&lt;FooEvent, BarMessage&gt;,<br>     private val eventPublisher: ApplicationEventPublisher,<br>  ) : MessageReverseRelay&lt;FooEvent&gt; {<br><br>   override fun publish(event: FooEvent) {<br>     applicationEventPublisher.publishEvent(event)<br>   }<br><br>   @EventListener<br>   @LocalSubscribeMessage(topic ="bar")<br>   fun onApplicationEvent(message: BarMessage) {<br>     messageMapper.map(message).ifPresent { publish(it) }<br>   }<br>}</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":event:dokkaHtmlPartial/main" data-filterable-set=":event:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>T</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Event 클래스를 상속 받은 클래스</p></div></div></div></div></div><h4 class="">See also</h4><div class="table"><div class="table-row" data-filterable-current=":event:dokkaHtmlPartial/main" data-filterable-set=":event:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-message-sender/index.html"><span>Message</span><wbr><span><span>Sender</span></span></a></div></span></div><div><div class="title"><p class="paragraph">메시지를 전달하기 위한 메시지 발신자</p></div></div></div></div><div class="table-row" data-filterable-current=":event:dokkaHtmlPartial/main" data-filterable-set=":event:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-message-mapper/index.html"><span>Message</span><wbr><span><span>Mapper</span></span></a></div></span></div><div><div class="title"><p class="paragraph">메시지를 이벤트로 변환하기 위한 메시지 매퍼</p></div></div></div></div><div class="table-row" data-filterable-current=":event:dokkaHtmlPartial/main" data-filterable-set=":event:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../event.message.local/-local-subscribe-message/index.html"><span>Local</span><wbr><span>Subscribe</span><wbr><span><span>Message</span></span></a></div></span></div><div><div class="title"><p class="paragraph">내부 메시지 수신을 위한 어노테이션</p></div></div></div></div><div class="table-row" data-filterable-current=":event:dokkaHtmlPartial/main" data-filterable-set=":event:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><span data-unresolved-link="org.springframework.context.event/EventListener///PointingToDeclaration/"><span>Event</span><wbr><span><span>Listener</span></span></span></div></span></div><div><div class="title"><p class="paragraph">이벤트 리스너 (기본 설정 메서드 명: onApplicationEvent)</p></div></div></div></div><div class="table-row" data-filterable-current=":event:dokkaHtmlPartial/main" data-filterable-set=":event:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><span data-unresolved-link="org.springframework.context/ApplicationEventPublisher///PointingToDeclaration/"><span>Application</span><wbr><span>Event</span><wbr><span><span>Publisher</span></span></span></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-1010128651%2FFunctions%2F-1625431680" anchor-label="publish" id="-1010128651%2FFunctions%2F-1625431680" data-filterable-set=":event:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":event:dokkaHtmlPartial/main" data-filterable-set=":event:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="publish.html"><span><span>publish</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1010128651%2FFunctions%2F-1625431680"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":event:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="publish.html"><span class="token function">publish</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">event<span class="token operator">: </span><a href="index.html">T</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Publish</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

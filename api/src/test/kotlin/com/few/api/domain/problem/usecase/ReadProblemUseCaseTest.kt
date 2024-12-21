@@ -12,8 +12,14 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import io.qameta.allure.Epic
+import io.qameta.allure.Feature
+import io.qameta.allure.Story
 import java.util.stream.IntStream
 
+@Epic("V1.0 UseCase")
+@Feature("Problem")
+@Story("ReadProblem")
 class ReadProblemUseCaseTest :
     BehaviorSpec({
 

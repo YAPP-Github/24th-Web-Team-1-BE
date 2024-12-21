@@ -15,10 +15,16 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.*
+import io.qameta.allure.Epic
+import io.qameta.allure.Feature
+import io.qameta.allure.Story
 import org.springframework.context.ApplicationEventPublisher
 import java.net.URL
 import java.time.LocalDateTime
 
+@Epic("V1.0 UseCase")
+@Feature("Article")
+@Story("ReadArticle")
 class ReadArticleUseCaseTest :
     BehaviorSpec({
         val log = KotlinLogging.logger {}

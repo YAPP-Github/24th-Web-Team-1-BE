@@ -5,7 +5,13 @@ import com.few.api.domain.subscription.usecase.dto.UnsubscribeWorkbookUseCaseIn
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.kotest.core.spec.style.BehaviorSpec
 import io.mockk.*
+import io.qameta.allure.Epic
+import io.qameta.allure.Feature
+import io.qameta.allure.Story
 
+@Epic("V1.0 UseCase")
+@Feature("Subscription")
+@Story("UnsubscribeWorkBook")
 class UnsubscribeWorkbookUseCaseTest :
     BehaviorSpec({
         val log = KotlinLogging.logger {}

@@ -7,6 +7,8 @@ import com.epages.restdocs.apispec.Schema
 import com.few.api.config.web.controller.ApiControllerTestSpec
 import com.few.api.domain.article.usecase.dto.*
 import com.few.api.domain.common.vo.CategoryType
+import io.qameta.allure.Feature
+import io.qameta.allure.Story
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
@@ -21,6 +23,7 @@ import java.net.URL
 import java.time.LocalDateTime
 import java.util.stream.IntStream
 
+@Feature("Article API")
 class ArticleApiControllerTest : ApiControllerTestSpec() {
     companion object {
         private const val BASE_URL = "/api/v1/articles"
@@ -32,6 +35,7 @@ class ArticleApiControllerTest : ApiControllerTestSpec() {
      */
     @Test
     @DisplayName("[GET] /api/v1/articles/{articleId}")
+    @Story("[GET] /api/v1/articles/{articleId}")
     fun readArticle() {
         // given
         val api = "ReadArticle"
@@ -122,6 +126,7 @@ class ArticleApiControllerTest : ApiControllerTestSpec() {
 
     @Test
     @DisplayName("[GET] /api/v1/articles?prevArticleId={optional}?categoryCd={optional}")
+    @Story("[GET] /api/v1/articles?prevArticleId={optional}?categoryCd={optional}")
     fun readArticles() {
         // given
         val api = "ReadArticles"
@@ -224,6 +229,7 @@ class ArticleApiControllerTest : ApiControllerTestSpec() {
 
     @Test
     @DisplayName("[GET] /api/v1/articles/categories")
+    @Story("[GET] /api/v1/articles/categories")
     fun browseArticleCategories() {
         // given
         val api = "browseArticleCategories"

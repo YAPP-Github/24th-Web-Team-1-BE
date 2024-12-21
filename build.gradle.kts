@@ -88,6 +88,7 @@ allprojects {
 
     tasks.withType<Test> {
         useJUnitPlatform()
+        systemProperty("allure.results.directory", "$projectDir/build/allure-results")
     }
 
     sourceSets {
@@ -163,12 +164,15 @@ subprojects {
         testImplementation("io.mockk:mockk:${DependencyVersion.MOCKK}")
         testImplementation("com.tngtech.archunit:archunit-junit5:${DependencyVersion.ARCH_UNIT_JUNIT5}")
         testImplementation("org.springframework.modulith:spring-modulith-starter-test")
+        testImplementation("io.qameta.allure:allure-junit5:${DependencyVersion.ALLURE_JUNIT5}")
 
         /** kotest */
         testImplementation("io.kotest:kotest-runner-junit5:${DependencyVersion.KOTEST}")
         testImplementation("io.kotest:kotest-assertions-core:${DependencyVersion.KOTEST}")
+        testImplementation("io.kotest:kotest-framework-api:${DependencyVersion.KOTEST}")
         testImplementation("io.kotest.extensions:kotest-extensions-spring:${DependencyVersion.KOTEST_EXTENSION}")
         testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${DependencyVersion.COROUTINE_TEST}")
+        testImplementation("io.kotest.extensions:kotest-extensions-allure:${DependencyVersion.KOTEST_EXTENSION}")
 
         /** Kotlin Logger **/
         implementation("io.github.oshai:kotlin-logging-jvm:${DependencyVersion.KOTLIN_LOGGING}")

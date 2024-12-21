@@ -9,6 +9,8 @@ import com.few.api.domain.common.vo.CategoryType
 import com.few.api.domain.workbook.article.dto.ReadWorkBookArticleOut
 import com.few.api.domain.workbook.article.dto.ReadWorkBookArticleUseCaseIn
 import com.few.api.domain.workbook.article.dto.WriterDetail
+import io.qameta.allure.Feature
+import io.qameta.allure.Story
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
@@ -22,6 +24,7 @@ import web.helper.*
 import java.net.URL
 import java.time.LocalDateTime
 
+@Feature("WorkBook Article API")
 class WorkBookArticleApiControllerTest : ApiControllerTestSpec() {
     companion object {
         private const val BASE_URL = "/api/v1/workbooks/{workbookId}/articles"
@@ -30,6 +33,7 @@ class WorkBookArticleApiControllerTest : ApiControllerTestSpec() {
 
     @Test
     @DisplayName("[GET] /api/v1/workbooks/{workbookId}/articles/{articleId}")
+    @Story("[GET] /api/v1/workbooks/{workbookId}/articles/{articleId}")
     @WithUserDetails(userDetailsServiceBeanName = "apiTestTokenUserDetailsService")
     fun readWorkBookArticle() {
         // given

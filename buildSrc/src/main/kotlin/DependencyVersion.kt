@@ -30,10 +30,11 @@ object DependencyVersion {
     /** test */
     const val MOCKK = "1.13.9"
     const val KOTEST = "5.8.0"
-    const val KOTEST_EXTENSION = "1.1.3"
+    const val KOTEST_EXTENSION = "1.3.0"
     const val COROUTINE_TEST = "1.8.0"
     const val TEST_CONTAINER = "1.19.8"
     const val ARCH_UNIT_JUNIT5 = "0.22.0"
+    const val ALLURE_JUNIT5 = "2.29.1"
 
     /** docs */
     const val ASCIIDOCTOR = "3.3.2"

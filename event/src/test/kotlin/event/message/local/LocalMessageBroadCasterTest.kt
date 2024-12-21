@@ -68,7 +68,11 @@ class LocalMessageBroadCasterTest {
 
             // then
             output = outputStream.toString()
-            assertTrue(output.contains(message.toString()))
+            val isMatch =
+                output.split("\n").stream().anyMatch {
+                    it.contains(message.toString(), ignoreCase = true) && it.contains("MessageReverseRelay", ignoreCase = true)
+                }
+            assertTrue(isMatch)
         } finally {
             System.setOut(originalOut)
             log.info { output }

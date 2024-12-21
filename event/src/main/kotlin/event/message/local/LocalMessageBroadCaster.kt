@@ -2,7 +2,6 @@ package event.message.local
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import event.message.Message
-import event.message.MessagePayload
 import event.message.MessageReverseRelay
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.context.event.EventListener
@@ -34,15 +33,9 @@ open class LocalMessageBroadCaster(
                             return@forEach
                         }
                     }
-                    objectMapper.writeValueAsString(message.payload).let { payload ->
-                        objectMapper.readValue(payload, MessagePayload::class.java)?.let { messagePayload ->
-                            objectMapper.convertValue(messagePayload, messageType).let { relayMessage ->
-                                log.info {
-                                    "[${Thread.currentThread().name}] Publish message to ${relay.javaClass.simpleName}: $relayMessage"
-                                }
-                                method.invoke(relay, relayMessage)
-                            }
-                        }
+                    objectMapper.convertValue(message.payload, messageType).let { relayMessage ->
+                        log.info { "[${Thread.currentThread().name}] Publish message to ${relay.javaClass.simpleName}: $relayMessage" }
+                        method.invoke(relay, relayMessage)
                     }
                 }
         }

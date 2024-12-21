@@ -15,7 +15,7 @@ import com.few.api.domain.common.exception.NotFoundException
 import com.few.api.domain.common.vo.CategoryType
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
+import repo.jooq.DataSourceTransactional
 
 @Component
 class ReadArticleUseCase(
@@ -25,7 +25,7 @@ class ReadArticleUseCase(
     private val articleViewCountTxCase: ArticleViewCountTxCase,
     private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
-    @Transactional(readOnly = true)
+    @DataSourceTransactional(readOnly = true)
     fun execute(useCaseIn: ReadArticleUseCaseIn): ReadArticleUseCaseOut {
         val articleRecord =
             articleDao.selectArticleRecord(SelectArticleRecordQuery(useCaseIn.articleId))

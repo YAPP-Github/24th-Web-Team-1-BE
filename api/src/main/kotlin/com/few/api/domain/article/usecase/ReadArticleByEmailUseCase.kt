@@ -9,14 +9,14 @@ import com.few.api.domain.article.usecase.dto.ReadArticleByEmailUseCaseIn
 import com.few.api.domain.common.exception.NotFoundException
 import com.few.api.domain.common.vo.EmailLogEventType
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
+import repo.jooq.DataSourceTransactional
 
 @Component
 class ReadArticleByEmailUseCase(
     private val memberService: ArticleMemberService,
     private val articleLogService: ArticleLogService,
 ) {
-    @Transactional
+    @DataSourceTransactional
     fun execute(useCaseIn: ReadArticleByEmailUseCaseIn) {
         val memberId =
             memberService.readMemberByEmail(ReadMemberByEmailDto(useCaseIn.destination[0]))

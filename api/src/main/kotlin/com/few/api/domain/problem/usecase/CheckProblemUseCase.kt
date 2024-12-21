@@ -9,14 +9,14 @@ import com.few.api.domain.problem.repo.query.SelectProblemAnswerQuery
 import com.few.api.domain.problem.usecase.dto.CheckProblemUseCaseIn
 import com.few.api.domain.problem.usecase.dto.CheckProblemUseCaseOut
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
+import repo.jooq.DataSourceTransactional
 
 @Component
 class CheckProblemUseCase(
     private val problemDao: ProblemDao,
     private val submitHistoryDao: SubmitHistoryDao,
 ) {
-    @Transactional
+    @DataSourceTransactional
     fun execute(useCaseIn: CheckProblemUseCaseIn): CheckProblemUseCaseOut {
         val memberId = useCaseIn.memberId
         val problemId = useCaseIn.problemId

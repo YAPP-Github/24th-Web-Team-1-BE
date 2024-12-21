@@ -127,6 +127,9 @@ subprojects {
      * jpa meta-annotations not automatically opened through the default settings of the plugin.spring
      */
     allOpen {
+        annotation("jakarta.persistence.Entity")
+        annotation("jakarta.persistence.MappedSuperclass")
+        annotation("jakarta.persistence.Embeddable")
     }
 
     dependencyManagement {
@@ -257,10 +260,32 @@ subprojects {
             val dataMigrationDir = "$root/data/$flyWayResourceDir"
             File(dataMigrationDir).walkTopDown().forEach {
                 if (it.isFile) {
-                    it.copyTo(
-                        File("${project.projectDir}/src/main/resources$flyWayResourceDir/${it.name}"),
-                        true,
-                    )
+                    // Migration is executed in Api module. So, copy the migration file to the Api module.
+                    if (project.name == "api") {
+                        it.copyTo(
+                            File("${project.projectDir}/src/main/resources$flyWayResourceDir/${it.name}"),
+                            true,
+                        )
+                        println("Copy ${it.name} to ${project.projectDir}/src/main/resources$flyWayResourceDir/${it.name}")
+                        // If domain module, Copy domain necessary migration files.
+                    } else if (project.name.contains("domain")) {
+                        // Copy all V1 migration files.
+                        if (it.name.startsWith("V1.")) {
+                            it.copyTo(
+                                File("${project.projectDir}/src/main/resources$flyWayResourceDir/${it.name}"),
+                                true,
+                            )
+                            // Copy domain specific migration files.
+                        } else if (it.name.startsWith("V2.")) {
+                            if (it.name.contains("__${project.name}__")) {
+                                it.copyTo(
+                                    File("${project.projectDir}/src/main/resources$flyWayResourceDir/${it.name}"),
+                                    true,
+                                )
+                            }
+                        }
+                        println("Copy ${it.name} to ${project.projectDir}/src/main/resources$flyWayResourceDir/${it.name}")
+                    }
                 }
             }
         }
@@ -338,14 +363,13 @@ subprojects {
     defaultTasks("bootRun")
 }
 
-/** do all copy data migration */
-tasks.register("copyDataMigrationAll") {
-    dependsOn(":api:copyDataMigration")
-}
-
 /** do all jooq codegen */
 tasks.register("jooqCodegenAll") {
-    dependsOn("copyDataMigrationAll")
+    /** copy data migration */
+    subprojects.forEach {
+        dependsOn(it.tasks.named("copyDataMigration"))
+    }
+    /** jooq codegen */
     dependsOn(":api:jooqCodegen")
 }
 

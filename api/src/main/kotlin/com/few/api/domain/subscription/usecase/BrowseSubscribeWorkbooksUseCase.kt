@@ -15,7 +15,7 @@ import com.few.api.domain.subscription.service.dto.ReadAllWorkbookTitleInDto
 import com.few.api.domain.subscription.service.dto.ReadArticleIdByWorkbookIdAndDayDto
 import com.few.api.domain.subscription.usecase.dto.*
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
+import repo.jooq.DataSourceTransactional
 import java.lang.IllegalStateException
 
 @Suppress("ktlint:standard:class-naming")
@@ -51,7 +51,7 @@ class BrowseSubscribeWorkbooksUseCase(
     private val subscriptionWorkbookService: SubscriptionWorkbookService,
     private val objectMapper: ObjectMapper,
 ) {
-    @Transactional
+    @DataSourceTransactional
     fun execute(useCaseIn: BrowseSubscribeWorkbooksUseCaseIn): BrowseSubscribeWorkbooksUseCaseOut {
         val strategy =
             when (useCaseIn.view) {

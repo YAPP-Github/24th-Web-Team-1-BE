@@ -30,7 +30,7 @@ open class LocalMessageBroadCaster(
                 .forEach { method ->
                     val messageType = method.messageType()
                     method.getAnnotation(LocalSubscribeMessage::class.java).topic.let {
-                        if (!method.name.contains(it)) {
+                        if (!message.javaClass.name.contains(it, ignoreCase = true)) {
                             return@forEach
                         }
                     }

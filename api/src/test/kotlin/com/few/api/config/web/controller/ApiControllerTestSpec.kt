@@ -26,6 +26,7 @@ import com.few.api.domain.workbook.article.usecase.ReadWorkBookArticleUseCase
 import com.few.api.domain.workbook.controller.WorkBookController
 import com.few.api.domain.workbook.usecase.BrowseWorkbooksUseCase
 import com.few.api.domain.workbook.usecase.ReadWorkbookUseCase
+import io.qameta.allure.Epic
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
@@ -41,6 +42,7 @@ import security.TokenResolver
 import security.config.SecurityConfig
 import web.config.WebConfig
 
+@Epic("V1.0 API")
 @ActiveProfiles(value = ["test", "new"])
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)

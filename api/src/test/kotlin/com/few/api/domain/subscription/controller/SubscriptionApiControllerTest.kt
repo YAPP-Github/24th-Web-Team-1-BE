@@ -12,6 +12,8 @@ import com.few.api.domain.subscription.controller.request.UnsubscribeWorkbookReq
 import com.few.api.domain.subscription.controller.request.UpdateSubscriptionDayRequest
 import com.few.api.domain.subscription.controller.request.UpdateSubscriptionTimeRequest
 import com.few.api.domain.subscription.usecase.dto.*
+import io.qameta.allure.Feature
+import io.qameta.allure.Story
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.doNothing
@@ -26,6 +28,7 @@ import web.description.Description
 import web.helper.*
 import java.time.LocalTime
 
+@Feature("Subscription API")
 class SubscriptionApiControllerTest : ApiControllerTestSpec() {
     companion object {
         private const val BASE_URL = "/api/v1/"
@@ -34,6 +37,7 @@ class SubscriptionApiControllerTest : ApiControllerTestSpec() {
 
     @Test
     @DisplayName("[GET] /api/v1/subscriptions/workbooks?view=mainCard")
+    @Story("[GET] /api/v1/subscriptions/workbooks?view=mainCard")
     @WithUserDetails(userDetailsServiceBeanName = "apiTestTokenUserDetailsService")
     fun browseSubscribeWorkbooksViewMainCard() {
         // given
@@ -133,6 +137,7 @@ class SubscriptionApiControllerTest : ApiControllerTestSpec() {
 
     @Test
     @DisplayName("[GET] /api/v1/subscriptions/workbooks?view=myPage")
+    @Story("[GET] /api/v1/subscriptions/workbooks?view=myPage")
     @WithUserDetails(userDetailsServiceBeanName = "apiTestTokenUserDetailsService")
     fun browseSubscribeWorkbooksViewMyPage() {
         // given
@@ -222,6 +227,7 @@ class SubscriptionApiControllerTest : ApiControllerTestSpec() {
 
     @Test
     @DisplayName("[POST] /api/v1/workbooks/{workbookId}/subs")
+    @Story("[POST] /api/v1/workbooks/{workbookId}/subs")
     @WithUserDetails(userDetailsServiceBeanName = "apiTestTokenUserDetailsService")
     fun subscribeWorkbook() {
         // given
@@ -271,6 +277,7 @@ class SubscriptionApiControllerTest : ApiControllerTestSpec() {
 
     @Test
     @DisplayName("[POST] /api/v1/workbooks/{workbookId}/unsubs")
+    @Story("[POST] /api/v1/workbooks/{workbookId}/unsubs")
     @WithUserDetails(userDetailsServiceBeanName = "apiTestTokenUserDetailsService")
     fun unsubscribeWorkbook() {
         // given
@@ -331,6 +338,7 @@ class SubscriptionApiControllerTest : ApiControllerTestSpec() {
 
     @Test
     @DisplayName("[POST] /api/v1/subscriptions/unsubs")
+    @Story("[POST] /api/v1/subscriptions/unsubs")
     @WithUserDetails(userDetailsServiceBeanName = "apiTestTokenUserDetailsService")
     fun deactivateAllSubscriptions() {
         // given
@@ -389,6 +397,7 @@ class SubscriptionApiControllerTest : ApiControllerTestSpec() {
 
     @Test
     @DisplayName("[PATCH] /api/v1/subscriptions/time")
+    @Story("[PATCH] /api/v1/subscriptions/time")
     @WithUserDetails(userDetailsServiceBeanName = "apiTestTokenUserDetailsService")
     fun updateSubscriptionTime() {
         // given
@@ -443,6 +452,7 @@ class SubscriptionApiControllerTest : ApiControllerTestSpec() {
 
     @Test
     @DisplayName("[PATCH] /api/v1/subscriptions/day")
+    @Story("[PATCH] /api/v1/subscriptions/day")
     @WithUserDetails(userDetailsServiceBeanName = "apiTestTokenUserDetailsService")
     fun updateSubscriptionDay() {
         // given

@@ -9,6 +9,8 @@ import com.few.api.domain.common.vo.CategoryType
 import com.few.api.domain.common.vo.ViewCategory
 import com.few.api.domain.common.vo.WorkBookCategory
 import com.few.api.domain.workbook.usecase.dto.*
+import io.qameta.allure.Feature
+import io.qameta.allure.Story
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
@@ -22,6 +24,7 @@ import web.helper.*
 import java.net.URL
 import java.time.LocalDateTime
 
+@Feature("WorkBook API")
 class WorkBookApiControllerTest : ApiControllerTestSpec() {
     companion object {
         private const val BASE_URL = "/api/v1/workbooks"
@@ -30,6 +33,7 @@ class WorkBookApiControllerTest : ApiControllerTestSpec() {
 
     @Test
     @DisplayName("[GET] /api/v1/workbooks/categories")
+    @Story("[GET] /api/v1/workbooks/categories")
     fun browseWorkBookCategories() {
         // given
         val api = "BrowseWorkBookCategories"
@@ -75,6 +79,7 @@ class WorkBookApiControllerTest : ApiControllerTestSpec() {
      */
     @Test
     @DisplayName("[GET] /api/v1/workbooks")
+    @Story("[GET] /api/v1/workbooks")
     fun browseWorkBooks() {
         // given
         val api = "BrowseWorkBooks"
@@ -164,6 +169,7 @@ class WorkBookApiControllerTest : ApiControllerTestSpec() {
 
     @Test
     @DisplayName("[GET] /api/v1/workbooks/{workbookId}")
+    @Story("[GET] /api/v1/workbooks/{workbookId}")
     fun readWorkBook() {
         // given
         val api = "ReadWorkBook"

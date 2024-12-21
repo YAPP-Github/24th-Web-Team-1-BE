@@ -7,6 +7,8 @@ import com.epages.restdocs.apispec.Schema
 import com.few.api.config.web.controller.ApiControllerTestSpec
 import com.few.api.domain.problem.controller.request.CheckProblemRequest
 import com.few.api.domain.problem.usecase.dto.*
+import io.qameta.allure.Feature
+import io.qameta.allure.Story
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
@@ -20,6 +22,7 @@ import web.description.Description
 import web.helper.*
 
 @Suppress("ktlint:standard:max-line-length")
+@Feature("Problem API")
 class ProblemApiControllerTest : ApiControllerTestSpec() {
     companion object {
         private const val BASE_URL = "/api/v1/problems"
@@ -28,6 +31,7 @@ class ProblemApiControllerTest : ApiControllerTestSpec() {
 
     @Test
     @DisplayName("[GET] /api/v1/problems?articleId=")
+    @Story("[GET] /api/v1/problems?articleId=")
     fun browseProblems() {
         // given
         val api = "BrowseProblems"
@@ -78,6 +82,7 @@ class ProblemApiControllerTest : ApiControllerTestSpec() {
 
     @Test
     @DisplayName("[GET] /api/v1/problems/{problemId}")
+    @Story("[GET] /api/v1/problems/{problemId}")
     fun readProblem() {
         // given
         val api = "ReadProblem"
@@ -144,6 +149,7 @@ class ProblemApiControllerTest : ApiControllerTestSpec() {
 
     @Test
     @DisplayName("[POST] /api/v1/problems/{problemId}")
+    @Story("[POST] /api/v1/problems/{problemId}")
     fun checkProblem() {
         // given
         val api = "CheckProblem"
@@ -203,6 +209,7 @@ class ProblemApiControllerTest : ApiControllerTestSpec() {
 
     @Test
     @DisplayName("[GET] /api/v1/problems/unsubmitted")
+    @Story("[GET] /api/v1/problems/unsubmitted")
     fun browseUndoneProblems() {
         // given
         val api = "BrowseUndoneProblems"

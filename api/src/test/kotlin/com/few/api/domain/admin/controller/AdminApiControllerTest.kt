@@ -7,6 +7,8 @@ import com.few.api.config.web.controller.ApiControllerTestSpec
 import com.few.api.domain.admin.controller.request.*
 import com.few.api.domain.admin.usecase.dto.*
 import com.few.api.domain.common.vo.CategoryType
+import io.qameta.allure.Feature
+import io.qameta.allure.Story
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.doNothing
@@ -23,6 +25,7 @@ import web.helper.*
 import java.net.URL
 import java.util.stream.IntStream
 
+@Feature("Admin API")
 class AdminApiControllerTest : ApiControllerTestSpec() {
     companion object {
         private const val BASE_URL = "/api/v1/admin"
@@ -31,6 +34,7 @@ class AdminApiControllerTest : ApiControllerTestSpec() {
 
     @Test
     @DisplayName("[POST] /api/v1/admin/workbooks")
+    @Story("[POST] /api/v1/admin/workbooks")
     fun addWorkbook() {
         // given
         val api = "AddWorkbook"
@@ -85,6 +89,7 @@ class AdminApiControllerTest : ApiControllerTestSpec() {
 
     @Test
     @DisplayName("[POST] /api/v1/admin/articles")
+    @Story("[POST] /api/v1/admin/articles")
     fun addArticle() {
         // given
         val api = "AddArticle"
@@ -182,6 +187,7 @@ class AdminApiControllerTest : ApiControllerTestSpec() {
 
     @Test
     @DisplayName("[POST] /api/v1/admin/relations/articles")
+    @Story("[POST] /api/v1/admin/relations/articles")
     fun mapArticle() {
         // given
         val api = "MapArticle"
@@ -230,6 +236,7 @@ class AdminApiControllerTest : ApiControllerTestSpec() {
 
     @Test
     @DisplayName("[POST] /api/v1/admin/utilities/conversion/content")
+    @Story("[POST] /api/v1/admin/utilities/conversion/content")
     fun convertContent() {
         // given
         val api = "ConvertContent"
@@ -281,6 +288,7 @@ class AdminApiControllerTest : ApiControllerTestSpec() {
 
     @Test
     @DisplayName("[POST] /api/v1/utilities/conversion/image")
+    @Story("[POST] /api/v1/utilities/conversion/image")
     fun putImage() {
         // given
         val api = "PutImage"

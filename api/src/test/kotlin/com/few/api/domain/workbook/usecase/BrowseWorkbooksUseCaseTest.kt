@@ -15,10 +15,16 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import io.qameta.allure.Epic
+import io.qameta.allure.Feature
+import io.qameta.allure.Story
 import java.net.URL
 import java.time.LocalDateTime
 import java.util.stream.IntStream
 
+@Epic("V1.0 UseCase")
+@Feature("WorkBook")
+@Story("BrowseWorkbooks")
 class BrowseWorkbooksUseCaseTest :
     BehaviorSpec({
         lateinit var workbookDao: WorkbookDao

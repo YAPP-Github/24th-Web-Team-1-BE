@@ -6,6 +6,8 @@ import com.epages.restdocs.apispec.Schema
 import com.few.api.config.web.controller.ApiControllerTestSpec
 import com.few.api.domain.log.controller.request.ApiLogRequest
 import com.few.api.domain.log.dto.AddApiLogUseCaseIn
+import io.qameta.allure.Feature
+import io.qameta.allure.Story
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -18,6 +20,7 @@ import web.helper.toIdentifier
 import web.helper.toRequestSchema
 import web.helper.toResponseSchema
 
+@Feature("API Log API")
 class ApiLogApiControllerTest : ApiControllerTestSpec() {
     companion object {
         private const val BASE_URL = "/api/v1/logs"
@@ -26,6 +29,7 @@ class ApiLogApiControllerTest : ApiControllerTestSpec() {
 
     @Test
     @DisplayName("[POST] /api/v1/logs")
+    @Story("[POST] /api/v1/logs")
     fun addApiLog() {
         // Given
         val api = "addApiLog"

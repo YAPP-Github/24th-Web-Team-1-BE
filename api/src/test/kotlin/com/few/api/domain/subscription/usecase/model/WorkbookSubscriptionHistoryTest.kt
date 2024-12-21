@@ -1,9 +1,13 @@
 package com.few.api.domain.subscription.usecase.model
 
+import io.qameta.allure.Epic
+import io.qameta.allure.Feature
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
+@Epic("V1.0 Model")
+@Feature("WorkbookSubscriptionHistory")
 class WorkbookSubscriptionHistoryTest {
     @Test
     fun `새로 생성된 구독인데 구독 상태가 존재하는 경우`() {

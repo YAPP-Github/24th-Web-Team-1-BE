@@ -11,11 +11,17 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import io.qameta.allure.Epic
+import io.qameta.allure.Feature
+import io.qameta.allure.Story
 import security.AuthToken
 import security.TokenGenerator
 import security.TokenResolver
 import security.encryptor.IdEncryptor
 
+@Epic("V1.0 UseCase")
+@Feature("Member")
+@Story("Token")
 class TokenUseCaseTest :
     BehaviorSpec({
         lateinit var tokenGenerator: TokenGenerator

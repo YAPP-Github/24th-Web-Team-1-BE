@@ -3,8 +3,8 @@ spring:
     protocol: smtp
     host: smtp.gmail.com
     port: 587
-    username: DevFewFew@gmail.com
-    password: ${EMAIL_PASSWORD:password}
+    username: few.quiz.letter@gmail.com
+    password: ${EMAIL_PASSWORD:uace ukqr reoq qfwt}
     properties:
       mail:
         smtp:
@@ -17,6 +17,6 @@ spring:
 
     provider:
         aws:
-            access-key: thisisaccesskey
-            secret-key: thisissecretkey
+            access-key: AKIAQKPILYOIHEPISMF4
+            secret-key: 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
             region: ap-northeast-2

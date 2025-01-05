@@ -1,0 +1,11 @@
+crm:
+    credentials:
+        access-key: thisisroot
+        secret-key: thisisroot
+    region:
+        static: ap-northeast-2
+
+spring:
+    data:
+        mongodb:
+            uri: mongodb://crm:crm@localhost:27017/crm

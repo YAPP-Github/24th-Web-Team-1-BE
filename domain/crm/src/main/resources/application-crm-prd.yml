@@ -1,0 +1,11 @@
+crm:
+    credentials:
+        access-key: ${STORAGE_ACCESS_KEY}
+        secret-key: ${STORAGE_SECRET_KEY}
+    region:
+        static: ${STORAGE_REGION}
+
+spring:
+    data:
+        mongodb:
+            uri: mongodb://${CRM_USER_NAME}:${CRM_USER_PASSWORD}@${CRM_HOST}:${CRM_PORT}/${CRM_DATABASE}

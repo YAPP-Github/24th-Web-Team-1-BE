@@ -14,7 +14,7 @@ class PostTemplateUseCase(
     private val emailTemplateHistoryRepository: EmailTemplateHistoryRepository,
 ) {
     fun execute(useCaseIn: PostTemplateUseCaseIn): PostTemplateUseCaseOut {
-        val id: String? = useCaseIn.id
+        val id: Long? = useCaseIn.id
         val templateName = useCaseIn.templateName
         val subject: String? = useCaseIn.subject
         val version: Float? = useCaseIn.version

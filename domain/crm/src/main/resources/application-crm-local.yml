@@ -6,6 +6,15 @@ crm:
         static: ap-northeast-2
 
 spring:
-    data:
-        mongodb:
-            uri: mongodb://crm:crm@localhost:27017/crm
+  crm:
+    datasource:
+      url: jdbc:mysql://localhost:13306/crm?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&allowMultiQueries=true
+      username: root
+      password: root
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    jpa:
+        hibernate:
+            ddl-auto: update
+        properties:
+            hibernate:
+                format_sql: true

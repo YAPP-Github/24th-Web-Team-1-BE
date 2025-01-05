@@ -1,28 +1,40 @@
 package com.few.crm.email.domain
 
+import com.few.crm.support.jpa.converter.StringListConverter
+import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
-import org.springframework.data.mongodb.core.mapping.Field
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.LocalDateTime
 
-@Document(collection = "email_templates")
-class EmailTemplate(
+@Entity
+@Table(name = "email_templates")
+@EntityListeners(AuditingEntityListener::class)
+data class EmailTemplate(
     @Id
-    var id: String? = null,
-    @Field("template_name")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null,
+    @Column(name = "template_name")
     var templateName: String,
-    @Field("subject")
+    @Column(name = "subject")
     var subject: String,
-    @Field("body")
+    @Lob
+    @Column(name = "body", columnDefinition = "BLOB")
     var body: String,
-    @Field("variables")
-    var variables: List<String> = emptyList(),
-    @Field("version")
+    @Convert(converter = StringListConverter::class)
+    @Column(name = "variables")
+    var variables: List<String> = listOf(),
+    @Column(name = "version")
     var version: Float = 1.0f,
     @CreatedDate
     var createdAt: LocalDateTime? = null,
 ) {
+    protected constructor() : this(
+        templateName = "",
+        subject = "",
+        body = "",
+        variables = emptyList(),
+    )
+
     companion object {
         fun new(
             templateName: String,

@@ -1,25 +1,27 @@
 package com.few.crm.email.domain
 
+import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.LastModifiedDate
-import org.springframework.data.mongodb.core.mapping.Document
-import org.springframework.data.mongodb.core.mapping.Field
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.LocalDateTime
 
-@Document(collection = "email_send_history")
-class EmailSendHistory(
+@Entity
+@Table(name = "email_send_histories")
+@EntityListeners(AuditingEntityListener::class)
+data class EmailSendHistory(
     @Id
-    var id: String? = null,
-    @Field("user_external_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null,
+    @Column(name = "user_external_id")
     var userExternalId: String? = "",
-    @Field("user_email")
+    @Column(name = "user_email")
     var userEmail: String? = "",
-    @Field("email_message_id")
+    @Column(name = "email_message_id")
     var emailMessageId: String? = "",
-    @Field("email_body")
+    @Column(name = "email_body")
     var emailBody: String? = "",
-    @Field("send_status")
+    @Column(name = "send_status")
     var sendStatus: String? = "",
     @CreatedDate
     var createdAt: LocalDateTime? = null,

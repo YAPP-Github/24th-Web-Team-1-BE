@@ -18,7 +18,7 @@ data class TemplateResult(
 )
 
 data class TemplateCurrent(
-    val id: String,
+    val id: Long,
     val templateName: String,
     val subject: String,
     val body: String,
@@ -28,8 +28,8 @@ data class TemplateCurrent(
 )
 
 data class TemplateHistory(
-    val id: String,
-    val templateId: String,
+    val id: Long,
+    val templateId: Long,
     val subject: String,
     val body: String,
     val variables: List<String>,

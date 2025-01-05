@@ -1,26 +1,39 @@
 package com.few.crm.email.domain
 
+import com.few.crm.support.jpa.converter.StringListConverter
+import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
-import org.springframework.data.mongodb.core.mapping.Field
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.LocalDateTime
 
 // TODO: templateId 와 version  를 기준으로 해당 도큐먼트는 유니크 해야함
-@Document(collection = "email_template_histories")
-class EmailTemplateHistory(
+@Entity
+@Table(name = "email_template_histories")
+@EntityListeners(AuditingEntityListener::class)
+data class EmailTemplateHistory(
     @Id
-    var id: String? = null,
-    @Field("template_id")
-    var templateId: String,
-    @Field("subject")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null,
+    @Column(name = "template_id")
+    var templateId: Long,
+    @Column(name = "subject")
     var subject: String,
-    @Field("body")
+    @Lob
+    @Column(name = "body", columnDefinition = "BLOB")
     var body: String,
-    @Field("variables")
+    @Convert(converter = StringListConverter::class)
+    @Column(name = "variables")
     var variables: List<String>,
-    @Field("version")
+    @Column(name = "version")
     var version: Float,
     @CreatedDate
     var createdAt: LocalDateTime? = null,
-)
+) {
+    constructor() : this(
+        templateId = 0,
+        subject = "",
+        body = "",
+        variables = listOf(),
+        version = 1.0f,
+    )
+}

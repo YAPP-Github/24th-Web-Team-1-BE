@@ -1,13 +1,13 @@
 package com.few.crm.email.repository
 
 import com.few.crm.email.domain.EmailTemplateHistory
-import org.springframework.data.mongodb.repository.MongoRepository
+import org.springframework.data.jpa.repository.JpaRepository
 
-interface EmailTemplateHistoryRepository : MongoRepository<EmailTemplateHistory, String> {
-    fun findAllByTemplateIdInOrderByVersionDesc(templateIds: List<String>): List<EmailTemplateHistory>
+interface EmailTemplateHistoryRepository : JpaRepository<EmailTemplateHistory, Long> {
+    fun findAllByTemplateIdInOrderByVersionDesc(templateIds: List<Long>): List<EmailTemplateHistory>
 
     fun findByTemplateIdAndVersion(
-        templateId: String,
+        templateId: Long,
         version: Float,
     ): EmailTemplateHistory?
 }

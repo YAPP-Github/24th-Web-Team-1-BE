@@ -8,8 +8,8 @@ import com.few.crm.email.repository.EmailTemplateRepository
 import com.few.crm.email.service.CrmSendNonVariablesEmailService
 import com.few.crm.email.service.NonContent
 import com.few.crm.email.service.SendEmailArgs
-import com.few.crm.email.usecase.dto.SendEmailUseCaseIn
-import com.few.crm.email.usecase.dto.SendEmailUseCaseOut
+import com.few.crm.email.usecase.dto.SendNotificationEmailUseCaseIn
+import com.few.crm.email.usecase.dto.SendNotificationEmailUseCaseOut
 import com.few.crm.user.repository.UserRepository
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
@@ -28,7 +28,7 @@ class SendNotificationEmailUseCase(
     private val applicationEventPublisher: ApplicationEventPublisher,
     private val objectMapper: ObjectMapper,
 ) {
-    fun execute(useCaseIn: SendEmailUseCaseIn): SendEmailUseCaseOut {
+    fun execute(useCaseIn: SendNotificationEmailUseCaseIn): SendNotificationEmailUseCaseOut {
         val templateId = useCaseIn.templateId
         val templateVersion: Float? = useCaseIn.templateVersion
         val userIds = useCaseIn.userIds
@@ -58,7 +58,7 @@ class SendNotificationEmailUseCase(
         val targetUsers =
             if (userIds.isEmpty()) {
                 userRepository
-                    .findAllExistByUserAttributesEmail()
+                    .findAllExistByUserAttributesKey()
                     .groupBy {
                         objectMapper.readValue(it.userAttributes, Map::class.java)[sendType] as String
                     }
@@ -94,7 +94,7 @@ class SendNotificationEmailUseCase(
             )
         }
 
-        return SendEmailUseCaseOut(
+        return SendNotificationEmailUseCaseOut(
             isSuccess = true,
         )
     }

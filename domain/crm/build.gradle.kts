@@ -7,6 +7,7 @@ tasks.getByName("jar") {
 }
 
 dependencies {
+    implementation(project(":library:web"))
     implementation(project(":library:email"))
     implementation(project(":library:event"))
 

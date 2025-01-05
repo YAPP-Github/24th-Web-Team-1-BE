@@ -13,6 +13,8 @@ spring:
                 - api-repo-local
                 # api
                 - thread-local
+                # domain
+                - crm-local
             prd:
                 # module
                 - security-prd
@@ -22,6 +24,8 @@ spring:
                 - api-repo-prd
                 # api
                 - thread-prd
+                # domain
+                - crm-prd
 auth:
     batch: ${AUTH_BATCH:0518}
 

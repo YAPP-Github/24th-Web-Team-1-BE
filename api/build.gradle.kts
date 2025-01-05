@@ -19,6 +19,9 @@ plugins {
 }
 
 dependencies {
+    /** domain */
+    implementation(project(":domain:crm"))
+
     /** module */
     implementation(project(":library:email"))
     implementation(project(":library:storage"))

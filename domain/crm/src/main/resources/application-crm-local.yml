@@ -1,9 +1,10 @@
 crm:
     credentials:
-        access-key: thisisroot
-        secret-key: thisisroot
+          access-key: thisisroot
+          secret-key: thisisroot
     region:
         static: ap-northeast-2
+    auth: ${CRM_AUTH:0518}
 
 spring:
   crm:

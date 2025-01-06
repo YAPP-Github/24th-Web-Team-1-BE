@@ -56,7 +56,7 @@ class CrmLoginView :
 
             if (response.statusCodeValue == 200) {
                 VaadinService.getCurrentRequest().wrappedSession.setAttribute("user", username)
-                UI.getCurrent().navigate("crm/email/templates")
+                UI.getCurrent().navigate("crm/users")
                 loginOverlay.isOpened = false
             } else {
                 loginOverlay.isError = true

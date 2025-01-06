@@ -12,9 +12,11 @@ import io.awspring.cloud.sqs.annotation.SqsListener
 import io.awspring.cloud.sqs.listener.acknowledgement.Acknowledgement
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.context.ApplicationEventPublisher
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import java.time.ZonedDateTime
 
+@Profile("!local")
 @Service
 class EmailSendSesMessageReverseRelay(
     private val applicationEventPublisher: ApplicationEventPublisher,

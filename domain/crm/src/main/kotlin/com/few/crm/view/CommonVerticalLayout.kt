@@ -43,6 +43,7 @@ abstract class CommonVerticalLayout : VerticalLayout() {
                     Button("Templates") { UI.getCurrent().navigate("crm/email/templates") },
                     Button("Send") { UI.getCurrent().navigate("crm/email/send") },
                     Button("Send Histories") { UI.getCurrent().navigate("crm/email/send/histories") },
+                    Button("Users") { UI.getCurrent().navigate("crm/users") },
                 )
             }
 

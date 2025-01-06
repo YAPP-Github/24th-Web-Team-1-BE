@@ -13,5 +13,5 @@ interface UserRepository : JpaRepository<User, Long> {
         @Param("key") key: String? = "email",
     ): List<User>
 
-    fun findAllByIdIn(ids: List<String>): List<User>
+    fun findAllByIdIn(ids: List<Long>): List<User>
 }

@@ -5,7 +5,7 @@ class SendNotificationEmailUseCaseDto
 data class SendNotificationEmailUseCaseIn(
     val templateId: Long,
     val templateVersion: Float?,
-    val userIds: List<String>,
+    val userIds: List<Long>,
 )
 
 class SendNotificationEmailUseCaseOut(

@@ -5,4 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface EmailSendHistoryRepository : JpaRepository<EmailSendHistory, Long>
+interface EmailSendHistoryRepository : JpaRepository<EmailSendHistory, Long> {
+    fun findByUserEmailContainingIgnoreCase(email: String): List<EmailSendHistory>
+
+    fun findByEmailMessageId(emailMessageId: String): EmailSendHistory?
+}

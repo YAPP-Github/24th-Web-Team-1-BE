@@ -6,5 +6,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface EmailTemplateRepository : JpaRepository<EmailTemplate, Long> {
+    fun findByTemplateNameContainingIgnoreCase(templateName: String): List<EmailTemplate>
+
     fun findByTemplateName(templateName: String): EmailTemplate?
 }

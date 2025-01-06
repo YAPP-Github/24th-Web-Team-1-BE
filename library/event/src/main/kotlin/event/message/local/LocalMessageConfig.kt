@@ -1,10 +1,6 @@
 package event.message.local
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
-import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.EnableAsync
 
@@ -13,12 +9,12 @@ import org.springframework.scheduling.annotation.EnableAsync
 class LocalMessageConfig {
     val log = KotlinLogging.logger { }
 
-    @Bean
-    @ConditionalOnMissingBean(ObjectMapper::class)
-    fun objectMapper(): ObjectMapper =
-        ObjectMapper().apply {
-            registerKotlinModule()
-        }
+//    @Bean
+//    @ConditionalOnMissingBean(ObjectMapper::class)
+//    fun objectMapper(): ObjectMapper =
+//        ObjectMapper().apply {
+//            registerKotlinModule()
+//        }
 
 //    @Bean
 //    fun localMessageBeanPostProcessor(

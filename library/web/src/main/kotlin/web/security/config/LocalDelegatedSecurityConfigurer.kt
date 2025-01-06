@@ -100,6 +100,8 @@ class LocalDelegatedSecurityConfigurer(
                     AntPathRequestMatcher("/api/v1/problems/*", HttpMethod.POST.name()),
                     /** v2 */
                     AntPathRequestMatcher("/api/v2/**"), // TODO 우선 시큐리티 미적용
+                    /** view */
+                    AntPathRequestMatcher("/view/**"), // TODO 우선 시큐리티 미적용
                 )
         }
 

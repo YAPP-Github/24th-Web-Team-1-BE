@@ -69,6 +69,7 @@ jobs:
                   ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
               run: |
                   GIT_HASH=$(git rev-parse --short HEAD)
+                  ./gradlew domain:crm:prepareFrontend
                   ./gradlew buildEcsDockerImage -PimageName=${ECR_REGISTRY}/${ECR_REPOSITORY}:latest
                   docker tag ${ECR_REGISTRY}/${ECR_REPOSITORY}:latest ${ECR_REGISTRY}/${ECR_REPOSITORY}:${GIT_HASH}
                   docker push ${ECR_REGISTRY}/${ECR_REPOSITORY} --all-tags

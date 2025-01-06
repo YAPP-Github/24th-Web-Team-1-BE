@@ -50,7 +50,7 @@ data class EmailTemplate(
             )
     }
 
-    fun isNewTemplate(): Boolean = version == 1.0f
+    fun isNewTemplate(): Boolean = id == null
 
     fun modifySubject(subject: String?): EmailTemplate {
         subject?.let {

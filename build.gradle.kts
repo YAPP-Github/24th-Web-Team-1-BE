@@ -129,6 +129,7 @@ subprojects {
             dependency("org.jooq:jooq:${DependencyVersion.JOOQ}")
             imports {
                 mavenBom("org.springframework.modulith:spring-modulith-bom:${DependencyVersion.SPRING_MODULITH}")
+                mavenBom("com.vaadin:vaadin-bom:${DependencyVersion.VAADIN}")
             }
         }
     }

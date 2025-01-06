@@ -67,4 +67,7 @@ object DependencyVersion {
 
     /** AspectJ **/
     const val ASPECTJ = "1.9.5"
+
+    /** Vaadin **/
+    const val VAADIN = "24.5.9"
 }

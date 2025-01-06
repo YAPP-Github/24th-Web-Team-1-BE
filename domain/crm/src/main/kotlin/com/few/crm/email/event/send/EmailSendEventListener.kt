@@ -1,9 +1,6 @@
 package com.few.crm.email.event.send
 
-import com.few.crm.email.event.send.handler.EmailDeliveryDelayEventHandler
-import com.few.crm.email.event.send.handler.EmailDeliveryEventHandler
-import com.few.crm.email.event.send.handler.EmailOpenEventHandler
-import com.few.crm.email.event.send.handler.EmailSentEventHandler
+import com.few.crm.email.event.send.handler.*
 import com.few.crm.email.relay.send.EmailSendEventMessageMapper
 import event.isOutBox
 import org.springframework.context.event.EventListener
@@ -15,6 +12,7 @@ class EmailSendEventListener(
     private val emailSentEventHandler: EmailSentEventHandler,
     private val emailDeliveryEventHandler: EmailDeliveryEventHandler,
     private val emailOpenEventHandler: EmailOpenEventHandler,
+    private val emailClickEventHandler: EmailClickEventHandler,
     private val emailDeliveryDelayEventHandler: EmailDeliveryDelayEventHandler,
     private val emailSendEventMessageMapper: EmailSendEventMessageMapper,
 ) {
@@ -25,6 +23,7 @@ class EmailSendEventListener(
             is EmailSentEvent -> emailSentEventHandler.handle(event)
             is EmailDeliveryEvent -> emailDeliveryEventHandler.handle(event)
             is EmailOpenEvent -> emailOpenEventHandler.handle(event)
+            is EmailClickEvent -> emailClickEventHandler.handle(event)
             is EmailDeliveryDelayEvent -> emailDeliveryDelayEventHandler.handle(event)
         }
     }

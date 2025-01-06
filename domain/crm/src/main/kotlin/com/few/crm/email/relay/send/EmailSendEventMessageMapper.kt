@@ -35,6 +35,17 @@ class EmailSendEventMessageMapper : MessageMapper<EmailSendEvent, EmailSendMessa
                         timestamp = messagePayload.data!!["timestamp"] as LocalDateTime,
                     ),
                 )
+            "click" ->
+                Optional.of(
+                    EmailClickEvent(
+                        eventId = messagePayload.eventId!!,
+                        eventType = messagePayload.eventType!!,
+                        eventTime = messagePayload.eventTime!!,
+                        messageId = messagePayload.data!!["messageId"] as String,
+                        destination = messagePayload.data!!["destination"] as String,
+                        timestamp = messagePayload.data!!["timestamp"] as LocalDateTime,
+                    ),
+                )
             "deliverydelay" ->
                 Optional.of(
                     EmailDeliveryDelayEvent(

@@ -23,7 +23,7 @@ abstract class CommonVerticalLayout : VerticalLayout() {
             }
         }
 
-        val logo = H1("Vaadin CRM")
+        val logo = H1("FEW CRM")
         logo.addClassName("logo")
         val logout =
             Button("Logout") {

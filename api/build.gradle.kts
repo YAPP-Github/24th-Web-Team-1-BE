@@ -276,7 +276,7 @@ tasks.register("buildDockerImage") {
 }
 
 tasks.register("buildEcsDockerImage") {
-    dependsOn("bootJar")
+    dependsOn("build")
 
     doLast {
         exec {
@@ -295,7 +295,7 @@ tasks.register("buildEcsDockerImage") {
 }
 
 tasks.register("buildPinpointEcsDockerImageDev") {
-    dependsOn("bootJar")
+    dependsOn("build")
 
     doLast {
         exec {

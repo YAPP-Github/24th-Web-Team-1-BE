@@ -228,7 +228,7 @@ val releaseVersion =
     }
 
 tasks.register("buildDockerImage") {
-    dependsOn("bootJar")
+    dependsOn("build")
 
     doLast {
         exec {
@@ -316,7 +316,7 @@ tasks.register("buildPinpointEcsDockerImageDev") {
 }
 
 tasks.register("buildPinpointEcsDockerImagePrd") {
-    dependsOn("bootJar")
+    dependsOn("build")
 
     doLast {
         exec {

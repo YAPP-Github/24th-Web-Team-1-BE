@@ -11,7 +11,7 @@ package event
  */
 abstract class Event(
     protected val eventId: String = EventUtils.generateEventId(),
-    protected val eventType: String,
+    val eventType: String,
     protected val eventTime: Long = System.currentTimeMillis(),
 ) {
     /**

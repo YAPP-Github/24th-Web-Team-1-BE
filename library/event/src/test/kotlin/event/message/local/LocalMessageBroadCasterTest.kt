@@ -1,5 +1,7 @@
 package event.message.local
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import event.EventUtils
 import event.fixtures.TestLocalMessageReverseRelay
 import event.fixtures.TestMessage
@@ -7,7 +9,6 @@ import event.message.MessagePayload
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
@@ -27,12 +28,19 @@ class LocalMessageBroadCasterTest {
     class LocalMessageBroadCasterTestConfig {
         @Bean
         fun testLocalMessageReverseRelay(): TestLocalMessageReverseRelay = TestLocalMessageReverseRelay()
+
+        @Bean
+        fun objectMapper(): ObjectMapper =
+            ObjectMapper().registerModule(
+                KotlinModule
+                    .Builder()
+                    .build(),
+            )
     }
 
     @Autowired
     lateinit var context: ApplicationContext
 
-    @Disabled
     @Test
     fun is_registered_localMessageBroadCaster_bean() {
         // given & when
@@ -42,7 +50,6 @@ class LocalMessageBroadCasterTest {
         assertNotNull(bean)
     }
 
-    @Disabled
     @Test
     fun localMessageBroadCaster_broadcast_message() {
         val originalOut = System.out
@@ -73,7 +80,11 @@ class LocalMessageBroadCasterTest {
             output = outputStream.toString()
             val isMatch =
                 output.split("\n").stream().anyMatch {
-                    it.contains(message.toString(), ignoreCase = true) && it.contains("MessageReverseRelay", ignoreCase = true)
+                    it.contains(message.toString(), ignoreCase = true) &&
+                        it.contains(
+                            "MessageReverseRelay",
+                            ignoreCase = true,
+                        )
                 }
             assertTrue(isMatch)
         } finally {

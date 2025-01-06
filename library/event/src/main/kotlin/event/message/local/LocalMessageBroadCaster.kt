@@ -5,7 +5,6 @@ import event.message.Message
 import event.message.MessageReverseRelay
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.context.event.EventListener
-import org.springframework.scheduling.annotation.Async
 import java.lang.reflect.Method
 
 fun Method.isForLocalMessageReverseRelay(): Boolean = this.annotations.any { annotation -> annotation is LocalSubscribeMessage }
@@ -19,7 +18,6 @@ open class LocalMessageBroadCaster(
 ) {
     private val log = KotlinLogging.logger { }
 
-    @Async
     @EventListener
     open fun onApplicationEvent(message: Message) {
         log.info { "[${Thread.currentThread().name}] Receive message: $message" }

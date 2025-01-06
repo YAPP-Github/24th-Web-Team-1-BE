@@ -8,11 +8,7 @@ import com.few.api.domain.member.repo.command.InsertMemberCommand
 import com.few.api.domain.member.repo.command.UpdateDeletedMemberTypeCommand
 import com.few.api.domain.member.repo.command.UpdateMemberTypeCommand
 import com.few.api.domain.member.repo.query.*
-import com.few.api.domain.member.repo.record.MemberEmailAndTypeRecord
-import com.few.api.domain.member.repo.record.MemberIdAndIsDeletedRecord
-import com.few.api.domain.member.repo.record.MemberRecord
-import com.few.api.domain.member.repo.record.WriterRecord
-import com.few.api.domain.member.repo.record.WriterRecordMappedWorkbook
+import com.few.api.domain.member.repo.record.*
 import jooq.jooq_dsl.tables.ArticleMst
 import jooq.jooq_dsl.tables.MappingWorkbookArticle
 import jooq.jooq_dsl.tables.Member
@@ -239,4 +235,20 @@ class MemberDao(
             .set(Member.MEMBER.DELETED_AT, LocalDateTime.now())
             .where(Member.MEMBER.ID.eq(command.memberId))
             .and(Member.MEMBER.DELETED_AT.isNull)
+
+    fun selectAllMemberViews(): List<MemberViewRecord> =
+        selectAllMembersQuery()
+            .fetchInto(MemberViewRecord::class.java)
+
+    fun selectAllMembersQuery() =
+        dslContext
+            .select(
+                Member.MEMBER.ID.`as`(MemberViewRecord::id.name),
+                Member.MEMBER.EMAIL.`as`(MemberViewRecord::email.name),
+                Member.MEMBER.TYPE_CD.`as`(MemberViewRecord::typeCd.name),
+                Member.MEMBER.DESCRIPTION.`as`(MemberViewRecord::description.name),
+                Member.MEMBER.CREATED_AT.`as`(MemberViewRecord::createdAt.name),
+            ).from(Member.MEMBER)
+            .where(Member.MEMBER.DELETED_AT.isNull)
+            .orderBy(Member.MEMBER.ID.asc())
 }

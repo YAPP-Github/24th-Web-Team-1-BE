@@ -4,9 +4,11 @@ import com.few.api.domain.member.controller.request.SaveMemberRequest
 import com.few.api.domain.member.controller.request.TokenRequest
 import com.few.api.domain.member.controller.response.SaveMemberResponse
 import com.few.api.domain.member.controller.response.TokenResponse
+import com.few.api.domain.member.usecase.BrowseMemberViewsUseCase
 import com.few.api.domain.member.usecase.DeleteMemberUseCase
 import com.few.api.domain.member.usecase.SaveMemberUseCase
 import com.few.api.domain.member.usecase.TokenUseCase
+import com.few.api.domain.member.usecase.dto.BrowseMemberViewsUseCaseOut
 import com.few.api.domain.member.usecase.dto.DeleteMemberUseCaseIn
 import com.few.api.domain.member.usecase.dto.SaveMemberUseCaseIn
 import com.few.api.domain.member.usecase.dto.TokenUseCaseIn
@@ -15,6 +17,7 @@ import org.springframework.http.MediaType
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -31,6 +34,7 @@ class MemberController(
     private val saveMemberUseCase: SaveMemberUseCase,
     private val deleteMemberUseCase: DeleteMemberUseCase,
     private val tokenUseCase: TokenUseCase,
+    private val browseMemberViewsUseCase: BrowseMemberViewsUseCase,
 ) {
     @PostMapping
     fun saveMember(
@@ -87,6 +91,13 @@ class MemberController(
             refreshToken = useCaseOut.refreshToken,
             isLogin = useCaseOut.isLogin,
         ).let {
+            return ApiResponseGenerator.success(it, HttpStatus.OK)
+        }
+    }
+
+    @GetMapping
+    fun browseMember(): ApiResponse<ApiResponse.SuccessBody<BrowseMemberViewsUseCaseOut>> {
+        browseMemberViewsUseCase.execute().let {
             return ApiResponseGenerator.success(it, HttpStatus.OK)
         }
     }

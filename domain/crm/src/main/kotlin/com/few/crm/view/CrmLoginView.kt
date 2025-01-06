@@ -1,4 +1,4 @@
-package com.few.crm.email.controller.view
+package com.few.crm.view
 
 import com.vaadin.flow.component.UI
 import com.vaadin.flow.component.html.H1

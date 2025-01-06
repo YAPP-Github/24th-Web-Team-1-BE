@@ -1,4 +1,4 @@
-package com.few.crm.email.controller.view
+package com.few.crm.view.email
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.few.crm.email.domain.EmailTemplate
@@ -7,6 +7,7 @@ import com.few.crm.email.usecase.SendNotificationEmailUseCase
 import com.few.crm.email.usecase.dto.SendNotificationEmailUseCaseIn
 import com.few.crm.user.domain.User
 import com.few.crm.user.repository.UserRepository
+import com.few.crm.view.CommonVerticalLayout
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.dialog.Dialog
 import com.vaadin.flow.component.grid.Grid

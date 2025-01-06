@@ -1,4 +1,4 @@
-package com.few.crm.email.controller.view
+package com.few.crm.view.email
 
 import com.few.crm.email.domain.EmailTemplate
 import com.few.crm.email.domain.EmailTemplateHistory
@@ -6,6 +6,7 @@ import com.few.crm.email.repository.EmailTemplateHistoryRepository
 import com.few.crm.email.repository.EmailTemplateRepository
 import com.few.crm.email.usecase.PostTemplateUseCase
 import com.few.crm.email.usecase.dto.PostTemplateUseCaseIn
+import com.few.crm.view.CommonVerticalLayout
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.dialog.Dialog
 import com.vaadin.flow.component.formlayout.FormLayout

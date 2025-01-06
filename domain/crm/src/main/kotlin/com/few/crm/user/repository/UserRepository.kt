@@ -14,4 +14,6 @@ interface UserRepository : JpaRepository<User, Long> {
     ): List<User>
 
     fun findAllByIdIn(ids: List<Long>): List<User>
+
+    fun findByExternalId(externalId: String): User?
 }

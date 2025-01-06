@@ -12,7 +12,7 @@ plugins {
 
 vaadin {
     pnpmEnable = true
-    productionMode = false
+    productionMode = true
 }
 
 val production by tasks.creating {

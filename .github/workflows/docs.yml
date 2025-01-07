@@ -22,10 +22,6 @@ jobs:
             - name: Grant execute permission for gradlew
               run: chmod +x gradlew
 
-            - name: Jooq Code Generation for API Module
-              run: |
-                  ./gradlew  api:jooqCodegen
-
             - name: Generate Allure Results
               run: ./gradlew test
 

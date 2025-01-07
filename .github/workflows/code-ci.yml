@@ -34,10 +34,6 @@ jobs:
                   java-version: '18'
                   distribution: 'temurin'
 
-            - name: Jooq Code Generation for API Module
-              run: |
-                  ./gradlew  api:jooqCodegen
-
             - name: Build with Gradle
               run: |
                   ./gradlew  api:build -x test

@@ -52,10 +52,6 @@ jobs:
             - name: Grant execute permission for gradlew
               run: chmod +x gradlew
 
-            - name: Jooq Code Generation for API Module
-              run: |
-                  ./gradlew  api:jooqCodegen
-
             - name: Generate OpenAPI3
               run: |
                   ./gradlew api:openapi3 -PserverUrl=https://api.fewletter.shop

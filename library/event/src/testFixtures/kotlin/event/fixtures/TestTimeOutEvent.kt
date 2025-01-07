@@ -23,15 +23,21 @@ class TestTimeOutEvent(
         completed,
         eventPublisher,
     ) {
-    override fun timeExpiredEvent(): TimeExpiredEvent = TestTimeExpiredEvent(eventId, eventType, eventTime)
+    override fun timeExpiredEvent(): TimeExpiredEvent =
+        TestTimeExpiredEvent(
+            timeOutEventId = eventId,
+            eventType = "ExpiredEvent",
+        )
 }
 
 @EventDetails(outBox = false)
 class TestTimeExpiredEvent(
-    eventId: String,
+    timeOutEventId: String,
+    eventId: String = EventUtils.generateEventId(),
     eventType: String,
     eventTime: LocalDateTime = LocalDateTime.now(),
 ) : TimeExpiredEvent(
+        timeOutEventId,
         eventId,
         eventType,
         eventTime,

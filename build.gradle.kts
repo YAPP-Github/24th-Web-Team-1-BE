@@ -27,6 +27,7 @@ allprojects {
 
     repositories {
         mavenCentral()
+        maven("https://maven.vaadin.com/vaadin-addons")
     }
 
     val ktlint by configurations.creating

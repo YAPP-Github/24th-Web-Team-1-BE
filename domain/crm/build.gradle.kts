@@ -10,11 +10,6 @@ plugins {
     id("com.vaadin") version DependencyVersion.VAADIN
 }
 
-vaadin {
-    pnpmEnable = true
-    productionMode = true
-}
-
 dependencies {
     implementation(project(":library:web"))
     implementation(project(":library:email"))
@@ -31,4 +26,13 @@ dependencies {
 
     /** vaadin */
     implementation("com.vaadin:vaadin-spring-boot-starter")
+}
+
+vaadin {
+    pnpmEnable = true
+    productionMode = false
+}
+
+tasks.named("bootJar") {
+    dependsOn("vaadinBuildFrontend")
 }

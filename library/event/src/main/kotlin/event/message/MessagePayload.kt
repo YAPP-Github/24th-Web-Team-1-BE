@@ -22,6 +22,7 @@ data class MessagePayload
     constructor(
         @JsonProperty("eventId") val eventId: String?,
         @JsonProperty("eventType") val eventType: String?,
-        @JsonProperty("eventTime") val eventTime: LocalDateTime?,
+        @JsonProperty("eventTime")
+        val eventTime: LocalDateTime?,
         @JsonProperty("data") val data: Map<String, Any>?,
     )

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import event.message.Message
 import event.message.MessagePayload
+import java.time.LocalDateTime
 
 class TestReverseMessage(
     payload: MessagePayload?,
@@ -12,7 +13,7 @@ class TestReverseMessage(
     constructor(
         @JsonProperty("eventId") eventId: String?,
         @JsonProperty("eventType") eventType: String?,
-        @JsonProperty("eventTime") eventTime: Long?,
+        @JsonProperty("eventTime") eventTime: LocalDateTime?,
         @JsonProperty("data") data: Map<String, Any>?,
     ) : this(
         MessagePayload(

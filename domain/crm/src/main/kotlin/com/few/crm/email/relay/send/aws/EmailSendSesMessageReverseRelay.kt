@@ -6,8 +6,6 @@ import com.few.crm.config.CrmSqsConfig.Companion.SQS_LISTENER_CONTAINER_FACTORY
 import com.few.crm.email.event.send.EmailSendEvent
 import com.few.crm.email.relay.send.EmailSendEventMessageMapper
 import com.few.crm.email.relay.send.EmailSendMessageReverseRelay
-import com.few.crm.support.LocalDateTimeExtension
-import com.few.crm.support.parse
 import event.EventUtils
 import event.message.MessagePayload
 import io.awspring.cloud.sqs.annotation.SqsListener
@@ -49,7 +47,7 @@ class EmailSendSesMessageReverseRelay(
                 MessagePayload(
                     eventId = EventUtils.generateEventId(),
                     eventType = it["eventType"] as String,
-                    eventTime = LocalDateTimeExtension().parse(it["eventTime"] as String),
+                    eventTime = LocalDateTime.now(),
                     data =
                         mapOf(
                             "messageId" to mail.messageId(),

@@ -30,7 +30,7 @@ dependencies {
 
 vaadin {
     pnpmEnable = true
-    productionMode = false
+    productionMode = true
 }
 
 tasks.named("bootJar") {

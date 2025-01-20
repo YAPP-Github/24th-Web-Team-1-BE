@@ -11,3 +11,5 @@ include("library:storage")
 include("library:web")
 include("library:security")
 include("library:event")
+
+include("domain-generator")
